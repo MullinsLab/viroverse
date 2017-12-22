@@ -1,0 +1,12 @@
+[%- page = {
+      title = "Primers",
+    }
+-%]
+
+<div class="row">
+  <div class="col-md-12">
+    <h1 class="page-header">Primers</h1>
+    <faceted-search primer-search endpoint="/primer/search">
+    </faceted-search>
+  </div>
+</div>

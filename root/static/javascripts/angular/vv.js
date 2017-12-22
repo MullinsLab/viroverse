@@ -8,6 +8,7 @@
       'vv.filters',
       'vv.ui',
       'vv.ui.facetedSearch',
+      'vv.ui.primerSearch',
       'vv.ui.sampleSearch',
       'vv.ui.sequenceSearch',
       'vv.ui.sequenceDownloader',

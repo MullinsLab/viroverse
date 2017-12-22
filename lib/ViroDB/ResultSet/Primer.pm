@@ -4,7 +4,15 @@ use 5.018;
 use utf8;
 
 package ViroDB::ResultSet::Primer;
-use base 'ViroDB::ResultSet';
+use Moose;
+use MooseX::NonMoose;
+use MooseX::MarkAsMethods autoclean => 1;
+extends 'ViroDB::ResultSet';
+
+with 'ViroDB::Helper::ResultSet::SearchFreeform', {
+    text_fields => [qw[ name notes sequence ]],
+    id_field    => "sample_id",
+};
 
 sub plausible_for {
     my ($self, $query) = @_;
@@ -17,5 +25,18 @@ sub plausible_for {
     return $self->search(\[ $where, $query ])
         ->order_by(\[ "length(?)::float / length($me.name) desc, $me.name asc", $query ]);
 }
+
+sub organism {
+    my $self = shift;
+    my $me   = $self->current_source_alias;
+    return $self->search({ "organism.name" => \@_ }, { join => "organism" });
+}
+
+sub orientation {
+    my $self = shift;
+    my $me   = $self->current_source_alias;
+    return $self->search({ "$me.orientation" => \@_ },);
+}
+
 
 1;
