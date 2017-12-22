@@ -25,5 +25,5 @@
     <span ng-switch-when="true">matches</span>
     <span ng-switch-when="false">{{ noun }}s</span>
   </span>
-  {{ search.rowRange[0] }} through {{ search.rowRange[1] }}, starting with the most recent.
+  {{ search.rowRange[0] }} through {{ search.rowRange[1] }}, {{ orderMessage || 'starting with the most recent'}}.
 </span>
