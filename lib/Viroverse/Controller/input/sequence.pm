@@ -66,6 +66,7 @@ sub add : POST Chained('base') PathPart('add') Args(0) {
             $_ => {
                 sequence_type => $context->req->params->{"prod-$_-sequence-type"},
                 na_type       => $context->req->params->{"prod-$_-na-type"},
+                skip_chromats => $context->req->params->{"prod-$_-skip_chromats"},
 
                 partition_by {
                     # If we can identify a chromat type from the data, then
@@ -79,6 +80,8 @@ sub add : POST Chained('base') PathPart('add') Args(0) {
     };
 
     my @seqs;
+
+    my $needs_confirm_primers = 0;
 
     try {
         my $txn = $context->model("ViroDB")->schema->txn_scope_guard;
@@ -98,8 +101,11 @@ sub add : POST Chained('base') PathPart('add') Args(0) {
             die "More than one consensus sequence uploaded for ", $pcr->name // $pcr_id
                 unless @{ $materials->{$pcr_id}{sequence} } == 1;
 
-            die "You must provide chromats for ", $pcr->name // $pcr_id
-                unless @{ $materials->{$pcr_id}{chromats} // [] };
+            if (@{ $materials->{$pcr_id}{chromats} // [] }) {
+                $needs_confirm_primers = 1;
+            } elsif (!$materials->{$pcr_id}->{skip_chromats}) {
+                die "You must provide chromats for ", $pcr->name // $pcr_id
+            }
 
             my $fa_string = $materials->{$pcr_id}{sequence}[0]->slurp;
             my %fa = %{Fasta::string2hash(\$fa_string)};
@@ -170,7 +176,7 @@ sub add : POST Chained('base') PathPart('add') Args(0) {
         });
     };
     $context->session->{sidebar}->{dna_sequence} = [map {$_->na_sequence_id} @seqs];
-    return Redirect($context, $self->action_for('confirm_primers'));
+    return Redirect($context, $self->action_for($needs_confirm_primers ? 'confirm_primers' : 'review'));
 }
 
 sub confirm_primers : GET Chained('base') PathPart('confirm_primers') Args(0) {

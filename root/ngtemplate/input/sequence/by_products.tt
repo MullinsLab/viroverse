@@ -47,6 +47,9 @@
                 </div>
             </div>
             <div class="form-group">
+                <label><input type="checkbox" name="prod-[% pcr.id %]-skip_chromats" value="1"> Chromats not required
+            </div>
+            <div class="form-group">
                 <label for="prod-<% pcr.id %>-sequence-type">Sequence type</label>
                 <select class="form-control" name="prod-<% pcr.id %>-sequence-type" id="prod-<% pcr.id %>-sequence-type">
                     <option value="">unknown</option>
