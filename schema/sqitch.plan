@@ -1,0 +1,5 @@
+%syntax-version=1.0.0
+%project=viroverse-public
+%uri=https://github.com/MullinsLab/viroverse
+
+verify-starting-schema 2019-01-23T18:45:50Z vagrant <vagrant@silby-dev-scratch># Verify the starting point schema for public sqitch migrations
