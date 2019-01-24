@@ -1,0 +1,92 @@
+<div class="row">
+  <div class="col-sm-4">
+    <freeform-input
+      placeholder="Sequence, PCR, or sample name contains…">
+    </freeform-input>
+  </div>
+
+  <div class="col-sm-7 search-actions">
+    <clear-search-button></clear-search-button>
+
+    <button class="btn btn-default"
+      ng-disabled="!search.hasQuery"
+      modal-on-click="'/static/partials/sequence/download-modal.html'">
+
+      <span class="glyphicon glyphicon-save"></span>
+      Download results
+    </button>
+    <input ng-if="search.hasQuery"
+      form="sequence-downloader-modal"
+      type="hidden"
+      name="seq_ids"
+      value="{{ search.result.ids.join(',') }}">
+
+    <share-button></share-button>
+  </div>
+</div>
+
+<div class="search-facets row" ng-if="search.hasFacets">
+  <div class="facet-col">
+    <facet-widget name="cohort"></facet-widget>
+  </div>
+
+  <div class="facet-col">
+    <facet-widget name="tissue_type"></facet-widget>
+  </div>
+
+  <div class="facet-col facet-col-thin">
+    <facet-widget name="na_type"></facet-widget>
+    <facet-widget name="type"></facet-widget>
+  </div>
+
+  <div class="facet-col">
+    <facet-widget name="scientist"></facet-widget>
+  </div>
+
+  <div class="facet-col facet-col-thin">
+    <facet-widget name="region"></facet-widget>
+  </div>
+
+  <div class="clearfix"></div>
+</div>
+
+<div ng-if="search.result.$resolved" class="search-results">
+  <div class="row">
+    <div class="col-sm-9">
+      <p>
+        <result-summary noun="sequence"></result-summary>
+      </p>
+    </div>
+    <div class="col-sm-3 pager-col">
+      <result-pager></result-pager>
+    </div>
+  </div>
+  <table ng-if="search.result.rows.length" class="table table-striped table-condensed">
+    <thead>
+      <tr>
+        <th class="accession">#</th>
+        <th>Name</th>
+        <th>Scientist</th>
+        <th>NA</th>
+        <th>Type</th>
+        <th ng-if="search.isRegionSelected()">Matching<br>Regions</th>
+        <th>Entered</th>
+        <th>Sample Name</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="sequence in search.result.rows track by sequence.accession">
+        <td class="accession"><a vv-href="/sequence/{{ sequence.accession }}">{{ sequence.accession }}</a></td>
+        <td><a vv-href="/sequence/{{ sequence.accession }}">{{ sequence.name }}</a></td>
+        <td>{{ sequence.scientist }}</td>
+        <td>{{ sequence.na_type }}</td>
+        <td>{{ sequence.type }}</td>
+        <td ng-if="search.isRegionSelected()">
+          {{ sequence.regions | pick: search.isRegionSelected | join: ' ' }}
+        </td>
+        <td>{{ sequence.entered_date }}</td>
+        <td>{{ sequence.sample_name }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

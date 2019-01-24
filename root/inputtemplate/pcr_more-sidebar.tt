@@ -1,0 +1,14 @@
+        <h2>Selected PCR products</h2>
+[% FOREACH pcr_i IN pcr_more %]
+    <a onClick='sidebar_remove("pcr_more","[%- pcr_i.get('pcr_product_id') -%]")' class='clk' name='remove'>del</a> [%- pcr_i.to_string %] <strong>[% pcr_i.name -%]</strong><br />
+[% END %]
+
+[%- IF pcr_more -%]
+    <a href='#' onClick='return clear_pcr_more_sidebar()'>clear all</a> <br> 
+    <br>
+    <input type='button' onClick='location.href="[%- uri_base -%]input/PCR"' value='PCR'>
+    <input type='button' onClick='location.href="[%- uri_base -%]input/pcr/reamp/"' value='reamp'>
+    <input type='button' onClick='location.href="[%- uri_base -%]input/pcr/pool/"' value='pool'>
+    <input type='button' onClick='location.href="[%- uri_base -%]input/clone"' value='clone'>
+    <input type='button' onClick='location.href="[%- uri_base -%]input/sequence/by_products"' value='sequence'>
+[%- END -%]

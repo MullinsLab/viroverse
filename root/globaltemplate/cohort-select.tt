@@ -1,0 +1,8 @@
+<span class="formw">
+    <select name="cohort_id" id="cohort" >
+        <option value="" [%- IF selected_cohort; ''; ELSE; 'SELECTED="selected"' ; END-%]>Choose one</option> 
+        [% FOREACH cohort IN cohorts.keys.sort %]
+                <option value="[%- cohorts.$cohort.cohort_id -%]" [%- IF cohorts.$cohort.cohort_id == selected_cohort; 'SELECTED="selected"'; ELSE; '' ; END -%]>[%- cohorts.$cohort.show_name -%]</option>
+        [% END %]
+        </select> 
+</span> 

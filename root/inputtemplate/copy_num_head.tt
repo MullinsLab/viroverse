@@ -1,0 +1,104 @@
+<script type="text/javascript" >
+var q_pcrs = new Array();
+[% FOREACH q_grp IN quality.keys %]
+    q_pcrs['[% q_grp%]'] = new Array();
+    q_pcrs['[% q_grp%]']['pcrs'] = new Array();
+    [% FOREACH pcr IN  quality.$q_grp.pcrs %]
+        q_pcrs['[% q_grp%]'].pcrs.push([% pcr.pcr_product_id %]);
+    [% END %]
+    q_pcrs['[% q_grp%]']['dils'] = new Array();
+    [% FOREACH dil IN  quality.$q_grp.q.dils %]
+        q_pcrs['[% q_grp%]'].dils.push([% dil %]);
+    [% END %]
+    q_pcrs['[% q_grp%]']['sum_pcr'] = new Array(); //will use these later but might as well declare;
+    q_pcrs['[% q_grp%]']['sum_pos'] = new Array();
+[% END %];
+
+
+function show_qual_rows(q_group){
+    var pcr_tables = document.getElementsByClassName('gel_label_table');
+    for(var ii = 0 ; ii < pcr_tables.length ; ii++){
+    var pcr_table = pcr_tables.item(ii)
+    for(var i = 0 ; i < pcr_table.rows.length ; i++){
+        pcr_table.rows[i].style.backgroundColor = "";
+        for(var iii = 0 ; iii < q_pcrs[q_group].pcrs.length ; iii++){
+        var foo = pcr_table.rows[i].id;
+        var bar = q_pcrs[q_group].pcrs[iii];
+        pcr_table.rows[i].className = "";
+        if(pcr_table.rows[i].getAttribute('data-pcr_id') == q_pcrs[q_group].pcrs[iii]){
+            //pcr_table.rows[i].style.backgroundColor = "#DBE072"; baby puke yellow
+            //pcr_table.rows[i].style.backgroundColor = "#E0E0E0";
+            //pcr_table.rows[i].style.backgroundColor = "#1f669b";
+            pcr_table.rows[i].style.backgroundColor = "#B3E3FF";
+            }
+        }
+    }
+    }
+}
+
+function fetchQkeyFromPCR(pcr_id){
+    for(var key in q_pcrs){
+    if(q_pcrs[key].pcrs){
+        for(pcr in q_pcrs[key].pcrs){
+        if(q_pcrs[key].pcrs[pcr] == pcr_id){
+            return key;
+        }
+        }
+    }
+    }
+}
+
+
+function calcQsub(){
+    for(var grp in q_pcrs){
+    if(q_pcrs[grp].sum_pcr){
+        q_pcrs[grp].sum_pcr = new Array();
+        q_pcrs[grp].sum_pos = new Array();
+    }
+    }
+    var pcr_tables = document.getElementsByClassName('gel_label_table');
+    for(var ii = 0 ; ii < pcr_tables.length ; ii++){
+        var frmTable = pcr_tables.item(ii);
+        for(var rowIdx = 0 ; rowIdx < frmTable.rows.length ; rowIdx++){
+        var row = frmTable.rows[rowIdx];
+        var dil = row.getAttribute('data-dil');
+        if(!dil || dil==""){//row not a pcr product
+        continue;
+        }
+        var pcr_id = row.getAttribute('data-pcr_id');
+        var isPos = document.getElementById(row.id + '_pos');
+        var isNeg = document.getElementById(row.id + '_neg');
+        if(isPos && isNeg && !isNeg.checked && !isPos.checked){//if pos neg not selected nothing to do
+        continue;
+        }
+        var qKey = fetchQkeyFromPCR(pcr_id);
+        if(q_pcrs[qKey].sum_pos[dil] == undefined){
+            q_pcrs[qKey].sum_pos[dil] = 0;
+        }
+        if (q_pcrs[qKey].sum_pcr[dil] == undefined){
+            q_pcrs[qKey].sum_pcr[dil] = 0;
+        }
+
+        q_pcrs[qKey].sum_pcr[dil]++;
+        if(isPos.checked){
+        q_pcrs[qKey].sum_pos[dil]++;
+        }
+   
+    }
+    }
+    for(var grp in q_pcrs){
+    var table = document.getElementById('qsu_' + grp);
+    if (!table){//if prototype function rather than key
+        continue;
+    }
+    for(var i = 0 ; i < q_pcrs[grp].dils.length ; i++){
+        var dil = q_pcrs[grp].dils[i];
+        var idx = i + 1;
+        table.rows[1].cells[idx].innerHTML = q_pcrs[grp].sum_pcr[dil] == undefined?0:q_pcrs[grp].sum_pcr[dil];
+        table.rows[2].cells[idx].innerHTML = q_pcrs[grp].sum_pos[dil] == undefined?0:q_pcrs[grp].sum_pos[dil];
+    }
+    }
+}
+
+
+</script>

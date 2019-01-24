@@ -1,0 +1,17 @@
+.best-sidebar-ever#sidebar {
+    background-color: #f5f5f5;
+    padding: 17px;
+    border: 3px solid #eee;
+}
+
+.best-sidebar-ever > h2 {
+    margin-top: 0;
+}
+
+.best-sidebar-ever h2 {
+    font-size: 18px;
+}
+
+.best-sidebar-ever h3 {
+    font-size: 14px;
+}

@@ -1,0 +1,53 @@
+[%- es_base = c.uri_for('/search/epitopedb_search/peptide/') -%]
+    <div>
+    <table id='sampleSel'>
+    <tr>
+        <th>Peptide</th><th>Sequence</th><th>HXB2 Position</th><th>Test Patient</th>
+
+        <th><abbr title="Maximum of Corrected average number of spot-forming cells in multiple experiments">Corrected SFC</abbr></th>
+        <th><abbr title="Titration assay result">EC50</abbr></th>
+        <th><abbr title="HLA restriction assay result">HLA Assay</abbr></th>
+        <th><abbr title="HLA restriction(s) for the particular peptide">HLA Restriction</abbr></th>
+        <th><abbr title="Number of mutants for given peptide">Number of Mutants</abbr></th>
+    [% IF (search_flag == "Epitope") %]
+        <th>Epitope Source</th>
+    [% END %]
+
+    </tr>
+
+        [% SET i = 0 %]
+        [%- FOREACH result IN results -%]
+            [% i = i + 1 %]
+            [% IF (i % 2 == 0) %]
+                <tr bgcolor='#CCCCFF'>
+            [% ELSE %]
+                <tr bgcolor='#FFFFFF'>
+            [% END %]
+
+        <td>[%- result.peptide -%]</td>
+        <td>[%- result.sequence -%]</td>
+        <td>[%- result.position_hxb2_start -%] -- [%- result.position_hxb2_end -%]</td>
+        <td>[%- result.patient -%]</td>
+        <td><a href="[%- es_base -%]elispot?pept_id=[%- result.pept_id -%]&patient_id=[%- result.patient_id -%]">[%- result.max_corravg -%]</a></td>
+        <td><a href="[%- es_base -%]titration?pept_id=[%- result.pept_id -%]&patient_id=[%- result.patient_id -%]">[%- result.min_ec50 -%]</a></td>
+        <td><a href="[%- es_base -%]hla_restriction?pept_id=[%- result.pept_id -%]&patient_id=[%- result.patient_id -%]">[%- result.hla_response -%]</a></td>
+        <td>[%- result.hla -%]</td>
+        <td><a href="[%- es_base -%]mutant?pept_id=[%- result.pept_id -%]&patient_id=[%- result.patient_id -%]">[%- result.mutant -%]</a></td>
+        [% IF (search_flag == "Epitope") %]
+            [% IF (result.source == "LANL") %]
+                <td>
+                    <a href="http://www.hiv.lanl.gov/content/immunology/ctl_search?epitope=[%- result.sequence -%]&results=Search" target='_blank'
+                       title="[% result.hla ? 'HLA: ' _ result.hla : '' %]">
+                        [%- result.source -%]
+                    </a>
+                </td>
+            [% ELSE %]
+                <td>[%- result.source -%]</td>
+            [% END %]
+        [% END %]
+
+        </tr>
+        [%- END -%]
+
+    </table>
+    </div>

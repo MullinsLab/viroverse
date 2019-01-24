@@ -1,0 +1,14 @@
+<!--
+XXX TODO: This could (and should) be done entirely in JS with a JS template
+and /enum/tissue.
+-trs, 29 Sept 2015
+-->
+<div class='filter addl_filter'>
+    <label>Tissue</label>
+    <select name='tissue_type_id' class='formw' id='tissue_type_id'>
+        <option value=''></option>
+    [%- FOREACH t=tissues.values.sort('name') -%]
+        <option value='[%- t.tissue_type_id -%]'>[%- t.name -%]</option>
+    [%- END -%]
+    </select>
+</div>

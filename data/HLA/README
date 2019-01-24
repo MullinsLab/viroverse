@@ -1,0 +1,21 @@
+This directory contains code and data for generating SQL to load the standard
+HLA genotypes and ambiguity groups into Viroverse's schema (the
+`viroserve.hla_genotypes` table).
+
+The Makefile controls all execution and is responsible for downloading the
+necessary data files from hla.alleles.org's repository.
+
+The generate-sql script, run by make, reads these files and outputs three SQL
+files: a deploy script, a revert script, and a verify script.  These are
+designed to be copied into new sqitch changes intended to update Viroverse's
+HLA table.  Since HLA types are referred to by several other tables, the output
+files are incremental updates to the `hla_genotypes` table based on its current
+contents (at the time generate-sql is run).
+
+To support new database bootstrapping, the script also produces a set of
+"everything" files which ignores what's the in the current database and
+produces SQL that assumes the `hla_genotypes` table is empty.
+
+All of the generated SQL files are excluded from version control since they are
+intended only to be intermediate files.  Their contents are intended to be
+checked into version control in other places, like sqitch changes.

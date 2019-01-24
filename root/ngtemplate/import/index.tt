@@ -1,0 +1,108 @@
+[%- page = {
+        title       = "Import data"
+        breadcrumbs = [
+          [ 'Admin', c.uri_for_action('/admin/index') ],
+          [ 'Import' ]
+        ]
+    }
+-%]
+<% PROCESS 'macros.tt' %>
+<% BLOCK import_types_list %>
+  <% FOR type IN types %>
+    <a href="<% c.uri_for_action('/import/new_job', [ type.name ]) %>"
+       class="list-group-item">
+      <span class="glyphicon glyphicon-chevron-right"></span>
+      <%~ type.label ~%>
+    </a>
+  <% END %>
+<% END %>
+
+<div class="row">
+    <div class="col-sm-12">
+        <h1 class="page-header">Import data</h1>
+
+        <h3>What do you want to import?</h3>
+
+        <div class="row">
+          <div class="col-sm-4">
+            <div class="panel panel-default">
+              <div class="panel-heading">Samples</div>
+              <div class="list-group import-types">
+                <% PROCESS import_types_list
+                     types = import_types.grep(->{ this.primary_noun == 'sample' }) %>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-4">
+            <div class="panel panel-default">
+              <div class="panel-heading">Sequences</div>
+              <div class="list-group import-types">
+                <% PROCESS import_types_list
+                     types = import_types.grep(->{ this.primary_noun == 'sequence' }) %>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-4">
+            <div class="panel panel-default">
+              <div class="panel-heading">Other things</div>
+              <div class="list-group import-types">
+                <% PROCESS import_types_list
+                     types = import_types.grep(->{ this.primary_noun != 'sample' AND this.primary_noun != 'sequence' }) %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h3>Previous Import Jobs</h3>
+        [% IF showing_all %]
+            <p>Showing all jobs. You can
+            <a href="[% c.uri_for_action('/import/index') %]">hide older jobs that never completed</a>.</p>
+        [% ELSE %]
+            <p>Hiding jobs created over a week ago that never ran to completion. In
+            most cases these jobs are permanently in an error state due to the
+            input file format. You can still <a href="[% c.uri_for_action('/import/index', [], { all => 1 }) %]">show all jobs</a>.</p>
+        [% END %]
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="text-right">ID</th>
+              <th>Type</th>
+              <th>Created</th>
+              <th>Executed</th>
+              <th>Uploaded By</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            [% FOR previous_job IN previous_jobs %]
+              <tr>
+                <td class="text-right"><a href="[% c.uri_for_action('/import/show', [ previous_job.import_job_id ]) %]">[% previous_job.import_job_id %]</a></td>
+                <td class="no-wrap">[% previous_job.type.label %]</td>
+                <td class="no-wrap">[% previous_job.time_created.strftime("%Y-%m-%d") %]</td>
+                <td class="no-wrap">
+                  [% IF defined(previous_job.time_executed) %]
+                     [% previous_job.time_executed.strftime("%Y-%m-%d") %]
+                  [% ELSE %]
+                     <i>Not yet executed</i>
+                  [% END %]
+                </td>
+                <td class="no-wrap">[% previous_job.scientist.name %]</td>
+                <td>
+                  <span class="pull-left">
+                    <a href="[% c.uri_for_action('/import/show', [ previous_job.import_job_id ]) %]">
+                      [%~ previous_job.data_file_name ~%]
+                    </a>
+                    <% IF defined(previous_job.note) %> — <% END %>
+                  </span>
+                  [% IF defined(previous_job.note) %]
+                    [% previous_job.note | markdown %]
+                  [% END %]
+                </td>
+              </tr>
+            [% END %]
+          </tbody>
+       </table>
+    </div>
+</div>

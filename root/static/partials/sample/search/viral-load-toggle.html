@@ -1,0 +1,16 @@
+<div ng-class="{ 'btn-group-vertical': orientation === 'vertical', 'btn-group': orientation !== 'vertical' }">
+  <label class="btn btn-default"
+    ng-model="search.queryFieldAccessor('has_quantifiable_viral_load')"
+    ng-model-options="{ getterSetter: true }"
+    uncheckable
+    uib-btn-radio="'1'">
+    Detectable
+  </label>
+  <label class="btn btn-default"
+    ng-model="search.queryFieldAccessor('has_quantifiable_viral_load')"
+    ng-model-options="{ getterSetter: true }"
+    uncheckable
+    uib-btn-radio="'0'">
+    Undetectable
+  </label>
+</div>

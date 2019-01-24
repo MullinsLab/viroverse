@@ -1,0 +1,11 @@
+<form class="form" ng-submit="search.run()">
+  <div class="form-group">
+    <label for="search-freeform" class="control-label sr-only">{{ placeholder }}</label>
+    <input id="search-freeform"
+      ng-model="search.queryFieldAccessor('freeform')"
+      ng-model-options="{ getterSetter: true, debounce: { default: 400, blur: 0 } }"
+      placeholder="{{ placeholder }}"
+      type="text"
+      class="form-control">
+  </div>
+</form>

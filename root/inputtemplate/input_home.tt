@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Viroverse: Input</title>
+[% INCLUDE 'in-head.tt' %]
+</head>
+<body>
+[% INCLUDE 'body-top.tt' %]
+
+Start your PCR and sequencing input using the menu above, or select another
+data input workflow:
+
+<h3><a href='[%- uri_base -%]input/extraction'>PCR and Sequencing</a></h3>
+[% IF features.epitopedb %]
+<h3><a href='[%- uri_base -%]input/epitopedb/peptide'>EpitopeDB</a></h3>
+[% END %]
+
+[% INCLUDE 'body-bottom.tt' %]
+[% INCLUDE 'body-end.tt' %]
+
+</body>
+</html>
+
+

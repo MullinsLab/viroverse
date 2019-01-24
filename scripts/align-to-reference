@@ -1,0 +1,39 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use Viroverse::Logger -script => qw< :log >;
+use Viroverse::Model::sequence::dna;
+use Getopt::Long::Descriptive;
+
+my ($opt, $usage) = describe_options(
+    '%c %o [sequence ids]',
+    ['Queue specific sequences or unaligned sequences for pairwise glocal alignment'],
+    ['to HXB2 with needle.'],
+    [],
+    ['unaligned', 'queue unaligned sequences'],
+    ['limit=n',   'only queue newest N unaligned sequences (default: all, or 0)'],
+    ['help',      'print usage message and exit' ],
+);
+print($usage->text), exit
+    if $opt->help or not (@ARGV or $opt->unaligned);
+
+my @seqs_to_align = map { Viroverse::Model::sequence::dna->retrieve($_) } @ARGV;
+
+if ($opt->unaligned) {
+    log_info {[ "Fetching %s unaligned sequences", $opt->limit ? $opt->limit : 'all' ]};
+    push @seqs_to_align, $opt->limit
+        ? Viroverse::Model::sequence::dna->search_unaligned_limit($opt->limit)
+        : Viroverse::Model::sequence::dna->search_unaligned;
+}
+
+log_info {[
+    "Queueing %d sequence%s for needle alignment to reference",
+    scalar @seqs_to_align, (@seqs_to_align == 1 ? "" : "s")
+]};
+
+for my $seq (@seqs_to_align) {
+    log_debug {[ "Queueing #%s %s", $seq->idrev, $seq->name ]};
+    my ($job, $msg) = $seq->queue_reference_align;
+    die "Couldn't put job into queue: $msg"
+        unless $job;
+}

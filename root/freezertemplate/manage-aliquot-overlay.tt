@@ -1,0 +1,18 @@
+<!-- needs to be wrapped in <div id="yui-panels" style="display: none" >-->
+    <div id="edit_vial" class="overlay" >
+        <div class="hd">Manage Aliquot</div>
+        <div class="bd" >
+            <form id="updateVial">
+                <label for="scientist_name_ac" >Assign To</label>[%- INCLUDE 'scientist-select.tt' -%]<br />
+                <label for="orphaned" >Lost On</label><input id="orphaned" name="orphaned" type="text" value="" size="10" /><br />
+                <label for="num_thaws" >Volume</label><input id="vol" name="vol" type="text" value="" size="5" /><span id="units"></span><br />
+                <label for="vol" >Number Thaws</label><input id="num_thaws" name="num_thaws" type="text" size="5" value="" /><br />
+                
+                <div id="rem_ctr"><label class="inline" for="remove"><input id="remove" name="remove" type="checkbox" value="remove" />Remove From Freezer</label></div>
+                <div id="add_ctr" style="display: none"><label class="inline" for="add_to_f"><input id="add_to_f" name="add_to_f" type="checkbox" value="add" />Place In Freezer</label></div>
+                <input type="hidden" name="keys" id="keys" value="" />
+            </form>
+                </div>
+        <div class="ft"><button onclick="updateVials()">Save</button> <button id="cancelVialEdit">Cancel</button></div>
+    </div>
+    <div id="aliqCalContainer" style="z-index: 5;"></div> 

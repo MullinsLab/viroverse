@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Unauthorized</title>
+</head>
+
+<h1>Unauthorized</h1>
+
+<p>[% error_msg %]</p>
+
+<p>If you feel you have reached this in error please contact the <a href="mailto:[%- help_email -%]">[%- help_name -%]</a>.
+
+</body>
+</html>

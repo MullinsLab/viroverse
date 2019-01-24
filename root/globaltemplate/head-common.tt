@@ -1,0 +1,21 @@
+<%- USE JSON.Escape( utf8 => 1, convert_blessed => 1 ) ~%>
+
+<meta http-equiv="Content-Language" content="en_US">
+<meta name="format-detection" content="telephone=no">
+<link href="<% uri_base %>/static/images/hiv-small-[% debug ? 'red' : 'blue' %].png" rel="icon" type="image/png" />
+
+<link href="[%- uri_base -%]static/stylesheets/vvcommon.css" rel="Stylesheet" type="text/css" />
+<script type='text/javascript' language='javascript' src='[%- uri_base -%]static/javascripts/util.js'></script>
+<script src="<% uri_base %>/static/javascripts/vendor/d3.min.js" charset="utf-8"></script>
+<script src="<% uri_base %>/static/javascripts/vendor/datalib.min.js" charset="utf-8"></script>
+<script src="<% uri_base %>/static/javascripts/vendor/vega.min.js" charset="utf-8"></script>
+<script src="<% uri_base %>/static/javascripts/vendor/vega-embed.min.js" charset="utf-8"></script>
+<script src="<% uri_base %>/static/javascripts/vendor/clipboard.min.js" charset="utf-8"></script>
+<script type='text/javascript' language='javascript'>
+    var viroverse = new Object;
+    viroverse.url_base = "[%- uri_base -%]";
+    viroverse.api_base = "[%- uri_base -%]api";
+
+    viroverse.scientist = <% scientist.json | none %>;
+</script>
+<% INCLUDE "angular-scripts.tt" %>

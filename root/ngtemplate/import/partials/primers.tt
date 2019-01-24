@@ -1,0 +1,41 @@
+<div class="row">
+  <div class="col-md-12">
+    [% INCLUDE select_column_key_help %]
+    <p>
+      The organism targeted by the primers is set for the whole import job
+      under “Job options”.
+    </p>
+  </div>
+  <div class="col-md-6">
+    <h2>Assign data columns</h2>
+    <%
+      fields = [
+        { key: 'name',        label: 'Primer name',           optional: 0 },
+        { key: 'sequence',    label: 'Sequence',              optional: 0 },
+        { key: 'orientation', label: 'Orientation',           optional: 0 },
+        { key: 'lab_common',  label: 'Commonly used in lab?', optional: 1 },
+        { key: 'hxb2_start',  label: 'HXB2 start position',   optional: 1 },
+        { key: 'hxb2_end',    label: 'HXB2 end position',     optional: 1 },
+        { key: 'notes',       label: 'Notes',                 optional: 1 },
+      ]
+    %>
+    <% FOR field IN fields %>
+      <div class="form-group">
+        <label for="<% field.key %>_key"><% field.label %></label>
+        <% INCLUDE select_column_key key = field.key, optional = field.optional %>
+        <% IF field.optional %>
+          <span id="<% field.key %>_hint" class="help-block">
+            Optional.
+          </span>
+        <% END %>
+      </div>
+    <% END %>
+  </div>
+  <div class="col-md-6">
+    <h2>Job options</h2>
+    <div class="form-group">
+      <label for="organism">Organism</label>
+      [% select_from_virodb("organism", "Organism") | none %]
+    </div>
+  </div>
+</div>

@@ -1,0 +1,7 @@
+<ul uib-pager
+    align="false"
+    total-items="search.result.total"
+    items-per-page="search.query.rows"
+    ng-model="search.query.page"
+    ng-if="search.result.total > search.query.rows"
+    ng-change="search.run()"></ul>

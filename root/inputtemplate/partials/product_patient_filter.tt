@@ -1,0 +1,18 @@
+<!--
+XXX TODO: This could (and should) be done entirely in JS with a JS template
+and /enum/cohort.
+-trs, 13 Jan 2014
+-->
+<div class='filter addl_filter'>
+    <label>Cohort</label>
+    [% INCLUDE 'cohort-select.tt' %]
+</div>
+
+<div class="filter addl_filter" id="patientSpan">
+    <label>Subject ID</label>
+    <input id="ext_pat_id" class='auto' name="ext_pat_id" size="8">
+    <div id='patient_name_div' class='y_auto'></div>
+    <script type="text/javascript">
+        registerPatientInput('ext_pat_id', 'patient_name_div', 'cohort');
+    </script>
+</div>

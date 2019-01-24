@@ -1,0 +1,24 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <a href="[% c.uri_for_action('/sample/derivations', [ sample.id ]) %]">Derivations</a>
+        </h3>
+    </div>
+    <div class="list-group">
+        [% FOR derivation IN $(sample.child_derivations.order_by("!date_completed")).rows(5) %]
+        [% any = 1 %]
+        <a class="list-group-item" href="[% c.uri_for_action('/derivation/show', [ derivation.id ] ) %]"
+            >[% derivation.protocol.name %] on [% derivation.date_completed.ymd %]</a>
+        [% END %]
+        [% remaining = $(sample.child_derivations).count - 5 %]
+        <a class="list-group-item" href="[% c.uri_for_action('/sample/derivations', [ sample.id ]) %]">
+            [%~ IF remaining > 0 ~%]
+            …and [% remaining %] more
+            [%~ ELSIF any ~%]
+            Manage derivations
+            [%~ ELSE ~%]
+            Add a derivation
+            [%~ END ~%]
+        </a>
+    </div>
+</div>

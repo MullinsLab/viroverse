@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse: gel</title>
+
+[% USE Dumper %]
+[% USE date(format=date_format) %]
+[% INCLUDE 'in-head.tt' %]
+
+    <link href="[%- uri_base -%]static/stylesheets/input_tools.css" rel="stylesheet" type="text/css" />
+
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/sidebar-collect.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/yahoo-dom-event.js" ></script> 
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/dragdrop-min.js" ></script> 
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/animation-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/drag.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/gel.js"></script>
+    <script type="text/javascript" s src="[%- uri_base -%]/static/javascripts/drag_multiRow.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/drag_util.js"></script>
+    [% IF quality %]
+        [% INCLUDE 'copy_num_head.tt' %]
+    [% END %]
+
+    <script type="text/javascript">
+
+    YAHOO.util.Event.onDOMReady(setUP);
+        
+        var mddt;
+        function setUP(){
+            mddt = new multiDDTable("lanes", "lane-name", {keep_in_table_msg:"Lanes already saved to a gel must remain with that gel"});
+            initOverlays();
+        }
+
+    var drag2gel = false;
+    function enableLane2GelDD(ctr_id){
+        var ctr = document.getElementById(ctr_id);
+        var spans = ctr.getElementsByTagName('span');
+        for(i = 0 ; i < spans.length ; i++){
+            spans.item(i).style.display = "inline";
+        }
+        var gels = document.getElementsByClassName('gel-img');
+
+        for(i = 0 ; i < gels.length ; i++){
+            gels.item(i).removeAttribute('width');
+            gels.item(i).ondblclick = "";
+        }
+        make_draggable(ctr_id);
+        make_img_targets(ctr_id);
+        drag2gel = true;
+    }
+
+    function initOverlays(){
+        YAHOO.namespace("label_gel");
+
+        YAHOO.label_gel.addLane = new YAHOO.widget.Overlay("newLane", { visible:false, width:"200px" , zIndex: 20} );
+        YAHOO.label_gel.addLane.render(document.body);
+
+
+        YAHOO.label_gel.changeStart = new YAHOO.widget.Overlay("changeStart", { visible:false, width:"300px" , zIndex: 20} );
+        YAHOO.label_gel.changeStart.render(document.body);
+
+        YAHOO.util.Event.addListener("cancelNumChange", "click", YAHOO.label_gel.changeStart.hide, YAHOO.label_gel.changeStart, true);
+
+
+    }
+
+    function showAddLane(tbody_id){
+        document.getElementById('addTo').value = tbody_id;
+        YAHOO.label_gel.addLane.cfg.setProperty("context",[tbody_id,"tl","bl"]);
+        YAHOO.label_gel.addLane.show();
+    }
+
+    function showChangeStart(tbody_id){
+        document.getElementById('changeTbod').value = tbody_id;
+        YAHOO.label_gel.changeStart.cfg.setProperty("context",[tbody_id,"tl","bl"]);
+        YAHOO.label_gel.changeStart.show();
+    }
+
+    function addLane() {
+        var repeat = parseInt(document.getElementById('addLaneRepeat').value || 1, 10);
+        while (repeat-- > 0) {
+            addOneLane.apply(this, arguments);
+        }
+        closeAddLanes();
+    }
+
+    function addOneLane(mddTable){
+        var row = document.createElement('tr');
+        var ctr_id = document.getElementById('addTo').value
+                YAHOO.util.Dom.generateId(row);
+        row.id = row.id.replace(/-/, ""); //remove hyphens from YUI generated ID;
+        var lane = row.insertCell(0);
+        var laneDisp = !drag2gel?'style="display:none"':'';
+                var count = document.getElementById(ctr_id).rows.length + 1;
+        lane.innerHTML = '<div>' + count + '</div>' +
+                '<span id="' + count + '-special_label-' + row.id + '"  ' + laneDisp + ' />' + count + '</span>' +
+                '<input type="hidden" name="' + count + '-special_label-' + row.id + '-wellnum"  value="' + count + '"></td>';
+        var name = row.insertCell(1);
+        var nameSel = document.getElementById('lane_types');
+        var laneName = nameSel.value=="other"?document.getElementById('other_lane').value:nameSel.value;
+        name.innerHTML = laneName + '<input type="hidden" name="' + count + '-special_label-' + row.id + '-label_name" -%]" value="' + laneName + '" />';
+                name.className = mddTable.handle_className;
+        var pos = row.insertCell(2);
+        pos.colSpan = 2;
+        if(nameSel.options[nameSel.selectedIndex].getAttribute('data-haspos') == "1"){
+            pos.innerHTML = '<input type="radio" name="' + count + '-special_label-' + row.id + '-pos" id="' + row.id + '_neg" value="neg" />Neg' +
+                    '<input type="radio" name="' + count + '-special_label-' + row.id + '-pos" id="' + row.id + '_pos" value="pos" />Pos' +
+                    ' <a class="clk" onclick="clearAll(\'gel_form\', \'' + count + '-special_label-' + row.id + '-pos\');">Clear</a>';
+        }else{
+            pos.innerHTML = '<input type="hidden" name="' + count + '-special_label-' + row.id + '-pos" value="ind" />';
+        }
+        var rm = row.insertCell(3);
+        rm.innerHTML = '<a class="clk" onclick="removeRow(this);">Remove</a>';
+        mddTable.addRow(row, ctr_id);
+        if (drag2gel){// if dra2gel turned on then add label to list
+            make_draggable('labels')
+        }
+        renumberLanes(document.getElementById(ctr_id ));
+
+    }
+    function checkOther(sel){
+        var other_box = document.getElementById('other_lane');
+        if(sel.value == "other"){
+            other_box.style.display = "block";
+            other_box.focus();
+            other_box.select();
+            //document.getElementById('other_ctr').style.display = "block";
+        }else{
+            other_box.style.display = "none";
+            //document.getElementById('other_ctr').style.display = "block";
+        }
+    }
+
+    function closeAddLanes(){
+        document.getElementById('other_lane').style.display = "none";
+        document.getElementById('lane_types').selectedIndex = -1;
+        YAHOO.label_gel.addLane.hide();
+    }
+    function renumberLanes(tbody){
+        var gel_id = tbody.id.split("_")[1];
+        var start = parseInt(document.getElementById(gel_id + "_start_num").value);
+        var ninety_six_well = document.getElementById(gel_id + '_96well');
+
+        for(var i = 0 ; i < tbody.rows.length ; i++){
+            var cell = tbody.rows[i].cells[0];
+            var label = ninety_six_well.value==1 ? intTo96Well(start) : start;
+            for(var item in cell.childNodes){
+                var node = cell.childNodes.item(item);
+                if (node.tagName && (node.tagName.toLowerCase() == 'div' ||  node.tagName.toLowerCase() == 'span')){
+                    node.innerHTML = label;
+                }else if(node.tagName && node.tagName.toLowerCase() == 'input'){
+                    node.value = start;
+                }
+            }
+            var cell2 = tbody.rows[i].querySelector("td.extra-lane-number");
+            if (cell2 != null) {
+                cell2.innerHTML = label;
+            }
+            start = start + 1;
+        }
+    }
+
+    function getWellLocation(well){
+        alphaLabel= set96wellLabelArray();
+        for (var i = 0 ; i < alphaLabel.length ; i++){
+            if(start == alphaLabel[i]){
+                return i;
+            }
+        }
+        return -1;
+    }
+    function removeRow(clicked){
+        var row = clicked.parentNode.parentNode;
+        var tbody = row.parentNode;
+        //if(row.id.search(/yui/i) > -1 || confirm("Really Delete Row\n" + row.cells[1].innerHTML +"\nThis can not be undone!")){
+            tbody.deleteRow(row.sectionRowIndex);
+            renumberLanes(tbody);
+        //}
+    }
+
+    function toggleChangeStart(which){
+        if(which == "agarose"){
+            document.getElementById("agarose").style.display = "block";
+            document.getElementById("96well").style.display = "none";
+        }else if (which == "96well"){
+            document.getElementById("agarose").style.display = "none";
+            document.getElementById("96well").style.display = "block";
+        }
+    }
+
+    function changeStartNumber(){
+        var tbod_id = document.getElementById('changeTbod').value;
+        var gel_id = tbod_id.split("_")[1];
+        var tbody = document.getElementById(tbod_id);
+        var startNum = document.getElementById(gel_id + '_start_num');
+        var ninety_six_well = document.getElementById(gel_id + '_96well');
+
+        var errorDiv = document.getElementById('numberingError')
+        errorDiv.innerHTML = "";
+        errorDiv.style.display = 'none';
+        if(document.getElementById('numTypeAgg').checked){
+            var start = document.getElementById('agarose_num').value;
+            if(isNaN(start)){
+                errorDiv.style.display = 'block';
+                errorDiv.innerHTML = start + " is not a number.  <br/>To use 96 well plate alpha numeric labels select the 96 Well Numbering radio button";
+                return;
+            }
+            startNum.value = start;
+            ninety_six_well.value = "0";
+        }else if(document.getElementById('numType96').checked){
+            var alpha_numeric = document.getElementById('alpha').value + document.getElementById('numeric').value;
+            var start = ninetySixWell2Int(alpha_numeric);
+            if(tbody.rows.length > 96 - start){
+                errorDiv.style.display = 'block';
+                errorDiv.innerHTML = "Starting at " + alpha_numeric + " will put the numbering past the H12 maximum!";
+                return;
+            }
+            startNum.value = start;
+            ninety_six_well.value = "1";
+        }else{
+            return;
+        }
+        renumberLanes(tbody);
+        YAHOO.label_gel.changeStart.hide(); 
+    }
+
+    function subForm(){
+       var loadGif = document.getElementById('loadGif');
+       loadGif.style.display = 'block';
+       var sidebarContents = document.getElementById('sidebar_contents');
+       sidebarContents.style.display = 'none';
+       var frms = document.getElementsByTagName('form');
+       var param_array = new Array;
+       for (var i = 0 ; i < frms.length ; i++){
+            var frm = frms.item(i);
+            var form_get = form2url(frm).replace(/^[^?]*\?/, "");
+            if(form_get.substr(0, 6) == "gel_id"){
+                var key_val = form_get.split("&");
+                var gel_id = key_val.shift().split("=")[1];
+                for (var ii = 0 ; ii < key_val.length ; ii++){
+                    key_val[ii] = gel_id + "-" + key_val[ii];
+                }
+                form_get = key_val.join("&");
+            }
+            param_array.push(form_get);
+       }
+
+       var http = make_xmlhttp();
+       
+       http.open('POST', viroverse.url_base + "/input/attach_gel_labels/" ,true);
+       http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+       http.onreadystatechange = function () {
+             if(http.readyState == 4){
+
+                var response = http.responseText.split(",");
+                if(response[0] == 'OK'){ //if everything OK go where you need to
+                    var jumpto = response[1];
+                    window.location = viroverse.url_base + jumpto;
+                }else{ // report error
+                    var eDiv = document.getElementById('error')
+                    eDiv.innerHTML = http.responseText;
+                    eDiv.style.display = 'block';
+                    loadGif.style.display = 'none';
+                    sidebarContents.style.display = 'block';
+
+                }
+             }
+       }
+       http.send(param_array.join('&'));
+    }
+    </script>
+    <style>
+        div.qual-grps{margin-bottom: 10px;}
+        table.qual_set_up td {text-align: center}
+
+        table.gel_label_table{
+            border-collapse: collapse;
+             position: relative;
+             list-style: none;
+             margin:0;
+             padding:0;
+        }
+        table.gel_label_table tfoot th{
+            text-align: left;
+        }
+        table.gel_label_table td{
+            padding: 2px;
+        }
+       
+        table.gel_label_table tr {
+             margin: 1px;
+             cursor: move;
+             zoom: 1;
+        }
+          
+        table.gel_label_table_alt { 
+             position: relative;
+             width: 200px; 
+             list-style: none;
+             margin:0;
+             padding:0;
+             /*
+                The bottom padding provides the cushion that makes the empty 
+                list targetable.  Alternatively, we could leave the padding 
+                off by default, adding it when we detect that the list is empty.
+             */
+             padding-bottom:20px;
+        }
+          
+        table.gel_label_table_alt tr {
+             margin: 1px;
+             cursor: move; 
+        }
+                    
+        tr.selected td{
+             background-color: #426FD9;
+             color: #FFFFFF;
+        }
+        td.remove {
+            text-align: center;
+            vertical-align: middle;
+        }
+        td.remove a{
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+            color: #1f669b;
+            padding: 2px 6px 2px 6px;
+        }
+          
+        td.remove a:hover{
+            background-color: #1f669b;
+            color: white;
+        }
+        div.gel_ctr{
+            border: 1px solid #1f699b;
+            padding: 4px 2px 4px 2px;
+            margin-bottom: 4px;
+        }
+       #loadGif{
+        display: none;
+        width:500px;
+        height:200px;
+        padding-top:50px;
+        text-align:center;
+        background-color: #EEEEEE;
+      }
+    </style>
+
+</head>
+
+<body [% IF quality %]onload="calcQsub();"[% END %] >
+
+[% INCLUDE 'body-top.tt' %]
+[% INCLUDE 'body-error.tt' %]
+    <h2>Gel Annotation:  Drag and drop rows to reorder them.  (Cmd/Ctrl click to select multiple rows, Shift click to select groups of rows) </h2>
+    Doubleclick on a gel image to expand it to full size.  Doubleclick a second time to shrink it back down
+    <fieldset id='gels'><legend>Gel(s)</legend>
+    [%- counter = 0 -%]
+    [%- FOREACH gel=gels -%]
+    <form id='gel_form_[%- gel.gel_id -%]' method='POST' >
+    <div id="gel_[%- gel.gel_id -%]_ctr" class="gel_ctr">
+        <div  style="float:left; clear:left" >
+            <input type='hidden' name='gel_id' value='[%- gel.gel_id -%]' />
+            <p align='center'>[%- gel.name -%]<br />
+            <img src='[%- "$uri_base/summary/gel_img/${gel.gel_id}" -%]' id='gel_[%- gel.gel_id -%]' class="gel-img"  width="400" ondblclick="resizeGel(this)">
+            </p>
+        </div>
+
+    <table class='gel_label_table' style="float:left; clear:right" >
+        <tr><th colspan="5">[%- gel.name -%]</th></tr>
+        <tr>
+            <th>Lane</th>
+            <th>Name</th>
+            <th>
+                <a class="clk" title="Click to Mark All Lanes Negative" onclick='return mark_all("gel_[%- gel.gel_id -%]_lanes","neg")'>Neg</a> /
+                <a class="clk" title="Click to Mark All Lanes Positive" onclick='return mark_all("gel_[%- gel.gel_id -%]_lanes","pos")'>Pos</a>
+            </th>
+            <th>Nickname</th>
+            <th></th>
+            <th>Lane</th>
+        </tr>
+        <tbody class="lanes" id="gel_[%- gel.gel_id -%]_lanes">
+        [% FOREACH lane IN gel.lanes %]
+            [%- counter = counter + 1 -%]
+            <tr id="[%- "${counter}-${lane.shorthand}-${lane.type_id}" -%]" [%- IF lane.dil_factor.defined  -%]data-dil="[%- lane.dil_factor -%]" data-pcr_id="[%- lane.product_id -%]" [%- END -%]
+                [%- IF lane.shorthand == 'gel_lane' -%] data-keep_in_table="true" [%- END -%] >
+                <td>
+                    <div>[%- lane.print_label -%]</div>
+                    <span style="display: none;" id='[%- "${counter}-${lane.shorthand}-${lane.type_id}-drag_label" -%]'>[%- lane.print_label -%]</span>
+                    <input type='hidden' name='[%- "${counter}-${lane.shorthand}-${lane.type_id}-wellnum" -%]' value='[%- lane.label -%]'>
+                </td>
+                <td class="lane-name" >
+                    [%- lane.name -%]
+                    [%- IF lane.shorthand == 'special_label'-%]
+                    <input type="hidden" name="[%- "${counter}-${lane.shorthand}-${lane.type_id}-label_name" -%]" value="[%- lane.name -%]" />
+                    [%- END -%]
+                </td>
+
+                [%-IF lane.pos_neg == 1 -%]
+                <td>
+                    <input type="radio" name='[%- "${counter}-${lane.shorthand}-${lane.type_id}-pos" -%]' id="[%- "${counter}-${lane.shorthand}-${lane.type_id}" -%]_neg" [%- IF lane.pos == 'Neg' -%] checked="checked" [%- END -%]
+                        [%- IF product.non_product != 1  -%]onchange="calcQsub()"[%- END -%]
+                        value="neg" />Neg
+
+                    <input type="radio" name="[%- "${counter}-${lane.shorthand}-${lane.type_id}-pos" -%]" id="[%- "${counter}-${lane.shorthand}-${lane.type_id}" -%]_pos" [%- IF lane.pos == 'Pos' -%] checked="checked" [%- END -%]
+                        [%- IF product.non_product != 1  -%]onchange="calcQsub()"[%- END -%]
+                        value="pos" />Pos
+                        
+                    <a class="clk" onclick="clearAll(this.parentNode, '[%- "${counter}-${lane.shorthand}-${lane.type_id}-pos" -%]');">Clear</a>
+
+                </td>
+
+
+                <td>
+                    [%- IF lane.product_id.defined -%]
+                        <input type='text' name='[%- "${counter}-${lane.shorthand}-${lane.type_id}-rename" -%]' value="[%- lane.nickname -%]" />
+                    [%- ELSE -%]
+                        &nbsp;
+                    [%- END -%]
+                </td>
+
+
+                [%- ELSE -%]
+                [%# this hidden input makes sure non-product labels are recorded  %]
+                <td colspan='2'><input type='hidden' name='[%- "${counter}-${lane.shorthand}-${lane.type_id}-pos" -%]' value='ind'></td>
+                [%- END -%]
+
+                <td>[%- IF lane.shorthand != 'gel_lane' -%]<a class="clk" onclick="removeRow(this);">Remove</a>[%- END -%]</td>
+                <td class="extra-lane-number">
+                    [%- lane.print_label -%]
+                </td>
+            </tr>
+        [%- END -%]
+        </tbody>
+        <tfoot>
+
+                <th colspan="2">
+                    <a class="clk" onclick="showAddLane('gel_[%- gel.gel_id -%]_lanes')" >Add Lane</a>
+                    <a class="clk" onclick="showChangeStart('gel_[%- gel.gel_id -%]_lanes')" >Change Numbering</a>
+                </th>
+                <th colspan="2">Mark All Lanes:
+                    <a class="clk" onclick='return mark_all("gel_[%- gel.gel_id -%]_lanes","neg")'>-</a> 
+                    <a class="clk" onclick='return mark_all("gel_[%- gel.gel_id -%]_lanes","pos")'>+</a>
+                </th>
+            </tr>
+        </tfoot>
+    </table>
+    <input type="hidden" id="[%-  gel.gel_id -%]_start_num" value="1" />
+    <input type="hidden" id="[%-  gel.gel_id -%]_96well" name="[%-  gel.gel_id -%]_96well" value="[%- gel.ninety_six_well -%]" />
+    <!--<h3 style="clear: both" ><a class="clk" onclick="enableLane2GelDD('gel_[%- gel.gel_id -%]_ctr')">Enable Dragging Lane Marker to Gel</a></h3>-->
+    <br style="clear: both" />
+    </div>
+    </form>
+    [%- END -%]
+    </fieldset>
+
+
+[% INCLUDE 'in-body-bottom.tt' %]
+
+    <div id="sidebar">
+       <div id="sidebar_contents">
+             <form id="sidebar_stuff">
+             <div id='autobtns'>
+             </div>
+             [% IF quality %]
+                 
+                 [% INCLUDE 'copy_num_body.tt' %]
+                 
+             [% END %]
+             </form>
+             <input type="button" onclick="subForm()" value='Save All' [%- disabled -%]/>
+       </div>
+       <div id="loadGif" >
+            <h2 style="width: 100%">Saving Gel Annotations</h2>
+            <img src="[%- uri_base -%]/static/images/spinner2.gif" style="width:25px; height:25px;"/>
+       </div>
+   </div>
+
+[% INCLUDE 'body-end.tt' %]
+ <pre id="debug"></pre>
+<div class="spacer">&nbsp;</div>
+
+<div id="newLane"  class="overlay"> 
+<div class="hd">Add Lane to Gel</div> 
+<div class="bd">
+    <select id="lane_types" onchange="checkOther(this)" style="padding-bottom: 4px;">
+        [% FOREACH ladder IN all_ladders %]
+            <option value="[%- ladder -%]">[%- ladder -%]</option>
+        [% END %]
+        [% FOREACH label IN stock_labels %]
+            <option value="[%- label.key -%]" data-haspos="[%- label.value.pos -%]">[%- label.key -%]</option>
+        [% END %]
+        <option value="other">other</option>
+    </select>
+    <input type="text" id="other_lane" placeholder="Enter name" style="display: none" />
+    <label class="inline" style="display: block">
+        How many? <input type="number" id="addLaneRepeat" min=1 value=1>
+    </label>
+    <input type="hidden" id="addTo" value="" />
+</div>
+
+<div class="ft"><input type="button" onclick="addLane(mddt)" value="Add" />&nbsp;&nbsp;<input type="button" onclick="closeAddLanes()" value="Cancel" /></div>
+
+</div>
+
+<div id="changeStart"  class="overlay"> 
+<div class="hd">Change Start Order</div> 
+<div class="bd">
+    <input type="radio" name="numberType" id="numTypeAgg" value="agarose" checked="checked" onchange="toggleChangeStart('agarose')" />Regular Numbering
+    <input type="radio" name="numberType" id="numType96" value="96well" onchange="toggleChangeStart('96well')" />96 Well Numbering
+    <div style="border: 1px solid #1f669b; padding:4px 4px 4px 4px; margin: 2px 2px 2px 2px">  
+    <div id="96well" style="display: none">Start Gel Numbering At:
+    <select id="alpha" style="padding-bottom: 4px;">
+        <option value="A" selected="selected">A</option>
+        <option value="B">B</option>
+        <option value="C">C</option>
+        <option value="D">D</option>
+        <option value="E">E</option>
+        <option value="F">F</option>
+        <option value="G">G</option>
+        <option value="H">H</option>
+    </select>
+
+    <select id="numeric" style="padding-bottom: 4px;">
+        <option value="01" selected="selected">01</option>
+        <option value="02">02</option>
+        <option value="03">03</option>
+        <option value="04">04</option>
+        <option value="05">05</option>
+        <option value="06">06</option>
+        <option value="07">07</option>
+        <option value="08">08</option>
+        <option value="09">09</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+    </select>
+    </div>
+    <div id="agarose">Start Gel Numbering At:
+    <input type="text" id="agarose_num" value="1" size="2" maxlength="2" />
+    </div>
+    <div id="numberingError" class="error" style="font-size: 14px"></div>
+    </div>
+    <input type="hidden" id="changeTbod" value="" />
+</div>
+
+<div class="ft"><input type="button" onclick="changeStartNumber()" value="Change" />&nbsp;&nbsp;<input type="button" id="cancelNumChange" value="Cancel" /></div>
+
+</div> 
+</body>
+
+</html>

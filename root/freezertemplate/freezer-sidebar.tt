@@ -1,0 +1,38 @@
+    <div id="new_aliquots" [% IF !aliquot || aliquot.count < 1 %]style="display:none"[% END %]>
+        <h2>New Vials</h2>
+    
+        <div>
+            [% FOREACH a IN aliquot %]
+            <p id="[%- IF a.is_deleted -%]deleted_[%- ELSE -%]aliquot_[%- END -%][%- a.aliquot_id -%]">
+                    <a class="clk" onClick='sidebar_remove("aliquot","[%- a.aliquot_id -%]")' name='remove'>Remove</a>
+                [%- IF a.is_deleted -%] <span class='warning'>Aliquot Deleted</span>
+                [%- ELSE -%] [% a.to_string %] <a class="clk" onclick="vialDetails(this, 'aliquot', [%- a.aliquot_id -%])">Manage</a>[% END %]</p>
+            [% END %]
+        </div>
+        <input type="button" value="Place in Freezer" onclick="window.location = viroverse.url_base + 'freezer/input/add_to_box/';" />
+    </div>
+
+
+    <div id="found_aliquots" [% IF !found_aliquots || found_aliquots.count < 1 %]style="display:none"[% END %]>
+        <h2>Vials Retrieved From Inventory</h2>
+  
+          <div>
+            [% FOREACH a IN found_aliquots %]
+            <p id="[%- IF a.is_deleted -%]deleted_[%- ELSE -%]aliquot_[%- END -%][%- a.aliquot_id -%]">
+                <a class="clk" onClick='sidebar_remove("found_aliquots","[%- a.aliquot_id -%]")' name='remove'>Remove</a>
+                [%- IF a.is_deleted -%] <span class='warning'>Aliquot Deleted</span>
+                [%- ELSE -%] [% a.to_string %] [% a.location %]
+                  <% IF scientist.can_manage_freezers %>
+                    <a class="clk" onclick="vialDetails(this, 'aliquot', [%- a.aliquot_id -%])">Manage</a>
+                  <% END %>
+                [%- END -%]
+            </p>
+            [% END %]
+        </div>
+    
+        <input type="button" value="Clear All" onclick="sidebar_clear_type('aliquot'); sidebar_clear_type('found_aliquots');">
+        <% IF scientist.can_manage_freezers %>
+        <input type="button" value="Manage All" onclick="vialDetails(this, 'aliquot', 'all')" />
+        <input type="button" value="Add Unplaced Vials To Freezer" onclick="addFoundToFreezer(this)" />
+        <% END %>
+    </div>

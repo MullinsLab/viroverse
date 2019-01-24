@@ -1,0 +1,29 @@
+[%- MACRO sub_template_highlight(sub_template_name) BLOCK -%]
+    [%- IF sub_template_name == template.name -%]
+style='font-weight:bold'
+    [%- ELSE -%]
+    [%- END -%]
+[%- END -%]
+
+<div class="nav">
+<div id='smenu' class='yuimenubar yuimenubarnav'>
+    <div class='bd'><ul>
+            <li class='yuimenubaritem'><a class='yuimenubaritemlabel' href="[%- uri_base -%]subject" [%- sub_template_highlight('patient-sel.tt') -%] [%- sub_template_highlight('sum-patient.tt') -%]>Subjects</a></li>
+            <li class='yuimenubaritem'><a class='yuimenubaritemlabel' href="[%- uri_base -%]cohort" >Cohorts</a></li>
+            <li class='yuimenubaritem'><a class='yuimenubaritemlabel' href="[%- uri_base -%]sequence" -%]>Sequences</a></li>
+            <li class='yuimenubaritem'><a class='yuimenubaritemlabel' href="[%- uri_base -%]sample" -%]>Samples</a></li>
+            [% IF features.epitopedb %]
+                <li class='yuimenubaritem'>
+                    <a class='yuimenubaritemlabel' href="#epitopemenu" >Epitopedb</a>
+                    <div id='epitopemenu' class='yuimenu'>
+                        <div class='bd'><ul>
+                            <li class='yuimenuitem'><a href="[%- uri_base -%]search/epitopedb_search/peptide" class="yuimenuitemlabel" >Peptide or Epitope</a></li>
+                            <li class='yuimenuitem'><a href="[%- uri_base -%]search/epitopedb_search/pool" class="yuimenuitemlabel" >Peptide Pool</a></li>
+                        </ul></div>
+                    </div>
+                </li>
+            [% END %]
+    </ul></div>
+
+</div>
+</div>

@@ -1,0 +1,50 @@
+[% PROCESS 'macros.tt' %]
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="page-header">
+          [% sample.patient.name %] [% sample.tissue_type.name %]
+          sample [% IF sample.name.defined %]“[% sample.name %]”[% END %]
+          <small>[% sample.id %]</small>
+        </h1>
+    </div>
+    <div class="col-md-8">
+        <p class="record-properties">
+            [% IF sample.name %]
+                <i>[% sample.name %]</i> (#[% sample.id %])</i>
+            [% ELSE %]
+                <i>#[% sample.id %]</i>
+            [% END %] is
+            [% Inflect.noun(sample.tissue_type.name || 'unknown tissue type').indef_article %]
+            <i>[% sample.tissue_type.name || 'unknown tissue type' %]</i>
+            sample obtained on
+            <i>[% sample.date.strftime("%B %e, %Y") || 'an unknown date' %]</i>
+            [%~ IF sample.visit %]
+                [% IF sample.visit.visit_number %]
+                    (visit <i>[% sample.visit.visit_number %]</i>)
+                [% END %]
+                from
+                <a href="[% c.uri_for_action("/patient/show_by_id", [ sample.patient.id ]) %]">
+                    <i>[% sample.patient.name %]</i></a>.
+            [%~ ELSIF sample.parent_derivation %]
+                [% derivation = sample.parent_derivation %]
+                by
+                <i><a href="[% c.uri_for_action('/derivation/show', [ derivation.id ]) %]">
+                    [%~ derivation.protocol.name ~%]
+                </a></i>
+                from
+                <i><a href="[% c.uri_for_action('/sample/show', [ derivation.input_sample.id ]) %]">
+                    [%~ derivation.input_sample.tissue_type.name ~%]
+                </a></i>
+                performed by
+                <i>[% derivation.scientist.name %]</i>.
+            [%~ ELSE ~%].
+            [% END %]
+        </p>
+        [% content | none %]
+    </div>
+    <div class="col-md-4">
+        <h3>Sample origin</h3>
+        <% INCLUDE 'partials/sample-tree.tt', model = related_samples %>
+        [% INCLUDE 'sidebar' %]
+    </div>
+</div>

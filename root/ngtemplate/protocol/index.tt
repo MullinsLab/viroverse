@@ -1,0 +1,37 @@
+[%- page = {
+        title  = "Derivation protocols",
+        breadcrumbs     = [
+          [ 'Admin',                c.uri_for_action('/admin/index') ],
+          [ 'Derivation protocols' ]
+        ]
+    }
+-%]
+
+<div class="row">
+    <div class="col-md-5 col-xs-8">
+        <h1 class="page-header">Derivation protocols</h1>
+        <table class="table">
+        <thead>
+            <tr><th>Protocol name</th><th></th></tr>
+        </thead>
+        <tbody>
+            <form method="POST" class="form-inline" role="form" action="[% c.uri_for_action('/derivationprotocol/create') %]">
+            <tr>
+                <td>
+                    <input type="text" name="name" class="form-control" placeholder="New protocol name…"/>
+                </td>
+                <td>
+                    <button type="submit" class="btn btn-primary btn-sm float-left">Add protocol</button>
+                </td>
+            </tr>
+            </form>
+            [% FOREACH protocol IN protocols %]
+            <tr>
+                <td><a href="[% c.uri_for_action("/derivationprotocol/show", [protocol.id] ) %]">[% protocol.name %]</a></td>
+                <td />
+            </tr>
+            [% END %]
+        </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,68 @@
+[%- page = {
+        title  = "Scientist",
+        has_js = 0,
+        breadcrumbs     = [
+          [ 'Admin',  c.uri_for_action('/admin/index') ],
+          [ 'Scientists' ]
+        ]
+    }
+-%]
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="page-header">Scientists</h1>
+        <form action="[% c.uri_for('/admin/scientist/add') %]" method="POST" id="add-scientist" role="form" class="form-inline">
+            <table class="table table-condensed table-striped">
+                <thead>
+                   <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Group</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td><input type="text" name="name" placeholder="Scientist name" style="width:100%" class="form-control"></td>
+                        <td><input type="text" name="username" placeholder="Scientist username" style="width:100%" class="form-control"></td>
+                        <td><input type="text" name="email" placeholder="Scientist email" style="width:100%" class="form-control"></td>
+                        <td><select class="form-control" name="role" style="margin-bottom: 10px">
+                            <option value="scientist">scientist</option>
+                            <option value="supervisor">supervisor</option>
+                            <option value="admin">admin</option>
+                            <option value="retired">retired</option>
+                            </select>
+                        </td>
+                        <td><select class="form-control" name="groups" style="margin-bottom: 10px">
+                            [% FOR group IN groups %]
+                              <option value="[% group.id %]">[% group.name %]</option>
+                            [% END %]
+                        </td>
+                        <td class="text-right"><button type="submit" class="btn btn-primary">Add</button></td>
+                    </tr>
+                    [% FOREACH single_scientist IN scientists %]
+                    <tr>
+                        <td>[% single_scientist.scientist_id %]</td>
+                        <td>[% single_scientist.name %]</td>
+                        <td>[% single_scientist.username %]</td>
+                        <td>[% single_scientist.email %]</td>
+                        <td>[% single_scientist.role %]</td>
+                        <td>
+                        [% FOR group_membership IN single_scientist.group_memberships %]
+                            [% IF group_membership.group.name == single_scientist.name %]
+                            [% ELSE %]
+                                [% group_membership.group.name %]<br>
+                            [% END %]
+                        [% END %]
+                        </td>
+                        <td class="text-nowrap"><a href="[% c.uri_for_action('/admin/scientist/edit_scientist', [ single_scientist.scientist_id ]) %]">Edit Scientist</a></td>
+                    </tr>
+                    [% END %]
+              </tbody>
+            </table>
+        </form>
+    </div>
+</div>

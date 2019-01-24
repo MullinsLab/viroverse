@@ -1,0 +1,29 @@
+#!/usr/bin/env perl
+# Before using this, run:
+# 
+#   cpanm Devel::REPL::Profile::TSIBLEY Data::Printer
+#
+
+BEGIN {
+    use Cwd;
+    my $vvhome;
+    if (-d "lib/Viroverse") {
+        $vvhome = cwd();
+    } else {
+        warn "Using ~/viroverse/src\n";
+        $vvhome = "$ENV{HOME}/viroverse/src";
+    }
+
+    die "Can't find viroverse home!" unless $vvhome;
+
+    unshift @INC, map "$vvhome/$_", "lib";
+    chdir "$vvhome"
+        or warn "Couldn't chdir to $vvhome: $!";
+    $ENV{CATALYST_HOME} = "$vvhome";
+}
+
+use DDP;
+use Viroverse;
+
+my $session = Viroverse::session->new;
+my $dbh = Viroverse::CDBI->db_Main;

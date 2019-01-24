@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<title>Viroverse::Freezer: Transfer Vial</title>
+[% INCLUDE 'head.tt' %]
+<style type="text/css">
+body {
+    margin:0;
+    padding:0;
+}
+div.rack{
+    position: relative;
+    float:left;
+    clear: none;
+    background: #f7f7f7;
+    border: 1px solid gray;
+    list-style: none;
+    margin:0;
+    padding:0;
+    text-align: left;
+    
+}
+
+div.freezer-box{
+    width:100px;
+    height:50px;
+    display: inline-block;
+    background-color: #5D9FCA;
+    margin: 2px 0px 2px 2px;
+    padding: 0px;
+    cursor: pointer;
+    text-align: center;
+}
+div.freezer-box span{
+    margin-top: 20px;
+    display:block;
+}
+div.box_ctr {
+    float: left;
+    clear: none;
+    padding: 2px 5px 2px 2px;
+    text-align: center;
+}
+td.box_pos {
+     cursor: move;
+}
+
+h1{
+     font-size: 2em;
+     margin-left: 0px;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/stylesheets/freezer.css" />
+
+<script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/yahoo-dom-event.js"></script>
+<script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/animation-min.js"></script>
+
+<script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/dragdrop-min.js"></script>
+<script type="text/javascript" src="[%- uri_base -%]/static/javascripts/freezer.js" ></script>
+<script type="text/javascript" >
+    
+(function() {
+
+var Dom = YAHOO.util.Dom;
+var Event = YAHOO.util.Event;
+var DDM = YAHOO.util.DragDropMgr;
+
+//////////////////////////////////////////////////////////////////////////////
+// example app
+//////////////////////////////////////////////////////////////////////////////
+YAHOO.example.DDApp = {
+    init: function() {
+
+          var box1 = document.getElementById("box1");
+          var pos1 = box1.getElementsByTagName("td");
+          for (var i = 0 ; i < pos1.length ;i++) {
+               if(Dom.hasClass(pos1.item(i), 'empty')){
+                    new YAHOO.util.DDTarget(pos1.item(i), "group1");
+               }else{
+                    new YAHOO.example.DDBox(pos1.item(i), "group1", {isTarget: false});
+               }
+          }
+    },
+    
+    addBox: function() {
+          var box2 = document.getElementById("box_display");
+          var pos2 = box2.getElementsByTagName("td");
+          for (var i = 0 ; i < pos2.length ;i++) {
+               if(Dom.hasClass(pos2.item(i), 'empty')){
+                    new YAHOO.util.DDTarget(pos2.item(i), "group1");
+               }else{
+                    new YAHOO.example.DDBox(pos2.item(i), "group1", {isTarget: false});
+               }
+          }
+    }
+
+};
+
+//////////////////////////////////////////////////////////////////////////////
+// custom drag and drop implementation
+//////////////////////////////////////////////////////////////////////////////
+
+YAHOO.example.DDBox = function(id, sGroup, config) {
+
+    YAHOO.example.DDBox.superclass.constructor.call(this, id, sGroup, config);
+
+    this.logger = this.logger || YAHOO;
+    var el = this.getDragEl();
+    Dom.setStyle(el, "opacity", 0.67); // The proxy is slightly transparent
+
+    this.goingUp = false;
+    this.lastY = 0;
+};
+
+YAHOO.extend(YAHOO.example.DDBox, YAHOO.util.DDProxy, {
+
+    startDrag: function(x, y) {
+          this.logger.log(this.id + " startDrag");
+          
+          this.invalid = false; //reset invalid drop flag
+  
+          // make the proxy look like the source element
+          var dragEl = this.getDragEl();
+          var clickEl = this.getEl();
+          this.clickElClass = clickEl.className;
+          clickEl.className = "box_pos empty";
+          this.vial = clickEl.getElementsByTagName("div").item(0);
+          
+          clickEl.removeChild(this.vial);
+          dragEl.innerHTML = this.vial.innerHTML;
+
+
+        Dom.setStyle(dragEl, "color", Dom.getStyle(clickEl, "color"));
+        Dom.setStyle(dragEl, "backgroundColor", Dom.getStyle(clickEl, "backgroundColor"));
+        Dom.setStyle(dragEl, "border", "2px solid gray");
+    },
+
+    endDrag: function(e) {
+
+        var srcEl = this.getEl();
+        var proxy = this.getDragEl();
+
+        // Show the proxy element and animate it to the src element's location
+        Dom.setStyle(proxy, "visibility", "");
+        var a = new YAHOO.util.Motion( 
+            proxy, { 
+                points: { 
+                    to: Dom.getXY(srcEl)
+                }
+            }, 
+            0.2, 
+            YAHOO.util.Easing.easeOut 
+        )
+        var proxyid = proxy.id;
+        var thisid = this.id;
+        
+        if(this.invalid){ // animate a snap back to origional cell only if vial not dropped into a valid empty cell
+               // Hide the proxy and show the source element when finished with the animation
+             a.onComplete.subscribe(function() {
+                     Dom.setStyle(proxyid, "visibility", "hidden");
+                     Dom.setStyle(thisid, "visibility", "");
+                 });
+             a.animate();
+        }else{
+               Dom.setStyle(proxyid, "visibility", "hidden");
+               Dom.setStyle(thisid, "visibility", "");
+               DDM.getDDById(srcEl.id).unreg();//trash old draggable vial square
+               new YAHOO.util.DDTarget(srcEl, "group1"); //rebuild as empty space now available to take new vial
+               var foo = 'bar';
+        }
+
+        
+    //moveBox(thisid, srcEl.parentNode.getAttribute("data-rack_id"));
+    },
+
+    onDragDrop: function(e, id) {
+
+        // If there is one drop interaction, the li was dropped either on the list,
+        // or it was dropped on the current location of the source element.
+        if (DDM.interactionInfo.drop.length === 1) {
+
+            // The position of the cursor at the time of the drop (YAHOO.util.Point)
+            var pt = DDM.interactionInfo.point; 
+
+            // The region occupied by the source element at the time of the drop
+            var region = DDM.interactionInfo.sourceRegion; 
+
+            // Check to see if we are over the source element's location.  We will
+            // append to the bottom of the list once we are sure it was a drop in
+            // the negative space (the area of the list without any list items)
+            if (!region.intersect(pt)) {
+               moveVial(this.getEl().id, id);
+               var destEl = Dom.get(id);
+               var destDD = DDM.getDDById(id);
+               var vialDiv = destEl.getElementsByTagName("div");
+               if(vialDiv.length > 0){ //if empty div from page load insert vial info
+                    vialDiv.item(0).innerHTML = this.vial.innerHTML;
+               }else{ // div removed by previous DD so add div with vial info
+                    destEl.appendChild(this.vial);
+               }
+               destEl.className = this.clickElClass;
+               destDD.isEmpty = false;
+               destDD.unreg();//trash ol DDtarget
+               new YAHOO.example.DDBox(destEl, "group1", {isTarget: false}); //rebuild target as draggable vial that can be moved
+               DDM.refreshCache({group1:true});
+            }
+
+        }
+    },
+    
+    onInvalidDrop: function(e) {
+          var clickEl = this.getEl();
+          clickEl.appendChild(this.vial);
+          clickEl.className = this.clickElClass;
+          this.invalid = true;
+          this.foo();
+    },
+
+
+    onDragOver: function(e, id) {
+    
+          var destEl = Dom.get(id);
+          if(!Dom.hasClass(destEl, "empty")){
+               destEl.isTarget = false;
+          }
+    },
+    
+    foo: function() {
+          var foo = 'bar';
+    }
+});
+Event.onDOMReady(YAHOO.example.DDApp.init, YAHOO.example.DDApp, true);
+})();
+
+function moveVial(from_pos_id, to_pos_id){
+     var http  = make_xmlhttp();
+     var url = viroverse.url_base + "/freezer/input/moveVial/" + from_pos_id  + "/" + to_pos_id;
+     
+     http.open('POST', url ,true);
+     http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+     http.onreadystatechange = function () {
+          if (http.readyState == 4) {
+               var ret = evalJSON(http);
+               if(ret != 1 && !ret.error){
+                    writeError("Unknown Error");
+               }
+          }
+     }
+     http.send("");
+}
+</script>
+
+</head>
+
+<body >
+[%- INCLUDE 'body-top.tt' -%]
+<div class="error" id="error"></div>
+<pre id="debug"></pre>
+<h1>Transfer Vials</h1>
+Drag and drop vials to a new location within this box or use the dropdowns to select a different box
+<br style="clear:both" />
+<div id="box1" class="box_ctr">
+     [% onclick = 'xfer-vials' %]
+    [% INCLUDE 'freezer_box.tt' %]
+</div>
+
+<div id="box2_finder" class="box_ctr">
+    <h2>Move to New Box</h2>
+    [% custom = 'rack_sel_xfer' %]
+    [% INCLUDE freezer_finder.tt %]
+</div>   
+<div id="box_ctr2" class="box_ctr">
+     <div id="box_display"></div>
+</div>
+[% INCLUDE 'body-end.tt', match_body_top = 1 %]
+</body>
+</html>
+

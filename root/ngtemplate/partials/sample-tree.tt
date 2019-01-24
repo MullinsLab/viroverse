@@ -1,0 +1,133 @@
+<%
+
+  class = model.current_node_depth > 5 ? "tight" : "loose";
+  current_path = model.path.slice(0)
+
+  DEFAULT
+    max_depth = model.current_node == model.primogenitor ? 1 : 2
+    max_nodes = 4
+    show_some = model.current_node == model.primogenitor ? 1 : 0;
+%>
+<% PROCESS 'macros.tt' %>
+
+<div class="sample-tree [% class %] ">
+  <% INCLUDE 'nodes', nodes = [ current_path.shift ], depth = 0 %>
+</div>
+
+<% BLOCK 'nodes' %>
+  <%
+    IF NOT nodes.size
+      RETURN;
+    END
+  %>
+  <ul>
+    <%
+      node_type =
+        nodes.first.isa("ViroDB::Result::Patient")                   ? "patient" :
+        nodes.first.isa("ViroDB::Result::Sample")                    ? "sample" :
+        nodes.first.isa("ViroDB::Result::Derivation")                ? "derivation" :
+        nodes.first.isa("Viroverse::Model::extraction")              ? "extraction" :
+        nodes.first.isa("Viroverse::Model::rt")                      ? "rt" :
+        nodes.first.isa("Viroverse::Model::bisulfite_converted_dna") ? "bcdna" :
+        nodes.first.isa("Viroverse::Model::pcr")                     ? "pcr_product" :
+        nodes.first.isa("Viroverse::Model::clone")                   ? "clone" :
+        nodes.first.isa("Viroverse::Model::sequence::dna")           ? "sequence" :
+        nodes.first.isa("Viroverse::SampleTree::MissingSteps")       ? "missing" :
+                                                                       "unknown" ;
+    %>
+    <% IF max_nodes AND nodes.size > max_nodes AND NOT show_some %>
+      <li class="omitted omitted-size">
+        <% nodes.size %> <% node_type %><% IF nodes.size != 1 %>s<% END %>
+      </li>
+    <% ELSIF max_depth AND depth > (max_depth + model.current_node_depth) %>
+      <li class="omitted omitted-depth">
+        …
+      </li>
+    <% ELSE %>
+      <% FOR node IN nodes %>
+        <%
+          classes = [ node_type ];
+          IF node == model.current_node
+            is_current_node = 1;
+            classes.push("current-node");
+          ELSE
+            is_current_node = 0;
+          END
+        %>
+        <% IF max_nodes AND loop.number > max_nodes AND show_some AND NOT loop.last %>
+          <li class="omitted omitted-size">
+            …and <% nodes.size - loop.number + 1 %> more
+          </li>
+          <% BREAK %>
+        <% END %>
+        <li class="<% classes.join(" ") %>">
+          <% IF node_type == "sample" %>
+            <span>
+              <a href="<% c.uri_for_action("/sample/show", [ node.id ]) %>">
+                <% IF node.visit %>
+                  <% node.tissue_type.name %> from <% node.date.ymd || 'unknown date' %>
+                <% ELSE %>
+                  <% IF node.name %><% node.name %> <% END %><% node.tissue_type.name %>
+                <% END %>
+              </a>
+            </span>
+          <% ELSIF node_type == "derivation" %>
+            <span>
+              <a href="<% c.uri_for_action("/derivation/show", [ node.id ]) %>">
+                <%- node.protocol.name %> on <% node.date_completed.ymd -%>
+              </a>
+            </span>
+          <% ELSIF node_type == "patient" %>
+            <span>[% link_to_patient(node) | none %]</span>
+          <% ELSIF node_type == "extraction" %>
+            <span>
+                <%- node.extract_type_id.name %> extraction on <% node.date_completed -%>
+            </span>
+          <% ELSIF node_type == "rt" %>
+            <span>
+                cDNA made on <% node.date_completed -%>
+            </span>
+          <% ELSIF node_type == "bcdna" %>
+            <span>
+                Bisulfite-converted DNA made on <% node.date_completed -%>
+            </span>
+          <% ELSIF node_type == "pcr_product" %>
+            <span>
+                <%- gel = @(node.gel_lanes).first.gel_id-%>
+                <%- IF gel -%>
+                <a href="<% c.uri_for_action("/summary/gel", gel.give_id)%>">
+                <%- END -%>
+                <%- IF node.is_positive -%>Positive <%END -%>
+                <%- IF node.round -%>
+                Round <% node.round %>
+                <%- END -%>
+                <%- IF node.pcr_pool_id -%>
+                Pooled
+                <%- END -%>
+                PCR product <% IF node.date_completed %>on <% node.date_completed -%><% ELSE %>added <%node.date_entered %><% END %>
+                <%- IF gel -%>
+                </a>
+                <%- END -%>
+            </span>
+          <% ELSIF node_type == "clone" %>
+            <span>Clone <% IF node.date_completed %>on <% node.date_completed %><% ELSE %>added <%node.date_added %><% END %></span>
+          <% ELSIF node_type == "sequence" %>
+            <span>
+              <a href="<% c.uri_for_action("/sequence/show", [ node.idrev ]) -%>">
+                Sequence <%- node.idrev -%>
+              </a>
+            </span>
+          <% ELSIF node_type == "missing" %>
+            <span><span class="glyphicon glyphicon-question-sign"></span> unknown steps</span>
+          <% ELSE %>
+            <span class="text-danger">unknown node type</span>
+          <% END %>
+          <% INCLUDE 'nodes',
+              depth = depth + 1,
+              nodes = current_path.size ? [ current_path.shift ] : @(node.children)
+              %>
+        </li>
+      <% END %>
+    <% END %>
+  </ul>
+<% END %>

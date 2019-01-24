@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Viroverse: Gel</title>
+    <% INCLUDE 'summ-head.tt' %>
+    <script src="<% uri_base %>/static/javascripts/gel.js" type="text/javascript"></script>
+</head>
+
+<body class='yui-skin-sam'>
+    <% INCLUDE 'body-top.tt'
+       main_class = 'gel-summary' %>
+    <h2><% gel.name | html %> by <% gel.scientist_id.name | html %> (#<% gel.id %>)</h2>
+    Run on <% gel.date_completed || 'unknown date' | html %><br>
+    Entered on <% gel.date_entered | html %><br><br>
+
+    <% INCLUDE gel_body.tt show_title = 0 %>
+
+<!-- pools, cleaned -->
+<!-- PCR -->
+<!-- RT, if any -->
+<!-- extraction -->
+<!-- samples -->
+<!-- protocols -->
+
+    <% INCLUDE 'body-end.tt' match_body_top = 1 %>
+</body>
+</html>

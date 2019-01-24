@@ -1,0 +1,7 @@
+pre.seq {
+    display: inline-block;
+}
+
+#sequence-buttons button {
+    margin-bottom: 8px;
+}

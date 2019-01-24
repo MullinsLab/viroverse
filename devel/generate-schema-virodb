@@ -1,0 +1,4 @@
+#!/bin/bash
+base=`dirname $0`
+app=$base/..
+$app/vv dbicdump $base/dbicdump.yaml

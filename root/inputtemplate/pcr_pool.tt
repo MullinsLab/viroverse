@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse: PCR Pooling</title>
+
+[% USE Dumper %]
+[% USE date(format=date_format) %]
+[% INCLUDE 'in-head.tt' %]
+    <link href="[%- uri_base -%]static/stylesheets/autosuggest.css" rel="stylesheet" type="text/css" />    
+    <link href="[%- uri_base -%]static/stylesheets/y.css" rel="stylesheet" type="text/css" />    
+
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/sidebar-collect.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/yahoo-dom-event.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/connection-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/element-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/datasource-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/dragdrop-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/autocomplete-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/datatable-min.js"></script>
+
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/suggestion-scientist.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/suggestion-patient.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/prod.js"></script>
+
+    <script type='text/javascript' language='javascript'>
+    var finder;
+    var local_find_a = new Array;
+    [%- FOREACH type IN find_a -%]
+    local_find_a.push('[%- type.name -%]');
+    [%- END -%]
+    function go_time () {
+        finder = new product_finder(local_find_a,'finder','error',add_product_box);
+        finder.add_fn_arguments = new Array ('to_do','error');
+
+        [% IF pos_pcr.count ~%]
+            finder.from_ids('pos_pcr', [% pos_pcr.map("id").json %]);
+        [%~ END %]
+    }
+
+    YAHOO.util.Event.onDOMReady(go_time);
+    function prod_clear (divid) {
+        var d = document.getElementById(divid);
+        removeChildNodes(d);
+        return false;
+    }
+    </script>
+</head>
+
+<body>
+[% INCLUDE 'body-top.tt' %]
+    <h2>Pool PCR Products</h2>
+    [%- INCLUDE prod_find.tt -%]
+    <br clear='all' />
+    [%- PROCESS 'body-error.tt' -%]
+    </fieldset>
+
+    <fieldset><legend>Pooling Details</legend>
+    <form id='post_pcr' method='post' action='[%- uri_base -%]/input/pcr/pool_add'>
+        <label>Pooled products</label>
+        <a class='clk' onclick='checkAll(document.getElementById("to_do"))'>select all</a> &#xB7;
+        <a class='clk' onclick='clearAll(document.getElementById("to_do"), "pos_pcrbox")'>select none</a> &#xB7;
+        <a class='clk' onclick='return prod_clear("to_do")'>clear</a>
+        <div class='formw'>
+            <div id='to_do'>
+        [% FOREACH pcr_o IN pos_pcr %]
+                <input type='checkbox' name='pos_pcrbox' id='box[%- pcr_o.give_id -%]' value='[%- pcr_o.give_id -%]' checked='true'></input><label class='check' for='box[%- pcr_o.give_id -%]'>[% pcr_o.to_string %] <strong>[%- pcr_o.name -%]</strong></label><br />
+        [% END %]
+            </div>
+    </div>
+    <br clear='all' />
+    <br clear='all' />
+        <label>Scientist</label> 
+        <div class="formw">
+            [%- INCLUDE 'scientist-select.tt' -%]
+        </div> 
+    <br clear='all' />
+        <label>Date</label> 
+        <span class="formw"><input name="pooling_date" placeholder="YYYY-MM-DD" class="quickfill-today" type="text" size="14" maxlength='10' [%- disabled -%]/></span>
+    <br clear='all' />
+    <label>Notes</label> 
+    <span class="formw"><textarea name="pooling_notes" rows="5" cols="37" [%- disabled -%]></textarea></span> 
+    <br clear='all' />
+    </fieldset>
+
+    <div class="buttons">
+        <label></label> 
+        <span class="formButton">
+            <a href="#" onClick="window.location.reload()" class="clear-form">Clear this form</a>&nbsp;
+            <input type="button" onClick="form_to_sidebar_ajax('post_pcr','pcr_pool','error')" value="Add >>"  [%- disabled -%]/>
+        </span> 
+    </div> <!--end row-->
+    </form>
+
+[% INCLUDE 'body-bottom.tt' %]
+
+    <div id="sidebar">
+        [%- INCLUDE 'pcr_pool-sidebar.tt' -%]
+    </div>
+
+[% INCLUDE 'body-end.tt' %]
+
+<div class="spacer">&nbsp;</div>
+</body>
+</html>

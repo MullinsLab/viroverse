@@ -1,0 +1,54 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use utf8;
+use open qw< :std :encoding(UTF-8) >;
+
+use Getopt::Long::Descriptive;
+use Path::Tiny;
+use Viroverse::Logger -script => qw< :log :dlog >;
+use ViroDB;
+
+my ($opt, $usage) = describe_options(
+    '%c --seq <sequence-id> --data <chromat.ab1> --primer <name> --sci <username>',
+    [],
+    [ 'Adds the specified chromat file to the given sequence.' ],
+    [],
+    [ 'data=s',      'Path to the file containing the chromat data',        { required => 1 } ],
+    [ 'sequence=s',  'Sequence ID to attach the chromat to',                { required => 1 } ],
+    [ 'primer=s',    'Name of the primer for this chromat',                 { required => 1 } ],
+    [ 'scientist=s', 'Username of the scientist who produced this chromat', { required => 1 } ],
+    [ 'help',        'Print usage message and exit',                        { shortcircuit => 1 } ],
+);
+print($usage->text), exit(not $opt->help)
+    if $opt->help;
+
+my $db = ViroDB->instance;
+my $txn = $db->txn_scope_guard;
+
+my $scientist = $db->resultset("Scientist")->find({ username =>  $opt->scientist })
+    or log_fatal {[ "Couldn't find scientist with username «%s»", $opt->scientist ]};
+
+my $sequence = $db->resultset("NucleicAcidSequence")->find_by_idrev( $opt->sequence )
+    or log_fatal {[ "Couldn't find sequence «%s»", $opt->sequence ]};
+
+my @primers = $db->resultset("Primer")->search({ name => $opt->primer })
+    or log_fatal {[ "Couldn't find primer named «%s»", $opt->primer ]};
+
+Dlog_fatal {[ "More than one primer named «%s»: %s", $opt->primer, $_ ]} \@primers
+    unless @primers == 1;
+
+my $data = path($opt->data);
+log_fatal {[ "Data file «%s» isn't a file or doesn't exist", $opt->data ]}
+    unless $data->is_file;
+
+my $chromat = $sequence->add_to_chromats({
+    scientist => $scientist,
+    primer    => $primers[0],
+    name      => $data->basename,
+    data      => $data->slurp_raw,
+});
+
+log_info {[ "Added chromat #%d", $chromat->id ]};
+
+$txn->commit;

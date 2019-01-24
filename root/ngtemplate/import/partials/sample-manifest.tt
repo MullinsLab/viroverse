@@ -1,0 +1,66 @@
+[% USE date %]
+<div class="row">
+    <div class="col-md-12">
+        [% INCLUDE select_column_key_help %]
+        <p>
+            Cohort, aliquot amount unit, received date, and creating scientist are set for the whole
+            import job under “Job options”.
+        </p>
+        <p>
+            If any of the freezer position columns (“Freezer name”, “Rack name”, “Box name”)
+            are set, they must all be set.
+        </p>
+    </div>
+    <div class="col-md-6">
+        <h2>Assign data columns</h2>
+        [%
+          fields = [
+            { key: 'external_patient_id', label: 'Subject alias',  optional: 0 },
+            { key: 'visit_date',          label: 'Visit date',     optional: 0 },
+            { key: 'visit_number',        label: 'Visit number',   optional: 1 },
+            { key: 'tissue_type',         label: 'Tissue type',    optional: 0 },
+            { key: 'sample_name',         label: 'Sample name',    optional: 1 },
+            { key: 'additive',            label: 'Additive',       optional: 1 },
+            { key: 'amount',              label: 'Aliquot amount', optional: 0 },
+            { key: 'freezer',             label: 'Freezer name',   optional: 1 },
+            { key: 'rack',                label: 'Rack name',      optional: 1 },
+            { key: 'box',                 label: 'Box name',       optional: 1 },
+          ]
+        %]
+        [% FOR field IN fields %]
+          <div class="form-group">
+            <label for="[% field.key %]_key">[% field.label %]</label>
+            [% INCLUDE select_column_key key = field.key, optional = field.optional %]
+            [% IF field.optional %]
+              <span id="[% field.key %]_hint" class="help-block">
+                Optional.
+              </span>
+            [% END %]
+          </div>
+        [% END %]
+    </div>
+    <div class="col-md-6">
+        <h2>Job options</h2>
+        <div class="form-group">
+            <label for="cohort">Cohort</label>
+            [% select_from_virodb("cohort", "Cohort") | none %]
+        </div>
+        <div class="form-group">
+            <label for="lab_result_type">Aliquot unit</label>
+            [% select_from_virodb("unit", "Unit") | none %]
+        </div>
+        <div class="form-group">
+            <label for="received_date">Received date</label>
+            <input class="form-control"
+                   value="[% date.format(date.now, '%Y-%m-%d') %]" 
+                   id="received_date"
+                   name="received_date"
+                   type="date" />
+        </div>
+        <div class="form-group">
+            [% INCLUDE 'scientist-dropdown.tt' %]
+        </div>
+
+    </div>
+
+</div>

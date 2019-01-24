@@ -1,0 +1,63 @@
+[%- page = {
+        title       = "Prepare import parameters"
+        breadcrumbs = [
+          [ 'Admin',                 c.uri_for_action('/admin/index') ],
+          [ 'Import',                c.uri_for_action('/import/index') ],
+          [ 'Job #' _ import_job.id, c.uri_for_action('/import/show', [import_job.id]) ],
+          [ 'Prepare' ]
+        ]
+    }
+-%]
+
+[% BLOCK select_column_key %]
+    <select class="form-control" id="[% key %]_key" name="[% key %]_key">
+        [% suggested = import_job.suggested_column_for_key(key) %]
+        <option [% defined(suggested) ? '' : 'selected' %] [% optional ? '' : 'disabled' %] value=""></option>
+        [% FOR column IN import_job.data_header %]
+        <option value="[% column %]" [% defined(suggested) && column == suggested ? 'selected' : '' %]>
+            [%- column -%]
+            [%- IF defined(suggested) && column == suggested %] ✰ [% END -%]
+        </option>
+        [% END %]
+    </select>
+[% END %]
+
+[% BLOCK select_column_key_help %]
+    <p>
+        The columns of your uploaded data file are listed in each dropdown
+        under “Assign data columns”.  For each import field required, you must
+        pick the corresponding column from your data.  The best guess for each
+        import field is marked with a ✰ and pre-selected, but you should double
+        check that it’s what you expect.
+    </p>
+[% END %]
+
+[% PROCESS 'macros.tt' %]
+
+<form role="form" method="POST" action="[% c.uri_for_action('/import/enqueue', [ import_job.id ]) %]">
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="page-header">Configure import</h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-8">
+        [% INCLUDE $import_partial %]
+        <div class="row">
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-primary">Execute</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h2 class="panel-title"><% import_job.type.label %> importer</h2>
+            </div>
+            <div class="panel-body">
+                [% help_pod | pod %]
+            </div>
+        </div>
+    </div>
+</div>
+</form>

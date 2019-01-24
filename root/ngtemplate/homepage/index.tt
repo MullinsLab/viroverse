@@ -1,0 +1,106 @@
+[%- page = {
+      title = "Viroverse",
+    }
+-%]
+<div class="row">
+    <div class="col-md-12" ng-controller="LocationHash as locationHash">
+        <h2>My Active Samples</h2>
+        [% IF my_projects.size > 0 %]
+            <uib-tabset active="locationHash.value" ng-cloak>
+                [% FOR project IN my_projects.keys.sort %]
+                    <uib-tab index="'[% project %]'" heading="[% project %]">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Sample Name</th>
+                                    <th>Subject</th>
+                                    <th>Sample Type</th>
+                                    <th>Date Collected</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                [% FOR project_sample IN my_projects.$project %]
+                                    <tr>
+                                        <td><a href="[% c.uri_for_action('/sample/show', [ project_sample.sample.id ]) %]">
+                                            [% project_sample.sample.name || '#' _ project_sample.sample.id %]
+                                            </a>
+                                        </td>
+                                        <td><a href="[% c.uri_for_action('/patient/show_by_id', [ project_sample.sample.patient.patient_id ]) %]">
+                                            [% project_sample.sample.patient.name || "unnamed subject" %]
+                                            </a>
+                                        </td>
+                                        <td>[% project_sample.sample.tissue_type.name || "unknown tissue" %]</td>
+                                        <td>[% project_sample.sample.date.strftime('%Y-%m-%d') || "unknown date" %]</td>
+                                        <td>
+                                          <div class="input-progress">
+                                            [% INCLUDE 'input-progress-button', dest='/sample/new_extraction',  label='Extraction', completed=$(project_sample.progress).has_extractions %]
+                                            [% INCLUDE 'input-progress-button', dest='/sample/new_rt_product',  label='RT',         completed=$(project_sample.progress).has_rt_products %]
+                                            [% INCLUDE 'input-progress-button', dest='/sample/new_pcr_product', label='PCR',        completed=$(project_sample.progress).has_pcr_products %]
+                                            [% INCLUDE 'input-progress-button', dest='/sample/new_sequence',    label='Sequence',   completed=$(project_sample.progress).has_sequences %]
+                                          </div>
+                                        </td>
+                                    </tr>
+                                [% END %]
+                            </tbody>
+                        </table>
+                    </uib-tab>
+                [% END %]
+            </uib-tabset>
+        [% ELSE %]
+            You are not currently assigned to any active samples.
+        [% END %]
+
+        <h2>All Active Projects</h2>
+        [% IF active_projects.size > 0 %]
+            <div class="row project-panels">
+                [% FOR active IN active_projects %]
+                    <div class="col-md-2">
+                        <div class="panel panel-info">
+                            <div class="panel-heading panel-title text-center">
+                                <strong>
+                                    <a href="[% c.uri_for_action('/project/show', [ active.project_id ]) %]"
+                                       title="[% active.name %]">
+                                        [%~ active.name ~%]
+                                    </a>
+                                </strong>
+                            </div>
+                            <table class="table table-condensed">
+                                <tbody>
+                                    <tr>
+                                        <td>Samples</td>
+                                        <td class="text-right"><strong>[% $(active.sample_assignments).count | commafy %]</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sequences</td>
+                                        <td class="text-right"><strong>[% $(active.sequences).count | commafy %]</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td>DNA</td>
+                                        <td class="text-right"><strong>[% $(active.extractions.dna).count | commafy %]</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td>RNA</td>
+                                        <td class="text-right"><strong>[% $(active.extractions.rna).count | commafy %]</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <% IF loop.count % 6 == 0 %>
+                      <div class="clearfix visible-md-block visible-lg-block"></div>
+                    <% END %>
+                [% END %]
+            </div>
+        [% ELSE %]
+            There are currently no active projects.
+        [% END %]
+    </div>
+</div>
+
+[% BLOCK 'input-progress-button' %]
+    <a href='[% c.uri_for_action(dest, [project_sample.sample.sample_id]) %]'
+        class="btn btn-[% completed ? 'success' : 'default' %] btn-xs">
+        [% label %]
+    </a>
+[% END %]

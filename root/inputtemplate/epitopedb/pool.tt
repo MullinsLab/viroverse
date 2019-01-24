@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse: Peptide Pool Input</title>
+[% INCLUDE 'head.tt' %]
+    <link href="[%- uri_base -%]/static/stylesheets/autosuggest.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/remotesuggestions.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/autosuggest2.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/epitopedb.js"></script>
+
+</head>
+
+<body>
+[% INCLUDE 'body-top.tt' %]
+<h2>Peptide Pool</h2>
+<form id='pool_result' name='pool_result' action='[%- uri_base -%]/input/epitopedb/pool/result' method='post' enctype="multipart/form-data">
+    <fieldset><legend>Pool</legend>
+    <label>Name</label>
+    <span class='formw'>
+        <input type='text' id='pool_name' name='pool_name' class='auto'>
+    </span><br clear='all' />
+    </fieldset>
+
+    <div id='error' class='error' [%- IF error -%] style='display:block'[%- END -%] >
+
+    </div>
+
+    <fieldset><legend>Peptide in pool</legend>
+    <label>Name</label>
+    <span class='formw'>
+        <input type='text' name='pept_name' id='pept_name' class='auto'>
+    </span><br clear='all' />
+    <label>Or Sequence</label>
+    <span class='formw'>
+        <input type='text' name='pept_seq' id='pept_seq' class='auto'>
+    </span><br clear='all' />
+    </fieldset>
+    <br>
+    <div>
+        <label>Or import data by uploading a <a href="[%- uri_base -%]/static/epitopedb/inputtemplate/pool.xls">formatted file</a>, which you must save as <b>tab-separated values (tsv)</b>:</label><br>
+        <span class='formw'>
+            <input type='file' name='inputfile' />
+        </span><br clear='all' />
+    </div><br clear='all' />
+
+    <div class="buttons">
+        <span class="formButton">
+            <input type='button' name='pool_submit' value='Submit' onClick="if (validate_form(this.form)) {to_sidebar_ajax('pool_result', 'error')}">&nbsp;<input type='reset' name='reset' value=' Reset '>
+        </span> 
+    </div>
+
+</form>
+
+[% INCLUDE 'body-bottom.tt' %]
+<form id='sidebar_form' name='sidebar_form' action='[%- uri_base -%]/input/epitopedb/input_sidebar/update'>
+    <div id="sidebar">
+        <h2>Peptide Pool Input Result</h2>
+        <div id="sidebar_content">
+            [% status %]
+        </div>
+    </div>
+</form> 
+[% INCLUDE 'body-end.tt' %]
+</body>
+<script  type="text/javascript">
+new AutoSuggestControl(document.getElementById("pool_name"), new RemoteSuggestions("pool_name"));
+new AutoSuggestControl(document.getElementById("pept_name"), new RemoteSuggestions("pept_name"));
+new AutoSuggestControl(document.getElementById("pept_seq"), new RemoteSuggestions("pept_seq"));
+</script>
+</html>

@@ -1,0 +1,65 @@
+[% PROCESS 'macros.tt' %]
+[% USE Sparkline = Viroverse::Sparkline %]
+
+<table class="table table-condensed">
+<thead class="sticky">
+    <tr>
+        <th>Subject ID</th>
+        <th>Est. Date Infected</th>
+        <th id="cohort-col-first-visit">First visit</th>
+        <th id="cohort-col-vl">Viral load history</th>
+        <th id="cohort-col-latest-visit">Latest visit</th>
+        <th class="text-right">Time to ART</th>
+        <th class="text-right">Years Infected</th>
+        <th class="text-right">Highest VL</th>
+        <th class="text-right">Lowest VL</th>
+        <th class="text-right"># Plasma</th>
+        <th class="text-right"># PBMC</th>
+        <th class="text-right"># <abbr title="Leukapheresed cells">Leuka</abbr></td>
+        <th class="text-right"># Other</td>
+    </tr>
+</thead>
+<tbody>
+    [% FOR patient IN patients %]
+    <tr>
+        <td class="text-nowrap">[% link_to_patient(patient) | none%]</td>
+        <td class="text-nowrap">[% patient.estimated_date_infected.strftime("%Y-%m-%d") %] </td>
+        <td class="text-nowrap">[% patient.first_visit.strftime("%Y-%m-%d") %]</td>
+        <td class="sparkline">[% Sparkline.xy_sparkline(patient.viral_loads_scaled) | none %]</td>
+        <td class="text-nowrap">[% patient.latest_visit.strftime("%Y-%m-%d") %]</td>
+        <td class="text-right">
+            [%~ IF patient.days_to_first_art.defined ~%]
+                [%~ IF (patient.days_to_first_art >= 365) -%]
+                    [%- (patient.days_to_first_art / 365.25) | format('%.1f') -%] ypi
+                [%- ELSE -%]
+                    [%- patient.days_to_first_art -%] dpi
+                [%- END -%]
+            [%- END ~%]
+        </td>
+        <td class="text-right">[% patient.years_infected | format('%.1f') %] </td>
+        <td class="text-right">
+            [%- IF patient.highest_viral_load.defined -%]
+                [%- IF patient.highest_viral_load -%]
+                    [%- patient.highest_viral_load | commafy -%]
+                [%- ELSE -%]
+                    &lt;LLOQ
+                [%- END -%]
+            [%- END -%]
+        </td>
+        <td class="text-right">
+            [%- IF patient.lowest_viral_load.defined -%]
+                [%- IF patient.lowest_viral_load -%]
+                    [%- patient.lowest_viral_load | commafy -%]
+                [%- ELSE -%]
+                    &lt;LLOQ
+                [%- END -%]
+            [%- END -%]
+        </td>
+        <td class="text-right">[% patient.plasma_count %]</td>
+        <td class="text-right">[% patient.pbmc_count %]</td>
+        <td class="text-right">[% patient.leuka_count %]</td>
+        <td class="text-right">[% patient.other_count %]</td>
+    </tr>
+    [% END %]
+</tbody>
+</table>

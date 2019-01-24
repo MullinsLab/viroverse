@@ -1,0 +1,34 @@
+<div class="panel panel-default">
+    <div class="panel-heading"><h3 class="panel-title">Dates</h3></div>
+    <table class="table table-condensed"><tbody>
+        [% IF sample.visit %]
+            <tr>
+                <td>Visit
+                [%~ IF sample.visit.visit_number %] (#[% sample.visit.visit_number %])[% END %]</td>
+                <td class="text-right">[% sample.visit.visit_date.strftime("%b %e, %Y") || 'unknown'%]</td>
+            </tr>
+        [% END %]
+        [% IF sample.parent_derivation %]
+            <tr>
+                <td>Derivation performed</td>
+                <td class="text-right">[% sample.parent_derivation.date_completed.strftime("%b %e, %Y") || 'unknown' %]
+            </tr>
+        [% END %]
+        [% IF sample.date_collected %]
+            <tr>
+                <td>Collected</td>
+                <td class="text-right">[% sample.date_collected.strftime("%b %e, %Y") %]</td>
+            </tr>
+        [% END %]
+        [% IF sample.received_date %]
+            <tr>
+                <td>Received in lab</td>
+                <td class="text-right">[% sample.received_date.strftime("%b %e, %Y") %]</td>
+            </tr>
+        [% END %]
+        <tr>
+            <td>Added to Viroverse</td>
+            <td style="min-width: 7em" class="text-right">[% sample.date_added.strftime("%b %e, %Y") %]</td>
+        </tr>
+    </tbody></table>
+</div>

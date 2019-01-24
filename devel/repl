@@ -1,0 +1,2 @@
+#!/bin/bash
+./vv re.pl --profile TSIBLEY --rc $(dirname $0)/repl.rc

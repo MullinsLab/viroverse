@@ -1,0 +1,15 @@
+[% USE crumbs = Viroverse::Breadcrumbs({ page_record => sample, context => c, leaf_label => "ICE cultures" }) %]
+[%- page = {
+    title  = "ICE cultures of sample $sample.id",
+    has_js = 1,
+    breadcrumbs = crumbs.breadcrumbs
+} -%]
+
+[% WRAPPER 'sample/base.tt' %]
+<h2>ICE Cultures</h2>
+<faceted-search sample-search
+   sample-search-ui="ice-cultures"
+   rows-per-page="50"
+   endpoint="<% c.uri_for_action("/sample/icecultures/search", [ sample.id ]) %>">
+</faceted-search>
+[% END %]

@@ -1,0 +1,35 @@
+[%- page = {
+        title = "Edit scientist",
+        breadcrumbs     = [
+          [ 'Admin',  c.uri_for_action('/admin/index') ],
+          [ 'Scientists', c.uri_for_action('/admin/scientist/index') ],
+          [ 'Edit Scientist' ]
+        ]
+    }
+-%]
+<form action="[% c.uri_for_action('/admin/scientist/confirmed_change', [ scientist_to_update.id ]) %]" method="POST" id="update-scientist" role="form">
+<div class="row">
+  <div class="col-xs-12">
+    <h1 class="page-header">Edit [% scientist_to_update.name %]:</h1>
+  </div>
+  <div class="col-sm-6 col-md-3">
+    <div class="form-group">
+      <h2>Role</h2>
+      <label for="role">Change [% scientist_to_update.name %]'s role to:</label>
+      <select class="form-control" name="role">
+        [% FOR role IN [ 'scientist', 'supervisor', 'admin', 'retired' ] %]
+        <option [% IF scientist_to_update.role == role %]selected="selected"[% END %] value="[% role %]">[% role %]</option>
+        [% END %]
+      </select>
+    </div>
+      <h2>Group</h2>
+      <label>Add to group(s):</label>
+      [% FOR group IN groups %]
+      <div class="checkbox">
+        <label><input type="checkbox" name="group_id" value="[% group.id %]" [% IF group_memberships.grep(->{ this == group.id }).size %] checked="checked"[% END %]> [% group.name %]</label>
+      </div>
+      [% END %]
+      <button type="submit" class="btn btn-primary">Edit Scientist</button>
+   </div>
+</div>
+</form>

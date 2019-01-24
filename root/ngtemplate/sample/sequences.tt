@@ -1,0 +1,27 @@
+[% USE crumbs = Viroverse::Breadcrumbs({ page_record => sample, context => c, leaf_label => "Sequences" }) %]
+[%- page = {
+    title  = "Sequences for sample $sample.id",
+    has_js = 1,
+    breadcrumbs = crumbs.breadcrumbs
+} -%]
+
+[% BLOCK javascript %]
+<script type="text/javascript" src="[%- c.uri_for('/static/javascripts/sidebar-collect.js') -%]"></script>
+[% END %]
+
+[% WRAPPER 'sample/base.tt' %]
+<h2>Sequences</h2>
+<faceted-search
+    sequence-search
+    sequence-search-ui="within-sample"
+    rows-per-page="50"
+    endpoint="<% c.uri_for_action("/sample/sequences/search", [ sample.id ]) %>">
+</faceted-search>
+
+[% BLOCK 'sidebar' %]
+  <div class="best-sidebar-ever" id="sidebar">
+      [% INCLUDE 'sidebar/dna_sequence.tt' %]
+  </div>
+[% END %]
+
+[% END %]

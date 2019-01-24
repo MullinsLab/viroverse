@@ -1,0 +1,36 @@
+th#cohort-col-first-visit {
+    width: 6em;
+}
+
+th#cohort-col-vl {
+    width: 140px;
+}
+
+td.sparkline {
+    /* These rules are !important because
+     * there are bootstrap rules with greater
+     * specificity for td padding
+     */
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+}
+
+ul.cohort-list {
+    -webkit-columns: 24em auto;
+    -moz-columns: 24em auto;
+    columns: 24em auto;
+    list-style-type: none;
+}
+
+ul.cohort-list li {
+    font-size: 120%;
+    line-height: 1.5em;
+}
+
+td.sparkline svg circle {
+    /* r is not a styleable property until SVG 2, which Firefox doesn't fully
+     * support yet.  On Firefox, r will be the SVG::Sparkline default, which is
+     * tinier.  Unfortunately, it's not configurable in SVG::Sparkline itself.
+     * Eventually Firefox will grow support. */
+    r: 2px;
+}

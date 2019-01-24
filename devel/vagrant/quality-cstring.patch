@@ -1,0 +1,23 @@
+diff -ru a/CFile.cpp b/CFile.cpp
+--- a/CFile.cpp	2005-08-30 10:17:51.000000000 -0700
++++ b/CFile.cpp	2018-05-02 10:40:29.673401583 -0700
+@@ -31,6 +31,7 @@
+ #include <stdio.h>
+ #include <iostream>
+ #include <string>
++#include <cstring>
+ 
+ using namespace std;
+ 
+diff -ru a/CQAnalys.cpp b/CQAnalys.cpp
+--- a/CQAnalys.cpp	2005-08-30 10:17:51.000000000 -0700
++++ b/CQAnalys.cpp	2018-05-02 10:40:23.089016963 -0700
+@@ -18,7 +18,7 @@
+ 
+ #include <stdlib.h>
+ #include <iostream>
+-#include <string>
++#include <cstring>
+ #include <math.h>
+ 
+ #ifndef __OLD_STRING_STREAMS__

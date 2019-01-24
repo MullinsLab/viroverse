@@ -1,0 +1,10 @@
+<div class='sample'>
+    Specimen # [%- object.id -%] received [%- object.received_date OR "unknown" -%]<br>
+    [%- object.tissue_type.name -%] from [% object.patient.name %]  [% object.date.strftime('%Y-%m-%d') -%]<br>
+    Notes:
+    <ul>
+    [%- FOR note IN object.notes -%]
+        <li>[% note.body %]</li>
+    [% END %]
+    </ul>
+</div>

@@ -1,0 +1,22 @@
+[%- page = { skip_wrapper = 1 } -%]
+<h2>Selected DNA</h2>
+[%- IF dna_sequence -%]
+
+<h3>Download</h3>
+<sequence-downloader
+  sidebar="true"
+  form="sequence-downloader-sidebar">
+</sequence-downloader>
+<input type="submit" value="Download" form="sequence-downloader-sidebar" class="btn btn-primary btn-sm">
+
+<div class="toolbar">
+  <button onclick='sidebar_clear_type("dna_sequence")' class="btn btn-link btn-sm">clear all</button>
+</div>
+<ul class="sidebar-items">
+[% FOREACH dna_i IN dna_sequence %]
+    <li><a onClick='sidebar_remove("dna_sequence", [%- dna_i.give_id.json -%])' href='#' name='remove'>del</a> [%- dna_i.fasta_description  %]</li>
+[% END %]
+</ul>
+[%- ELSE -%]
+<p>No DNA sequences in your cart.</p>
+[%- END -%]

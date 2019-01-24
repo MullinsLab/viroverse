@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse: extraction</title>
+
+[% USE dumper %]
+[% USE date(format=date_format) %]
+[% INCLUDE 'in-head.tt' %]
+
+    <link href="[%- uri_base -%]static/stylesheets/autosuggest.css "rel="stylesheet" type="text/css" />    
+    <link href="[%- uri_base -%]static/stylesheets/y.css" rel="stylesheet" type="text/css" />    
+
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/util.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/extraction.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/sidebar-collect.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/yahoo-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/event-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/yahoo-dom-event.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/animation-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/connection-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/element-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/datasource-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/dragdrop-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/autocomplete-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/container-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/datatable-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/suggestion-scientist.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/suggestion-patient.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/prod.js"></script>
+
+    <script type='text/javascript' language='javascript'>
+        var finder;
+        var local_find_a = new Array;
+        [%- FOREACH type IN find_a -%]
+        local_find_a.push('[%- type.name -%]');
+        [%- END -%]
+        function go_time () {
+            finder = new product_finder(local_find_a,'finder','error',add_product_box);
+            finder.add_fn_arguments = new Array ('to_do','error');
+        }
+
+        YAHOO.util.Event.onDOMReady(go_time);
+
+    </script>
+
+</head>
+
+<body>
+[% INCLUDE 'body-top.tt' %]
+    <h2>Extraction</h2>
+
+    [% INCLUDE prod_find.tt
+        date_field = 'date',
+        date_label = 'Collection Date',
+        scientist_filter = 'no'
+        %]
+
+    <fieldset><legend>New Extraction</legend>
+    [%- PROCESS 'body-error.tt' -%]
+    <form id='extraction_build' name='extraction_build' action='[%- uri_base -%]/input/extraction_post' >
+    <label>Sample(s)</label>
+    <div class="formw" id='to_do'>
+[% FOREACH sample_i IN sample %]
+    <input type='checkbox' name='samplebox' checked='true' id='box[%- sample_i.id -%]' value='[%- sample_i.id -%]'></input><label class='check' for='box[%- sample_i.id -%]'>[% sample_i.to_string %]</label><br />
+[% END %]
+    </div>
+    <br clear='all'>
+
+    <label>Kit</label> 
+    <span class="formw">
+        <select name="extraction_proto" [%- disabled -%]>
+            [% FOREACH p IN protocols %]<option value="[%- p.id -%]">[%- p.name -%]</option>[% END %]
+            <option value="">other (specify in Notes)</option>
+        </select> 
+    </span> 
+    <br clear=all>
+
+    <label>Molecule</label> 
+    <span class="formw">
+            <select name="extraction_molecule" [%- disabled -%]> 
+                <option value="RNA">RNA</option>
+                <option value="DNA">DNA</option>
+            </select> 
+    </span>
+    <br clear='all' />
+
+    <label>Scientist</label> 
+    <div class="formw">
+        [%- INCLUDE 'scientist-select.tt' -%]
+    </div> 
+    <br clear='all' />
+
+    <label>Amount used/cells used</label> 
+    <span class="formw">
+        <input name="extraction_amount_used" type="text" size="10"  [%- disabled -%]/>
+        <input type="radio" name="extraction_amount_used_type" value="10^6 cells" [%- disabled -%]> millions of cells</input>
+        <input type="radio" name="extraction_amount_used_type" checked='true' value="ul" [%- disabled -%]> &mu;l</input>
+        <input type="radio" name="extraction_amount_used_type" value="mg" [%- disabled -%]> mg</input>
+    </span> 
+    <br clear='all' />
+
+    <label>Concentration step?</label>
+    <span class='formw'>
+        <input type="radio" name="extraction_concentrated" value="yes" [%- disabled -%]> yes </input>
+        <input type="radio" name="extraction_concentrated" value="no"  checked='yes' [%- disabled -%]> no </input>
+    </span>
+    <br clear='all' />
+
+    <label>Final concentration</label>
+    <span class='formw'>
+        <input type="text" name="extraction_concentration" size="10" [%- disabled -%] />
+        <input type="hidden" name="extraction_concentration_unit" value="ng/ul" />
+        ng/ul
+    </span>
+    <br clear='all' />
+
+    <label for="eluted_vol">Eluted volume</label>
+    <span class='formw'>
+        <input type="text" name="extraction_eluted_vol" id="eluted_vol" size="10" [%- disabled -%]>
+        <input type="hidden" name="extraction_eluted_vol_unit" value="ul"> &#xB5;l
+    </span>
+    <br clear='all' />
+
+    <label>Date</label> 
+    <span class="formw"><input name="extraction_date" id='date' type="text" placeholder="YYYY-MM-DD" class="quickfill-today" size="14" maxlength='10' value="" [%- disabled -%]/></span>
+    <br clear='all' />
+
+    <label>Notes</label> 
+    <span class="formw"><textarea name="extraction_notes" rows="5" cols="37" [%- disabled -%]></textarea></span> 
+
+
+    </fieldset>
+    <div class="buttons">
+        <label></label> 
+        <span class="formButton">
+            <a href="#" onClick="window.location.reload()" class="clear-form">Clear this form</a>&nbsp;
+            <input type="button" onClick="form_to_sidebar_ajax('extraction_build','extraction','error')" value="Add >>"  [%- disabled -%]/>
+        </span> 
+    </div> <!--end row-->
+    </form>
+
+[% INCLUDE 'in-body-bottom.tt' %]
+
+    <div id="sidebar">
+        [% INCLUDE 'extraction-sidebar.tt' %]
+    </div>
+
+[% INCLUDE 'body-end.tt' %]
+
+</body>
+</html>

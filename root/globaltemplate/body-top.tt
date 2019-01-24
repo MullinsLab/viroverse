@@ -1,0 +1,27 @@
+[%- INCLUDE 'macros.tt' -%]
+
+[% INCLUDE 'nav.tt' %]
+
+<!--
+  Normally ng-app would go on the <html> element, but this div is the only
+  (mostly) centralized place to affect all legacy pages since none of them
+  use wrappers.
+    -trs, 6 December 2016
+-->
+<main ng-app="vv">
+    <div id="main" class="<% main_class | html %>">
+        [% IF page.breadcrumbs %]
+        <div class="bootstrapped">
+            [% INCLUDE 'breadcrumbs.tt' %]
+        </div>
+        [% END %]
+        <div class="formBox">
+            <div class='formHeader'>
+            [% IF section %]
+              [% INCLUDE "menu-${section}.tt" %]
+            [% END %]
+            </div>
+            <div class='formBody'>
+                <div class="message" id='message'>
+                [%- message -%]
+                </div>

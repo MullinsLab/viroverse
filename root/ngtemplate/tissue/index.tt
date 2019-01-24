@@ -1,0 +1,42 @@
+[%- page = {
+        title  = "Tissue types",
+        breadcrumbs     = [
+          [ 'Admin',       c.uri_for_action('/admin/index') ],
+          [ 'Tissue types' ]
+        ]
+    }
+-%]
+
+<div class="row">
+    <div class="col-md-5 col-xs-8">
+        <h1 class="page-header">Tissue types</h1>
+
+        <form method="POST" action="[% c.uri_for_action('/tissuetype/create') %]"
+          id="new-tissue" class="form-inline" role="form">
+        </form>
+
+        <table class="table">
+            <thead>
+                <tr><th>Tissue type name</th><th>Sample count</th><th /></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <input form="new-tissue" type="text" name="name" class="form-control" placeholder="New tissue type name…"/>
+                    </td>
+                    <td />
+                    <td>
+                        <button form="new-tissue" type="submit" class="btn btn-primary btn-sm float-left">Add tissue type</button>
+                    </td>
+                </tr>
+                [% FOREACH tissue IN tissue_types %]
+                <tr>
+                    <td>[% tissue.name %]</td>
+                    <td class="text-right">[% tissue.get_column('sample_count') | commafy %]</td>
+                    <td />
+                </tr>
+                [% END %]
+            </tbody>
+        </table>
+    </div>
+</div>

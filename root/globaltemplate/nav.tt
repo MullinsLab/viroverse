@@ -1,0 +1,53 @@
+<header class="bootstrapped">
+  <nav class="navbar navbar-static-top navbar-viroverse">
+    <div class="container">
+
+      <!-- Logo and name -->
+      <div class="navbar-header">
+        <a class="navbar-brand" href="<% uri_base %>" title="Go to your homepage">
+          <img src="<% uri_base %>/static/images/hiv-large-grey.svg"  width="40" height="40" alt="HIV virion logo" class="hidden-hover">
+          <img src="<% uri_base %>/static/images/hiv-large-white.svg" width="40" height="40" alt="HIV virion logo" class="visible-hover">
+          Viroverse
+        </a>
+      </div>
+
+      <div>
+        <!-- Main nav items -->
+        <ul class="nav navbar-nav">
+          <li><a href="[% c.uri_for_action("/cohort/index") %]">Browse subjects</a></li>
+          <li><a href="[% c.uri_for_action("/sample/index") %]">Search samples</a></li>
+          <li><a href="[% c.uri_for_action("/sequence/index") %]">Search sequences</a></li>
+          <li><a href="[% c.uri_for_action("/input/index") %]">Enter data</a></li>
+        </ul>
+
+        <!-- Right side items -->
+        <p class="navbar-text navbar-right user-greeting">
+          Hi, [% scientist.name | html %]!
+        </p>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="[% c.uri_for_action("/project/index") %]">Projects</a></li>
+          <li><a href="[% c.uri_for_action("/admin/index") %]">Admin</a></li>
+          <li><a href="mailto:<% help_email | uri | html %>?body=<% help_body | uri %>">Need help?</a></li>
+        </ul>
+
+        <!--
+          It's easier while we still have a mix of legacy pages and new pages
+          to use a small bit of JS to do the active page highlighting.  This is
+          pretty simple and intentionally only highlights the nav item itself;
+          not pages underneath the same path.
+        -->
+        <script type="text/javascript">
+          (function(){
+            'use strict';
+            let page  = document.location;
+            let links = document.querySelectorAll("ul.navbar-nav > li > a");
+            let match = [...links].filter((a) => page.pathname === a.pathname)[0];
+            if (match)
+              match.parentElement.classList.add("active");
+          })();
+        </script>
+      </div>
+
+    </div>
+  </nav>
+</header>

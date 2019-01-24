@@ -1,0 +1,27 @@
+#!/bin/bash
+# Use this as an exec wrapper to setup the proper shell and Perl environment
+# for Viroverse.  For example:
+#
+#    ./vv scripts/add-scientist.pl --as trsibley --name ...
+# or ./vv scripts/restart-server
+#
+# This 1) ensures perlbrew is active, 2) sets up application lib paths, and 3)
+# sets up the carton local Perl lib and bin paths.
+
+# Ensure perlbrew is active - important for cronjobs!
+source ~/perl5/perlbrew/etc/bashrc
+
+# Figure out the application root
+root="$(dirname $0)"
+cd "$root"
+root="$(pwd)"
+cd - >/dev/null 2>&1
+
+# Setup application and carton lib paths. Now slightly more complicated than
+# what carton exec would do, because we add vendor (internally shared) perl
+# libs to our path as well
+carton=${PERL_CARTON_PATH:-$root/local}
+export PERL5LIB="$root/lib:$carton/lib/perl5:$root/vendor/mullins/lib"
+export PATH="$carton/bin:$PATH"
+export VIROVERSE_ROOT="$root"
+exec "$@"

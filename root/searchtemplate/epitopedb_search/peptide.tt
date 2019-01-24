@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse: EpitopeDB Search</title>
+
+[% INCLUDE 'summ-head.tt' %]
+    <link href="[%- uri_base -%]/static/stylesheets/autosuggest.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/remotesuggestions.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/autosuggest2.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/epitopedb.js"></script>
+    <script type="text/javascript">
+
+    function removeChildNodes(parentNode) {
+        var kids = parentNode.childNodes;    // Get the list of children
+        var numkids = kids.length;  // Figure out how many children there are
+        for(var i = numkids-1; i >= 0; i--) {  // Loop backward through the children
+            var c = parentNode.removeChild(kids[i]);    // Remove a child
+        }
+    }
+
+    function UnSelectGeneList (geneListObj) {
+        removeChildNodes (geneListObj);
+        var geneArray = new Array ();
+        geneArray[1] = "-- ALL --";
+        geneArray[2] = "Gag";
+        geneArray[4] = "Pol";
+        geneArray[5] = "Vif";
+        geneArray[6] = "Vpr";
+        geneArray[7] = "Tat";
+        geneArray[8] = "Rev";
+        geneArray[9] = "Vpu";
+        geneArray[10] = "Env";
+        geneArray[11] = "Nef";
+
+        for (var i = 1; i <= 11; i++) {
+            if (i != 3) {
+                var geneOption = document.createElement("option");
+                geneOption.value = i;
+                geneOption.appendChild(document.createTextNode(geneArray[i]));
+                geneListObj.appendChild(geneOption);
+            }
+        }
+    }
+
+    </script>
+
+</head>
+
+<body class='yui-skin-sam'>
+[% INCLUDE 'body-top.tt' %]
+<h2>Search for Peptide or Identified Epitope</h2>
+<form action="peptide/result" method="post">
+    <fieldset><legend>HIV protein</legend>
+    <table><tr><td><label>Proteins with<br>all peptides</label>
+    <span class='formw'>
+        <select multiple='multiple' id='pept_gene' name='pept_gene' size=4 onchange="UnSelectGeneList(this.form.epit_gene);">
+            <option value = 1 selected='selected'>-- ALL --</option>
+            [% FOREACH gene IN genes %]
+                 <option value="[%- gene.gene_id -%]">[%- gene.gene_name -%]</option>
+            [% END %]
+
+        </select>
+    </span>
+    </td>
+    <td><label>Proteins with<br>defined epitopes</label>
+    <span class='formw'>
+        <select multiple='multiple' id='epit_gene' name='epit_gene' size=4 onchange="UnSelectGeneList(this.form.pept_gene);">
+        <option value = 1>-- ALL --</option>
+            [% FOREACH gene IN genes %]
+                 <option value="[%- gene.gene_id -%]">[%- gene.gene_name -%]</option>
+            [% END %]
+        </select>
+    </span>
+    </td>
+    <td><label>Source of<br>defined epitopes</label>
+        <span class='formw'>
+        <select multiple='multiple' name='source' size=4>
+        <option value = 1>-- ALL --</option>
+            [% FOREACH source IN sources %]
+                 <option value="[%- source.source_id -%]">[%- source.source -%]</option>
+            [% END %]
+
+        </select>
+    </span><br clear='all' />
+    </td></tr></table>
+    </fieldset>
+
+    <fieldset><legend>Epitope or Peptide</legend>
+    <label>Name</label>
+    <span class='formw'>
+        <input type='text' name='pept_name' id='pept_name' value='-- None --' style='color:grey' onclick='restalltextbox(this)' class='auto'/>
+    </span><br clear='all' />
+    <label>or Sequence</label>
+    <span class='formw'>
+        <input type='text' name='pept_seq' value='-- None --' style='color:grey' onclick='restalltextbox(this)' class='auto'/>
+    </span><br clear='all' />
+    <label>or Length</label>
+    <span class='formw'>
+        <input type='text' size='8' name='lengtha' value='-- None --' style='color:grey' onclick='restalltextbox(this)'/>
+    </span>
+    to
+    <span>
+        <input type='text' size='8' name='lengthb' value='-- None --' style='color:grey' onclick='restalltextbox(this)'/>
+    </span>
+    </fieldset>
+
+    <fieldset><legend>HLA</legend>
+    <label>Type</label>
+    <span class='formw'>
+        <select multiple='multiple' name='hla' size=4>
+        <option value = 0 selected="true">-- ALL --</option>
+        [%- FOREACH hla IN hlas -%]
+        <option value="[%- hla.hla_id -%]">[%- hla.type -%]</option>
+        [%- END -%]
+        </select>
+    </span><br clear='all'>
+    </fieldset>
+
+    <fieldset><legend>Test patient</legend>
+    <label></label>
+    <span class='formw'>
+        <select multiple='multiple' name='patient' size=4>
+        <option value = 0 selected="true">-- ALL --</option>
+        [%- FOREACH patient IN patients -%]
+            <option value="[%- patient.patient_id -%]">[%- patient.patient -%]</option>
+        [%- END -%]
+        </select>
+    </span><br clear='all'>
+    </fieldset>
+    <br>
+    <div class="buttons">
+        <span class="formButton">
+            <input type='submit' name='submit' value='Search'>&nbsp;<input type='reset' name='reset' value=' Reset '>
+        </span> 
+    </div>
+</form>
+
+[% INCLUDE 'body-bottom.tt' %]
+    <div id="sidebar">
+        <input type="submit" value="Download .csv">
+        <pre>
+        <!-- [% sql %] -->
+        </pre>
+    </div>
+[% INCLUDE 'body-end.tt' %]
+</body>
+</html>

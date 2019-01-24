@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse: PCR</title>
+
+[% USE date(format=date_format) %]
+[% USE Dumper %]
+[% INCLUDE 'in-head.tt' %]
+
+
+    <link href="[%- uri_base -%]/static/stylesheets/autosuggest.css" rel="stylesheet" type="text/css" />    
+    <link href="[%- uri_base -%]static/stylesheets/y.css" rel="stylesheet" type="text/css" />      
+    <link href="[%- uri_base -%]static/stylesheets/input_tools.css" rel="stylesheet" type="text/css" />    
+
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/pcr.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/sidebar-collect.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/yahoo-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/event-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/yahoo-dom-event.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/connection-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/element-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/datasource-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/dragdrop-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/autocomplete-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/animation-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/datatable-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/suggestion-scientist.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/suggestion-patient.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/suggestion-primer.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/prod.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/copy_num.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/gel.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/container-min.js"></script>
+
+
+    <script type='text/javascript' language='javascript'>
+        [%- USE JSON.Escape( utf8 => 1, convert_blessed => 1 ) -%]
+        var finder;
+        var pcr_find_a = new Array;
+        [%- FOREACH type IN find_a -%]
+        pcr_find_a.push([%- type.name.json -%]);
+        [%- END -%]
+        function go_time () {
+            finder = new product_finder(pcr_find_a,'finder','error',pcr_add_template);
+
+            finder.add_fn_arguments = new Array ('templateSelect','pcr_build','error',finder);
+            var initPrimers = new Array('pcr_round_1_primer_1','pcr_round_1_primer_2');
+            pcr_init('round1',initPrimers,'round_1_primers');
+
+            [% IF pos_pcr.count ~%]
+                finder.from_ids('pos_pcr', [% pos_pcr.map("id").json %]);
+            [%~ END %]
+
+            [% FOREACH extraction IN to_pcr.extraction %]
+                finder.added_things.push([%- ext = extraction.TO_JSON; ext.type = 'extraction'; ext.json -%]);
+            [% END %]
+            [% FOREACH rt_i IN to_pcr.rt %]
+                finder.added_things.push([%- rt = rt_i.TO_JSON; rt.type = 'rt_product'; rt.json -%]);
+            [% END %]
+            [% FOREACH bcd_i IN to_pcr.bisulfite_converted_dna %]
+                finder.added_things.push([%- bcd = bcd_i.TO_JSON; bcd.type = 'bisulfite_converted_dna'; bcd.json -%]);
+            [% END %]
+
+            initOverlays(); //initialize overlays for copy number
+            viroverse.messageAnimate = new YAHOO.util.ColorAnim('message',{ backgroundColor: { from: '#FF6', to: '#FFF' } },2 );
+            viroverse.errorAnimate = new YAHOO.util.ColorAnim('error',{ backgroundColor: { from: '#F33', to: '#FFF' } },2 );
+        }
+
+        YAHOO.util.Event.onDOMReady(go_time);
+
+
+    </script>
+</head>
+
+<body>
+[% INCLUDE 'body-top.tt' %]
+
+    <h2>PCR</h2>
+
+    [%- INCLUDE prod_find.tt -%]
+
+    <form name='pcr_build' id='pcr_build' action='[%- uri_base -%]/input/pcr_add'>
+    <fieldset><legend>New PCR</legend>
+
+    [%- PROCESS 'body-error.tt' -%]
+
+    <label>Template</label>
+    <div class="formw">
+        <select id='templateSelect' name='pcr_template' multiple='YES' [%- disabled-%] onclick="templateSelClickHandler(this,finder);" >
+[% FOREACH extraction IN to_pcr.extraction %]
+            <option value='extractionbox[%- extraction.extraction_id -%]'>[%- extraction.to_string -%]</option>
+[% END %]
+[% FOREACH rt_i IN to_pcr.rt %]
+            <option value='rtbox[%- rt_i.get('rt_product_id') -%]'>[%- rt_i.to_string -%]</option>
+[% END %]
+[% FOREACH bcd_i IN to_pcr.bisulfite_converted_dna %]
+            <option value='bisulfite_converted_dnabox[%- bcd_i.get('bisulfite_converted_dna_id') -%]'>[%- bcd_i.to_string -%]</option>
+[% END %]
+        </select>
+        <a href='#' onClick='return empty_templates("templateSelect",finder)'>clear</a>
+        <div id="copy_num_res"></div>
+    </div><br clear='all' />
+    <div class='formw' id="pcr_dil_ctnr">
+    <div class='pcr_line'>
+    <span id='concentration' style='display:none'><label for='input_mass'>mass (ng)</label><input id='input_mass' name='tempm' type='text' size='5' onchange="mass_change(this.id,'input_vol','templateSelect',finder)" onblur="mass_change(this.id,'input_vol','templateSelect',finder)"></input></span>
+    <label for='input_vol'>volume (&mu;L)</label><input id='input_vol' name='tempv' type='text' size='5'> 
+    <label for='input_repl'>replicates</label><input id='input_repl' name='tempr' type='text' size='3'>
+    <input type='button' value='+' onclick='addDilutionBox("templateSelect","input_vol","input_repl", "pcr_dil_ctnr")'>
+    </div>
+
+    </div><br clear='all' />
+
+    <!--
+    <label>filename</label> <span class="formw"><input name="pcr_name" type="text" size="40" /></span> 
+    <br clear='all' />
+    -->
+
+    <label>Scientist</label> 
+    <div class="formw">
+        [%- INCLUDE 'scientist-select.tt' -%]
+    </div> 
+    <br clear='all' />
+
+    <div id="rounds">
+        <fieldset id='round1'><legend>Round 1 <input type='button' value="+" onClick="addRound(this,1)" /></legend>
+            <input id='count_round_1' name='pcr_rounds' type='hidden' value='1'>
+
+            <label>Date</label> <span class="formw"><input name="pcr_round_1_completed_date" type="text" placeholder="YYYY-MM-DD" class="quickfill-today" size="14" value='' /></span>
+            <br clear='all' />
+
+            <label>Enzyme</label>
+            <span class="formw">
+                <select name="pcr_round_1_enzyme" [%- disabled -%]> 
+                    [%- FOREACH e=enzymes.sort('name') -%]
+                    <option value="[%- e.id -%]">[%- e.name -%]</option>
+                    [%- END -%]
+                    <option value="">other (specify in Notes)</option>
+                </select> 
+            </span> 
+            <br clear='all' />
+
+            <label>Thermocycler Program</label>
+            <span class="formw">
+                <select name="pcr_round_1_protocol" [%- disabled -%]> 
+                    [% FOREACH p IN protocols %]<option value="[%- p.id -%]">[%- p.name -%]</option>[% END %]
+                    <option value="">other (specify in Notes)</option>
+                </select> 
+            </span> 
+            <br clear='all' />
+
+            <label>Endpoint dilution?</label>
+            <span class="formw">
+                <label class="inline"><input name="pcr_round_1_epd" type="radio" value="1"> yes</label>
+                <label class="inline"><input name="pcr_round_1_epd" type="radio" value="0"> no</label>
+            </span>
+            <br clear='all' />
+
+            <div id='pcr_round_1_multiplex'>
+            <label>Multiplex?</label>
+            <span class='formw'>
+                <input name="pcr_round_1_multiplex" type="radio" value="0" checked="true" /> no
+                <input id='pcr_round_1_multiplex_yes' name="pcr_round_1_multiplex" type="radio" value="1" /> yes
+            </span>
+            </div>
+
+            <label>Hot Start?</label> 
+            <span class="formw">
+                <input name="pcr_round_1_hot" type="radio" value="1" checked='true' /> yes
+                <input name="pcr_round_1_hot" type="radio" value="0" /> no
+            </span> 
+            <br clear='all' />
+
+            <label>Genome Portion</label> 
+            <span class="formw">
+                <input name="pcr_round_1_genome_portion" type="radio" value="3" /> whole genome
+                <input name="pcr_round_1_genome_portion" type="radio" value="1" /> targeted
+            </span> 
+            <br clear='all' />
+
+            <div id='round_1_primers' class='primers'><div>
+                    <label> Primer 1</label> 
+                    <span class="formw"><input id='pcr_round_1_primer_1' name="pcr_round_1_primer_1" type="text" size="40" class="auto" /></span> 
+                    <div class='y_auto primer_auto' id='pcr_round_1_primer_1result'></div>
+                </div><div>
+                    <label>Primer 2</label> 
+                    <span class="formw">
+                        <input id='pcr_round_1_primer_2' name="pcr_round_1_primer_2" type="text" size="40" class="auto" />
+                        <div class='y_auto primer_auto' id='pcr_round_1_primer_2result'></div>
+                    </span> 
+                    <span >
+                        <input type="button" value="+" id="addprimer_round_1p" onClick="addRoundPrimer(this,1)"> 
+                        <input type="button" value="-" id="addprimer_round_1m" onClick="delRoundPrimer(this,1)"> 
+                    </span>
+                </div></div> <!--end primergroup div-->
+        <br clear='all' />
+
+                <label>Notes</label> 
+                <div class="formw"><textarea name="pcr_round_1_notes" id='pcr_round_1_notes' rows="2" cols="37"></textarea></div> 
+
+        <br />
+        </fieldset> 
+    </div> <!--end rounds div-->
+
+    </fieldset>
+    <br clear='all' />
+    <div class="buttons">
+        <label></label> 
+        <span class="formButton">
+            <a href="#" onClick="window.location.reload()" class="clear-form">Clear this form</a>&nbsp;
+            <input type="button" onClick="form_to_sidebar_ajax('pcr_build','pcr','error')" value="Add >>"  [%- disabled -%]/>
+        </span> 
+    </form>
+    </div> <!--end row-->
+
+
+[% INCLUDE 'in-body-bottom.tt' %]
+
+    <div id="sidebar">
+        [% INCLUDE 'pcr-sidebar.tt' %]
+    </div>
+
+[% INCLUDE 'body-end.tt' %]
+
+[% INCLUDE 'pcr-tool-overlays.tt' %]
+
+</body>
+</html>

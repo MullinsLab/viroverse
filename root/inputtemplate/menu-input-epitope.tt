@@ -1,0 +1,8 @@
+<span class="subsection-title">EpitopeDB</span>
+<a href="[%- c.uri_for('/input/epitopedb/peptide') -%]">Peptide</a>
+<a href="[%- c.uri_for('/input/epitopedb/pool') -%]">Peptide Pool</a>
+<a href="[%- c.uri_for('/input/epitopedb/peptide_elispot') -%]">Peptide ELISpot</a>
+<a href="[%- c.uri_for('/input/epitopedb/titration') -%]">Titration</a>
+<a href="[%- c.uri_for('/input/epitopedb/hla_restriction') -%]">HLA Restriction</a>
+<a href="[%- c.uri_for('/input/epitopedb/pool_elispot') -%]">Pool ELISpot</a>
+<a href="[%- c.uri_for('/input/epitopedb/epitope') -%]">Epitope</a>

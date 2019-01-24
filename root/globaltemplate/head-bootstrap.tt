@@ -1,0 +1,6 @@
+[% UNLESS no_reset %]
+<link rel="stylesheet" href="<% uri_base %>static/stylesheets/viroverse-revert-for-bootstrap.css">
+[% END %]
+<link rel="stylesheet" href="<% uri_base %>static/stylesheets/vendor/bootstrap-3.2.0-namespaced.min.css">
+<link rel="stylesheet" href="<% uri_base %>static/stylesheets/vendor/bootstrap-theme-3.2.0-namespaced.min.css">
+<link rel="stylesheet" href="<% uri_base %>static/stylesheets/viroverse-bootstrap-overrides.css">

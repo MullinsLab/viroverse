@@ -1,0 +1,69 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use autodie;
+use 5.010;
+
+use Cwd;
+use FindBin;
+use File::Temp qw(tempfile);
+use File::Spec::Functions qw(rel2abs);
+use Getopt::Long;
+
+my $approot  = $ENV{VIROVERSE_ROOT} // "$FindBin::RealBin/..";
+my $docroot  = "$approot/root";
+my $template = "$FindBin::RealBin/apache.conf.template";
+my $listen   = 5000;
+my $user     = $ENV{USER} || $ENV{USERNAME} || `whoami`;
+chomp $user;
+my $remote_user = $user;
+
+GetOptions(
+    'docroot=s'     => \$docroot,
+    'template=s'    => \$template,
+    'listen=s'      => \$listen,
+    'user=s'        => \$remote_user,
+);
+
+$ENV{REMOTE_USER} = $remote_user;
+
+$_ = rel2abs($_)
+    for $docroot, $template;
+
+die "Can't find docroot '$docroot' (or it isn't a directory)"
+    unless -d $docroot;
+
+die "Can't find config template $template"
+    unless -r $template;
+
+my ($out, $confpath) = tempfile("apache.conf.XXXX", TMPDIR => 1);
+open my $in, "<", $template;
+while (<$in>) {
+    s/\{\{\s*VIROVERSE_ROOT\s*\}\}/$approot/g;
+    s/\{\{\s*DOCUMENT_ROOT\s*\}\}/$docroot/g;
+    s/\{\{\s*LISTEN\s*\}\}/$listen/g;
+    s/\{\{\s*RUNNING_USER\s*\}\}/$user/g;
+    s/\{\{\s*REMOTE_USER\s*\}\}/$remote_user/g;
+    print { $out } $_;
+}
+close $in;
+
+print <<SUMMARY;
+USER:     $user
+LISTEN:   $listen
+DOCROOT:  $docroot
+TEMPLATE: $template
+CONFIG:   $confpath
+
+SUMMARY
+
+my @httpd = ("/usr/sbin/httpd", "-f", $confpath, "-DOS_\U$^O");
+
+system($^X, "$FindBin::RealBin/../scripts/restart-server");
+system(@httpd, "-k", "start");
+{ 
+    no autodie;
+    system("tail", "-f", "/tmp/error_log-viroverse", "$FindBin::RealBin/../var/log/server.log");
+}
+system(@httpd, "-k", "stop");
+system($^X, "$FindBin::RealBin/../scripts/stop-server");

@@ -1,0 +1,35 @@
+<div class="row">
+    <div class="col-md-12">
+        [% INCLUDE select_column_key_help %]
+        <p>
+            If the scientist column is left blank for an individual sequence,
+            the scientist under “Job options” will be used.
+        </p>
+    </div>
+    <div class="col-md-6">
+        <h2>Assign data columns</h2>
+        <div class="form-group">
+            <label for="sample_name_key">Sample name</label>
+            [% INCLUDE select_column_key key = "sample_name" %]
+        </div>
+        <div class="form-group">
+            <label for="sequence_name_key">Sequence name</label>
+            [% INCLUDE select_column_key key = "sequence_name" %]
+        </div>
+        <div class="form-group">
+            <label for="sequence_key">Sequence contents</label>
+            [% INCLUDE select_column_key key = "sequence" %]
+        </div>
+        <div class="form-group">
+            <label for="scientist_name_key">Scientist name</label>
+            [% INCLUDE select_column_key key = "scientist_name" %]
+        </div>
+    </div>
+    <div class="col-md-6">
+        <h2>Job options</h2>
+        <div class="form-group">
+            [% INCLUDE 'scientist-dropdown.tt' %]
+        </div>
+    </div>
+
+</div>

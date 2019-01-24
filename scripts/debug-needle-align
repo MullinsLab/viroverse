@@ -1,0 +1,99 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use 5.018;
+use Viroverse::Logger -script => qw< :log >;
+use Viroverse::Model::alignment;
+use FindBin qw< $Script >;
+use Getopt::Long;
+
+GetOptions(
+    "new"       => \(my $new),
+    "as-fasta"  => \(my $as_fasta),
+);
+
+my $seqid = shift;
+
+die "usage: $Script [--new] [--as-fasta] sequence-id\n"
+    unless $seqid;
+
+my $hxb2 = Viroverse::Model::sequence::dna->retrieve_hxb2;
+my $seq  = Viroverse::Model::sequence::dna->retrieve($seqid);
+
+my $desc      = [ map { $_->fasta_description } $hxb2, $seq ];
+my $unaligned = [ map { $_->seq =~ s/[^A-Za-z]//gr } $hxb2, $seq ];
+my $pairwise  = [ [], [] ];
+my $aligned;
+
+if (not $new and my $existing = $seq->hxb2_aln) {
+    log_info { "Using existing alignment #", join ".", $existing->id };
+    for ($existing->pairwise_pieces) {
+        push @{$pairwise->[0]}, [ $_->reference_start, $_->reference_end ];
+        push @{$pairwise->[1]}, [ $_->sequence_start,  $_->sequence_end  ];
+    }
+} else {
+    log_info { "Running needle" };
+    my $began = time;
+    $aligned = Viroverse::Model::alignment->_run_needle($hxb2, $seq);
+    log_info { "  took ", time - $began, " seconds" };
+
+    log_info { "Extracting pairwise pieces" };
+    $pairwise = [ Viroverse::Model::alignment->_parse_alignment_pairwise(@$aligned) ];
+}
+
+sub piece_sequence {
+    # Uses $pairwise and $unaligned from global scope
+    my ($seq, $piece) = @_;
+    my ($start, $end) = @{ $pairwise->[$seq][$piece] };
+    my $prev_end      = $pairwise->[$seq][$piece - 1][1];
+    my $bases = (($start == 0 and $end == 0) or $start == $prev_end)
+            ? "-" x ( $pairwise->[!$seq][$piece][1] - $pairwise->[!$seq][$piece][0] + 1 )
+            : substr( $unaligned->[$seq], $start - 1, $end - $start + 1 );
+    return ($start, $end, $bases);
+}
+
+if ($as_fasta) {
+    unless ($aligned) {
+        log_info { "Constructing fasta alignment from pieces" };
+        # Add a synthetic indel to the front if necessary
+        if ($pairwise->[0][0][0] > 1 or $pairwise->[1][0][0] > 1) {
+            for my $pairs (@$pairwise) {
+                unshift @$pairs, $pairs->[0][0] > 1
+                    ? [1, $pairs->[0][0] - 1]
+                    : [0, 0];
+            }
+        }
+
+        # Add a synthetic indel to the end if necessary
+        if (   $pairwise->[0][-1][1] < length $unaligned->[0]
+            or $pairwise->[1][-1][1] < length $unaligned->[1]) {
+
+            for my $seq (0..1) {
+                my $pairs = $pairwise->[$seq];
+                my $len   = length $unaligned->[$seq];
+                push @$pairs, $pairs->[-1][1] < $len
+                    ? [$pairs->[-1][1] + 1, $len]
+                    : [$len, $len];
+            }
+        }
+
+        # Collect pieces
+        for my $seq (0..1) {
+            for my $piece (0 .. $#{ $pairwise->[$seq] }) {
+                (undef, undef, my $bases) = piece_sequence($seq, $piece);
+                $aligned->[$seq] .= $bases;
+            }
+        }
+    }
+    print ">$desc->[$_]\n$aligned->[$_]\n" for 0..1;
+} else {
+    for my $piece (0 .. $#{ $pairwise->[0] }) {
+        print "# piece $piece\n";
+        for my $seq (0 .. 1) {
+            my ($start, $end, $bases) = piece_sequence($seq, $piece);
+            printf "%s: %4s %s %-4s\n",
+                ($seq ? "query" : "ref  "), $start, $bases, $end;
+        }
+        print "\n";
+    }
+}

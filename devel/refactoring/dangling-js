@@ -1,0 +1,25 @@
+#!/bin/bash
+set -e
+source $(dirname $0)/lib/functions.sh
+
+parse-diff-filter-args "$@"
+
+removed=$(mktemp ${TMPDIR:-/tmp}/$(basename $0)-XXXXXX)
+trap "rm -f $removed" EXIT
+
+echo-header "JS imports removed by ${commit:-diff (via stdin)}"
+$diff \
+    | grep -E '^-.*<script.*src=' \
+    | extract-matches 'static/[^"\x27]+' \
+    | sort -u \
+    | tee $removed
+
+if [[ -s $removed ]]; then
+    echo
+    echo-header "Dangling JS files, no longer used in the working tree as of ${commit:-HEAD}"
+    git grep -Ff $removed \
+        | extract-matches 'static/[^"\x27]+' \
+        | sort $removed /dev/stdin \
+        | uniq -u \
+        | grep -Ff /dev/stdin <(git ls-tree --full-tree -r ${commit:-HEAD})
+fi

@@ -1,0 +1,12 @@
+[%- page = {
+      title = "Sequences",
+    }
+-%]
+
+<div class="row">
+  <div class="col-md-12">
+    <h1 class="page-header">Sequences</h1>
+    <faceted-search sequence-search endpoint="/sequence/search">
+    </faceted-search>
+  </div>
+</div>

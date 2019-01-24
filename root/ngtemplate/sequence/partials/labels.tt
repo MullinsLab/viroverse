@@ -1,0 +1,6 @@
+[% IF sequence.na_sequence_revision != sequence.latest_revision.na_sequence_revision ~%]
+  <strong class="label label-warning">old revision</strong>
+[%~ END %]
+[% IF sequence.deleted ~%]
+  <strong class="label label-danger">deleted</strong>
+[%~ END %]

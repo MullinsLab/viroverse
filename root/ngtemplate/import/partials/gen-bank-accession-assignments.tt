@@ -1,0 +1,20 @@
+<div class="row">
+  <div class="col-md-12">
+    [% INCLUDE select_column_key_help %]
+  </div>
+  <div class="col-md-6">
+    <h2>Assign data columns</h2>
+    [%
+      fields = [
+        { key: 'idrev',             label: 'Viroverse sequence id.rev' },
+        { key: 'genbank_accession', label: 'GenBank sequence accession' },
+      ]
+    %]
+    [% FOR field IN fields %]
+      <div class="form-group">
+        <label for="[% field.key %]_key">[% field.label %]</label>
+        [% INCLUDE select_column_key key = field.key, optional = 0 %]
+      </div>
+    [% END %]
+  </div>
+</div>

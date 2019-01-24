@@ -1,0 +1,949 @@
+{
+  "width": 780,
+  "height": 575,
+  "signals": [
+    {
+      "name": "symbolRadius",
+      "init": 3.5
+    },
+    {
+      "name": "hoverDate",
+      "init": { "expr": "null" },
+      "streams": [
+        {
+          "type": "[mouseover, mouseout] > mousemove[eventX() >= 0 && eventX() <= width]",
+          "expr": "{ lower: iscale('x', eventX() - symbolRadius), date: iscale('x', eventX()), upper: iscale('x', eventX() + symbolRadius) }"
+        },
+        {
+          "type": "mousemove[eventX() < 0 || eventX() > width], mouseout",
+          "expr": "null"
+        }
+      ]
+    },
+    {
+      "name": "publicationMode",
+      "init": false,
+      "streams": [
+        {
+          "type": "dblclick",
+          "expr": "isNaN(scale('x-dpi', 0)) ? false : !publicationMode"
+        }
+      ]
+    },
+    {
+      "name": "hoverDatum",
+      "init": { "expr": "null" },
+      "streams": [
+        {
+          "type": "@viral-load-symbol:mouseover, @cell-count-symbol:mouseover, @medication:mouseover, @medication-arrow:mouseover",
+          "expr": "datum"
+        },
+        {
+          "type": "@viral-load-symbol:mouseout, @cell-count-symbol:mouseout, @medication:mouseout, @medication-arrow:mouseout",
+          "expr": "null"
+        }
+      ]
+    }
+  ],
+  "data": [
+    { "name": "patient" },
+    {
+      "name": "viral-loads",
+      "format": {
+        "parse": {
+          "viral_load": "integer",
+          "limit_of_quantification": "integer",
+          "visit_date": "date"
+        }
+      },
+      "transform": [
+        {
+          "type": "formula",
+          "field": "quantifiable",
+          "expr": "datum.viral_load != 0"
+        },
+        {
+          "type": "formula",
+          "field": "viral_load_or_lloq",
+          "expr": "datum.viral_load || datum.limit_of_quantification"
+        },
+        {
+          "type": "formula",
+          "field": "label",
+          "expr": "if(datum.viral_load, format(',', datum.viral_load), if(datum.limit_of_quantification, '< ' + format(',', datum.limit_of_quantification) + ' (below LLOQ)', 'below unknown LLOQ'))"
+        }
+      ]
+    },
+    {
+      "name": "cell-counts",
+      "format": {
+        "parse": {
+          "value": "integer",
+          "visit_date": "date"
+        }
+      }
+    },
+    {
+      "name": "medications",
+      "format": {
+        "parse": {
+          "start_date": "date",
+          "end_date": "date",
+          "not_on_art": "boolean"
+        }
+      },
+      "transform": [
+        {
+          "type": "filter",
+          "test": "!datum.not_on_art"
+        },
+        {
+          "type": "formula",
+          "field": "end_date_or_ongoing",
+          "expr": "datum.end_date || datetime(year(datum.start_date), month(datum.start_date) + 6, day(datum.start_date))"
+        }
+      ]
+    },
+    { "name": "arv-classes" },
+    {
+      "name": "infection",
+      "format": {
+        "parse": {
+          "estimated_date": "date",
+          "infection_earliest": "date",
+          "infection_latest": "date",
+          "seroconv_earliest": "date",
+          "seroconv_latest": "date",
+          "symptom_earliest": "date",
+          "symptom_latest": "date"
+        }
+      },
+      "transform": [
+        {
+          "type": "formula",
+          "field": "best_guess",
+          "expr": "datum.estimated_date || datum.infection_earliest || datum.seroconv_earliest || datum.symptom_earliest"
+        },
+        {
+          "type": "formula",
+          "field": "best_guess_plus_one_day",
+          "expr": "datum.best_guess ? datum.best_guess + 1000 * 60 * 60 * 24 : null"
+        }
+      ]
+    },
+    {
+      "name": "samples",
+      "format": {
+        "parse": {
+          "visit_date": "date",
+          "sample_count": "integer"
+        }
+      },
+      "transform": [
+        {
+          "type": "filter",
+          "test": "datum.sample_count > 0 && datum.visit_date"
+        }
+      ]
+    },
+    {
+      "name": "colors",
+      "values": [
+        { "dataset": "Viral Load",                 "color": "#d62728" },
+        { "dataset": "CD4",                        "color": "#1f77b4" },
+        { "dataset": "CD8",                        "color": "#2ca02c" },
+        { "dataset": "Infection window",           "color": "#c5b0d5" },
+        { "dataset": "Infection date (estimated)", "color": "#9467bd" }
+      ]
+    }
+  ],
+  "scales": [
+    {
+      "name": "x",
+      "type": "time",
+      "nice": "year",
+      "round": true,
+      "range": "width",
+      "domain": {
+        "fields": [
+          { "data": "viral-loads", "field": "visit_date" },
+          { "data": "cell-counts", "field": "visit_date" },
+          { "data": "samples",     "field": "visit_date" },
+          { "data": "medications", "field": ["start_date", "end_date_or_ongoing"] },
+          { "data": "infection",
+            "field": [
+              "estimated_date",
+              "infection_earliest",
+              "infection_latest",
+              "seroconv_earliest",
+              "seroconv_latest",
+              "symptom_earliest",
+              "symptom_latest"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "x-dpi",
+      "type": "linear",
+      "round": true,
+      "clamp": false,
+      "zero": false,
+      "domainMin": { "data": "infection", "field": "best_guess" },
+      "domainMax": { "data": "infection", "field": "best_guess_plus_one_day" },
+      "range": [ 0, 1 ]
+    },
+    {
+      "name": "dataset-color",
+      "type": "ordinal",
+      "domain": { "data": "colors", "field": "dataset" },
+      "range":  { "data": "colors", "field": "color" }
+    }
+  ],
+  "marks": [
+    {
+      "type": "text",
+      "from": {
+        "data": "patient"
+      },
+      "properties": {
+        "update": {
+          "text": [
+            { "test": "publicationMode && datum.publication_name", "field": "publication_name" },
+            { "field": "name" }
+          ],
+          "x": { "field": { "group": "width" }, "mult": 0.5 },
+          "y": { "value": -15 },
+          "align": { "value": "center" },
+          "fill": { "value": "black" }
+        }
+      }
+    },
+
+    {
+      "name": "hoverRule",
+      "type": "rule",
+      "properties": {
+        "update": {
+          "x": [
+            {
+              "test": "hoverDate",
+              "scale": "x",
+              "signal": "hoverDate.date"
+            }
+          ],
+          "y": { "field": { "group": "height" } },
+          "y2": { "value": 0 },
+          "stroke": { "value": "black" },
+          "strokeWidth": { "value": 1 },
+          "strokeDash": { "value": [10, 5] },
+          "opacity": [
+            { "test": "hoverDate", "value": 0.6 },
+            { "value": 0 }
+          ]
+        }
+      }
+    },
+    {
+      "name": "hoverDate",
+      "type": "text",
+      "properties": {
+        "update": {
+          "text": [
+            { "test": "hoverDate && publicationMode", "signal": "hoverDate.date", "scale": "x-dpi" },
+            { "test": "hoverDate", "template": "{{ hoverDate.date | time:'%b %Y' }}" },
+            { "value": "" }
+          ],
+          "x": [
+            {
+              "test": "hoverDate",
+              "scale": "x",
+              "signal": "hoverDate.date",
+              "offset": 5
+            }
+          ],
+          "y": { "value": 0 },
+          "align": { "value": "left" },
+          "baseline": { "value": "top" },
+          "fill": { "value": "black" },
+          "opacity": { "value": 0.6 }
+        }
+      }
+    },
+
+    {
+      "name": "primaryPanel",
+      "type": "group",
+      "properties": {
+        "update": {
+          "x": { "value": 0 },
+          "y": { "value": 0 },
+          "width":  { "field": { "group": "width" } },
+          "height": { "field": { "group": "height" }, "mult": 0.60 }
+        }
+      },
+      "scales": [
+        {
+          "name": "y-viral-load",
+          "type": "log",
+          "range": "height",
+          "domainMin": 10,
+          "domainMax": { "data": "viral-loads", "field": "viral_load_or_lloq" },
+          "clamp": true
+        },
+        {
+          "name": "y-cell-count",
+          "type": "linear",
+          "range": "height",
+          "domain": { "data": "cell-counts", "field": "value" }
+        },
+        {
+          "name": "quantifiable-viral-load",
+          "type": "ordinal",
+          "domain": [ true, false ],
+          "range": [ "#d62728", "white" ]
+        },
+        {
+          "name": "vl-legend-labels",
+          "type": "ordinal",
+          "domain": [ true, false ],
+          "range": [ "Above LLOQ", "Below LLOQ" ]
+        },
+        {
+          "name": "infection-legend-labels",
+          "type": "ordinal",
+          "domain": ["Infection window", "Infection date (estimated)"],
+          "range": ["Window", "Estimated date"]
+        }
+      ],
+      "axes": [
+        {
+          "type": "x",
+          "scale": "x",
+          "properties": {
+            "labels": {
+              "text": [
+                { "test": "publicationMode", "scale": "x-dpi" },
+                { "field": "label" }
+              ]
+            }
+          }
+        },
+        {
+          "title": "Viral Load (copies/ml)",
+          "type": "y",
+          "scale": "y-viral-load",
+          "orient": "right",
+          "format": ",.4g",
+          "formatType": "number",
+          "offset": 10
+        },
+        {
+          "title": "Cell Count",
+          "type": "y",
+          "scale": "y-cell-count",
+          "orient": "left",
+          "format": ",d",
+          "formatType": "number",
+          "offset": 10
+        }
+      ],
+      "legends": [
+        {
+          "title": "Viral Load",
+          "fill": "quantifiable-viral-load",
+          "properties": {
+            "symbols": {
+              "stroke": { "scale": "dataset-color", "value": "Viral Load" }
+            },
+            "labels": {
+              "text": { "field": "data", "scale": "vl-legend-labels" }
+            }
+          }
+        },
+        {
+          "title": "Cell type",
+          "stroke": "dataset-color",
+          "fill": "dataset-color",
+          "values": ["CD4", "CD8"]
+        },
+        {
+          "title": "Infection",
+          "stroke": "dataset-color",
+          "fill": "dataset-color",
+          "values": ["Infection window", "Infection date (estimated)"],
+          "properties": {
+            "labels": {
+              "text": { "field": "data", "scale": "infection-legend-labels" }
+            }
+          }
+        }
+      ],
+      "marks": [
+        {
+          "type": "rect",
+          "from": {
+            "data": "infection",
+            "transform": [{
+              "type": "filter",
+              "test": "datum.infection_earliest || datum.seroconv_earliest || datum.symptom_earliest"
+            }]
+          },
+          "properties": {
+            "update": {
+              "x": [
+                {
+                  "test": "datum.infection_earliest && datum.infection_latest",
+                  "scale": "x",
+                  "field": "infection_earliest",
+                  "offset": -1
+                },
+                {
+                  "test": "datum.seroconv_earliest && datum.seroconv_latest",
+                  "scale": "x",
+                  "field": "seroconv_earliest",
+                  "offset": -1
+                },
+                {
+                  "test": "datum.symptom_earliest && datum.symptom_latest",
+                  "scale": "x",
+                  "field": "symptom_earliest",
+                  "offset": -1
+                }
+              ],
+              "x2": [
+                {
+                  "test": "datum.infection_earliest && datum.infection_latest",
+                  "scale": "x",
+                  "field": "infection_latest",
+                  "offset": 1
+                },
+                {
+                  "test": "datum.seroconv_earliest && datum.seroconv_latest",
+                  "scale": "x",
+                  "field": "seroconv_latest",
+                  "offset": 1
+                },
+                {
+                  "test": "datum.symptom_earliest && datum.symptom_latest",
+                  "scale": "x",
+                  "field": "symptom_latest",
+                  "offset": 1
+                }
+              ],
+              "y": { "field": { "group": "height" } },
+              "y2": { "value": 0 },
+              "fill": {
+                "scale": "dataset-color",
+                "value": "Infection window"
+              },
+              "opacity": { "value": 0.6 }
+            }
+          }
+        },
+        {
+          "name": "infectionRule",
+          "type": "rule",
+          "from": {
+            "data": "infection",
+            "transform": [
+              { "type": "filter", "test": "datum.estimated_date" }
+            ]
+          },
+          "properties": {
+            "update": {
+              "x": {
+                "scale": "x",
+                "field": "estimated_date"
+              },
+              "y": { "field": { "group": "height" } },
+              "y2": { "value": 0 },
+              "stroke": {
+                "scale": "dataset-color",
+                "value": "Infection date (estimated)"
+              },
+              "strokeWidth": { "value": 1 }
+            }
+          }
+        },
+
+        {
+          "type": "group",
+          "from": {
+            "data": "cell-counts",
+            "transform": [
+              { "type": "facet", "groupby": ["cell_type"] }
+            ]
+          },
+          "marks": [
+            {
+              "type": "line",
+              "properties": {
+                "update": {
+                  "x": {
+                    "scale": "x",
+                    "field": "visit_date"
+                  },
+                  "y": {
+                    "scale": "y-cell-count",
+                    "field": "value"
+                  },
+                  "stroke": {
+                    "scale": "dataset-color",
+                    "field": "cell_type"
+                  },
+                  "strokeWidth": { "value": 1 },
+                  "interpolate": { "value": "linear" }
+                }
+              }
+            },
+            {
+              "name": "cell-count-symbol",
+              "type": "symbol",
+              "properties": {
+                "update": {
+                  "x": {
+                    "scale": "x",
+                    "field": "visit_date"
+                  },
+                  "y": {
+                    "scale": "y-cell-count",
+                    "field": "value"
+                  },
+                  "fill": {
+                    "scale": "dataset-color",
+                    "field": "cell_type"
+                  },
+                  "stroke": {
+                    "scale": "dataset-color",
+                    "field": "cell_type"
+                  },
+                  "strokeWidth": { "value": 1 },
+                  "size": { "value": 40 }
+                }
+              }
+            },
+            {
+              "type": "text",
+              "from": {
+                "mark": "cell-count-symbol",
+                "transform": [
+                  { "type": "filter", "test": "hoverDatum === datum.datum || (hoverDate && inrange(datum.datum.visit_date, hoverDate.lower, hoverDate.upper))" },
+                  { "type": "formula", "field": "_diff", "expr": "abs(((hoverDatum && hoverDatum.visit_date) || (hoverDate && hoverDate.date)) - datum.datum.visit_date)" },
+                  { "type": "sort", "by": "_diff" },
+                  { "type": "rank" },
+                  { "type": "filter", "test": "datum.rank === 1" }
+                ]
+              },
+              "properties": {
+                "update": {
+                  "x": { "field": "x", "offset": -8 },
+                  "y": { "field": "y", "offset": -12 },
+                  "align": { "value": "right" },
+                  "baseline": { "value": "middle" },
+                  "fill": { "field": "fill" },
+                  "strokeWidth": { "value": 0 },
+                  "fontSize": { "value": 12 },
+                  "text": { "template": "{{ datum.datum.value | number:',' }}" }
+                }
+              }
+            }
+          ]
+        },
+
+        {
+          "type": "line",
+          "from": {
+            "data": "viral-loads"
+          },
+          "properties": {
+            "update": {
+              "x": {
+                "scale": "x",
+                "field": "visit_date"
+              },
+              "y": {
+                "scale": "y-viral-load",
+                "field": "viral_load_or_lloq"
+              },
+              "stroke": {
+                "scale": "dataset-color",
+                "value": "Viral Load"
+              },
+              "strokeWidth": { "value": 1 },
+              "interpolate": { "value": "linear" }
+            }
+          }
+        },
+        {
+          "name": "viral-load-symbol",
+          "type": "symbol",
+          "from": {
+            "data": "viral-loads"
+          },
+          "properties": {
+            "update": {
+              "x": {
+                "scale": "x",
+                "field": "visit_date"
+              },
+              "y": {
+                "scale": "y-viral-load",
+                "field": "viral_load_or_lloq"
+              },
+              "fill": {
+                "scale": "quantifiable-viral-load",
+                "field": "quantifiable"
+              },
+              "stroke": {
+                "scale": "dataset-color",
+                "value": "Viral Load"
+              },
+              "strokeWidth": { "value": 1 },
+              "size": { "value": 40 }
+            }
+          }
+        },
+        {
+          "type": "text",
+          "from": {
+            "mark": "viral-load-symbol",
+            "transform": [
+              { "type": "filter", "test": "hoverDatum === datum.datum || (hoverDate && inrange(datum.datum.visit_date, hoverDate.lower, hoverDate.upper))" },
+              { "type": "formula", "field": "_diff", "expr": "abs(((hoverDatum && hoverDatum.visit_date) || (hoverDate && hoverDate.date)) - datum.datum.visit_date)" },
+              { "type": "sort", "by": "_diff" },
+              { "type": "rank" },
+              { "type": "filter", "test": "datum.rank === 1" }
+            ]
+          },
+          "properties": {
+            "update": {
+              "x": { "field": "x", "offset": -8 },
+              "y": { "field": "y", "offset": -12 },
+              "align": { "value": "right" },
+              "baseline": { "value": "middle" },
+              "fill": { "field": "stroke" },
+              "strokeWidth": { "value": "0" },
+              "fontSize": { "value": 12 },
+              "text": { "template": "{{ datum.datum.label }}" }
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "samplesPanel",
+      "type": "group",
+      "properties": {
+        "update": {
+          "x": { "value": 0 },
+          "width": { "field": { "group": "width" } },
+          "y": {
+            "field": { "group": "height" },
+            "mult": 0.60,
+            "offset": 40
+          },
+          "y2": {
+            "field": { "group": "height" },
+            "mult": 0.75
+          }
+        }
+      },
+      "scales": [
+        {
+          "name": "tissue",
+          "type": "ordinal",
+          "round": true,
+          "points": true,
+          "padding": 1,
+          "range": "height",
+          "domain": [ "plasma", "PBMC", "Leukapheresed cells" ]
+        },
+        {
+          "name": "tissue-labels",
+          "type": "ordinal",
+          "domain": [ "plasma", "PBMC", "Leukapheresed cells" ],
+          "range": [ "Plasma", "PBMC", "Leuka" ]
+        }
+      ],
+      "axes": [
+        {
+          "type": "x",
+          "scale": "x",
+          "properties": {
+            "labels": {
+              "text": [
+                { "test": "publicationMode", "scale": "x-dpi" },
+                { "field": "label" }
+              ]
+            }
+          }
+        },
+        {
+          "title": "Samples",
+          "type": "y",
+          "scale": "tissue",
+          "tickSize": 0,
+          "grid": true,
+          "properties": {
+            "axis": {
+              "stroke": { "value": "transparent" }
+            },
+            "labels": {
+              "text": {
+                "scale": "tissue-labels",
+                "field": "data"
+              }
+            }
+          },
+          "offset": 10,
+          "layer": "back"
+        }
+      ],
+      "marks": [
+        {
+          "name": "sampleRules",
+          "type": "rule",
+          "from": {
+            "data": "samples"
+          },
+          "properties": {
+            "update": {
+              "x": {
+                "scale": "x",
+                "field": "visit_date"
+              },
+              "y": {
+                "scale": "tissue",
+                "field": "tissue",
+                "offset": -5
+              },
+              "y2": {
+                "scale": "tissue",
+                "field": "tissue",
+                "offset": 5
+              },
+              "stroke": { "value": "black" },
+              "strokeWidth": { "value": 1 }
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "medicationsPanel",
+      "type": "group",
+      "properties": {
+        "update": {
+          "x": { "value": 0 },
+          "width": { "field": { "group": "width" } },
+          "y": {
+            "field": { "group": "height" },
+            "mult": 0.75,
+            "offset": 40
+          },
+          "y2": { "field": { "group": "height" } }
+        }
+      },
+      "scales": [
+        {
+          "name": "medication",
+          "type": "ordinal",
+          "round": true,
+          "points": true,
+          "padding": 1,
+          "range": "height",
+          "domain": {
+            "data": "medications",
+            "field": "medication.abbreviation",
+            "sort": {
+              "field": "start_date",
+              "op": "min"
+            }
+          }
+        },
+        {
+          "name": "arv-class-stroke",
+          "type": "ordinal",
+          "range": [
+            "#1f77b4",
+            "#ff7f0e",
+            "#2ca02c",
+            "#d62728",
+            "#9467bd",
+            "#8c564b",
+            "#e377c2",
+            "#7f7f7f",
+            "#bcbd22",
+            "#17becf"
+          ],
+          "domain": {
+            "data": "arv-classes",
+            "field": "abbreviation",
+            "sort": true
+          }
+        },
+        {
+          "name": "arv-class",
+          "type": "ordinal",
+          "range": [
+            "#aec7e8",
+            "#ffbb78",
+            "#98df8a",
+            "#ff9896",
+            "#c5b0d5",
+            "#c49c94",
+            "#f7b6d2",
+            "#c7c7c7",
+            "#dbdb8d",
+            "#9edae5"
+          ],
+          "domain": {
+            "data": "arv-classes",
+            "field": "abbreviation",
+            "sort": true
+          }
+        }
+      ],
+      "axes": [
+        {
+          "title": "Date",
+          "type": "x",
+          "scale": "x",
+          "properties": {
+            "title": {
+              "text": [
+                { "test": "publicationMode", "value": "Days Post Infection" },
+                { "value": "Date" }
+              ]
+            },
+            "labels": {
+              "text": [
+                { "test": "publicationMode", "scale": "x-dpi" },
+                { "field": "label" }
+              ]
+            }
+          }
+        },
+        {
+          "title": "Anti-retroviral treatment",
+          "type": "y",
+          "scale": "medication",
+          "tickSize": 0,
+          "grid": true,
+          "properties": {
+            "axis": {
+              "stroke": { "value": "transparent" }
+            }
+          },
+          "offset": 10,
+          "layer": "back"
+        }
+      ],
+      "legends": [
+        {
+          "title": "Class of ARV",
+          "stroke": "arv-class-stroke",
+          "fill": "arv-class"
+        }
+      ],
+      "marks": [
+        {
+          "name": "medication",
+          "type": "rect",
+          "from": {
+            "data": "medications"
+          },
+          "properties": {
+            "update": {
+              "x": {
+                "scale": "x",
+                "field": "start_date"
+              },
+              "x2": {
+                "scale": "x",
+                "field": "end_date_or_ongoing"
+              },
+              "y": {
+                "scale": "medication",
+                "field": "medication.abbreviation",
+                "offset": -2
+              },
+              "height": { "value": 5 },
+              "stroke": {
+                "scale": "arv-class-stroke",
+                "field": "medication.arv_class.abbreviation"
+              },
+              "strokeWidth": { "value": 1 },
+              "fill": {
+                "scale": "arv-class",
+                "field": "medication.arv_class.abbreviation"
+              }
+            }
+          }
+        },
+        {
+          "name": "medication-arrow",
+          "type": "text",
+          "from": {
+            "data": "medications",
+            "transform": [
+              { "type": "filter", "test": "!datum.end_date" }
+            ]
+          },
+          "properties": {
+            "update": {
+              "baseline": { "value": "middle" },
+              "align": { "value": "left" },
+              "x": {
+                "scale": "x",
+                "field": "end_date_or_ongoing",
+                "offset": -2
+              },
+              "y": {
+                "scale": "medication",
+                "field": "medication.abbreviation",
+                "offset": 2
+              },
+              "stroke": {
+                "scale": "arv-class-stroke",
+                "field": "medication.arv_class.abbreviation"
+              },
+              "strokeWidth": { "value": 1 },
+              "fill": {
+                "scale": "arv-class",
+                "field": "medication.arv_class.abbreviation"
+              },
+              "text": { "value": "▶" },
+              "fontSize": { "value": 14 }
+            }
+          }
+        },
+        {
+          "type": "text",
+          "from": {
+            "mark": "medication",
+            "transform": [
+              { "type": "filter", "test": "hoverDatum === datum.datum" }
+            ]
+          },
+          "properties": {
+            "update": {
+              "x": { "field": "x", "offset": 2 },
+              "y": { "field": "y" },
+              "align": { "value": "left" },
+              "baseline": { "value": "bottom" },
+              "fill": { "value": "black" },
+              "strokeWidth": { "value": "0" },
+              "fontSize": { "value": 12 },
+              "text": { "template": "{{ datum.datum.medication.name }} ({{ datum.datum.medication.arv_class.abbreviation }})" }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

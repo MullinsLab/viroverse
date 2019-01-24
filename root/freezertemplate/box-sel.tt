@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse: Box Search</title>
+
+    [% USE date(format=date_format) %]
+    [% INCLUDE 'summ-head.tt' %]
+
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/javascripts/yui_2.8.1/calendar.css">
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/javascripts/yui_2.8.1/container.css">
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/stylesheets/viroverse.css" />
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/stylesheets/input_tools.css" />
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/stylesheets/freezer.css" />
+
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/yahoo-dom-event.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/container-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/calendar-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/connection-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/yahoo-dom-event.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/sidebar-collect.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/freezer.js" ></script>
+
+    <script type="text/javascript" >
+
+        YAHOO.namespace("viroverse");
+        YAHOO.namespace("vv_freezer");
+        YAHOO.namespace("vv_freezer.container");
+
+        function init(){
+               YAHOO.vv_freezer.container.manageVial = new YAHOO.widget.Overlay("edit_vial", { visible:false, modal:true, close:true, zindex:4, draggable: true, width:"300px"} );
+               YAHOO.vv_freezer.container.manageVial.render(document.body);
+               YAHOO.util.Event.addListener("cancelVialEdit", "click", YAHOO.vv_freezer.container.manageVial.hide, YAHOO.vv_freezer.container.manageVial, true);
+            new YAHOO.widget.Tooltip("tt_boxSpan", { context:"boxSpan", text:"Wildcards: use <b>*</b> for zero or more characters, <b>?</b> for exactly one." });
+               document.getElementById("yui-panels").style.display = "block";
+        }
+        YAHOO.util.Event.addListener(window, "load", init);
+    </script>
+</head>
+
+<body class='yui-skin-sam'>
+    [% INCLUDE 'body-top.tt' %]
+
+    <div id='error' class='error' [%- IF error -%] style='display:block'[%- END -%] >[%- error -%]</div>
+
+    <h2>Find Boxes by Name</h2>
+    <form method="post" action="[%- uri_base -%]freezer/search_freezers/aliquot_summary_by_box" name="boxForm" id="boxForm">
+
+        <label>Box Name</label>
+        <div id="boxSpan">
+            <input type="text" id="pattern" class='auto' name="pattern" size="50">
+        </div>
+        <br clear='all' />
+
+        <div class="buttons">
+            <label></label>
+            <span class="formButton">
+                <a href="#" onClick="window.location.href = window.location.href" class="clear-form">Clear this form</a>&nbsp;
+                <input type="submit" value="Load"  [%- disabled -%]/>
+            </span>
+        </div> <!--end row-->
+    </form>
+
+    [% INCLUDE 'body-bottom.tt' %]
+
+    <div id="sidebar">
+        <div id='progress'></div>
+        [% INCLUDE 'freezer-sidebar.tt' %]
+    </div>
+
+    [% INCLUDE 'body-end.tt' %]
+
+    <div id="yui-panels" style="display: none" >
+        [% INCLUDE 'manage-aliquot-overlay.tt' %]
+    </div>
+
+    <div class="spacer">&nbsp;</div>
+</body>
+</html>

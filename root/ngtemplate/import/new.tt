@@ -1,0 +1,105 @@
+<% PROCESS 'macros.tt' %>
+
+[%- page = {
+        title       = "Import data"
+        breadcrumbs = [
+          [ 'Admin',  c.uri_for_action('/admin/index') ],
+          [ 'Import', c.uri_for_action('/import/index') ],
+          [ 'New ' _ type.label ]
+        ]
+    }
+-%]
+
+<form id="import-data" role="form"
+      method="POST" action="[% c.uri_for_action('import/create') %]"
+      enctype="multipart/form-data">
+  <input type="hidden" name="type" value="[% type.name %]">
+</form>
+
+<div class="row">
+  <div class="col-sm-12">
+    <h1 class="page-header">
+      Import new <% type.label %>
+    </h1>
+  </div>
+
+  <div class="col-md-4">
+    <h3>Where’s the data?</h3>
+    <div class="form-group">
+      <input form="import-data" type="file" name="data_file" accept=".csv,.xls,.xlsx">
+      <span class="help-block">
+        Select a CSV or Excel file where the first line/row is a header of
+        column names.
+      </span>
+    </div>
+
+    <h3>Add a note?</h3>
+    <div class="form-group">
+      <textarea form="import-data" class="form-control" name="note" style="height: 80px"></textarea>
+    </div>
+
+    <button form="import-data" type="submit" class="btn btn-primary">Upload</button>
+  </div>
+
+  <div class="col-md-4">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h2 class="panel-title">What this importer does</h2>
+      </div>
+      <div class="panel-body">
+        <% type.help_pod | pod %>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h2 class="panel-title">Data columns</h2>
+      </div>
+      <table class="table table-condensed">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th class="text-right">Required?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% FOR field IN type.fields %>
+            <tr>
+              <td><code><% field.name %></code></td>
+              <td class="text-right"><% field.required ? 'yes' : 'no' %></td>
+            </tr>
+          <% END %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h2 class="panel-title">Job options</h2>
+      </div>
+
+      <% IF type.options.size %>
+        <table class="table table-condensed">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th class="text-right">Required?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% FOR option IN type.options %>
+              <tr>
+                <td><% option.name.replace('_', ' ').ucfirst %></td>
+                <td class="text-right"><% option.required ? 'yes' : 'no' %></td>
+              </tr>
+            <% END %>
+          </tbody>
+        </table>
+      <% ELSE %>
+        <div class="panel-body"><i>None</i></div>
+      <% END %>
+    </div>
+  </div>
+</div>

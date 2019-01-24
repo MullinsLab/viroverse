@@ -1,0 +1,35 @@
+#!/bin/bash
+set -e
+source $(dirname $0)/lib/functions.sh
+
+parse-diff-filter-args "$@"
+setup-pager
+
+input=$(mktemp ${TMPDIR:-/tmp}/$(basename $0)-XXXXXX)
+removed=$(mktemp ${TMPDIR:-/tmp}/$(basename $0)-XXXXXX)
+trap "rm -f $input $removed" EXIT
+
+$diff > $input
+
+(
+    echo-header "subs removed by ${commit:-diff (via stdin)}"
+    extract-matches '^-\s*sub\s*\S+' < $input \
+        | perl -nle 'print $1 if /(?<=sub)\s*([^\s{]+)/' \
+        | sort -u \
+        | ignore-matching '^(new|TO_JSON|index)$' \
+        | tee $removed
+
+    echo
+    echo-header "potential removed sub callsites and action/URL references"
+    if [[ -s $removed ]]; then
+        perl -nle 'chomp; print q/(->|::|[.]|\/|sub\s*)/, quotemeta($_), q/(?!_)/' $removed \
+            | git grep --color -Pf /dev/stdin || true
+    fi
+
+    echo
+    echo-header "callsites removed by ${commit:-diff (via stdin)}"
+    extract-matches '^-[^-].*(->|::|[.])(\w+)' < $input \
+        | perl -nle 'print $2 while /(->|::|[.])(\w+)/g' \
+        | ignore-matching '^(prepare_cached|select\w+_(array|hash)ref|db_Main|idrev|name\b|give_id)' \
+        | sort -u
+) | maybe-pager

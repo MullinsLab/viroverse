@@ -1,0 +1,110 @@
+td.box_pos{
+        width: 75px;
+        height: 75px;
+        border: 1px solid #1f669b;
+}
+
+#box_display{
+    float: right;
+    clear: none;
+    margin-left: 15px;
+}
+
+div.box-label {
+    width:15px;
+    height:50px;
+    background-color: #f7f7f7;
+    margin: 2px 0px 2px 2px;
+    padding: 0px;
+    text-align: center;
+    float:left;
+    font-weight:bolder;
+}
+
+div.freezer-box {
+    width: 100px;
+    height: 50px;
+    display: inline-block;
+    background-color: #5D9FCA;
+    margin: 2px 0px 2px 2px;
+    padding: 0px;
+    cursor: pointer;
+    text-align: center;
+    vertical-align: top;
+    overflow-y: hidden;
+}
+
+div.freezer-box span {
+    margin-top: 5px;
+    display:block;
+}
+
+div.rack {
+    position: relative;
+    float: left;
+    clear: none;
+    background: #f7f7f7;
+    border: 1px solid gray;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+}
+
+div.rack-box-col {
+    margin-left: 15px;;
+}
+
+div.rack-row-col {
+    position: absolute;
+    left: 0;
+    width: 15px;
+}
+
+div.selected-box {
+    background-color:#416F8D;
+    font-weight:bolder;
+    color:white;
+}
+
+#find_box select {
+        float: left;
+        clear: right;
+}
+
+.form-button {
+    float: right; 
+    text-align: right;
+}
+
+table.freezer-box td.empty{
+    
+}
+
+table.freezer-box tr td.occupied{
+    opacity: 0.7;
+    background-color: #E0E0E0;
+}
+
+table.freezer-box tr td.reserved{
+    background-color: #F79292;
+}
+
+label.inline {
+        float: none;
+        clear: none;
+        vertical-align: baseline;
+        margin: 0px 2px 2px 2px;
+        padding: 0px;
+}
+
+table.freezer-box th{
+        background-color: #1f669b;
+        border: 1px solid #1f669b;
+        color: white;
+        margin:0px;
+}
+
+.warning {
+    color: red;
+}

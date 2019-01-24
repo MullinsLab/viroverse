@@ -1,0 +1,6 @@
+    <% IF match_body_top %>
+        <% INCLUDE 'body-bottom.tt' %>
+    <% END %>
+</main>
+
+[% INCLUDE 'footer.tt' %]

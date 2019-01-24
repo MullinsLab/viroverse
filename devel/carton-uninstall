@@ -1,0 +1,43 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use 5.010;
+use Config;
+use Path::Tiny;
+use Getopt::Long::Descriptive;
+
+my ($opt, $usage) = describe_options(
+    '%c %o',
+    ['Uninstalls releases from a Carton-managed local/ lib.  Reads release'],
+    ['names, one per line, from stdin or files passed as arguments.'],
+    [],
+    ['dry-run', 'only print what would be done'],
+    ['help',    'print this help'],
+);
+print($usage->text), exit if $opt->help;
+
+my (@dists, @mods);
+
+while (<>) {
+    chomp;
+    push @dists, $_;
+
+    # Assumes a top-level module matching the dist name
+    s/-\d+.*$//; # strip version
+    s/-/::/g;    # convert to package
+    push @mods, $_;
+}
+
+local $ENV{PERL_CPANM_OPT};
+my @cpanm = (qw(cpanm -L local --uninstall), @mods);
+trace(@cpanm);
+system @cpanm unless $opt->dry_run;
+
+for (map { path("local/lib/perl5/$Config{archname}/.meta/$_/") } @dists) {
+    trace("rm -rf $_");
+    $_->remove_tree({ safe => 0 }) unless $opt->dry_run;
+}
+
+sub trace {
+    say join " ", "+", @_
+}

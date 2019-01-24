@@ -1,0 +1,52 @@
+[%- PROCESS 'body-error.tt' -%]
+<form id='gel_form' method='POST' action='[%- uri_base -%]/input/pcr/runCopyNumber'>
+    <h2>Gels</h2>
+    Doubleclick on a gel image to expand it to full size.  Doubleclick a second time to shrink it back down
+    [%- FOREACH gel = gels -%]
+    <div style="clear:both" id="gel_ctr_[%- gel.id -%]">
+        <h2 class="centered">[%- gel.name -%]</h2>
+        <a class="clk" onclick="removeGel('gel_ctr_[%- gel.id -%]', '[%- gel.id -%]');">Remove</a>
+        <br style="clear: both"/>
+        <div  style="float:left; clear:left;">
+            <input type='hidden' name='gel_id' value='[%- gel.gel_id -%]' />
+            <img src='[%- "$uri_base/summary/gel_img/${gel.gel_id}" -%]' id='gel_[%- gel.id -%]' width="400" ondblclick="resizeGel(this)" />
+        </div>
+        <div id='labels' style="float:left; clear:right;">
+            <table class="gel_label_table" id='gel_label_table_[%- gel.id -%]'>
+                <tr>
+                    <th>Label</th>
+                    <th>PCR Product Name</th>
+                    <th>Nickname</th>
+                </tr>
+                [%- FOREACH lane = gel.lanes -%]
+                    [%- product = lane.pcr_product_id -%]
+                    <tr id="[%- product.give_id -%]" data-pcr_id="[%- product.give_id -%]">
+                        <td style="text-align:right">
+                            [%- lane.print_label -%]
+                        </td>
+                        <td>
+                            [%- IF !lane.to_string.search('^\+') -%]&nbsp;&nbsp;[%- END -%][%- lane.to_string -%]
+                            <input type="hidden" name="[%- "${product.give_id}-pos" -%]" id="[%- product.give_id -%]_pos" value="[%-IF lane.pos_result == 1 -%]checked[%-END -%]" /> 
+                        </td>
+                    [%- IF product -%]
+                        <td>[%- product.name -%]</td>
+                    [%- ELSE -%]
+                        <td>&nbsp;</td>
+                    [%-END -%]
+                    </tr>
+                [%- END -%]
+            </table>
+        </div>
+    </div>
+    [%- END -%]
+
+        [% IF quality %]
+        <br style="clear: both"/>
+            [%  show_results = 1 %]
+            [% INCLUDE 'copy_num_body.tt' %]
+        [% END %]
+        <input type="submit"  value='submit' [%- disabled -%]/>
+
+</form>
+
+        <div id="jsonRes" style="display: none">[% qualityJSON %]</div>

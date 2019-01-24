@@ -1,0 +1,16 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use Viroverse::Logger '-script';
+use Module::Runtime qw< require_module >;
+
+my $type = shift
+    or die "usage: $0 type-name\n";
+
+# Set name reported in process list and used by killall
+$0 = join '-', 'worker', lc $type =~ s/::/-/gr;
+
+my $package = "Viroverse::Worker::$type";
+require_module($package)
+    or die "Can't load $package";
+$package->run;

@@ -1,0 +1,68 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use autodie;
+use IPC::Open2;
+use File::Temp qw(tempfile);
+
+my $source = shift;
+my $target = shift;
+
+my %view;
+
+# Read SQL
+for my $input ([source => $source], [target => $target]) {
+    my ($from, $file) = @$input;
+    open my $sql, "<", $file;
+
+    my $current;
+    while (<$sql>) {
+        chomp;
+        if ( /CREATE.+?VIEW\s+(\S+)/ .. /;\s*$/ ) {
+            $current = $1 if $1;
+            $view{$current}{$from} .= $_;
+            warn "In a view, but no start detected?! Line <$_>"
+                unless $current;
+        } elsif ($_ =~ /\S/) {
+            warn "Unknown line <$_>\n";
+            next;
+        }
+    }
+    close $sql;
+}
+
+# Tidy it up
+for my $versions (values %view) {
+    for my $sql (values %$versions) {
+        my ($in, $out);
+        my $pid = open2($out, $in, 'sqlpp');
+        print { $in } $sql, "\n";
+        close $in;
+
+        my $tidy = do { local $/; <$out> };
+        close $out;
+
+        waitpid( $pid, 0 );
+        warn "sqlpp exited with ", $? >> 8 if $? >> 8;
+
+        if ($tidy) {
+            $sql = $tidy;
+        } else {
+            warn "sqlpp didn't tidy?!";
+        }
+    }
+}
+
+# Compare view-by-view
+for my $name (sort { $a cmp $b } keys %view) {
+    my $v = $view{$name};
+    print "$name only present in ", ($v->{source} ? "source" : "target"), "\n"
+        unless $v->{source} and $v->{target};
+    my @tmp;
+    for ("source", "target") {
+        my ($fh, $fn) = tempfile("view-$name-$_-XXXX", TMPDIR => 1);
+        print { $fh } $v->{$_} || "";
+        push @tmp, $fn;
+    }
+    system("diff", "-iuw", @tmp);
+}

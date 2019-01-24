@@ -1,0 +1,138 @@
+<p ng-if="!c.values.length">
+  No labs data.
+</p>
+<figure ng-if="c.values.length" class="lab-lines">
+  <figcaption>
+    <p>
+      Numeric lab assay results are shown in each panel.  Units for each assay,
+      when known, are shown in parentheses after the assay name.  The earliest
+      minimum and maximum values are denoted by black dots; later values may
+      also reach the minimum or maximum but are not similarly denoted.  The
+      values of specific points are shown on hover.
+    </p>
+  </figcaption>
+
+  <svg ng-attr:width="{{ c.width + c.margin.left + c.margin.right }}"
+       ng-attr:height="{{ c.height + c.margin.top + c.margin.bottom }}">
+
+    <!-- Group providing coordinates inside margins -->
+    <g ng-attr:transform="translate({{ c.margin.left }}, {{ c.margin.top }})">
+
+
+      <!-- Shared x axes, top and bottom -->
+      <g class="x axis"
+        ng-init="
+          axes = [
+            { origin: 0,        direction: -1 },
+            { origin: c.height, direction:  1 }
+          ]">
+
+        <g ng-repeat="axis in axes"
+          ng-attr:transform="translate(0, {{ axis.origin - 1/3 * c.panelSpacing }})">
+
+          <!-- Primary axis line -->
+          <path class="domain"
+            ng-attr:d="
+              M{{ c.xScale.range()[0] }},{{ 6 * axis.direction }}
+              V0
+              H{{ c.xScale.range()[1] }}
+              V{{ 6 * axis.direction }}
+            " />
+
+          <!-- Ticks along that line -->
+          <g class="tick" ng-repeat="tick in c.xTicks track by $index"
+            ng-attr:transform="translate({{ c.xScale(tick) }}, 0)">
+            <line ng-attr:y2="{{ 6 * axis.direction }}" />
+            <text text-anchor="middle"
+              ng-attr:dominant-baseline="{{ axis.direction < 0 ? 'alphabetic' : 'hanging' }}"
+              ng-attr:y="{{ 6 * 1.5 * axis.direction }}">
+                {{ c.xScale.tickFormat()(tick) }}
+            </text>
+          </g>
+
+          <!-- Axis title -->
+          <text text-anchor="middle"
+            ng-attr:dominant-baseline="{{ axis.direction < 0 ? 'alphabetic' : 'hanging' }}"
+            ng-attr:x="{{ c.width / 2 }}"
+            ng-attr:dy="{{ c.panelSpacing * axis.direction }}">
+              {{ c.xTitle }}
+          </text>
+        </g>
+      </g>
+
+
+      <!-- Render each facet panel -->
+      <g class="panel" ng-repeat="panel in c.panels | orderBy: c.facet track by c.facet(panel)"
+        ng-attr:transform="translate(0, {{ (c.panelHeight + c.panelSpacing) * $index }})">
+
+        <!-- Data -->
+        <g class="data">
+
+          <!-- Line -->
+          <path ng-attr:d="{{ panel.line(panel.values) }}" />
+
+          <!-- Dot and text label for each point -->
+          <g ng-repeat="point in panel.values"
+             ng-attr:transform="translate({{ c.x(point) }}, {{ panel.y(point) }})"
+             ng-class="{
+               highlight: point === highlightedPoint,
+               min: $index === panel.markExtentIndex[0],
+               max: $index === panel.markExtentIndex[1],
+               unquantifiable: panel.isViralLoad && point.viral_load == 0 }"
+             class="point">
+            <circle ng-attr:r="{{ point === highlightedPoint ? 3 : 2 }}" />
+            <g ng-if="point === highlightedPoint">
+              <text text-anchor="middle" dy="-10">
+                {{ (panel.isViralLoad && point.viral_load == 0)
+                       ? '<' + panel.formatValue(point.limit_of_quantification)
+                       : panel.formatValue(c.yValue(point)) }}
+              </text>
+              <text text-anchor="middle" dominant-baseline="hanging" dy="10">
+                {{ c.xValue(point) | date: 'd MMM yyyy' }}
+              </text>
+            </g>
+          </g>
+        </g>
+
+
+        <!-- Panel title -->
+        <text class="panel-title" x="0" ng-attr:y="{{ c.panelHeight + 10 }}"
+          ng-class="{ highlight: highlightedPoint && c.facet(highlightedPoint) === c.facet(panel) }">
+            {{ c.facet(panel) }}
+            (<tspan ng-if="c.yTitle(panel.values[0]).length">{{ c.yTitle(panel.values[0]) }},
+             </tspan>n={{ panel.values.length | number:0 }})
+        </text>
+
+
+        <!-- y axis -->
+        <g class="y axis" transform="translate(-5, 0)">
+          <path class="domain"
+            ng-attr:d="M-6,{{ panel.yScale.range()[0] }}  H0  V{{ panel.yScale.range()[1] }}  H-6" />
+
+          <g class="tick" ng-repeat="tick in panel.yScale.domain() track by $index"
+            ng-attr:transform="translate(0,{{ panel.yScale(tick) }})">
+            <line x2="-6" />
+            <text text-anchor="end" dominant-baseline="middle" x="-9">
+              {{ panel.formatTick(tick) }}
+            </text>
+          </g>
+        </g>
+
+
+        <!--
+          Mouse interaction.  Drawing and binding to a transparent <rect> allows
+          more consistent behaviour than binding to the facet's overall <g>
+          because of how those cover screen area.
+        -->
+        <rect ng-mousemove="highlightedPoint = c.closestPointToMouse(panel.values, $event)"
+          ng-mouseleave="highlightedPoint = null"
+          transform="translate(-5, -5)"
+          ng-attr:width="{{ c.width + 10 }}"
+          ng-attr:height="{{ c.panelHeight + (c.panelSpacing / 2) + 5 }}"
+          fill="transparent"
+          />
+      </g>
+
+    </g>
+  </svg>
+</figure>

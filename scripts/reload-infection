@@ -1,0 +1,100 @@
+#!/usr/bin/env perl
+use 5.018;
+use strict;
+use warnings;
+use Getopt::Long::Descriptive;
+use Spreadsheet::Read qw< ReadData row >;
+use ViroDB;
+use Viroverse::Logger -script => qw< :log :dlog >;
+use List::MoreUtils qw< firstidx >;
+use Try::Tiny;
+
+my @args = @ARGV;
+my ($opt, $usage) = describe_options(
+    '%c --cohort=name --patient=picid --date=hivinfdt data.xlsx',
+    ['Reload infection data for the named cohort from the given file.  This'],
+    ['will DELETE all existing infection data for the cohort before loading it fresh'],
+    ['from the file.  By default, no changes are actually made unless --commit is specified.'],
+    [],
+    ['cohort=s',    'Name of cohort the data is for'],
+    ['patient=s',   'Column name containing the cohort patient ID'],
+    ['date=s',      'Column name containing the infection date'],
+    ['commit',      'Actually do the import, committing changes to the database'],
+    ['help',        'Print usage message and exit' ],
+);
+print($usage->text), exit
+    if $opt->help or not @args;
+
+die "All options required\n\n", $usage->text
+    if grep { not $opt->$_ } qw(cohort patient date);
+
+my $file = shift or die "File required\n\n", $usage->text;
+
+die "Too many arguments\n\n", $usage->text if @ARGV;
+
+my $db = ViroDB->connect_default;
+try {
+    my $infection = $db->resultset('Infection');
+    my $txn = $db->txn_scope_guard;
+
+    # Read spreadsheet, finding all rows with a patient id and date
+    log_info { "Reading file $file" };
+
+    my $book  = ReadData($file, strip => 3, dtfmt => 'yyyy-mm-dd');
+    my $sheet = $book->[1]
+        or die "No sheets in workbook?";
+
+    my $row_idx = 1;
+    my @headers = row($sheet, $row_idx++);
+    my %index   = (
+        patient => (firstidx { fc $_ eq fc $opt->patient } @headers),
+        date    => (firstidx { fc $_ eq fc $opt->date    } @headers),
+    );
+
+    my @insert;
+    while (my @row = row($sheet, $row_idx++)) {
+        my ($pid, $date) = @row[ $index{patient}, $index{date} ];
+        next unless $pid and $date;
+
+        my $patient = $db->storage->dbh_do(sub {
+            my (undef, $dbh) = @_;
+            return Viroverse::patient::get(Viroverse::session->new($dbh), $pid, { 'cohort.name' => $opt->cohort });
+        }) or die "Can't find patient $pid";
+
+        push @insert, {
+            patient_id     => $patient->give_id,
+            estimated_date => $date,
+        };
+    }
+
+    # Delete all current infection data for the given cohort
+    my $deleted = $db->storage->dbh_do(sub {
+        my (undef, $dbh) = @_;
+        my $rows = $dbh->do("
+            DELETE FROM viroserve.infection
+             WHERE patient_id IN (
+                SELECT patient_id
+                  FROM viroserve.patient_cohort
+                  JOIN viroserve.cohort USING (cohort_id)
+                 WHERE cohort.name = ?)", undef, $opt->cohort)
+            or die "Error deleting existing infection rows: ", $dbh->errstr;
+        return $rows;
+    });
+
+    log_info { "Removed $deleted infection rows for cohort ", $opt->cohort };
+
+    for my $row (@insert) {
+        Dlog_debug { "INSERT $_" } $row;
+        $infection->create($row);
+    }
+
+    log_info { "Added ", scalar @insert, " infection rows" };
+
+    unless ($opt->commit) {
+        log_info { "Changes NOT committed, rolling back" };
+        die "--commit not specified, rolling back";
+    }
+    $txn->commit;
+} catch {
+    die "Caught error (no changes committed): $_";
+};

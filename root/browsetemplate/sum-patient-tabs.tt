@@ -1,0 +1,14 @@
+[% MACRO selected(tab) BLOCK %]
+[%- IF current_tab == tab -%]
+class="selected"
+[%- END -%]
+[% END %]
+<ul class="yui-nav">
+    <li [% selected('summary') %]><a href="[% c.uri_for_action('/patient/show_by_id', [ patient.give_id ]) %]"><em>Summary</em></a></li>
+    <li [% selected('samples') %]><a href="[% c.uri_for_action('/patient/show_tab_by_id', [ patient.give_id, 'samples' ]) %]"><em>Samples</em></a></li>
+    <li [% selected('labs') %]><a href="[% c.uri_for_action('/patient/show_tab_by_id', [ patient.give_id, 'labs' ]) %]"><em>Labs</em></a></li>
+    <li [% selected('sequences') %]><a href="[% c.uri_for_action('/patient/show_tab_by_id', [ patient.give_id, 'sequences' ]) %]"><em>Sequences</em></a></li>
+[% IF features.epitopedb %]
+    <li [% selected('epitopes') %]><a href="[% c.uri_for_action('/patient/show_tab_by_id', [ patient.give_id, 'epitopes' ]) %]"><em>Epitopes</em></a></li>
+[% END %]
+</ul>

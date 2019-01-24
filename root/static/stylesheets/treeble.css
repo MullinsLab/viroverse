@@ -1,0 +1,53 @@
+/* format treeble row arrow (num) */
+.yui-dt td.treeble-nub {
+    border-right-color: transparent;
+}
+.yui-dt .row-toggle a.treeble-collapse-nub {
+    padding:0 8px;
+    height:14px;
+    margin-left:2px;
+    *display:inline-block;
+}
+.yui-dt .row-closed a.treeble-collapse-nub {
+    background:url('/static/images/tree_arrow_closed.png') no-repeat;
+}
+.yui-dt .row-open a.treeble-collapse-nub {
+    background:url('/static/images/tree_arrow_open.png') no-repeat;
+}
+
+/* Right-align marked columns */
+.yui-skin-sam .yui-dt td.align-right  { 
+    text-align:right;
+} 
+
+/* Remove row striping, column borders, and sort highlighting 
+ * (see: http://developer.yahoo.com/yui/examples/datatable/dt_row_coloring.html)
+ */ 
+.yui-skin-sam tr.yui-dt-odd, 
+.yui-skin-sam tr.yui-dt-odd td.yui-dt-asc, 
+.yui-skin-sam tr.yui-dt-odd td.yui-dt-desc, 
+.yui-skin-sam tr.yui-dt-even td.yui-dt-asc, 
+.yui-skin-sam tr.yui-dt-even td.yui-dt-desc { 
+    background-color: #fff; 
+}
+.yui-skin-sam .yui-dt tbody td { 
+    border-bottom: 1px solid #ddd; 
+} 
+.yui-skin-sam .yui-dt thead th { 
+    border-bottom: 1px solid #7f7f7f; 
+} 
+.yui-skin-sam .yui-dt tr.yui-dt-last td, 
+.yui-skin-sam .yui-dt th, 
+.yui-skin-sam .yui-dt td { 
+    border: none; 
+} 
+ 
+/* Nested (depth > 0) row class */ 
+.yui-skin-sam .yui-dt tr.nested, 
+.yui-skin-sam .yui-dt tr.nested td,
+.yui-skin-sam .yui-dt tr.nested td.yui-dt-asc, 
+.yui-skin-sam .yui-dt tr.nested td.yui-dt-desc, 
+.yui-skin-sam .yui-dt tr.nested td.yui-dt-asc, 
+.yui-skin-sam .yui-dt tr.nested td.yui-dt-desc { 
+    background-color: #EDF5FF;
+} 

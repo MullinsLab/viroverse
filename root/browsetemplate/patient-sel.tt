@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse: Subject Summary</title>
+
+[% USE date(format=date_format) %]
+[% INCLUDE 'summ-head.tt' %]
+
+    <link href="[%- uri_base -%]/static/stylesheets/autosuggest.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/sidebar-collect.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/yahoo-dom-event.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/element-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/connection-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/datasource-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/autocomplete-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/suggestion-patient.js"></script>
+
+</head>
+
+<body class='yui-skin-sam'>
+[% INCLUDE 'body-top.tt' %]
+
+<h2>Subject Summary</h2>
+
+    <div id='error' class='error' [%- IF error -%] style='display:block'[%- END -%] >[%- error -%]</div>
+<form method="post" action="[%- uri_base -%]subject" name="patientForm" id="patientForm">
+
+    <label>Cohort</label>
+    [% INCLUDE 'cohort-select.tt' %]
+    <br clear='all' />
+
+     <label>Subject ID</label>
+     <div id="patientSpan">
+         <input type="text" required id="patientInput" class='auto' name="patient" size="36">
+        <div id='patient_name_div' class='y_auto' style='margin-left:90px'></div>
+     </div>
+    <br clear='all' />
+
+    <div class="buttons">
+        <label></label>
+        <span class="formButton">
+            <a href="#" onClick="window.location.reload()" class="clear-form">Clear this form</a>&nbsp;
+            <input type="submit" value="Load"  [%- disabled -%]/>
+        </span>
+    </div> <!--end row-->
+    </form>
+
+
+[% INCLUDE 'in-body-bottom.tt' %]
+
+
+[% INCLUDE 'body-end.tt' %]
+
+<div class="spacer">&nbsp;</div>
+</body>
+</html>

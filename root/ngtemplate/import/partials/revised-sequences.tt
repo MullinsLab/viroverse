@@ -1,0 +1,33 @@
+<div class="row">
+    <div class="col-md-12">
+        [% INCLUDE select_column_key_help %]
+    </div>
+    <div class="col-md-6">
+        <h2>Assign data columns</h2>
+        [%
+          fields = [
+            { key: 'na_sequence_id', label: 'Viroverse sequence ID', optional: 0 },
+            { key: 'name',           label: 'Sequence name',         optional: 1 },
+            { key: 'sequence',       label: 'Sequence contents',     optional: 1 },
+            { key: 'na_type',        label: 'Nucleic acid type',     optional: 1 },
+            { key: 'note',           label: 'Note',                  optional: 1 },
+            { key: 'scientist_name', label: 'Scientist name',        optional: 1 },
+          ]
+        %]
+        [% FOR field IN fields %]
+          <div class="form-group">
+            <label for="[% field.key %]_key">[% field.label %]</label>
+            [% INCLUDE select_column_key key = field.key, optional = field.optional %]
+            [% IF field.optional %]
+              <span id="[% field.key %]_hint" class="help-block">
+                Optional.
+              </span>
+            [% END %]
+          </div>
+        [% END %]
+    </div>
+    <div class="col-md-6">
+        <p class="small">This area intentionally left blank</p>
+    </div>
+
+</div>

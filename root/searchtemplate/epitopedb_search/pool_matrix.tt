@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse: EpitopeDB Search</title>
+
+[% INCLUDE 'summ-head.tt' %]
+
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/remotesuggestions.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/autosuggest2.js"></script>
+<!--    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/peptide.js"></script>-->
+
+</head>
+
+<body class='yui-skin-sam'>
+[% INCLUDE 'body-top.tt' %]
+<h2>Peptide Pool Matrix Result</h2>
+<h3>Experiment Date: [%- exp_date.exp_date -%], Patient: [%- sample.patient -%], Sample Tissue: [%- sample.tissue -%], Sample Date: [%- sample.sample_date -%]</h3>
+    <div>
+    <table id='sampleSel'>
+
+        [% SET i = 0 %]
+        [% SET j = 0 %]
+        [%- FOREACH row IN matrix -%]
+            [% i = i + 1 %]
+            [% SET j = 0 %]
+            <tr>
+
+            [%- FOREACH element IN row -%]
+                [% j = j + 1 %]
+                [% IF (i == 1) %]
+                    [% IF (element.result == "P") %]
+                        <th bgcolor=yellow>
+                    [% ELSE %]
+                        <th>
+                    [% END %]
+                        <a href="result?pool=[%- element.id -%]">[%- element.name -%]</a>
+                [% ELSIF (j == 1) %]
+                    [% IF (element.result == "P") %]
+                        <td bgcolor=yellow><B>
+                    [% ELSE %]
+                        <td><B>
+                    [% END %]
+                        <a href="result?pool=[%- element.id -%]">[%- element.name -%]</a>
+                [% ELSE %]
+                    [% IF (element.result == "PP") %]
+                        <td bgcolor=orange>
+                    [% ELSE %]
+                        <td>
+                    [% END %]
+                        <a title="[%- element.sequence -%]" href="../peptide/result?pept_name=[%- element.name -%]">[%- element.name -%]</a>
+                [% END %]
+
+
+            [%- END -%]
+            </tr>
+        [%- END -%]
+
+    </table>
+    </div>
+    <br>
+    <div>
+        <span>*&nbsp;Pools with CTL positive response are highlighted in yellow color.<span><br>
+        <span>&nbsp;&nbsp;Candidate peptides with CTL positive response are highlighted in orange color.<span>
+    </div>
+
+[% INCLUDE 'body-bottom.tt' %]
+    <div id="sidebar">
+        <input type="submit" value="Download .csv">
+        <pre>
+        <!-- [% sql %] -->
+        </pre>
+    </div>
+[% INCLUDE 'body-end.tt' %]
+</body>
+</html>

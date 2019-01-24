@@ -1,0 +1,63 @@
+figure.lab-lines {
+  margin: 1em 0;
+}
+
+.lab-lines figcaption {
+  max-width: 52em;
+  margin-bottom: 2em;
+}
+
+.lab-lines svg {
+  display: block;
+}
+.lab-lines svg text, .lab-lines svg .panel-title {
+  font-size: 10px;
+  fill: #444;
+}
+.lab-lines svg .axis path, .lab-lines svg .axis line {
+  fill: none;
+  stroke: #444;
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
+}
+.lab-lines svg .grid line {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1px;
+  stroke-opacity: 0.5;
+  shape-rendering: crispEdges;
+}
+.lab-lines svg .data circle {
+  fill: #e377c2;
+  stroke: none;
+}
+.lab-lines svg .data .unquantifiable circle {
+  fill: white;
+  stroke: #e377c2;
+  stroke-width: 1px;
+}
+.lab-lines svg .data .min circle,
+.lab-lines svg .data .max circle {
+  fill: #444;
+}
+.lab-lines svg .data .min.unquantifiable circle,
+.lab-lines svg .data .max.unquantifiable circle {
+  fill: white;
+  stroke: #444;
+}
+.lab-lines svg .data .highlight circle {
+  fill: blue;
+}
+.lab-lines svg .data .highlight.unquantifiable circle {
+  stroke: blue;
+  fill: white;
+}
+.lab-lines svg .data path {
+  fill: none;
+  stroke: #e377c2;
+  stroke-width: 1px;
+}
+.lab-lines svg text.panel-title.highlight {
+  font-weight: bold;
+  fill: blue;
+}

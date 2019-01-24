@@ -1,0 +1,96 @@
+[%- page = {
+        title  = "Upload some sequences",
+        has_js = 1,
+    }
+-%]
+
+<div class="row">
+  <div class="col-sm-12">
+    <h2>Upload chromats and sequences</h2>
+
+    <div class="row">
+        <div class="col-md-9">
+            <p>
+                Upload the chromats and consensus FASTA for each product being
+                sequenced below.  You can drag and drop files from your
+                computer, or click “Choose File” to find the right files if you
+                don’t have them in front of you.
+            </p>
+            <p>
+                Our best guesses for each sequence type and nucleic acid type,
+                based on the product being sequenced, are pre-selected and
+                marked with a star ✰.  Please review each dropdown and correct
+                it if we got it wrong.
+            </p>
+        </div>
+    </div>
+
+    <form action="[% c.uri_for('/input/sequence/add') %]" method="post" enctype="multipart/form-data">
+    [% FOR pcr IN pcr_more %]
+    <h3>
+      <a href="[% c.uri_for_action('/sample/show', [ pcr.sample_id.give_id ]) %]">[% pcr.sample_id.to_string %]</a>
+      [% pcr.name || pcr.auto_nickname %]
+    </h3>
+    <div class="row">
+        <div class="col-md-6">
+            <input type="hidden" name="pcr_ids" value="<% pcr.id %>" />
+            <div class="form-group upload-list well">
+                <label>Chromats (<code>ab1</code> or <code>scf</code> format) and consensus sequence (<code>fasta</code> format)</label>
+                <p class="text-muted small">
+                  Drag and drop files into here or click the <i>Add files…</i> button below.
+                </p>
+                <input type="file" name="prod-[%pcr.id%]-files" multiple class="hidden">
+                <ul class="list-unstyled" data-for="prod-[%pcr.id%]-files"></ul>
+                <div class="btn-group">
+                  <button class="btn btn-xs btn-default upload-list-add">Add files…</button>
+                  <button class="btn btn-xs btn-default upload-list-clear">Clear files</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="prod-<% pcr.id %>-sequence-type">Sequence type</label>
+                <select class="form-control" name="prod-<% pcr.id %>-sequence-type" id="prod-<% pcr.id %>-sequence-type">
+                    <option value="">unknown</option>
+                    <% FOR type IN sequence_types %>
+                        <% selected = type.id == pcr.preferred_sequence_type.id %>
+                        <option value="<% type.id %>" <% selected ? 'selected' : '' %>>
+                          <% type.name %>
+                          <% IF selected %>✰ <% END %>
+                        </option>
+                    <% END %>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="prod-<% pcr.id %>-na-type">NA type</label>
+                <select class="form-control" name="prod-<% pcr.id %>-na-type" id="prod-<% pcr.id %>-na-type">
+                    <% FOR type IN ['DNA', 'RNA'] %>
+                        <% selected = type == pcr.preferred_sequencing_na_type %>
+                        <option value="<% type %>" <% selected ? 'selected' : '' %>>
+                          <% type %>
+                          <% IF selected %>✰ <% END %>
+                        </option>
+                    <% END %>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h4>PCR details</h3>
+            <dl>
+                <dt>Round [% pcr.round %] primers</dt>
+                <dd>[% pcr.primer_strings %]</dd>
+                <dt>Scientist</dt>
+                <dd>[% pcr.scientist_id.name %]</dd>
+                <dt>Date completed</dt>
+                <dd>[% pcr.date_completed %]</dd>
+                <dt>Gels</dt>
+                [% FOR gel_lane IN pcr.gel_lanes %]
+                <dd><a href="[% c.uri_for('/summary/gel',gel_lane.gel_id.id) %]">Gel [%gel_lane.gel_id.id%]</a></dd>
+                [% END %]
+            </dl>
+        </div>
+    </div>
+    <hr>
+    [% END %]
+    <button class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+</div>

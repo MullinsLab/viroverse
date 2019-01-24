@@ -1,0 +1,72 @@
+/* Revert styles primarily applied by viroverse.css that affect
+ * Bootstrap's own classes.  These were found mostly programmatically:
+ *
+ *      grep -oE '\.[A-Za-z][A-Za-z0-9_-]+' dist/css/bootstrap.css \
+ *          | grep -vF .bootstrapped \
+ *          | sort -u \
+ *          > bootstrap-classes
+ *      git grep -Ff bootstrap-classes root/static/stylesheets/*.css
+ *
+ */
+.bootstrapped .header {
+    height: inherit;
+    padding: inherit;
+}
+
+.bootstrapped .nav {
+    background-color: inherit;
+    color: inherit;
+    padding: inherit;
+}
+
+.bootstrapped .nav a {
+    text-decoration: inherit;
+    margin: inherit;
+    padding: inherit;
+    background-color: inherit;
+    color: inherit;
+}
+.bootstrapped .nav a:hover {
+    text-decoration: inherit;
+}
+.bootstrapped .nav a:active {
+    background-color: inherit;
+    color: inherit;
+}
+
+.bootstrapped .row {
+    clear: inherit;
+    overflow: inherit;
+    padding-top: inherit;
+    padding-bottom: inherit;
+    padding-left: inherit;
+}
+
+.bootstrapped label {
+    vertical-align: inherit;
+    float: inherit;
+    clear: inherit;
+    min-width: inherit;
+    text-align: inherit;
+    padding-right: inherit;
+    margin-bottom: inherit;
+}
+
+.bootstrapped .warning {
+    color: inherit;
+}
+
+.bootstrapped .sidebar, .bootstrapped #sidebar {
+    border: inherit;
+    background: inherit;
+    float: inherit;
+    min-width: inherit;
+    margin: 0;
+    padding: 0;
+}
+
+.bootstrapped .active {
+    color: inherit;
+    border: inherit;
+    background: inherit;
+}

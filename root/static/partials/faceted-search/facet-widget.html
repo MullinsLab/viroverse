@@ -1,0 +1,22 @@
+<div class="facet facet-field-{{ name }}">
+  <h4>
+    {{ search.result.facets[name].label }}
+    <small>
+      <a ng-click="search.switchFacetSort(name)">
+        sort by {{ search.nextFacetSort(name).label }}
+      </a>
+    </small>
+  </h4>
+  <div class="facet-values">
+    <div class="list-group">
+      <!-- Tuples are (value, count) pairs -->
+      <a ng-repeat="tuple in search.result.facets[name].values track by tuple"
+          ng-click="search.toggleFacetValue(name, tuple[0])"
+          ng-class="{ 'active': search.isFacetValueSelected(name, tuple[0]), 'null': !tuple[0] }"
+          class="list-group-item">
+        <span class="badge" ng-class="{ 'badge-danger': tuple[1] === 0 }">{{tuple[1] | number}}</span>
+        {{ tuple[0] || nullLabel || 'Unknown' }}
+      </a>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,23 @@
+<div class='extraction'>
+    Extraction # [%- object.get_id -%] entered [%- object.date_entered -%]<br>
+    By [%- object.scientist_id.name -%] on [%- object.date_completed -%]<br>
+    [%- object.amount %] [% object.unit_id.name -%] of [%- object.extract_type_id.name -%] from <a href='[%- c.uri_for("/sample/show", [object.sample_id.give_id]) -%]'>[%- object.sample_id.to_string -%]</a> using [%- object.protocol_id.name -%] <br>
+    [%- IF object.concentration -%] Concentration: [%- object.concentration %] [% object.concentration_unit_id.name -%] <br>[%- END -%]
+    [%- IF object.eluted_vol -%] Eluted volume: [%- object.eluted_vol %] [% object.eluted_vol_unit -%] <br>[%- END -%]
+    <br>
+    Notes:
+    <pre>[%- object.notes -%]</pre>
+
+    [%- IF object.copy_numbers -%]
+        <h3>QUALITY Copy Number Results</h3>
+        [% key = '' %]
+        [% FOREACH cp_num IN object.copy_numbers %]
+            [% IF key != cp_num.key %]
+                <h4>[% cp_num.name %]</h4>
+                [% key = cp_num.key %]
+            [% END %]
+            <p style="margin: 2px 2px 2px 25px">[% cp_num.valueToString %]</p>
+        [% END %]
+    [%- END -%]
+
+</div>

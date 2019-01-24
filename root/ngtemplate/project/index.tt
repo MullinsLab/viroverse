@@ -1,0 +1,48 @@
+[%- page = {
+        title = "Projects",
+    }
+-%]
+
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="page-header">Projects</h1>
+    </div>
+    <div class="col-md-8">
+        <h2>Active projects</h2>
+        <table class="table table-condensed">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Samples</th>
+                </tr>
+            </thead>
+            <tbody>
+            [% FOR project IN active_projects %]
+                <tr>
+                    <td><a href="[% c.uri_for_action('project/show', [ project.id ] ) %]">[% project.name %]</a></td>
+                    <td>[% $(project.sample_assignments).count %]</td>
+                </tr>
+            [% END %]
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-4">
+        <h2>Finished projects</h2>
+        <table class="table table-condensed">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Ended</th>
+                </tr>
+            </thead>
+            <tbody>
+            [% FOR project IN completed_projects %]
+                <tr>
+                    <td><a href="[% c.uri_for_action('project/show', [ project.id ] ) %]">[% project.name %]</a></td>
+                    <td>[% project.completed_date.ymd %]</td>
+                </tr>
+            [% END %]
+            </tbody>
+        </table>
+    </div>
+</div>

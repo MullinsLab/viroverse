@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse: Peptide/Epitope Search</title>
+
+[% INCLUDE 'summ-head.tt' %]
+
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/remotesuggestions.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/autosuggest2.js"></script>
+<!--    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/peptide.js"></script>-->
+
+</head>
+
+<body class='yui-skin-sam'>
+[% INCLUDE 'body-top.tt' %]
+<h2>EpitopeDB Search</h2>
+<h3>Mutants for Peptide: [%- peptide.peptide -%], Sequence: [%- peptide.sequence -%], in Patient: [%- patient.patient -%]</h3>
+    <div>
+    <table id='sampleSel'>
+    <tr>
+        <th>Peptide</th><th>Sequence</th><th>HXB2 Position</th><th>Corrected SFC</th><th>EC50</th>
+        <th>HLA Restriction Assay</th><th>HLA Restriction</th><th>Result</th>
+    </tr>
+
+        [% SET i = 0 %]
+        [%- FOREACH mutant IN mutants -%]
+            [% i = i + 1 %]
+            [% IF (i % 2 == 0) %]
+                <tr bgcolor='#CCCCFF'>
+            [% ELSE %]
+                <tr bgcolor='#FFFFFF'>
+            [% END %]
+
+        <td>[%- mutant.peptide -%]</td>
+        <td>[%- mutant.sequence -%]</td>
+        <td>[%- mutant.position_hxb2_start -%] -- [%- mutant.position_hxb2_end -%]</td>
+        <td><a href="elispot?pept_id=[%- mutant.pept_id -%]&patient_id=[%- mutant.patient_id -%]">[%- mutant.max_corravg -%]</a></td>
+        <td><a href="titration?pept_id=[%- mutant.pept_id -%]&patient_id=[%- mutant.patient_id -%]">[%- mutant.min_ec50 -%]</a></td>
+        <td><a href="hla_restriction?pept_id=[%- mutant.pept_id -%]&patient_id=[%- mutant.patient_id -%]">[%- mutant.hla_response -%]</a></td>
+        <td>[%- mutant.hla -%]</td>
+        <td>[%- mutant.note -%]</td>
+        </tr>
+        [%- END -%]
+
+    </table>
+    </div>
+
+[% INCLUDE 'body-bottom.tt' %]
+    <div id="sidebar">
+        <input type="submit" value="Download .csv">
+        <pre>
+        <!-- [% sql %] -->
+        </pre>
+    </div>
+[% INCLUDE 'body-end.tt' %]
+</body>
+</html>

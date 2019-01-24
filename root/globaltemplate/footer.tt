@@ -1,0 +1,95 @@
+<footer class="bootstrapped">
+  <div class="container">
+    <div class="row sitemap">
+      <div class="column">
+        <h5>Browse data</h5>
+        <ul class="list-unstyled">
+          <li><a href="<% c.uri_for_action("/cohort/index") %>">Browse subjects</a></li>
+          <li><a href="<% c.uri_for_action("/patient/select") %>">Lookup subject</a></li>
+          <li><a href="<% c.uri_for_action("/sample/index") %>">Search samples</a></li>
+          <li><a href="<% c.uri_for_action("/sequence/index") %>">Search sequences</a></li>
+          <li><a href="[% c.uri_for_action("/project/index") %]">Browse projects</a></li>
+        </ul>
+        [% IF features.epitopedb %]
+        <ul class="list-unstyled">
+          <li><a href="<% c.uri_for_action("/search/epitopedb_search/peptide") %>">Search epitopes</a></li>
+          <li><a href="<% c.uri_for_action("/search/epitopedb_search/pool") %>">Search peptide pools</a></li>
+        </ul>
+        [% END %]
+      </div>
+
+      <div class="column">
+        <h5>PCR &amp; Sequencing</h5>
+        <ul class="list-unstyled">
+          <li><a href="<% c.uri_for_action("/input/extraction") %>">Extraction</a></li>
+          <li><a href="<% c.uri_for_action("/input/RT") %>">Reverse transcription</a></li>
+          <li><a href="<% c.uri_for_action("/input/bisulfite_conversion") %>">Bisulfite conversion</a></li>
+          <li><a href="<% c.uri_for_action("/input/PCR") %>">PCR</a></li>
+          <li><a href="<% c.uri_for_action("/input/PCR_gel") %>">Gel visualization</a></li>
+          <li><a href="<% c.uri_for_action("/input/sequence/index") %>">Sequencing</a></li>
+        </ul>
+        <ul class="list-unstyled">
+          <li><a href="<% c.uri_for_action("/input/pcr/reamp") %>">Re-amplification</a></li>
+          <li><a href="<% c.uri_for_action("/input/pcr/pool") %>">Pooling</a></li>
+          <li><a href="<% c.uri_for_action("/input/pos_pcr") %>">Purification / Concentration</a></li>
+          <li><a href="<% c.uri_for_action("/input/pcr/copy_num_set_up") %>">Copy number analysis</a></li>
+        </ul>
+      </div>
+
+      <div class="clearfix visible-sm-block"></div>
+
+        [% IF features.epitopedb %]
+      <div class="column">
+        <h5>Epitopes</h5>
+        <ul class="list-unstyled">
+          <li><a href="<% c.uri_for_action("/input/epitopedb/peptide/index") %>">Peptide</a></li>
+          <li><a href="<% c.uri_for_action("/input/epitopedb/pool/index") %>">Peptide Pool</a></li>
+          <li><a href="<% c.uri_for_action("/input/epitopedb/peptide_elispot/index") %>">Peptide ELISPOT</a></li>
+          <li><a href="<% c.uri_for_action("/input/epitopedb/pool_elispot/index") %>">Peptide Pool ELISPOT</a></li>
+          <li><a href="<% c.uri_for_action("/input/epitopedb/titration/index") %>">Titration</a></li>
+          <li><a href="<% c.uri_for_action("/input/epitopedb/hla_restriction/index") %>">HLA Restriction</a></li>
+          <li><a href="<% c.uri_for_action("/input/epitopedb/epitope/index") %>">Epitope</a></li>
+        </ul>
+      </div>
+      [% END %]
+
+      <div class="column">
+        <h5>Freezers</h5>
+        <ul class="list-unstyled">
+          <li><a href="<% c.uri_for_action("/freezer/summary/index") %>">Browse freezers</a></li>
+          <li><a href="<% c.uri_for_action("/freezer/search_freezers/aliquot_search") %>">Find aliquots</a></li>
+          <li><a href="<% c.uri_for_action("/freezer/search_freezers/aliquot_summary_by_box") %>">Find boxes</a></li>
+          <% IF scientist.can_manage_freezers %>
+            <li><a href="<% c.uri_for_action("/freezer/input/add_samples") %>">Add aliquots</a></li>
+          <% END %>
+        </ul>
+      </div>
+
+      <% IF scientist.is_admin OR scientist.is_supervisor %>
+        <div class="column">
+          <h5>Admin</h5>
+          <ul class="list-unstyled">
+            <% IF scientist.is_admin %>
+              <li><a href="<% c.uri_for_action("/admin/scientist/index") %>">Scientists</a></li>
+              <li><a href="<% c.uri_for_action("/admin/cohort/index") %>">Cohorts</a></li>
+              <li><a href="<% c.uri_for_action("/tissuetype/index") %>">Tissues</a></li>
+              <li><a href="<% c.uri_for_action("/admin/protocol/index") %>">Generic protocols</a></li>
+              <li><a href="<% c.uri_for_action("/derivationprotocol/index") %>">Derivation protocols</a></li>
+            <% END %>
+            <li><a href="<% c.uri_for_action("/import/index") %>">Import data files</a></li>
+          </ul>
+        </div>
+      <% END %>
+    </div>
+
+    <div class="row copyright">
+      <div class="col-md-12">
+        <p>
+          Copyright © 2005–2018
+          <a href="https://mullinslab.microbiol.washington.edu">Mullins Molecular Retrovirology Lab</a>
+          at the <a href="https://washington.edu">University of Washington</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>

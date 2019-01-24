@@ -1,0 +1,6 @@
+requires 'DataStore::CAS::Simple';
+requires 'Moo';
+requires 'Path::Tiny';
+requires 'Types::Path::Tiny';
+requires 'Types::Standard';
+requires 'namespace::clean';

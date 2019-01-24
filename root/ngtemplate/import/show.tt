@@ -1,0 +1,74 @@
+[%- page = {
+        title           = "Import job status",
+        has_head_insert = 1,
+        breadcrumbs     = [
+          [ 'Admin',  c.uri_for_action('/admin/index') ],
+          [ 'Import', c.uri_for_action('/import/index') ],
+          [ 'Job #' _ import_job.id ]
+        ]
+    }
+-%]
+<% PROCESS 'macros.tt' %>
+
+[% job_state = import_job.state %]
+
+[% BLOCK head_insert %]
+[% IF import_job.job_queue_key %]
+<meta http-equiv="refresh" content="1" />
+[% END %]
+[% END %]
+
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="page-header">Job #[% import_job.id %]</h1>
+    </div>
+</div>
+
+<div class="row">
+<div class="col-md-4">
+<table class="table">
+    <tbody>
+        <tr><th>Created</th><td>[% import_job.time_created.set_time_zone('America/Los_Angeles').strftime('%Y-%m-%d %I:%M %p') %]</td></tr>
+        <tr><th>Import type</th><td>[% import_job.type.label %]</td></tr>
+        <tr>
+            <th>Status</th>
+            <td>
+            [% IF job_state eq 'executed' %]
+            Executed [% import_job.time_executed.set_time_zone('America/Los_Angeles').strftime('%Y-%m-%d %I:%M %p') %]
+            [% ELSIF job_state eq 'new' %]Not executed, <a href="[% c.uri_for_action("/import/prepare", [ import_job.id ]) %]">Prepare</a>
+            [% ELSE %][% job_state %]
+            [% END %]</td>
+        </tr>
+        [% IF import_job.job_queue_key %]
+        <tr>
+            <th>Queue ID</th>
+            <td>[% import_job.job_queue_key %]</td>
+        </tr>
+        [% END %]
+        <tr>
+            <th>Input file</th>
+            <td><a href="[% c.uri_for_action("/import/download_input_file", [ import_job.id ], import_job.data_file_name ) %]">[% import_job.data_file_name %]</a></td>
+        </tr>
+        <tr>
+            <th>Uploaded by</th>
+            <td>[% import_job.scientist.name %]</td>
+        </tr>
+        <tr>
+            <th>Note</th>
+            <td>[% IF defined(import_job.note) %]
+                  [% import_job.note | markdown %]
+                [% ELSE %]
+                  <i>none</i>
+                [% END %]
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+<div class="col-md-8">
+    [% IF import_job.has_log %]
+        <log-viewer url="<% c.uri_for_action("/import/download_log_records", [ import_job.id ]) %>">
+        </log-viewer>
+    [% END %]
+</div>
+</div>

@@ -1,0 +1,138 @@
+#!/bin/bash
+# Seatbelts
+set -e -o pipefail
+
+TRACE="\033[4m"
+RESET="\033[0m"
+
+function try() {
+    printf "$PS4$TRACE%s$RESET\n" "$*" >&2
+    "$@"
+}
+
+function install_rpm() {
+    pkg=$1
+    pkgsrc=$2
+    if ! rpm --quiet -q $pkg; then
+        try curl -fsSLO $pkgsrc
+        try sudo rpm -i $(basename $pkgsrc)
+        rm $(basename $pkgsrc)
+    fi
+}
+
+# Upgrade Pg
+
+workdir=$(mktemp -dt upgrade-pg-XXXXXXXX)
+chmod a+rwx $workdir
+pushd $workdir
+echo "Temporary working directory is $workdir"
+trap 'echo; echo "==> Work dir is $workdir"; echo;' EXIT
+
+pg84tmp=$workdir/pg84/
+try mkdir -p $pg84tmp
+
+## Shuffle 8.4 data around
+
+    sudo test -e /etc/init.d/postgresql \
+        && sudo /sbin/service postgresql status \
+        && try sudo /sbin/service postgresql stop
+
+    try sudo mkdir -p /var/lib/pgsql/8.4
+    sudo test -d /var/lib/pgsql/data \
+        && try sudo mv /var/lib/pgsql/{data,8.4}
+    try mkdir -p /etc/sysconfig/pgsql
+    try sudo cp /{vagrant,etc}/sysconfig/pgsql/postgresql
+
+## Install Pg's official yum repo for RHEL5 Pg 9.4
+
+    install_rpm pgdg-redhat94 http://yum.postgresql.org/9.4/redhat/rhel-5-x86_64/pgdg-redhat94-9.4-1.noarch.rpm
+
+## Uninstall 8.4 from RHEL's repo and temporarily install 8.4 binaries elsewhere
+
+    # RedHat's 8.4 package conflicts with Pg's 9.4 package
+    try sudo yum erase -y \
+        postgresql84 \
+        postgresql84-server \
+        postgresql84-pl{perl,python} \
+        postgresql84-contrib \
+        postgresql84-devel
+
+    try sudo yum install -y yum-utils
+
+    # ...but we need the binaries for pg_upgrade
+    try yumdownloader \
+        postgresql84 \
+        postgresql84-server \
+        postgresql84-pl{perl,python} \
+        postgresql84-contrib \
+        postgresql84-devel
+
+    pushd $pg84tmp
+    for pkg in $workdir/postgresql84-*.rpm; do
+        try rpm2cpio $pkg | try cpio --extract --make-directories
+    done
+    popd
+
+## Install Pg 9.4
+
+    try sudo yum install -y \
+        postgresql94 \
+        postgresql94-server \
+        postgresql94-pl{perl,python} \
+        postgresql94-contrib \
+        postgresql94-devel
+
+## Initialize 9.4 data
+
+    try sudo cp /{vagrant,etc}/sysconfig/pgsql/postgresql-9.4
+
+    sudo test -d /var/lib/pgsql/9.4/data/base \
+        || try sudo /sbin/service postgresql-9.4 initdb
+
+    try sudo cp /var/lib/pgsql/{8,9}.4/data/pg_hba.conf
+    try sudo cp /var/lib/pgsql/{8,9}.4/data/postgresql.conf
+
+    sudo /sbin/service postgresql-9.4 status \
+        && try sudo /sbin/service postgresql-9.4 stop
+
+## Run pg_upgrade
+
+    pg_upgrade=/usr/pgsql-9.4/bin/pg_upgrade
+    try sudo -u postgres $pg_upgrade \
+        --old-datadir /var/lib/pgsql/8.4/data \
+        --new-datadir /var/lib/pgsql/9.4/data \
+        --old-bindir $pg84tmp/usr/bin \
+        --new-bindir /usr/pgsql-9.4/bin \
+        --link \
+        --jobs 2
+
+## Start new 9.4 instance
+
+    try sudo /sbin/chkconfig postgresql-9.4 on
+    try sudo /sbin/service postgresql-9.4 start
+
+## Start analyze
+
+    try sudo -u postgres $workdir/analyze_new_cluster.sh
+
+## Remove temporarily necessarily Pg 8.4 binaries
+
+    try rm -rf $pg84tmp
+
+## Symlink pg_config
+
+    try sudo ln -vsfn /usr/pgsql-9.4/bin/pg_config /usr/bin/pg_config
+
+# Upgrade Viroverse changes
+
+pushd ~/viroverse
+
+## Use carton to install new deps
+
+    try carton install --deployment
+
+## Run sqitch changes for 9.4
+
+    try psql -q --no-psqlrc --set ON_ERROR_STOP=1 postgres <<<"ALTER ROLE vverse_admin WITH SUPERUSER;"
+    try ./vv sqitch deploy
+    try psql -q --no-psqlrc --set ON_ERROR_STOP=1 postgres <<<"ALTER ROLE vverse_admin WITH NOSUPERUSER;"

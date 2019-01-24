@@ -1,0 +1,59 @@
+[% USE JSON.Escape %]
+[% IF !show_title.defined; SET show_title = 1; END %]
+[% IF !show_lanes.defined; SET show_lanes = 1; END %]
+
+    <div class="gel-container" id="gel_ctr_[%- gel.id -%]">
+        <% IF show_title %>
+        <h4>
+            [%- gel.name %] &mdash; [% gel.scientist_id.name %]
+            [% IF !show_lanes -%]
+            <a class="clk" onclick="fetchGelLanes(this, [% gel.id.json | html %])">show</a>
+            [%- END %]
+        </h4>
+        <% END %>
+        <div id="gelCtr_[% gel.id %]" style="[% IF !show_lanes; 'display: none;'; END %]">
+            <img title="[%- gel.name | html -%] (double click to enlarge/contract)"
+                   src="[%- "$uri_base/summary/gel_img/${gel.id}" -%]"
+                    id="gel_[%- gel.id -%]"
+                 class="gel"
+                 width="400" ondblclick="resizeGel(this)">
+            <table class="gel-lanes">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th colspan="2">Copies of Virus</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    <tr>
+                        <th>Lane</th>
+                        <th>Plasma VL*</th>
+                        <th>QUALITY</th>
+                        <th>PCR Product Name</th>
+                        <th>Nickname</th>
+                    </tr>
+                </thead>
+                <tbody id="[% gel.id %]_lanes">
+                [% IF show_lanes -%]
+                [%- FOREACH lane = gel.lanes -%]
+                    [%- product = lane.pcr_product_id -%]
+                    <tr>
+                        <td style="text-align:right">
+                            [%- lane.print_label -%]
+                        </td>
+                        <td style="text-align:center">[%- product.plasmaVLcopies -%]</td>
+                        <td style="text-align:center">[%- product.qualityVLcopies -%]</td>
+                        <td>[%- IF !lane.to_string.search('^\+') -%]&nbsp;&nbsp;[%- END -%][%- lane.to_string -%]</td>
+                    [%- IF product -%]
+                        <td>[%- product.name | html -%]</td>
+                    [%- ELSE -%]
+                        <td>&nbsp;</td>
+                    [%-END -%]
+                    </tr>
+                [%- END -%]
+                [%- END -%]
+                </tbody>
+                <tfoot><tr><td colspan="5">* Calculation assumes reverse transcription usage/elution volumes based on protocols published in the Mullins Lab Wiki.  The extraction in Viroverse must have an eluted volume to calculate this.</td></tr></tfoot>
+            </table>
+        </div>
+    </div>

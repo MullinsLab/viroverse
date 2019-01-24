@@ -1,0 +1,64 @@
+[% USE crumbs = Viroverse::Breadcrumbs({ page_record => virodb_patient, leaf_label => "Labs", context => c }) %]
+[% page.breadcrumbs = crumbs.breadcrumbs %]
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse: Summary of [%- patient.get_prop('patient_name') -%]</title>
+<% INCLUDE 'head-bootstrap.tt' %>
+[% INCLUDE 'summ-head.tt' %]
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/javascripts/yui_2.8.1/container.css">
+
+    <link href="[%- uri_base -%]/static/stylesheets/autosuggest.css" rel="stylesheet" type="text/css" />
+    <link href="[%- uri_base -%]/static/stylesheets/ng/lab-lines.css" rel="stylesheet" type="text/css" />
+
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/connection-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/datasource-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/autocomplete-min.js"></script>
+
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/sidebar-collect.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/suggestion-patient.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]static/javascripts/yui_2.8.1r2/tabview.css">
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/stylesheets/tabview.css" /> 
+</head>
+
+<body class='yui-skin-sam'>
+[% INCLUDE 'body-top.tt' %]
+[% INCLUDE 'sum-patient-top.tt' %]
+
+<div id="patient-tabs" class="yui-navset">
+
+[% PROCESS 'sum-patient-tabs.tt', current_tab = 'labs' %]
+    
+    <!-- BEGIN TABS -->          
+    <div class="yui-content">
+    
+        <!-- BEGIN TAB 3 (Labs) -->               
+        <div id="tab-labs" class="bootstrapped">
+            <div class="container-fluid">
+                <lab-lines width="700" height="30"
+                  data-values-json="<% labs.json | html %>"
+                  data-facet="assay"
+                  data-x="visit_date"
+                  data-y="value"
+                  data-x-title="Visit date"
+                  data-y-title="unit">
+                </lab-lines>
+            </div>
+        </div>
+        <!-- END TAB 3 (Labs) -->  
+
+    </div>
+    <!-- END TABS -->
+    
+</div>
+
+[% INCLUDE 'body-bottom.tt' %]
+<div id="sidebar">
+[% INCLUDE 'sidebar/dna_sequence.tt' %] 
+</div>
+
+[% INCLUDE 'body-end.tt' %]
+
+</body>
+</html>

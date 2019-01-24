@@ -1,0 +1,16 @@
+[%- MACRO sub_template_highlight(sub_template_name) BLOCK -%]
+    [%- IF sub_template_name == template.name -%]
+style='font-weight:bold'
+    [%- ELSE -%]
+    [%- END -%]
+[%- END -%]
+
+<div class='nav'>
+    <span class="subsection-title">Freezers</span>
+    <a href="[%- uri_base -%]freezer/summary" [%- sub_template_highlight('manage_freezer.tt') -%]  -%]>Browse Freezers</a>
+    <a href="[%- uri_base -%]freezer/search_freezers/aliquot_search/" [%- sub_template_highlight('aliquot-search.tt') -%] >Find Aliquots</a>
+    <% IF scientist.can_manage_freezers %>
+      <a href="[%- uri_base -%]freezer/input/add_samples" [%- sub_template_highlight('new_aliquots.tt') -%] ]>New Aliquots</a>
+    <% END %>
+    <a href="[%- uri_base -%]freezer/search_freezers/aliquot_summary_by_box/" [%- sub_template_highlight('box-sel.tt') -%] >Find Boxes</a>
+</div>

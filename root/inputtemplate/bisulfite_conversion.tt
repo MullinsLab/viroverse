@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Viroverse: Bisulfite Conversion</title>
+
+[% USE Dumper %]
+[% USE date(format=date_format) %]
+[% INCLUDE 'in-head.tt' %]
+
+    <link href="[%- uri_base -%]static/stylesheets/autosuggest.css" rel="stylesheet" type="text/css" />    
+    <link href="[%- uri_base -%]static/stylesheets/y.css" rel="stylesheet" type="text/css" />    
+
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/sidebar-collect.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/yahoo-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/event-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/yahoo-dom-event.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/connection-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/element-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/datasource-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/animation-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/dragdrop-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/datatable-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/autocomplete-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/suggestion-scientist.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/suggestion-patient.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/prod.js"></script>
+
+    <script type='text/javascript' language='javascript'>
+        var finder;
+        var local_find_a = new Array;
+        [%- FOREACH type IN find_a -%]
+        local_find_a.push('[%- type.name -%]');
+        [%- END -%]
+        function go_time () {
+            finder = new product_finder(local_find_a,'finder','error',add_product_box);
+            finder.add_fn_arguments = new Array ('to_do','error');
+
+            viroverse.messageAnimate = new YAHOO.util.ColorAnim('message',{ backgroundColor: { from: '#FF6', to: '#FFF' } },2 );
+            viroverse.errorAnimate = new YAHOO.util.ColorAnim('error',{ backgroundColor: { from: '#F33', to: '#FFF' } },2 );
+        }
+
+    YAHOO.util.Event.onDOMReady(go_time);
+    </script>
+
+</head>
+
+<body>
+[% INCLUDE 'body-top.tt' %]
+
+    <h2>Bisulfite Conversion</h2>
+    [%- INCLUDE prod_find.tt -%]
+    <form name='bisulfite_conversion_build' id='bisulfite_conversion_build' action='[%- uri_base -%]/input/bisulfite_conversion_add' onsubmit='javascript:return false'>
+    <fieldset><legend>New bisulfite conversion</legend>
+
+    [%- PROCESS 'body-error.tt' -%]
+
+    <label>Template(s)</label>
+    <div class="formw" id='to_do'>
+[% FOREACH e IN for_conversion %]
+    <input type='checkbox' checked='yes' name='extractionbox' id='box[%- e.extraction_id -%]' value='[%- e.extraction_id-%]' /><label class='check' for='box[%- e.extraction_id -%]'>[%- e.to_string %]</label><br />
+[% END %]
+    </div><br clear='all' />
+
+    <label>Kit</label> 
+    <span class="formw">
+        <select name="bisulfite_conversion_protocol" [%- disabled -%]>
+            [% FOREACH p IN protocols %]<option value="[%- p.id -%]">[%- p.name -%]</option>[% END %]
+        </select> 
+    </span> 
+    <br clear=all>
+
+    <label>Scientist</label> 
+    <div class="formw">
+        [%- INCLUDE 'scientist-select.tt' -%]
+    </div> 
+    <br clear='all' />
+
+    <label>Date</label> 
+    <span class="formw"><input name="bisulfite_conversion_date_completed" id='date' type="text" placeholder="YYYY-MM-DD" class="quickfill-today" size="14" maxlength='10' value="" [%- disabled -%]/></span>
+    <br clear='all' />
+
+    <label>Notes</label> 
+    <span class="formw"><textarea name="bisulfite_conversion_notes" rows="5" cols="37" [%- disabled -%]></textarea></span> 
+
+    <div class="buttons">
+        <label></label> 
+        <span class="formButton">
+            <a href="#" onclick="window.location.reload()" class="clear-form">Clear this form</a>&nbsp;
+            <input type="button" onclick="form_to_sidebar_ajax('bisulfite_conversion_build','bisulfite_converted_dna','error')" value="Add >>"  [%- disabled -%]/>
+        </span> 
+    </div> <!--end row-->
+    </fieldset>
+    </form>
+
+
+[% INCLUDE 'body-bottom.tt' %]
+
+    <div id="sidebar">
+        [% INCLUDE 'bisulfite-converted-dna-sidebar.tt' %]
+     </div>
+
+[% INCLUDE 'body-end.tt' %]
+
+</body>
+</html>

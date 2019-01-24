@@ -1,0 +1,43 @@
+input[type=date] {
+  max-width: 12em;
+}
+
+/* Input group styling for a seamless presentation inside a panel */
+.bootstrapped .panel > form > .input-group {
+  margin-right: -1px;
+}
+
+.bootstrapped .panel > form > .input-group > .form-control,
+.bootstrapped .panel > form > .input-group > .input-group-btn > .btn {
+  border-radius: 0;
+}
+
+.bootstrapped .panel > form > .input-group > .form-control:first-child,
+.bootstrapped .panel > form > .input-group > .input-group-btn:first-child > .btn {
+  margin-left: -1px;
+}
+
+.bootstrapped .panel > form > .input-group > .form-control:last-child,
+.bootstrapped .panel > form > .input-group > .input-group-btn:last-child > .btn {
+  margin-right: -1px;
+}
+
+.bootstrapped .panel > form > .input-group > .input-group-btn:last-child > .btn {
+  /* increased from -1px to account for our -1px right margin in this context */
+  margin-left: -2px;
+}
+
+.bootstrapped .panel > form:last-child > .input-group > .form-control,
+.bootstrapped .panel > form:last-child > .input-group > .input-group-btn > .btn {
+  margin-bottom: -1px;
+}
+
+.bootstrapped .panel > form:last-child > .input-group:last-child > .form-control:first-child,
+.bootstrapped .panel > form:last-child > .input-group:last-child > .input-group-btn:first-child > .btn {
+  border-bottom-left-radius: 4px;
+}
+
+.bootstrapped .panel > form:last-child > .input-group:last-child > .form-control:last-child,
+.bootstrapped .panel > form:last-child > .input-group:last-child > .input-group-btn:last-child > .btn {
+  border-bottom-right-radius: 4px;
+}

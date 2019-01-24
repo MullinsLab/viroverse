@@ -1,0 +1,30 @@
+.log-viewer h2 {
+  margin-top: 0;
+  margin-right: 0.5em;
+  display: inline-block;
+}
+
+.log-viewer .log-actions {
+  display: inline-block;
+}
+.log-viewer .log-actions > * {
+  display: inline-block;
+}
+.log-viewer .log-actions > * + * {
+  margin-left: 1em;
+}
+.log-viewer .log-actions label {
+  font-weight: normal;
+}
+
+.log .log-level-debug {
+  color: #888;
+}
+
+.log .log-level-error, .log .log-level-fatal {
+  color: #a94442;
+}
+
+.log .log-level-warn {
+  color: #ef9700;
+}

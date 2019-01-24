@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse: EpitopeDB Search</title>
+[% INCLUDE 'summ-head.tt' %]
+    <link href="[%- uri_base -%]/static/stylesheets/autosuggest.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/remotesuggestions.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/autosuggest2.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/epitopedb.js"></script> 
+
+</head>
+
+<body class='yui-skin-sam'>
+[% INCLUDE 'body-top.tt' %]
+<h2>Search for Peptide Pool</h2>
+<form action="pool/result" method="post">
+
+    <fieldset><legend>Peptide in Pools</legend>
+    <label>Name</label>
+    <span class='formw'>
+        <input type='text' name='pept_name' id='pept_name' value='-- None --' style='color:grey' onclick='restalltextbox(this)' class='auto'/>
+    </span><br clear='all' />
+    <label>or Sequence</label>
+    <span class='formw'>
+        <input type='text' name='pept_seq' value='-- None --' style='color:grey' onclick='restalltextbox(this)' class='auto'/>
+    </span><br clear='all' />
+    </fieldset>
+
+    <fieldset><legend>Pool</legend>
+    <label></label>
+    <span class='formw'>
+        <select style='width: 150px' multiple='multiple' name='pool' size=6 >
+        <option value = 0 selected="true">-- ALL --</option>
+        [%- FOREACH pool IN pools -%]
+            <option value="[%- pool.pool_id -%]">[%- pool.name -%]</option>
+        [%- END -%]
+        </select>
+    </span><br clear='all'>
+    </fieldset>
+    <br>
+    <div class="buttons">
+        <span class="formButton">
+            <input type='submit' name='submit' value='Search'>&nbsp;<input type='reset' name='reset' value=' Reset '>
+        </span> 
+    </div>
+</form>
+
+[% INCLUDE 'body-bottom.tt' %]
+    <div id="sidebar">
+        <input type="submit" value="Download .csv">
+        <pre>
+        <!-- [% sql %] -->
+        </pre>
+    </div>
+[% INCLUDE 'body-end.tt' %]
+</body>
+</html>

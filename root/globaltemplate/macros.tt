@@ -1,0 +1,28 @@
+[%- MACRO section_highlight(section_name) BLOCK -%]
+    [%- IF section_name == section -%]
+style='font-weight:bold'
+    [%- ELSE -%]
+    [%- END -%]
+[%- END -%]
+
+[%- MACRO viral_load(vl) BLOCK -%]
+    [%- IF vl.viral_load > 0 -%]
+        [%- vl.viral_load -%]
+    [%- ELSE -%]
+        &lt;[% vl.limit_of_quantification %] (Below <abbr title="Lower limit of quantification">LLOQ</abbr>)
+    [%- END -%]
+[%- END -%]
+
+[%- MACRO link_to_patient(patient) BLOCK -%]
+<a href="[% c.uri_for_action("/patient/show_by_id", [ patient.patient_id ]) %]">[% patient.name %]</a>
+[%- END -%]
+
+[%- MACRO select_from_virodb(id, table) BLOCK -%]
+[%- collection = c.model("ViroDB::$table").search_rs({}, {order_by => "name"}).all -%]
+<select class="form-control" name="[% id %]" id="[% id %]">
+<option selected disabled value=""></option>
+[% FOR item IN collection %]
+    <option value="[% item.id %]">[% item.name %]</option>
+[% END %]
+</select>
+[%- END -%]

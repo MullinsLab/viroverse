@@ -1,0 +1,35 @@
+[%- page = {
+        title  = "Cohorts",
+        has_js = 0
+    }
+-%]
+
+<div class="row">
+    <div class="col-md-9">
+        <h1 class="page-header">Cohorts</h1>
+
+        <table class="table table-condensed table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <form action="<% c.uri_for_action('/admin/cohort/add') %>" method="POST"
+                      id="add-cohort" role="form" class="form-inline">
+                <tr>
+                    <td><input type="text" name="name" placeholder="New cohort name…" size="40" class="form-control"></td>
+                    <td class="text-right"><button type="submit" class="btn btn-primary">Create</button></td>
+                </tr>
+                </form>
+                <% FOREACH cohort IN cohorts.sort('name') %>
+                <tr>
+                    <td data-cohort-id="<% cohort.id | html %>"><% cohort.name | html %></td>
+                    <td></td>
+                </tr>
+                <% END %>
+            </tbody>
+        </table>
+    </div>
+</div>

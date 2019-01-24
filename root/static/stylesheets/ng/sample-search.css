@@ -1,0 +1,78 @@
+faceted-search[sample-search] .search-bar {
+  padding-top: 22px;
+}
+
+faceted-search[sample-search] freeform-input {
+  display: block;
+  float: left;
+}
+
+faceted-search[sample-search] #search-freeform {
+  width: 18em;
+}
+
+faceted-search[sample-search] .search-bar .search-toggles {
+  display: block;
+  float: left;
+}
+
+faceted-search[sample-search] .search-bar .search-toggles > .form-group {
+  display: inline-block;
+  margin-left: 1em;
+}
+
+faceted-search[sample-search] .search-bar .search-toggles > .form-group > label {
+  display: block;
+  margin-top: -22px;
+}
+
+faceted-search aliquots-input input {
+    display: inline-block !important;
+    max-width: 5em;
+    text-align: left;
+}
+
+
+faceted-search[sample-search] .search-facets .facet.facet-field-derivation_protocol h4 {
+  /* To account for the text of the h4 wrapping onto two lines */
+  line-height: 0.7;
+}
+
+faceted-search[sample-search] .search-facets .facet.facet-field-derivation_protocol .facet-values {
+  /* To account for the text of the h4 wrapping onto two lines */
+  max-height: 19.35em;
+}
+
+faceted-search .facet-sidebar freeform-input,
+faceted-search .facet-sidebar freeform-input {
+  float: none;
+}
+
+faceted-search .facet-sidebar #search-freeform {
+  width: 100%;
+}
+
+faceted-search .facet-sidebar .search-bar .search-toggles {
+  float: none;
+}
+
+faceted-search .facet-sidebar has-sequences-toggle,
+faceted-search .facet-sidebar viral-load-toggle {
+  display: block;
+  margin-bottom: 1em;
+}
+
+faceted-search[sample-search-ui=within-patient] .search-results ,
+faceted-search[sample-search-ui=ice-cultures] .search-results {
+  margin-top: 0;
+}
+
+faceted-search .facet-sidebar .search-facets {
+  border-bottom: none;
+}
+
+faceted-search .facet-sidebar .search-facets .facet .facet-values {
+  max-height: none;
+  overflow-y: visible;
+  padding-right: 0;
+}

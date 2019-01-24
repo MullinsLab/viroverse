@@ -1,0 +1,18 @@
+[%- page = {
+        title  = group.name
+        breadcrumbs = [
+            [ 'Subjects', c.uri_for_action("/cohort/index") ],
+            [ group.name ]
+        ]
+    }
+-%]
+
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="page-header">[% group.name %]</h1>
+        <p class="record-properties">
+            Showing <i>[% patients.size %]</i> subjects from this group.
+        </p>
+        [% INCLUDE 'partials/patient-list.tt' %]
+    </div>
+</div>

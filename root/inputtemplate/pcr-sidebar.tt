@@ -1,0 +1,10 @@
+        <h2>Selected PCR products</h2>
+[% FOREACH pcr_i IN to_gel.pcr %]
+    <a onClick='gel_remove("pcr","[%- loop.index -%]")' href='#' name='remove'>del</a> [%- pcr_i.to_string %] <strong>[%- pcr_i.name -%]</strong><br />
+[% END %]
+
+[%- IF to_gel.pcr -%]
+    <br>
+    <input type='button' onClick='location.href="[%- uri_base -%]input/PCR_gel"' value='PCR gel visualization'>
+    <br> <a href='#' onClick='return clear_pcr_sidebar()'>clear all</a>
+[%- END -%]

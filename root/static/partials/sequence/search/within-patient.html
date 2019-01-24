@@ -1,0 +1,67 @@
+<div class="row">
+  <div class="col-sm-3">
+    <p>
+        <button class="btn btn-default"
+            ng-disabled="search.hasQuery && search.result.rows.length == 0"
+            ng-click="search.addToSidebar(search.result.ids)">
+            <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
+            Grab {{ search.hasQuery ? "found" : "all" }} sequences
+        </button>
+    </p>
+    <freeform-input
+      placeholder="Sequence name contains…">
+    </freeform-input>
+
+    <div class="search-facets">
+      <facet-widget name="tissue_type"></facet-widget>
+      <facet-widget name="type"></facet-widget>
+      <facet-widget name="scientist"></facet-widget>
+      <facet-widget name="na_type"></facet-widget>
+      <facet-widget name="region"></facet-widget>
+    </div>
+  </div>
+  <div class="col-sm-9">
+    <div ng-if="search.result.$resolved" class="search-results">
+      <div class="row">
+        <div class="col-sm-7">
+          <p>
+            <result-summary noun="sequence" population="for this patient"></result-summary>
+          </p>
+        </div>
+        <div class="col-sm-5 pager-col">
+          <clear-search-button></clear-search-button>
+          <result-pager></result-pager>
+        </div>
+      </div>
+      <table ng-if="search.result.rows.length" class="table table-striped table-condensed">
+        <thead>
+          <tr>
+            <th class="accession">#</th>
+            <th class="name">Name</th>
+            <th class="tissue">Tissue</th>
+            <th class="na-type">NA</th>
+            <th>Type</th>
+            <th>Scientist</th>
+            <th ng-if="search.isRegionSelected()">Regions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="sequence in search.result.rows track by sequence.na_sequence_id">
+            <td class="accession"><a vv-href="/sequence/{{ sequence.na_sequence_id }}">{{ sequence.na_sequence_id }}.{{sequence.na_sequence_revision}}</a></td>
+            <td>{{ sequence.name }}</td>
+            <td>{{ sequence.tissue_type }}</td>
+            <td>{{ sequence.na_type }}</td>
+            <td>{{ sequence.type }}</td>
+            <td>{{ sequence.scientist }}</td>
+            <td ng-if="search.isRegionSelected()">
+              {{ sequence.regions | pick: search.isRegionSelected | join: ' ' }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="text-center">
+        <result-pagination></result-pagination>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,17 @@
+.gel-container {
+    clear: both;
+}
+.gel-container img.gel {
+    float: left;
+    clear: left;
+}
+.gel-container table.gel-lanes {
+    float: left;
+    clear: right;
+}
+
+.gel-summary .gel-container img.gel,
+.gel-summary .gel-container table.gel-lanes {
+    float: none;
+    clear: both;
+}

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse</title>
+[% INCLUDE 'summ-head.tt' %]
+
+<style>
+     a.body-link{
+         color: #1f669b !important;
+         text-decoration: none;
+    }
+    a.body-link:hover{
+         font-weight: bold;
+         text-decoration: underline;
+    }
+    ul li{
+    list-style: none;
+    }
+</style>
+</head>
+
+<body class="yui-skin-sam" style="position:relative">
+[%- INCLUDE 'body-top.tt' -%]
+<h2>Retrieving Data From Viroverse</h2>
+<h3><a class="body-link" href="[%- uri_base -%]subject" >Subjects</a></h3>
+    <p>Select a Cohort and enter a subject id to view detailed data for a specific subject including Labs, Specimens, &amp; Sequences. </p>
+<h3><a class="body-link" href="[%- uri_base -%]cohort">Cohorts</a></h3>
+    <p>Browse summary information about the subjects in each cohort.</p>
+<h3><a class="body-link" href="[%- uri_base -%]sequence">Sequences</a></h3>
+    <p>Find and download sequences by id, name, cohort, tissue, scientist, and region</p>
+<h3><a class="body-link" href="[%- uri_base -%]sample">Samples</a></h3>
+    <p>Find samples by id, name, cohort, patient, tissue, project, and scientist</p>
+[% IF features.epitopedb %]
+<h3>Epitope Database</h3>
+        <p><a class="body-link" href="[%- c.uri_for('/search/epitopedb_search/peptide') -%]" >Search ELISPOT results by gene, peptide or subject</a></p>
+    <p><a class="body-link" href="[%- c.uri_for('/search/epitopedb_search/pool') -%]" >Search for reactive epitopes in a pool</a></p>
+[% END %]
+
+[% INCLUDE 'body-bottom.tt' %]
+[% INCLUDE 'body-end.tt' %]
+
+</body>
+</html>

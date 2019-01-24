@@ -1,0 +1,4 @@
+.import-types.list-group .list-group-item > .glyphicon {
+  display: inline-block;
+  float: right;
+}

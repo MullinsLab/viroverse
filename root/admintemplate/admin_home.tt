@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse:  Administration</title>
+[% INCLUDE 'head.tt' %]
+
+<style>
+     a.body-link{
+         color: #1f669b !important;
+         text-decoration: none;
+    }
+    a.body-link:hover{
+         font-weight: bold;
+         text-decoration: underline;
+    }
+    ul li{
+    list-style: none;
+    }
+</style>
+</head>
+
+<body class="yui-skin-sam" style="position:relative">
+[%- INCLUDE 'body-top.tt' -%]
+<h2>Administer Viroverse</h2>
+<h3><a class="body-link" href="[%- uri_base -%]freezer/summary" >Browse Freezers</a></h3>
+    <p>View/edit freezer details and browse through racks and boxes in a freezer</p>
+<h3><a class="body-link" href="[%- uri_base -%]freezer/search_freezers/aliquot_search/" >Find Aliquots</a></h3>
+    <p>Find aliquots from visits based on known subjects</p>
+<% IF scientist.can_manage_freezers %>
+<h3><a class="body-link" href="[%- uri_base -%]freezer/input/add_samples" >New Aliquots</a></h3>
+    <p>Create samples and aliquots then add them to the freezer</p>
+<% END %>
+
+[% IF scientist.is_admin || scientist.is_supervisor %]
+<h3><a class="body-link" href="[%- uri_base -%]import">Import data files</a></h3>
+    <p>Import data from flat files using the new Importer mechanism.</p>
+[% END %]
+[% IF scientist.is_admin %]
+<h3><a class="body-link" href="[%- uri_base -%]tissue">Tissue types</a></h3>
+    <p>View and add tissue types</p>
+<h3><a class="body-link" href="[%- uri_base -%]admin/protocol">Generic protocols</a></h3>
+    <p>Add protocols of various kinds</p>
+<h3><a class="body-link" href="[%- uri_base -%]protocol">Derivation protocols</a></h3>
+    <p>Add derivation protocols and update default outputs of newly created derivations</p>
+<h3><a class="body-link" href="[%- uri_base -%]admin/scientist">Scientists</a></h3>
+    <p>View and find all scientists. Add new scientists and change a person's role.</p>
+[% END %]
+
+[% INCLUDE 'body-bottom.tt' %]
+[% INCLUDE 'body-end.tt' %]
+
+</body>
+</html>

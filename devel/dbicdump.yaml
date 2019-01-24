@@ -1,0 +1,173 @@
+---
+schema_class: ViroDB
+connect_info:
+  dsn: dbi:Pg:dbname=viroverse
+loader_options:
+  dump_directory: ./lib
+  result_base_class: ViroDB::Result
+  default_resultset_class: ResultSet
+  use_moose: 1
+  db_schema:
+      - viroserve
+      - delta
+      - freezer
+  qualify_objects: 1
+  moniker_parts:
+    - schema
+    - name
+  constraint:
+    - - viroserve
+      - '^(visit|sample|sample_type|aliquot|unit|additive|tissue_type|infection|location|medication|patient_medication|arv_class|viral_load|cell_count|sample_search|patient|patient_cohort|patient_alias|patient_patient_group|patient_group|cohort|cohort_patient_summary|scientist|scientist_group|scientist_scientist_group|sequence_search|lab_result_num|lab_result_num_type|lab_result_cat|lab_result_cat_type|lab_result_cat_value|import_job|genome_region|na_sequence|na_sequence_latest_revision|protocol|protocol_type|primer|primer_position|project|project_materials|distinct_sample_search|chromat|chromat_na_sequence|extraction|extract_type|rt_product|pcr_product|pcr_template|organism|sample_note|gel_lane|project_material_scientist_progress|sequence_type|chromat_type|pcr_product_primer|copy_number|copy_number_gel_lane|gel|sample_patient_date)$'
+    - - freezer
+      - .
+    - - delta
+      - .
+  moniker_map:
+    viroserve:
+      additive: Additive
+      aliquot: Aliquot
+      arv_class: ArvClass
+      cell_count: CellCount
+      chromat: Chromat
+      chromat_na_sequence: SequenceChromat
+      chromat_type: ChromatType
+      cohort: Cohort
+      cohort_patient_summary: CohortPatientSummary
+      copy_number: CopyNumber
+      copy_number_gel_lane: CopyNumberGelLane
+      distinct_sample_search: DistinctSampleSearch
+      extraction: Extraction
+      extract_type: ExtractionType
+      gel: Gel
+      gel_lane: GelLane
+      genome_region: GenomeRegion
+      import_job: ImportJob
+      infection: Infection
+      lab_result_cat: CategoricalLabResult
+      lab_result_cat_type: CategoricalLabResultType
+      lab_result_cat_value: CategoricalLabResultValue
+      lab_result_num: NumericLabResult
+      lab_result_num_type: NumericLabResultType
+      location: Location
+      medication: Medication
+      na_sequence: NucleicAcidSequence
+      na_sequence_latest_revision: NucleicAcidSequenceLatestRevision
+      organism: Organism
+      patient: Patient
+      patient_alias: PatientAlias
+      patient_cohort: PatientCohort
+      patient_group: PatientGroup
+      patient_medication: PatientMedication
+      patient_patient_group: PatientGroupMember
+      pcr_product: PolymeraseChainReactionProduct
+      pcr_product_primer: PolymeraseChainReactionProductPrimer
+      pcr_template: PolymeraseChainReactionTemplate
+      primer: Primer
+      primer_position: PrimerPosition
+      project: Project
+      project_materials: ProjectSample
+      project_material_scientist_progress: ProjectSampleProgress
+      protocol: LegacyProtocol
+      protocol_type: LegacyProtocolType
+      rt_product: ReverseTranscriptionProduct
+      sample: Sample
+      sample_note: SampleNote
+      sample_patient_date: SamplePatientDate
+      sample_search: SampleSearch
+      sample_type: SampleType
+      scientist: Scientist
+      scientist_group: ScientistGroup
+      scientist_scientist_group: ScientistGroupMember
+      sequence_search: SequenceSearch
+      sequence_type: SequenceType
+      tissue_type: TissueType
+      unit: Unit
+      viral_load: ViralLoad
+      visit: Visit
+    delta:
+      derivation: Derivation
+      protocol: DerivationProtocol
+      protocol_output: DerivationProtocolOutput
+    freezer:
+      box_pos: BoxPos
+      box: Box
+      rack: Rack
+      freezer: Freezer
+  result_components_map:
+      CohortPatientSummary: +ViroDB::InflateColumn::JSON
+      DistinctSampleSearch: +ViroDB::InflateColumn::JSON
+  col_collision_map:
+      sequence: sequence_bases
+  rel_name_map:
+    Sample:
+      lab_result_nums: numeric_lab_results
+      lab_result_cats: categorical_lab_results
+      derivations: child_derivations
+      derivation: parent_derivation
+      project_materials: project_assignments
+      sample_notes: notes
+    Derivation:
+      samples: output_samples
+      sample: input_sample
+    Box:
+      box_pos: box_positions
+    BoxPos:
+      hold: aliquot
+    Aliquot:
+      box_po: box_pos
+    Scientist:
+      aliquot_creating_scientists: aliquots_created
+      aliquot_possessing_scientists: aliquots_held
+      box_creating_scientists: boxes_created
+      box_owning_scientists: boxes_owned
+      freezer_creating_scientists: freezers_created
+      freezer_owning_scientists: freezers_owned
+      rack_creating_scientists: racks_created
+      rack_owning_scientists: racks_owned
+      scientist_groups: groups_created
+      scientist_scientist_group_creating_scientists: group_memberships_created
+      scientist_scientist_group_scientists: group_memberships
+      patient_groups: patient_groups_created
+      lab_result_nums: numeric_lab_results
+      lab_result_cats: categorical_lab_results
+      projects: projects_created
+      project_materials: sample_assignments
+    ScientistGroup:
+      scientist_scientist_groups: memberships
+    ScientistGroupMember:
+      scientist_group: group
+    Patient:
+      patient_patient_groups: group_memberships
+    PatientGroup:
+      patient_patient_groups: memberships
+    PatientGroupMember:
+      patient_group: group
+    PolymeraseChainReactionProduct:
+      pcr_product_primers: primer_assignments
+    Primer:
+      pcr_product_primers: pcr_product_assignments
+      primer_positions: positions
+    Project:
+      project_materials: sample_assignments
+      orig_scientist: scientist
+    ProjectSample:
+      desig_scientist: assigned_scientist
+    NumericLabResult:
+      lab_result_num_type: type
+    NumericLabResultType:
+      lab_result_nums: results
+    CategoricalLabResult:
+      lab_result_cat_type: type
+      lab_result_cat_value: value
+    CategoricalLabResultType:
+      lab_result_cats: results
+    CategoricalLabResultValue:
+      lab_result_cats: results
+    Unit:
+      lab_result_num_types: numeric_lab_result_types
+    Visit:
+      lab_result_nums: numeric_lab_results
+      lab_result_cats: categorical_lab_results
+    NucleicAcidSequence:
+      chromat_na_sequences: sequence_chromats
+      sequence_type: type

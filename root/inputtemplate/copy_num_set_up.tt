@@ -1,0 +1,187 @@
+
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse Set Up Quality Copy Number Calculation</title>
+
+[% USE date(format=date_format) %]
+[% INCLUDE 'in-head.tt' %]
+
+    <link href="[%- uri_base -%]static/stylesheets/autosuggest.css" rel="stylesheet" type="text/css" />    
+    <link href="[%- uri_base -%]static/stylesheets/y.css" rel="stylesheet" type="text/css" />    
+
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/sidebar-collect.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/gel.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/util.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/yahoo-dom-event.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/connection-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/element-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/datasource-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/dragdrop-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/autocomplete-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/datatable-min.js"></script>
+
+
+
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/suggestion-scientist.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/suggestion-patient.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/prod.js"></script>
+        
+    [% INCLUDE 'copy_num_head.tt' %]
+        
+    <script type='text/javascript' language='javascript'>
+        var finder;
+        var local_find_a = new Array;
+        [%- FOREACH type IN find_a -%]
+        local_find_a.push('[%- type.name -%]');
+        [%- END -%] 
+        function go_time () {
+            finder = new product_finder(new Array('gel'),'finder','error',to_copy_num_set_up);
+            finder.add_multiple = true;
+        }
+
+        YAHOO.util.Event.onDOMReady(go_time);
+
+        function to_copy_num_set_up(object_type,object_id,desc) {
+            finder.summary_el.innerHTML='';
+            var object_str;
+            var gelContainer = document.getElementById('gels_cntr')
+            gelContainer.style.display = 'none';
+            var loadingGif = document.getElementById("loadGif");
+            loadingGif.style.display = "block";
+            var elems
+            var form = document.getElementById("gel_form")
+            if(form){
+                elems = form.elements;
+            }
+            var loadedGels = Array();
+            for (var e in elems){
+                if(elems.item(e) && elems.item(e).name == 'gel_id'){
+                    loadedGels.push(elems.item(e).value); //get Gels loaded in form
+                }
+            }
+            if (typeof(object_id) != 'object') {  //get Gels form finder
+                objArray = object_id.split("/");
+            } else {
+                objArray = object_id;
+            }
+
+            var gel_ids = Array.unique(loadedGels.concat(objArray));
+
+            var id_str = gel_ids.join('/');
+            var sidebar_url = viroverse.url_base + '/input/pcr/copy_number_gels/' + id_str;
+            var http = make_xmlhttp();
+            http.open('GET',sidebar_url,true);
+            http.onreadystatechange = function () {
+                if (http.readyState == 4) {
+                    gelContainer.innerHTML = http.responseText;
+                    loadingGif.style.display = "none";
+                    gelContainer.style.display = 'block';
+                    var Response = document.getElementById('jsonRes').innerHTML;
+                    var res_obj = eval ("(" + Response + ")" );
+                    var q_res = res_obj['Response'];
+                    q_pcrs = new Array();
+                    for (var key in q_res){
+                    var foo = q_res[key];
+                    var bar = q_res[key]['pcrs'];
+                    if(q_res[key]['pcrs']){
+                        q_pcrs[key] = q_res[key];
+                    }
+                    }
+                    
+                }
+            }
+            http.send(null);
+        }
+
+        function resizeGel(gel){
+            if(gel.width == "400"){
+                gel.removeAttribute('width');
+            }else{
+                gel.width = "400";
+            }
+        }
+
+        function removeGel(div_id, gel_id){
+            var gel_div = document.getElementById(div_id);
+            var lane_table = document.getElementById('gel_label_table_' + gel_id);
+            var remKeys = new Array();
+            for(var rowIdx in lane_table.rows){
+                var pcr_id = lane_table.rows[rowIdx].id;
+                if(pcr_id > 0){
+                    var chkBox = document.getElementById(pcr_id + '_qchk');
+                    if(chkBox && chkBox.checked){ // uncheck checked lane and recalculate quality tables
+                        chkBox.checked = false;
+                        checkChange(pcr_id, chkBox);
+                    }//ok I should probly only run the uncheck code if removing the gel doesn't remove the quality group but this is fast enough I don't fell like thinking about that now.
+                    for(var key in q_pcrs){ //remove gel lane pcr from array
+                        if(q_pcrs[key]['pcrs']){
+                            var idx = q_pcrs[key]['pcrs'].indexOf(pcr_id);
+                            if(idx > -1){
+                                q_pcrs[key]['pcrs'].splice(idx, 1);
+                                if(q_pcrs[key]['pcrs'].length == 0){ //if no more pcrs for quality run 
+                                    var qual_div = document.getElementById(key);
+                                    qual_div.parentNode.removeChild(qual_div);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            gel_div.parentNode.removeChild(gel_div);
+        }
+    </script>
+
+
+    <style>
+        div.qual-grps{
+            margin-bottom: 10px;
+        }
+        #loadGif{
+            display: none;
+            height:150px;
+            padding-top:50px;
+            text-align:center;
+            background-color: #eeeeee;
+        }
+        table.qual_set_up td ,
+        .centered {
+            text-align: center;
+        }
+        table.gel_label_table{
+            border-collapse: collapse;
+            margin-left: 2px;
+        }
+        table.gel_label_table td{
+            padding: 2px 2px 2px 5px;
+        }
+    </style>
+
+</head>
+
+<body>
+[% INCLUDE 'body-top.tt' %]
+    <h2>Finds Gels For Copy Number Analysis</h2>
+    [%- finder_var = 'finder' -%]
+    [%- find_a = [{name => 'concrete_gel', label => 'PCR Gel'}] -%]
+    [%- INCLUDE prod_find.tt -%]
+    [%- PROCESS 'body-error.tt' -%]
+    <fieldset><legend>Gels For Copy Number Calculation</legend>
+
+    <div id="gels_cntr">
+    </div>
+
+    <div id="loadGif" >
+        <h2 style="width: 100%">Loading Gel(s)</h2>
+        <img src="[%- uri_base -%]/static/images/spinner2.gif" style="width:25px; height:25px;"/>
+    </div>
+    </fieldset>
+
+[% INCLUDE 'in-body-bottom.tt' %]
+
+[% INCLUDE 'body-end.tt' %]
+
+<div class="spacer">&nbsp;</div>
+</body>
+
+</html>

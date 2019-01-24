@@ -1,0 +1,17 @@
+<div class="panel panel-default">
+    <div class="panel-heading"><h3 class="panel-title">Viral load</h3></div>
+    <div class="panel-body">
+        [% IF sample.visit.best_viral_load %]
+            [% IF sample.visit.best_viral_load.viral_load > 0 %]
+                <p class="panel-big-label">[%- sample.visit.best_viral_load.viral_load | commafy -%]</p>
+            [% ELSE %]
+                <p class="panel-big-label">&lt;[%- sample.visit.best_viral_load.limit_of_quantification || 'LLOQ' -%]</p>
+            [% END %]
+            <p class="panel-little-label">copies/mL</p>
+        [% ELSIF sample.visit %]
+            <p class="panel-little-label">No viral load available for this visit</p>
+        [% ELSE %]
+            <p class="panel-little-label">Not a primary sample</p>
+        [% END %]
+    </div>
+</div>

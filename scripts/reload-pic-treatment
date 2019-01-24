@@ -1,0 +1,126 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+use Getopt::Long::Descriptive;
+use Text::CSV;
+use List::MoreUtils qw( zip );
+use ViroDB;
+use Viroverse::Logger -script => qw< :log >;
+use Mullins::MedicationAbbreviations qw( canonicalize_medication_abbreviation );
+
+log_info { "Starting up" };
+
+my ($opt, $usage) = describe_options(
+    "%c %o <PIC Regimen Listing0.csv>",
+    ["Drop existing patient_medication records and reload from provided file"],
+    [],
+    ["dryrun|d", "Don't touch db, just parse file to verify format and row count"],
+    ["commit|c", "Commit transaction, replacing all records (default: rolls back)"],
+    ["help",     "Print usage message and exit"],
+);
+
+print($usage->text), exit
+    if $opt->help or not @ARGV;
+
+my $grid_fn = shift;
+
+my $csv = Text::CSV->new({ binary => 1 }) or die "CSV error: ".Text::CSV->error_diag()."\n";
+
+# Read regimens from Treatment Grid CSV
+open my $fh, "<:encoding(utf8)", $grid_fn or die "$grid_fn: $!";
+my $header = $csv->getline($fh) or die "Couldn't read the very first line, somehow.\n";
+my @regimens;
+while (my $row = $csv->getline($fh) ) {
+    push @regimens, { zip @$header, @$row };
+}
+close $fh;
+
+# Expand "ongoing" regimens with a stopdt into two adjacent records
+@regimens = map {
+    ($_->{ongoing} and $_->{stopdt})
+        ? ( { %$_, ongoing => 0 },
+            { %$_, startdt => $_->{stopdt}, stopdt => undef } )
+        : $_
+} @regimens;
+
+# For each regimen, create a hashref for patient_medication-type data
+# for each med
+my @patient_medications;
+for my $regimen (@regimens) {
+
+    my %common = (
+        pic_id     => $regimen->{picid},
+        start_date => $regimen->{startdt} || undef,
+        end_date   => $regimen->{stopdt}  || undef,
+        ongoing    => $regimen->{ongoing} || 0,
+    );
+
+    my ($potentcat) = $regimen->{potentcat} =~ /^(\d+)/;           # Extract the numeric code for potency
+    my $regimen     = $regimen->{sregimen} =~ s/(^|;)Unk\w+//igr;  # Remove unknown components of the regimen.
+
+    my @meds = split /;/, $regimen;
+    if (scalar @meds > 0) {
+        for my $med (@meds) {
+            push @patient_medications, {
+                %common,
+                medication_abbreviation => canonicalize_medication_abbreviation($med),
+                not_on_art => 0
+            };
+        }
+    } elsif ($potentcat > 0) {
+        # On an unknown ARV regimen, according to pt response
+        # There's only like 7 regimens in this category across
+        # six PIC patients.
+        push @patient_medications, { %common, not_on_art => 0 };
+    } else {
+        push @patient_medications, { %common, not_on_art => 1 };
+    }
+}
+
+log_info {["Will create %d patient_medication records", scalar @patient_medications]};
+
+if ($opt->dryrun) {
+    log_info {"Dry run; exiting without opening database connection."};
+    exit;
+}
+
+my $db = ViroDB->connect_default;
+
+log_info {"Opening database transaction"};
+my $tx = $db->txn_scope_guard;
+
+my $pic = $db->resultset("Cohort")->find({ name => 'PIC' })
+    or die "Couldn't find PIC cohort!\n";
+
+$pic->patients->related_resultset('patient_medications')->delete
+    or die "Couldn't delete patient_medication records!\n";
+log_info {"Deleted existing patient_medication records"};
+
+for my $pm (@patient_medications) {
+    my $patient = $pic->find_patient_by_alias($pm->{pic_id})
+        or die "Couldn't find PIC $pm->{pic_id}, giving up.\n";
+    my $pm_record = $db->resultset('PatientMedication')->new({
+            patient_id => $patient->id,
+            start_date => $pm->{start_date},
+            end_date   => $pm->{end_date},
+            not_on_art => $pm->{not_on_art}
+        });
+    unless ($pm->{not_on_art} or not $pm->{medication_abbreviation}) {
+        my $medication = $db->resultset('Medication')->single(
+            {abbreviation => $pm->{medication_abbreviation}}
+        ) or die "Couldn't find medication $pm->{medication_abbreviation}, giving up.\n";
+        $pm_record->medication($medication);
+    }
+    log_debug {["Inserting a patient_medication record for patient %s",$pm->{pic_id}]};
+    $pm_record->insert;
+}
+
+if ($opt->commit) {
+    log_info {"Commiting transaction"};
+    $tx->commit;
+    log_info {"Data load complete; exiting"};
+    exit;
+}
+
+log_warn {"Rolling back. Specify -c/--commit on command line to roll forward for real"};

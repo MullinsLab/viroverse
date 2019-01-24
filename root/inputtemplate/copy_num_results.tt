@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse: Quality Copy Number Results</title>
+
+[% INCLUDE 'in-head.tt' %]
+
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/sidebar-collect.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/util.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/gel.js"></script>
+</head>
+<body>
+    [% INCLUDE 'body-top.tt' %]
+    [% INCLUDE 'body-error.tt' %]
+    [%- IF quality -%]
+        <h2>Copy Number Results</h2>
+        [%- FOREACH result IN quality -%]
+            <div style="border: 1px inset; padding: 2px 4px 2px 4px; margin-bottom: 5px;">
+                <h3>Results for [% result.value.name %]</h3>
+                # of copies per unit: [% result.value.copy_num %]<br />
+                Standard Error: [% result.value.std_err %]<br />
+                Sensitivity analysis:<br />
+                <pre>[% result.value.sensitivity %]</pre>
+                <h3>Included PCRs</h3>
+                [%- FOREACH pcr IN result.value.pcrs -%]
+                    [%- pcr.to_string -%] <strong>[%- pcr.name -%]</strong><br />
+                [%- END -%]
+            </div>
+        [%- END -%]
+    [%- END -%]
+        [% INCLUDE 'body-bottom.tt' %]
+
+    <div id="sidebar">
+        <h2>Selected PCR products</h2>
+        [% FOREACH pcr_i IN pos_pcr %]
+            <a onClick='sidebar_remove("pcr_more","[%- pcr_i.get('pcr_product_id') -%]")' href='#' name='remove'>del</a> [%- pcr_i.to_string %] <strong>[%- pcr_i.name -%]</strong><br />
+        [% END %]
+
+        [%- IF  pos_pcr.count > 0 -%]
+            <br>
+            <input type='button' onClick='location.href="[%- uri_base -%]input/PCR"' value='PCR'>
+            <input type='button' onClick='location.href="[%- uri_base -%]input/pcr/reamp/"' value='reamp'>
+            <input type='button' onClick='location.href="[%- uri_base -%]input/pcr/pool/"' value='pool'>
+            <input type='button' onClick='location.href="[%- uri_base -%]input/pos_pcr"' value='Purify / Concentrate'>
+            <input type='button' onClick='location.href="[%- uri_base -%]input/clone"' value='Clone'>
+            <input type='button' onClick='location.href="[%- uri_base -%]input/sequence/by_products"' value='Sequence'>
+        [%- END -%]
+        <br><a href='#' onClick='return gel_sidebar_clear()'>clear all selections</a>
+    </div>
+
+[% INCLUDE 'body-end.tt' %]
+</body>

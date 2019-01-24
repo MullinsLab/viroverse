@@ -1,0 +1,68 @@
+faceted-search [ng-click] {
+  cursor: pointer;
+}
+
+faceted-search .search-actions {
+  text-align: right;
+}
+
+faceted-search #search-freeform {
+  width: 100%;
+}
+
+faceted-search .search-facets {
+  border-bottom: 1px solid #eee;
+}
+
+faceted-search .search-facets .facet-col {
+  /* A fixed width column with other properties borrowed from Bootstrap columns
+   * so that it can be used in a .row */
+  width: 16em;
+  float: left;
+  position: relative;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+faceted-search .search-facets .facet-col-thin {
+  width: 13em;
+}
+
+faceted-search .search-facets .facet .facet-values {
+  max-height: 20em;
+  overflow-y: auto;
+  padding-right: 0.5em;
+}
+
+faceted-search .search-facets .facet .list-group-item {
+  padding: 5px 10px;
+}
+
+faceted-search .search-facets .facet .facet-values .null {
+  font-style: italic;
+}
+
+faceted-search .search-facets .facet .facet-values .null .badge {
+  font-style: normal;
+}
+
+faceted-search .search-facets .badge-danger {
+  background-color: #d9534f;
+}
+
+faceted-search .search-results {
+  margin-top: 2em;
+}
+
+faceted-search .search-results .pager-col {
+  text-align: right;
+}
+
+faceted-search .search-results .pager {
+  display: inline-block;
+  margin: 0;
+}
+
+faceted-search .search-results .pager li {
+  border: none;
+}

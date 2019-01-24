@@ -1,0 +1,19 @@
+
+[%- MACRO sub_template_highlight(sub_template_name) BLOCK -%]
+    [%- IF sub_template_name == template.name -%]
+style='font-weight:bold'
+    [%- ELSE -%]
+    [%- END -%]
+[%- END -%]
+
+[%- MACRO sub_uri_highlight(sub_uri_name) BLOCK -%]
+    [%- IF c.req.uri == "${uri_base}${sub_uri_name}" -%]
+style='font-weight:bold'
+    [%- ELSE -%]
+    [%- END -%]
+[%- END -%]
+<div class='nav'>
+    [%- INCLUDE "menu-${section}-${subsection}.tt" -%]
+</div>
+
+

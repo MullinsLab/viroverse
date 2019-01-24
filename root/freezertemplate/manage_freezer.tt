@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse : Freezer - Browse Freezers</title>
+[% INCLUDE 'head.tt' %]
+
+
+<link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/stylesheets/input_tools.css" />
+<link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/stylesheets/freezer.css" />
+<link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/javascripts/yui_2.8.1/container.css" />
+
+<script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/yahoo-dom-event.js"></script>
+<script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/container-min.js"></script>
+<script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/animation-min.js"></script>
+<script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/dragdrop-min.js" ></script>
+
+<script type="text/javascript" s src="[%- uri_base -%]/static/javascripts/drag_multiRow.js"></script>
+
+<script  type="text/javascript" src="[%- uri_base -%]/static/javascripts/util.js"> </script>
+<script  type="text/javascript" src="[%- uri_base -%]/static/javascripts/freezer.js"></script>
+
+<script type="text/javascript">
+
+    YAHOO.namespace("vv_freezer");
+    YAHOO.namespace("vv_freezer.container");
+
+    function init(){
+        YAHOO.vv_freezer.container.add_racks = new YAHOO.widget.Overlay("add_racks", { visible:false, modal:true, close:true, zindex:4, draggable: true, width:"300px", context: ["add_rack_button","tl","tr",["beforeShow", "windowResize"]] } );
+        YAHOO.vv_freezer.container.add_racks.render(document.body);
+        YAHOO.util.Event.addListener("cancelAddRack", "click", YAHOO.vv_freezer.container.add_racks.hide, YAHOO.vv_freezer.container.add_racks, true);
+
+        YAHOO.vv_freezer.container.add_boxes = new YAHOO.widget.Overlay("add_boxes", { visible:false, modal:true, close:true, zindex:4, draggable: true, width:"300px"} );
+        YAHOO.vv_freezer.container.add_boxes.render(document.body);
+        YAHOO.util.Event.addListener("cancelAddBox", "click", YAHOO.vv_freezer.container.add_boxes.hide, YAHOO.vv_freezer.container.add_boxes, true);
+
+        YAHOO.vv_freezer.container.rename_rack = new YAHOO.widget.Overlay("rename_rack", { visible:false, modal:true, close:true, zindex:4, draggable: true, width:"300px"} );
+        YAHOO.vv_freezer.container.rename_rack.render(document.body);
+        YAHOO.util.Event.addListener("cancelRenameRack", "click", YAHOO.vv_freezer.container.rename_rack.hide, YAHOO.vv_freezer.container.rename_rack, true);
+
+        document.getElementById("yui-panels").style.display = "block";
+        var attributes_warn = {
+                    backgroundColor: { to: '#FF8B8B' }
+                };
+
+        YAHOO.vv_freezer.anim_warn = new YAHOO.util.ColorAnim('freez_type', attributes_warn);
+        var attributes_back = {
+                    backgroundColor: { to: '#FFFFFF' }
+                };
+
+        YAHOO.vv_freezer.anim_back = new YAHOO.util.ColorAnim('freez_type', attributes_back);
+    }
+
+    YAHOO.util.Event.addListener(window, "load", init);
+
+
+
+    function showAddRacks(){
+
+        var upright = document.getElementById('upright');
+        var chest = document.getElementById('chest');
+
+        if(!upright.checked && !chest.checked){
+            YAHOO.vv_freezer.container.add_racks.hide();
+            YAHOO.vv_freezer.anim_warn.animate();
+            setTimeout("YAHOO.vv_freezer.anim_back.animate()" , 3000);
+            var type_err = document.getElementById('frz_typ_msg')
+            type_err.innerHTML = "&larr; Please Select the Type of Freezer Before Adding Racks";
+            return;
+        }
+
+       var rack_row = document.getElementById('rack_row');
+       var rack_row_label = document.getElementById('rack_row_label');
+       var rack_col = document.getElementById('rack_col');
+       var rack_col_label = document.getElementById('rack_col_label');
+
+       if(chest.checked){
+        rack_col.value = 1;
+        rack_col.style.display = 'none';
+        rack_col_label.style.display = 'none';
+        rack_row_label.innerHTML = "Num Shelves";
+        rack_row.value = "";
+       }else if(upright.checked){
+        rack_col.value = "";
+        rack_col.style.display = 'inline';
+        rack_col_label.style.display = 'inline';
+        rack_row_label.style.display = 'inline';
+        rack_row_label.innerHTML = "Num Down";
+        rack_row.value = "";
+       }
+
+        YAHOO.vv_freezer.container.add_racks.show();
+
+
+    }
+
+    function showAddBoxes(clicked, rack_id, rack_name){
+    document.getElementById('rack_id').value = rack_id;
+    YAHOO.vv_freezer.container.add_boxes.header.innerHTML = "Add Boxes to Rack " + rack_name;
+    YAHOO.vv_freezer.container.add_boxes.cfg.setProperty("context",[clicked,"tl","tr"]);
+    YAHOO.vv_freezer.container.add_boxes.show();
+    }
+
+    function reloadFreezer(){
+    var freezer_sel = document.getElementById("freezer_id");
+    if(freezer_sel.selectedIndex > -1){
+        freeze_switch(freezer_sel);
+    }
+    }
+
+    function freeze_switch(sel){
+        clearError();
+        var rack_tbody = document.getElementById('freezer_racks');
+        while (rack_tbody.rows.length > 0){ //clear out rack table
+            rack_tbody.deleteRow(0);
+        }
+        if (sel.value == 'new' || sel.value === '') {
+            document.getElementById('freezer_name').value = "";
+            document.getElementById('freezer_loc').value = "";
+            document.getElementById('freezer_description').value = "";
+            document.getElementById('upright').checked = false;
+            document.getElementById('chest').checked = false;
+            document.getElementById('add_rack_button').disabled ="disabled";
+            return;
+        }
+        var http  = make_xmlhttp();
+        http.open('POST', viroverse.url_base + "/freezer/summary/freezer_ajax/" + sel.value ,true);
+        http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        http.onreadystatechange = function () {
+        if (http.readyState == 4) {
+            try {
+                var freezer = eval ( "("  + http.responseText + ")" ).Response;
+                document.getElementById('freezer_name').value = freezer.name;
+                document.getElementById('freezer_loc').value = freezer.location;
+                document.getElementById('freezer_description').value = freezer.description;
+                if (freezer.upright_chest == "u") {
+                    document.getElementById('upright').checked = "checked";
+                    document.getElementById('chest').checked = false;
+                }
+                else if(freezer.upright_chest == "c") {
+                    document.getElementById('upright').checked = false;
+                    document.getElementById('chest').checked = "checked";
+                }
+                if (freezer.racks.length == 0 || freezer.racks[freezer.racks.length - 1].order_key < 26 ) {
+                    if(freezer.racks.length > 0 && isNaN(freezer.racks[freezer.racks.length - 1].name)){
+                        document.getElementById('alpha').checked = "checked";
+                    }
+                    document.getElementById("alpha_int").style.display = "block";
+                }
+                else { //if no racks can specify number or letter
+                    document.getElementById("alpha_int").style.display = "none";
+                }
+                for (var i = 0; i < freezer.racks.length ; i++){
+                    var row = rack_tbody.insertRow(rack_tbody.rows.length);
+                    row.id = freezer.racks[i].rack_id;
+                    row.setAttribute("data-rack_name", freezer.racks[i].name);
+                    row.setAttribute("data-num_rows", freezer.racks[i].rows);
+                    row.setAttribute("data-num_cols", freezer.racks[i].cols);
+                    var cell = row.insertCell(0);
+                    cell.innerHTML = freezer.racks[i].name;
+                    cell = row.insertCell(1);
+                    cell.innerHTML = freezer.racks[i].config;
+                    cell = row.insertCell(2);
+                    cell.innerHTML = freezer.racks[i].num_boxes;
+                    cell = row.insertCell(3);
+                    cell.innerHTML = '<div style="width:150px;">'
+                        + (viroverse.scientist.can_manage_freezers ? '<a class="clk" onclick="showEditRack(' + freezer.racks[i].rack_id + ')" >Edit</a>' : '')
+                        + (viroverse.scientist.can_manage_freezers ? '<a class="clk" onclick="showAddBoxes(this, \'' + freezer.racks[i].rack_id + '\',  \'' + freezer.racks[i].name + '\');">Add Boxes</a>' : '')
+                        + '<a class="clk" href="' + viroverse.url_base + 'freezer/summary/rack/' + freezer.racks[i].rack_id  + '" >View</a></div>'
+                }
+                document.getElementById('add_rack_button').disabled = false;
+                if (viroverse.scientist.can_manage_freezers)
+                    YAHOO.example.DDApp.init();
+            }catch(e){
+                document.getElementById('debug').innerHTML = "Error:  " + e + "\n<br />" + http.responseText;
+                }
+            }
+        }
+        http.send("");
+    }
+
+    function clearFrzTpyErr(){
+        document.getElementById('frz_typ_msg').innerHTML = "";
+    }
+
+    function saveFreezer(){
+        clearError();
+        var frm = document.getElementById('freezer_frm');
+        var params = form2url(frm);
+        params = params.replace(/^[^?]*\?/, ""); //this is a post so strip up to the preeceeding ?
+        var http  = make_xmlhttp();
+        http.open('POST', viroverse.url_base + "/freezer/input/updateFreezer/",true);
+        http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        http.onreadystatechange = function () {
+            if (http.readyState == 4) {
+                var freezer = evalJSON(http);
+                var freezer_sel = document.getElementById("freezer_id");
+
+                // refresh values if new freezer has been created (check for server-side error)
+                if(freezer_sel.value == "new" && !freezer.error){
+                    freezer_sel.options[freezer_sel.options.length] = new Option(freezer.name, freezer.freezer_id, false, true);
+                    freeze_switch(freezer_sel);
+                }
+            }
+        }
+        http.send(params);
+    }
+
+    function addRacks(){
+        var http  = make_xmlhttp();
+        var rack_alpha = document.getElementById('alpha').checked?1:0;
+        var params = "freezer_id=" + document.getElementById('freezer_id').value;
+        params +="&num_racks=" + document.getElementById('num_racks').value;
+        params +="&rack_row=" + document.getElementById('rack_row').value;
+        params +="&rack_col=" + document.getElementById('rack_col').value;
+        params +="&rack_alpha=" + rack_alpha;
+
+        http.open('POST', viroverse.url_base + "/freezer/input/addRacks/",true);
+        http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        http.onreadystatechange = function () {
+            if (http.readyState == 4) {
+                try{
+                 //    var freezer = eval ( "("  + http.responseText + ")" ).Response;
+                 freeze_switch(document.getElementById('freezer_id'));
+                 YAHOO.vv_freezer.container.add_racks.hide();
+                 }catch(e){
+                    document.getElementById('debug').innerHTML = "Error:  " + e + "\n<br />" + http.responseText;
+                 }
+
+
+            }
+        }
+
+        http.send(params);
+    }
+
+    function addBoxes(){
+    var button = document.getElementById('addBoxesButton');
+    button.disabled = "disabled";
+    var http = make_xmlhttp();
+    var ctr = document.getElementById('add_boxes');
+    var over_divs = ctr.getElementsByTagName("div");
+    for(var i = 0 ; i < over_divs.length ; i++){
+        over_divs.item(i).style.display = "none";
+    }
+    showLoadingBox(ctr, "Building and Adding Boxes...", "300px", "100px");
+    var param = "rack_id=" + document.getElementById('rack_id').value;
+    param += "&num_boxes=" + document.getElementById('num_boxes').value;
+    param += "&num_columns=" + document.getElementById('box_col').value;
+    param += "&num_rows=" + document.getElementById('box_row').value;
+    param += "&name_start=" + document.getElementById('name_start').value;
+    param += "&name_prefix=" +  encodeURIComponent(document.getElementById('name_prefix').value);
+    http.open('POST', viroverse.url_base + "/freezer/input/addBoxes/",true);
+        http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        http.onreadystatechange = function () {
+            if (http.readyState == 4) {
+                if(http.responseText == 1){
+                    clearError(); //just in case we had one from before
+                    YAHOO.vv_freezer.container.add_boxes.hide();
+                }else{
+                    handleAjaxError(http.responseText);
+                }
+                reloadFreezer();
+                button.disabled = "";
+                ctr.removeChild(document.getElementById('loadDiv'));
+                for(var i = 0 ; i < over_divs.length ; i++){
+                    over_divs.item(i).style.display = "block";
+                }
+            }
+        }
+    http.send(param);
+    }
+
+    function checkInt(elem){
+        var myInt = parseInt(elem.value);
+        if(myInt != elem.value){
+            elem.select();
+        }
+    }
+
+    function showEditRack(rack_id){
+    var rack_row = document.getElementById(rack_id);
+    var name_cell = rack_row.cells.item(0);
+    var config_cell = rack_row.cells.item(1);
+    var isChest = config_cell.innerHTML.search("Shelves");
+    var configDiv = document.getElementById('rack_config');
+    if(isChest >= 0){
+        configDiv.innerHTML = 'Configuration  <input type="text" id="edit_row" size="2" value="' + rack_row.getAttribute("data-num_rows") + '" onkeyup="checkInt(this);"/> Shelves <input type="hidden" id="edit_col" value="' + rack_row.getAttribute("data-num_cols") + '"/>';
+    }else{
+        configDiv.innerHTML = 'Configuration  <input type="text" id="edit_row" size="2" value="' + rack_row.getAttribute("data-num_rows") + '" onkeyup="checkInt(this);"/> Rows X <input type="text" id="edit_col" size="2" value="' + rack_row.getAttribute("data-num_cols") + '" onkeyup="checkInt(this);"/> Cols';;
+    }
+    document.getElementById("rack_id").value = rack_id;
+    document.getElementById("rack_name").value = name_cell.innerHTML;
+    YAHOO.vv_freezer.container.rename_rack.cfg.setProperty("context",[name_cell,"tl","tr"]);
+    YAHOO.vv_freezer.container.rename_rack.show();
+    }
+
+    function editRack(){
+    var http  = make_xmlhttp();
+    var rack_name = document.getElementById('rack_name').value;
+    var rack_id = document.getElementById('rack_id').value;
+    var params = "rack_id=" + rack_id;
+    params += "&rack_name=" + encodeURIComponent(rack_name);
+    params += "&num_cols=" + encodeURIComponent(document.getElementById('edit_col').value);
+    params += "&num_rows=" + encodeURIComponent(document.getElementById('edit_row').value);
+        http.open('POST', viroverse.url_base + "/freezer/input/editRack/" ,true);
+        http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        http.onreadystatechange = function () {
+        if (http.readyState == 4) {
+            var ret = evalJSON(http);
+            if(ret == 1){
+                YAHOO.vv_freezer.container.rename_rack.hide();
+                reloadFreezer();
+            }else if(!ret.error){//known errors have allready been handled
+                writeError("Unknown Error Editing Rack");
+            }
+        }
+    }
+    http.send(params);
+
+    }
+
+</script>
+
+<script type="text/javascript">
+
+(function() {
+
+var Dom = YAHOO.util.Dom;
+var Event = YAHOO.util.Event;
+var DDM = YAHOO.util.DragDropMgr;
+
+//////////////////////////////////////////////////////////////////////////////
+// example app
+//////////////////////////////////////////////////////////////////////////////
+YAHOO.example.DDApp = {
+    init: function() {
+
+        var rack_tbody = document.getElementById("freezer_racks");
+        new YAHOO.util.DDTarget(rack_tbody);
+    var racks = rack_tbody.rows;
+        for (var i = 0 ; i < racks.length ;i++) {
+                new YAHOO.example.DDList(racks.item(i));
+        }
+    },
+
+};
+
+//////////////////////////////////////////////////////////////////////////////
+// custom drag and drop implementation
+//////////////////////////////////////////////////////////////////////////////
+
+YAHOO.example.DDList = function(id, sGroup, config) {
+
+    YAHOO.example.DDList.superclass.constructor.call(this, id, sGroup, config);
+
+    this.logger = this.logger || YAHOO;
+    var el = this.getDragEl();
+    Dom.setStyle(el, "opacity", 0.67); // The proxy is slightly transparent
+
+    this.goingUp = false;
+    this.lastY = 0;
+};
+
+YAHOO.extend(YAHOO.example.DDList, YAHOO.util.DDProxy, {
+
+    startDrag: function(x, y) {
+        this.logger.log(this.id + " startDrag");
+
+        // make the proxy look like the source element
+        var dragEl = this.getDragEl();
+        var clickEl = this.getEl();
+        Dom.setStyle(clickEl, "visibility", "hidden");
+
+        dragEl.innerHTML = clickEl.innerHTML;
+
+        Dom.setStyle(dragEl, "color", Dom.getStyle(clickEl, "color"));
+        Dom.setStyle(dragEl, "backgroundColor", Dom.getStyle(clickEl, "backgroundColor"));
+        Dom.setStyle(dragEl, "border", "2px solid gray");
+    },
+
+    endDrag: function(e) {
+
+        var srcEl = this.getEl();
+        var proxy = this.getDragEl();
+
+        // Show the proxy element and animate it to the src element's location
+        Dom.setStyle(proxy, "visibility", "");
+        var a = new YAHOO.util.Motion(
+            proxy, {
+                points: {
+                    to: Dom.getXY(srcEl)
+                }
+            },
+            0.2,
+            YAHOO.util.Easing.easeOut
+        )
+        var proxyid = proxy.id;
+        var thisid = this.id;
+
+        // Hide the proxy and show the source element when finished with the animation
+        a.onComplete.subscribe(function() {
+                Dom.setStyle(proxyid, "visibility", "hidden");
+                Dom.setStyle(thisid, "visibility", "");
+            });
+        a.animate();
+    reorderRacks();
+    },
+
+    onDragDrop: function(e, id) {
+
+        // If there is one drop interaction, the li was dropped either on the list,
+        // or it was dropped on the current location of the source element.
+        if (DDM.interactionInfo.drop.length === 1) {
+
+            // The position of the cursor at the time of the drop (YAHOO.util.Point)
+            var pt = DDM.interactionInfo.point;
+
+            // The region occupied by the source element at the time of the drop
+            var region = DDM.interactionInfo.sourceRegion;
+
+            // Check to see if we are over the source element's location.  We will
+            // append to the bottom of the list once we are sure it was a drop in
+            // the negative space (the area of the list without any list items)
+            if (!region.intersect(pt)) {
+                var destEl = Dom.get(id);
+                var destDD = DDM.getDDById(id);
+                destEl.appendChild(this.getEl());
+                destDD.isEmpty = false;
+                DDM.refreshCache();
+            }
+
+        }
+    },
+
+    onDrag: function(e) {
+
+        // Keep track of the direction of the drag for use during onDragOver
+        var y = Event.getPageY(e);
+
+        if (y < this.lastY) {
+            this.goingUp = true;
+        } else if (y > this.lastY) {
+            this.goingUp = false;
+        }
+
+        this.lastY = y;
+    },
+
+    onDragOver: function(e, id) {
+
+        var srcEl = this.getEl();
+        var destEl = Dom.get(id);
+
+        // We are only concerned with list items, we ignore the dragover
+        // notifications for the list.
+        if (destEl.nodeName.toLowerCase() == "tr") {
+            var orig_p = srcEl.parentNode;
+            var p = destEl.parentNode;
+
+            if (this.goingUp) {
+                p.insertBefore(srcEl, destEl); // insert above
+            } else {
+                p.insertBefore(srcEl, destEl.nextSibling); // insert below
+            }
+
+            DDM.refreshCache();
+        }
+    }
+});
+
+if (viroverse.scientist.can_manage_freezers)
+    Event.onDOMReady(YAHOO.example.DDApp.init, YAHOO.example.DDApp, true);
+
+})();
+
+
+</script>
+<style>
+   #rack_entry label{
+        float: none;
+        clear: none;
+        vertical-align: baseline;
+    }
+
+
+    #v_config,
+    #h_config{
+        display: none;
+    }
+    input,
+    select{
+        margin-bottom: 5px;
+    }
+
+    #frz_typ_msg{
+        color: #FF4747;
+        font-weight: bold;
+    }
+    table.freezer-racks td{
+    text-align:center;
+    }
+    table.freezer-racks{
+    width: 100%;
+    }
+</style>
+</head>
+
+<body class="yui-skin-sam" style="position:relative" onload="reloadFreezer()">
+[%- INCLUDE 'body-top.tt' -%]
+
+<pre id="debug"></pre>
+<h1>Freezer</h1>
+<form id="freezer_frm" <% IF !scientist.can_manage_freezers %>onsubmit="return false"<% END %>>
+    <fieldset title="freezer"><legend>Freezer</legend>
+        <label for="freezer_id">Freezer</label>
+        <select id="freezer_id" name="freezer_id" onchange="freeze_switch(this);">
+            <% IF scientist.can_manage_freezers %>
+                <option value="new" selected="selected">New</option>
+            <% ELSE %>
+                <option value="" selected disabled>Select a freezer…</option>
+            <% END %>
+            [% FOREACH f IN freezers %]
+                <option value="[% f.freezer_id %]">[% f.name %]</option>
+            [% END %]
+        </select><br/>
+        <label for="freezer_name">Name</label><input type="text" id="freezer_name" name="freezer_name" value="" <% 'disabled' IF !scientist.can_manage_freezers %>/><br/>
+        <label for="freezer_loc">Location</label><input type="text" id="freezer_loc" name="freezer_loc" size="25" value="" <% 'disabled' IF !scientist.can_manage_freezers %>/><br/>
+        <label for="freezer_description">Description</label> <textarea id="freezer_description" name="freezer_description" rows="3" cols="30" <% 'disabled' IF !scientist.can_manage_freezers %>></textarea><br />
+        <label>Freezer Type</label>
+        <span id="freez_type" style="padding: 4px 4px 4px 0px;">
+            <label class="inline" for="upright"><input id="upright" name="upright_chest" type="radio" value="u" onclick="clearFrzTpyErr()" <% 'disabled' IF !scientist.can_manage_freezers %> />Upright</label>
+            <label class="inline" for="chest"><input id="chest" name="upright_chest" type="radio" value="c" onclick="clearFrzTpyErr()" <% 'disabled' IF !scientist.can_manage_freezers %> />Chest</label>
+        </span><span id="frz_typ_msg" ></span><br />
+        <% IF scientist.can_manage_freezers %>
+            <input type="button" value="Save" onclick="saveFreezer()" />
+        <% END %>
+        <table class="freezer-racks">
+            <thead>
+                <tr><th>Rack</th><th>Configuration</th><th>Num. Boxes</th><th></th></tr>
+            </thead>
+            <tbody id="freezer_racks" <% IF scientist.can_manage_freezers %>style="cursor: pointer"<% END %>>
+                [% FOREACH r IN racks %]
+                    <tr id="[%- r.rack_id -%]"><th>[% r.name %]</th><th>[% r.orientation %]</th><th>[% r.config %]</th><th>[% r.num_boxes %]</th><th><a  class="clk" href="[%- uri_base -%]freezer/summary/rack/[%- r.rack_id -%]" >View</a></tr>
+                [% END %]
+            </tbody>
+            <% IF scientist.can_manage_freezers %>
+                <tfoot><tr><th colspan="4" style="text-align:left">To Re-Order Racks Drag and Drop Rows</th></tr></tfoot>
+            <% END %>
+        </table>
+        <%#
+          This uses CSS to hide the button from non-managers so that I don't
+          have to adapt the JS to account for a missing button in the DOM.  We
+          need to throw out the existing freezer JS anyway, so this ugliness will
+          be resolved in due time.
+            -trs, 16 May 2018
+        %>
+        <input type="button" value="Add Racks To Freezer" id="add_rack_button" disabled="disabled" onclick="showAddRacks();"
+          <% IF !scientist.can_manage_freezers %>style="display: none"<% END %> />
+        <div>
+        </div>
+    </fieldset>
+</form>
+
+[% INCLUDE 'body-end.tt', match_body_top = 1 %]
+
+
+<div id="yui-panels" style="display: none" >
+    <div id="add_racks"class="overlay" >
+        <div class="hd">Add Racks</div>
+        <div class="bd" >
+            <label class="inline" for="num_canes">Number of racks to add </label><input id="num_racks" size="2" type="text" value="" onkeyup="checkInt(this);"/>
+            <label class="inline" id="rack_col_label" for="rack_col">Num Across</label><input type="text" id="rack_col" size="2" value="" onkeyup="checkInt(this);" />
+            <label class="inline" id="rack_row_label" for="rack_row">Num Down</label><input type="text" id="rack_row" size="2" value="" onkeyup="checkInt(this);" />
+            <div id="alpha_int" style="display: none">Label Canes With
+                <label class="inline" for="alpha"><input id="alpha" name="cane_label" type="radio" value="a" />Letters</label>
+                <label class="inline" for="int"><input id="int" name="cane_label" type="radio" value="i" checked="checked" />Numbers</label>
+            </div>
+                </div>
+        <div class="ft"><button onclick="addRacks()">Save</button> <button id="cancelAddRack">Cancel</button></div>
+    </div>
+    <div id="add_boxes"class="overlay" >
+        <div class="hd">Add Boxes to Rack</div>
+        <div class="bd" >
+            <label class="inline" for="num_boxes">Number of boxes to add </label><input id="num_boxes" size="2" type="text" value="" onkeyup="checkInt(this);"/>
+                        <label class="inline" for="box_col">Num Columns</label><input type="text" id="box_col" size="2" value="" onkeyup="checkInt(this);" />
+                        <label class="inline" for="box_row">Num Rows</label><input type="text" id="box_row" size="2" value="" onkeyup="checkInt(this);" /><br />
+            <label class="inline" for="name_prefix">Prefix</label><input type="text" size="5" id="name_prefix" value="" />
+            <label class="inline" for="name_start">Start At</label><input type="text" size="5" id="name_start" value="" onkeyup="checkInt(this);" /><br />
+             <br />
+                </div>
+        <div class="ft"><button id="addBoxesButton" onclick="addBoxes()">Save</button> <button id="cancelAddBox">Cancel</button></div>
+    </div>
+    <div id="rename_rack"class="overlay" >
+        <div class="hd">Edit Rack</div>
+        <div class="bd" >
+            <label class="inline" for="rack_name">Rack Name</label><input id="rack_name" type="text" value=""/>
+            <div id="rack_config"></div>
+                </div>
+        <div class="ft"><button id="renameRackButton" onclick="editRack()">Save</button> <button id="cancelRenameRack">Cancel</button></div>
+    </div>
+    <input type="hidden" id="rack_id" value="" />
+</div>
+
+</body>
+</html>

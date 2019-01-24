@@ -1,0 +1,13 @@
+        </div> <!-- end formBody -->
+
+        <!--
+          Ensure that formBox contents are cleared so that we visually wrap
+          them if they're floated, e.g. the freezer pages.
+        -->
+        <div class="spacer"></div>
+
+        </div> <!--end formBox-->
+        <div class="spacer"></div>
+    </div> <!--end main-->
+    
+    

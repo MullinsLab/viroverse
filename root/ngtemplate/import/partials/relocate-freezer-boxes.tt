@@ -1,0 +1,25 @@
+<div class="row">
+    <div class="col-md-12">
+        [% INCLUDE select_column_key_help %]
+    </div>
+    <div class="col-md-6">
+        <h2>Assign data columns</h2>
+        [%
+          fields = [
+            { key: 'freezer', label: 'Destination freezer name' },
+            { key: 'rack',    label: 'Destination rack name' },
+            { key: 'shelf',   label: 'Destination shelf/rack position' },
+            { key: 'box',     label: 'Box name' },
+          ]
+        %]
+        [% FOR field IN fields %]
+          <div class="form-group">
+            <label for="[% field.key %]_key">[% field.label %]</label>
+            [% INCLUDE select_column_key key = field.key, optional = field.optional %]
+          </div>
+        [% END %]
+    </div>
+    <div class="col-md-6">
+    </div>
+
+</div>

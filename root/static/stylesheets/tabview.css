@@ -1,0 +1,23 @@
+/* override yui tab color scheme */
+.yui-skin-sam .yui-navset .yui-content {
+    background:white; /* content background color */
+}
+
+.yui-skin-sam .yui-navset .yui-nav a,
+.yui-skin-sam .yui-navset .yui-navset-top .yui-nav a {
+    background:white;
+    color:black;
+}
+
+.yui-skin-sam .yui-navset .yui-nav,
+.yui-skin-sam .yui-navset .yui-navset-top .yui-nav { /* protect nested tabviews from other orientations */
+    border:solid #1f669b; /* color between tab list and content */
+    border-width:0 0 5px;
+}
+
+.yui-skin-sam .yui-navset .yui-nav .selected a,
+.yui-skin-sam .yui-navset .yui-nav .selected a:focus, /* no focus effect for selected */
+.yui-skin-sam .yui-navset .yui-nav .selected a:hover { /* no hover effect for selected */
+    background:#1f669b; /* selected tab background */
+    color:white;
+}

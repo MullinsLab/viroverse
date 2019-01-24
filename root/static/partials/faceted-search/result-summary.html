@@ -1,0 +1,29 @@
+<span ng-switch="search.hasQuery">
+  <span ng-switch-when="true">Found</span>
+  <span ng-switch-when="false">There
+    <ng-pluralize
+      count="search.result.total"
+      when="{'one':   'is',
+             'other': 'are'}">
+    </ng-pluralize>
+  </span>
+</span>
+<ng-pluralize
+  count="search.result.total"
+  when="{'one':   '1 {{ noun }}',
+         'other': '{{ search.result.total | number: 0 }} {{ noun }}s'}">
+</ng-pluralize>
+<span ng-switch="search.hasQuery">
+  <span ng-switch-when="true">matching your criteria.</span>
+  <span ng-switch-when="false">{{ population || 'in all of Viroverse' }}.</span>
+</span>
+<span ng-if="search.result.total === 0">😳 </span>
+
+<span ng-if="search.result.rows.length && search.result.rows.length < search.result.total">
+  Showing
+  <span ng-switch="search.hasQuery">
+    <span ng-switch-when="true">matches</span>
+    <span ng-switch-when="false">{{ noun }}s</span>
+  </span>
+  {{ search.rowRange[0] }} through {{ search.rowRange[1] }}, starting with the most recent.
+</span>

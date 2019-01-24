@@ -1,0 +1,24 @@
+
+<div id='smenu' >
+    <div class='bd'> <ul>
+        <li><span class="subsection-title">PCR &amp; Sequencing</span></li>
+        <li><a href="[%- uri_base -%]/input/extraction" [%- sub_template_highlight('extraction.tt') -%] >Extraction</a></li>
+        <li><a href="[%- uri_base -%]/input/RT" [%- sub_template_highlight('RT.tt') -%] >cDNA</a></li>
+        <li><a href="[%- uri_base -%]/input/bisulfite_conversion" [%- sub_template_highlight('bisulfite_conversion.tt') -%] >Bisulfite</a></li>
+        <li>
+            <a href="#pcrmenu" [%- sub_uri_highlight('input/pcr') -%] >PCR</a>
+            <div id='pcrmenu' class='yuimenu'>
+                <div class='bd'> <ul>
+                    <li><a href="[%- uri_base -%]/input/PCR/" class="yuimenuitemlabel" [%- sub_uri_highlight('input/PCR/') -%] >Add PCR</a></li>
+                    <li><a href="[%- uri_base -%]/input/PCR_gel" class="yuimenuitemlabel" [%- sub_uri_highlight('input/PCR_gel') -%] >PCR gel</a></li>
+                    <li><a href="[%- uri_base -%]/input/pcr/reamp" class="yuimenuitemlabel" [%- sub_uri_highlight('input/pcr/reamp') -%]>PCR Product Re-amplification</a></li>
+                    <li><a href="[%- uri_base -%]/input/pcr/pool" class="yuimenuitemlabel" [%- sub_uri_highlight('input/pcr/pool') -%]>Pool PCR</a></li>
+                    <li><a href="[%- uri_base -%]/input/pos_pcr" class="yuimenuitemlabel" [%- sub_uri_highlight('input/pos_pcr') -%]>Purify/Concentrate</a></li>
+                    <li><a href="[%- uri_base -%]/input/pcr/copy_num_set_up" class="yuimenuitemlabel" [%- sub_uri_highlight('input/pos_pcr') -%]>Calc. Copy Number</a></li>
+                </ul> </div>
+            </div>
+        </li>
+        <li><a href="[%- uri_base -%]/input/sequence" [%- sub_uri_highlight('input/sequence') -%] >Sequencing</a></li>
+    </ul> </div>
+</div>
+

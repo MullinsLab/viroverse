@@ -1,0 +1,8 @@
+#!/bin/bash
+TRACE="\033[4m"
+RESET="\033[0m"
+
+function try() {
+    printf "$PS4$TRACE%s$RESET" "$*" >&2
+    "$@"
+}

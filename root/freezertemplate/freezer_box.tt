@@ -1,0 +1,30 @@
+<h2>[% box.location %]</h2>
+[% i = 0  ; r = 0 ; c = 0 %]
+<table class="freezer-box" id="freezer_box" cellspacing="0px">
+    <tr>
+        <th></th>
+        [% WHILE c < box.num_columns %]
+            <th>[% key = c+ 1 ; int_to_alpha.$key ; c = c + 1%]</th>
+        [% END %]
+    </tr>
+    [% WHILE r < box.num_rows %]
+        <tr>            
+        [% c = 0 %]
+        <th>[% (r + 1) %]</th>
+        [% WHILE c < box.num_columns %]
+            <td class="box_pos [%- IF onclick == 'add vials' || box.positions.$i.status == 'reserved' || onclick == 'xfer-vials' ; box.positions.$i.status ; END -%]"  id="[% box.positions.$i.box_pos_id %]" data-name="[%- box.positions.$i.name -%]" data-pos="[%- box.positions.$i.pos -%]"
+                onclick="[% IF NOT scientist.can_manage_freezers; 'return false'; ELSIF onclick == 'add vials' %] placeVial(this) [% ELSIF onclick == 'xfer-vials' %][% ELSE %] vialDetails(this.id, 'aliquot', '[% box.positions.$i.aliquot_id %]') [% END %]">
+                    <b>[% box.positions.$i.pos %]</b><div>[% box.positions.$i.sample_name %]</div>
+            </td>
+            [% i = i + 1 ; c = c + 1 %]
+        [% END %]
+        </tr>
+        [% r = r + 1 %]
+    [% END %]
+</table>
+[%- IF scientist.can_manage_freezers AND !onclick %]
+<div>Click on Box Positions to View/Edit Vial Data<br /><div style="background-color: #F79292; display: inline-block; height: 10px; width: 10px"></div>&nbsp; Denotes Reserved Vial</div>
+     [% IF box.isEmpty %]
+          <input type="button" value="Delete Box" onclick="deleteBoxCheck([%- box.box_id -%] , '[%- box.location.replace("'", "\\'") -%]')" />
+     [% END %]
+[% END %]

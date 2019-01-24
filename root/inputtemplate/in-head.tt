@@ -1,0 +1,30 @@
+<!-- in-head.tt -->
+<link rel="stylesheet" type="text/css" href="[%- uri_base -%]static/javascripts/yui_2.8.1/menu.css"> 
+[% INCLUDE 'head.tt' %]
+
+<script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/yahoo-dom-event.js"></script> 
+<script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/container-min.js"></script> 
+<script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/menu-min.js"></script> 
+
+<script type='text/javascript' language='javascript'>
+    function menuinit () {
+        var seqmenu = new YAHOO.widget.MenuBar('smenu',{autosubmenudisplay:true});
+        seqmenu.render()
+        seqmenu.show()
+    }
+
+    YAHOO.util.Event.onDOMReady(menuinit);
+    YAHOO.util.Event.onDOMReady(function(ev){
+        var input = document.getElementsByClassName("quickfill-today");
+        for (var i = 0; i < input.length; i++) {
+            var link = document.createElement("a");
+            link.textContent = 'today';
+            link.className = 'clk';
+            link.setAttribute("onclick",
+                'this.previousSibling.value = YAHOO.util.Date.format(new Date(), { format: "%F" }); false');
+            // aka "insertAfter"
+            input[i].parentNode.insertBefore(link, input[i].nextSibling);
+        }
+    });
+</script>
+<!-- in-head.tt -->

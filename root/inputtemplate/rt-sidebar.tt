@@ -1,0 +1,9 @@
+        <h2>Selected cDNA</h2>
+[% FOREACH rt_i IN rt %]
+    <a onClick='sidebar_remove("rt","[%- rt_i.get('rt_product_id') -%]")' href='#' name='remove'>del</a> [%- rt_i.to_string %]<br />
+[% END %]
+
+[%- IF rt -%]
+    <br>
+    <input type='button' onClick='location.href="[%- uri_base -%]input/PCR"' value='PCR'>
+[%- END -%]

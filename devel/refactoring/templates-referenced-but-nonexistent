@@ -1,0 +1,14 @@
+#!/bin/bash
+set -e -o pipefail
+source $(dirname $0)/lib/functions.sh
+
+for tmpl in $(git grep -E 'template.+=>?.+\S+\.tt' lib/ | extract-matches '([^\s\x27"]+\.tt)' | sort -u); do
+    if [[ $tmpl =~ \$ ]]; then
+        echo "Ignoring non-static template name: $tmpl" >&2
+        continue
+    fi
+
+    if ! test -e root/*/"$tmpl"; then
+        echo $tmpl;
+    fi
+done

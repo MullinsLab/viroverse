@@ -1,0 +1,29 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <a href="[% c.uri_for_action('/sample/ice_cultures', [ sample.id ]) %]">ICE cultures</a>
+        </h3>
+    </div>
+    [% IF $(sample.ice_cultures).has_rows %]
+        <table class="table">
+            <tfoot>
+                <tr>
+                    <th>Total</th>
+                    <th class="text-right">[% $(sample.ice_cultures).count | commafy %]</th>
+                </tr>
+            </tfoot>
+            <tbody>
+            [% FOR cultures IN $(sample.ice_cultures).rollup_by_tissue_type %]
+                <tr>
+                    <td>[% cultures.tissue_type.name %]</td>
+                    <td class="text-right">[% cultures.get_column('count') | commafy %]</td></tr>
+            [% END %]
+            </tbody>
+        </table>
+        <div class="list-group">
+            <a class="list-group-item" href="[% c.uri_for_action('/sample/ice_cultures', [ sample.id ]) %]">Search ICE cultures</a>
+        </div>
+    [% ELSE %]
+        <div class="panel-body"><p class="panel-little-label">No ICE cultures</p></div>
+    [% END %]
+</div>

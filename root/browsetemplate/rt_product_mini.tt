@@ -1,0 +1,26 @@
+[% PROCESS 'macros.tt' %]
+<div class='rt_loc'>
+    cDNA # [%- object.get_id -%] entered [%- object.date_entered -%]<br>
+    By [%- object.scientist_id.name -%] performed [%- object.date_completed -%]<br>
+    Transcribed <u>[%- object.extraction_id.to_string -%]</u> using [%- object.enzyme_id.name -%] <br>
+    <% IF object.rna_to_cdna_ratio %> RNA to cDNA ratio: <% object.rna_to_cdna_ratio | format('%0.2f') | html %> <br><% END %>
+    Notes:
+    <pre>[%- object.notes -%]</pre>
+    <h3>Plasma Viral Load(s)</h3>
+    [% IF object.extraction_id.sample_id.visit.best_viral_load %]
+        [% vl = object.extraction_id.sample_id.visit.best_viral_load %]
+        [% vl.assay %]: [% viral_load(vl) | none %]
+    [% END %]
+    [%- IF object.copy_numbers -%]
+        <h3>QUALITY Copy Number Results</h3>
+        [% key = '' %]
+        [% FOREACH cp_num IN object.copy_numbers %]
+            [% IF key != cp_num.key %]
+                <h4>[% cp_num.name %]</h4>
+                [% key = cp_num.key %]
+            [% END %]
+            <p style="margin: 2px 2px 2px 25px">[% cp_num.valueToString %]</p>
+        [% END %]
+    [%- END -%]
+
+</div>

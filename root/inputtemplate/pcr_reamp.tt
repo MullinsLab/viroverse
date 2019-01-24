@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse: PCR re-amplification</title>
+
+[% USE date(format=date_format) %]
+[% USE Dumper %]
+[% INCLUDE 'in-head.tt' %]
+
+
+    <link href="[%- uri_base -%]/static/stylesheets/autosuggest.css" rel="stylesheet" type="text/css" />    
+    <link href="[%- uri_base -%]static/stylesheets/y.css" rel="stylesheet" type="text/css" />    
+    <link href="[%- uri_base -%]static/stylesheets/input_tools.css" rel="stylesheet" type="text/css" />   
+
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/pcr.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/sidebar-collect.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/yahoo-dom-event.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/connection-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/element-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/datasource-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/dragdrop-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/datatable-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/autocomplete-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/suggestion-scientist.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/suggestion-patient.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/prod.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/copy_num.js"></script>
+
+    <script type='text/javascript' language='javascript'>
+        var finder;
+        var pcr_find_a = new Array;
+        [%- FOREACH type IN find_a -%]
+        pcr_find_a.push('[%- type.name -%]');
+        [%- END -%]
+        function go_time () {
+            finder = new product_finder(pcr_find_a,'finder','error',pcr_add_template_reamp);
+
+            finder.add_fn_arguments = new Array ('templateSelect','pcr_build','error');
+            var initPrimers = new Array('pcr_round_1_primer_1','pcr_round_1_primer_2');
+            pcr_init('round1',initPrimers,'round_1_primers');
+
+            [% IF pos_pcr.count ~%]
+                finder.from_ids('pos_pcr', [% pos_pcr.map("id").json %]);
+            [%~ END %]
+
+            initOverlays(); //initialize overlays for copy number
+        }
+
+        YAHOO.util.Event.onDOMReady(go_time);
+
+    </script>
+</head>
+
+<body>
+[% INCLUDE 'body-top.tt' %]
+
+    <h2>PCR Product Re-amplification</h2>
+
+    [%- INCLUDE prod_find.tt -%]
+
+    <form name='pcr_build' id='pcr_build' action='[%- uri_base -%]/input/pcr/reamp_add'>
+    <fieldset><legend>PCR Reamplification reaction details</legend>
+
+    [%- PROCESS 'body-error.tt' -%]
+
+    <label>Template</label>
+    <div class="formw">
+        <select id='templateSelect' name='pcr_template' multiple='YES' [%- disabled-%]  onclick="show_copy_number(this, 'copy_num_res')" >
+[% FOREACH extraction IN to_pcr.extraction %]
+            <option value='extractbox[%- extraction.extraction_id -%]'>[%- extraction.to_string -%]</option>
+    [% END %]
+[% FOREACH rt_i IN to_pcr.rt %]
+            <option value='rtbox[%- rt_i.get('rt_product_id') -%]'>[%- rt_i.to_string -%]</option>
+[% END %]
+        </select> 
+        <a href='#' onClick='return empty_templates("templateSelect")'>clear</a>
+        <div id="copy_num_res"></div>
+    </div><br clear='all' />
+    <div class='formw' id='pcr_dil_ctnr'>
+    <div class='pcr_line'>
+    <label for='input_vol'>volume (&mu;L)</label><input id='input_vol' name='tempv' type='text' size='5'> 
+    <label for='input_repl'>replicates</label><input id='input_repl' name='tempr' type='text' size='3'>
+    <input type='button' value='+' onclick='addDilutionBox("templateSelect","input_vol","input_repl","pcr_dil_ctnr")'>
+    </div>
+
+    </div><br clear='all' />
+
+    <div id="rounds">
+        <fieldset id='round1'><legend>Reamplification round</legend>
+            <label>Scientist</label>
+            <div class="formw">
+                [%- INCLUDE 'scientist-select.tt' -%]
+            </div>
+            <br clear='all' />
+
+            <label>Date</label> <span class="formw"><input name="pcr_completed_date" type="text" placeholder="YYYY-MM-DD" class="quickfill-today" size="14" value='[%- date.format -%]' /></span>
+            <br clear='all' />
+
+            <label>Enzyme</label>
+            <span class="formw">
+                <select name="pcr_enzyme" [%- disabled -%]> 
+                    [%- FOREACH e=enzymes.sort('name') -%]
+                    <option value="[%- e.id -%]">[%- e.name -%]</option>
+                    [%- END -%]
+                    <option value="">other (specify in Notes)</option>
+                </select> 
+            </span> 
+            <br clear='all' />
+
+            <label>Thermocycler Program</label>
+            <span class="formw">
+                <select name="pcr_protocol" [%- disabled -%]> 
+                    [% FOREACH p IN protocols %]<option value="[%- p.id -%]">[%- p.name -%]</option>[% END %]
+                    <option value="">other (specify in Notes)</option>
+                </select> 
+            </span> 
+            <br clear='all' />
+
+            <label>Hot Start?</label> 
+            <span class="formw">
+                <input name="pcr_hot" type="radio" value="1" checked='true' /> yes
+                <input name="pcr_hot" type="radio" value="0" /> no
+            </span> 
+            <br clear='all' />
+
+            <label>Notes</label> 
+            <div class="formw"><textarea name="pcr_notes" id='pcr_notes' rows="2" cols="37"></textarea></div> 
+
+        <br />
+        </fieldset> 
+    </div> <!--end rounds div-->
+
+    </fieldset>
+    <br clear='all' />
+    <div class="buttons">
+        <label></label> 
+        <span class="formButton">
+            <a href="#" onClick="window.location.reload()" class="clear-form">Clear this form</a>&nbsp;
+            <input type="button" onClick="form_to_sidebar_ajax('pcr_build','pcr','error')" value="Add >>"  [%- disabled -%]/>
+        </span> 
+    </form>
+    </div> <!--end row-->
+
+
+[% INCLUDE 'in-body-bottom.tt' %]
+
+    <div id="sidebar">
+        [% INCLUDE 'pcr-sidebar.tt' %]
+    </div>
+
+[% INCLUDE 'body-end.tt' %]
+[% INCLUDE 'pcr-tool-overlays.tt' %]
+
+</body>
+</html>

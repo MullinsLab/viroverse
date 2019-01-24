@@ -1,0 +1,33 @@
+div.suggestions {
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    border: 1px solid black;
+    position: absolute;   
+}
+
+div.suggestions div {
+    cursor: default;
+    padding: 0px 3px;
+}
+
+div.suggestions div.current {
+    background-color: #3366cc;
+    color: white;
+}
+
+.y_auto {display:block;z-index:9050;position:absolute}
+.y_auto .yui-ac-content {border:1px solid #404040;background:#fff;overflow:hidden;z-index:9050}
+.y_auto ul {padding-left:0;margin-top:2px;margin-bottom:2px}
+.y_auto li {list-style:none;padding-left:5px;cursor:default;white-space:nowrap}
+.y_auto li.yui-ac-highlight {background:#aaf;}
+.y_auto li.yui-ac-prehighlight {background:#FFFFCC;}
+
+#scientist_name_div li {width:20em}
+#patient_name_div li {width:20em}
+#scientist_name_div .yui-ac-content {width:20em}
+
+.primer_auto li {width:20em }
+
+form.inline .sci_ac {
+    display: inline-block;
+}

@@ -1,0 +1,36 @@
+[%- page = {
+      title = "Oops, something went wrong!",
+    }
+-%]
+
+<div class="row">
+  <div class="col-md-12">
+    <h1 class="page-header">
+      <% page.title %>
+    </h1>
+  </div>
+  <div class="col-md-7">
+    <p>
+      There was an error processing your request, probably because of a bug in
+      Viroverse.  A thousand apologies.  You could try again, but the same thing
+      will probably happen.
+    </p>
+
+    <p>
+      A report has been sent to the administrators, but you can also
+      <a href="mailto:[%- help_email -%]">send an email</a> about what you were
+      doing if you don’t get help soon.
+    </p>
+  </div>
+</div>
+
+<div class="row" style="margin-top: 10em">
+  <div class="col-md-12">
+    <p class="small">
+      The gory details are below:
+    </p>
+    <% FOR e IN c.error %>
+      <p><pre class="small" style="display: inline-block"><% e %></pre></p>
+    <% END %>
+  </div>
+</div>

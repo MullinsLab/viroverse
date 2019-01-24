@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+    <title>Viroverse: Submit sequences</title>
+
+[% USE date(format=date_format) %]
+[% INCLUDE 'in-head.tt' %]
+
+    <link href="[%- uri_base -%]static/stylesheets/autosuggest.css "rel="stylesheet" type="text/css" />    
+    <link href="[%- uri_base -%]static/stylesheets/y.css" rel="stylesheet" type="text/css" />    
+
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/yahoo-dom-event.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/connection-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/element-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/datasource-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/animation-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/container-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/dragdrop-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/datatable-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/autocomplete-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/suggestion-scientist.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/suggestion-patient.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/suggestion-primer.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/sidebar-collect.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/pcr.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/prod.js"></script>
+
+    <script type='text/javascript'>
+
+    var finder;
+    var local_find_a = new Array;
+    [%- FOREACH type IN find_a -%]
+    local_find_a.push('[%- type.name -%]');
+    [%- END -%]
+    function go_time () {
+        finder = new product_finder(local_find_a,'finder','error',sidebar_add);
+        finder.add_multiple = true;
+
+        viroverse.messageAnimate = new YAHOO.util.ColorAnim('message',{ backgroundColor: { from: '#FF6', to: '#FFF' } },2 );
+        viroverse.errorAnimate = new YAHOO.util.ColorAnim('error',{ backgroundColor: { from: '#F33', to: '#FFF' } },2 );
+        [% IF pos_pcr.count ~%]
+            finder.from_ids('pos_pcr', [% pos_pcr.map("id").json %]);
+        [%~ END %]
+    }
+
+    YAHOO.util.Event.onDOMReady(go_time);
+    </script>
+
+</head>
+
+<body>
+[% INCLUDE 'body-top.tt' %]
+
+    <h2>Find a product to sequence</h2>
+
+    [%- INCLUDE prod_find.tt -%]
+
+    [%- PROCESS 'body-error.tt' -%]
+
+[% INCLUDE 'in-body-bottom.tt' %]
+
+<div id="sidebar">
+    [%- INCLUDE 'pcr_more-sidebar.tt' -%]
+</div>
+
+[% INCLUDE 'body-end.tt' %]
+
+</body>
+</html>

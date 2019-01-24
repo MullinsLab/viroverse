@@ -1,0 +1,20 @@
+#dil_table,
+div.overlay
+{
+    background-color:white;
+    border:1px solid #999;
+    padding:1em;
+    position:absolute;
+    -moz-box-shadow:5px 5px 10px #000000;
+    -webkit-box-shadow:5px 5px 10px #000000;
+    visibility:hidden;
+}
+.hd{
+    background-image : none;
+    background-color:#1f669b;
+    color:white;
+    text-align:center;
+    font-size:1.25em;
+    padding:0.25em;
+    margin-bottom: 5px;
+}

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta http-equiv="Pragma" content="no-cache" /> 
+
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<title>Viroverse : Freezer - Add Samples</title>
+[% INCLUDE 'head.tt' %]
+
+<link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/stylesheets/viroverse.css" />
+<link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/stylesheets/freezer.css" />
+
+<link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/stylesheets/input_tools.css" />
+<link href="[%- uri_base -%]/static/stylesheets/autosuggest.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/javascripts/yui_2.8.1/calendar.css">
+
+
+<script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/yahoo-dom-event.js"></script>
+<script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/element-min.js"></script>
+<script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/connection-min.js"></script> 
+<script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/datasource-min.js"></script>
+<script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/autocomplete-min.js"></script>
+<script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/calendar-min.js"></script>
+<script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/container-min.js"></script>
+
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/suggestion-patient.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/util.js"></script>
+        
+<script type="text/javascript" src="[%- uri_base -%]/static/javascripts/freezer.js" ></script>
+<script type="text/javascript" >
+    var Response = [% Tissues %];
+    var Tissues = Response.Response.tissues;
+    var Units = Response.Response.units;
+    var Additives = Response.Response.additives;
+    YAHOO.namespace("vv_freezer");
+
+    function init() {
+
+        var navConfig = {
+            strings: {
+                month: "Choose Month",
+                year: "Enter Year",
+                submit: "OK",
+                cancel: "Cancel",
+                invalidYear: "Please enter a valid year"
+            },
+            monthFormat: YAHOO.widget.Calendar.SHORT,
+            initialFocus: "year"
+        };
+
+        YAHOO.vv_freezer.visitCal = new YAHOO.widget.Calendar("visitCal", "visitCalContainer", {
+            title: "Choose a Visit Date:",
+            navigator: navConfig,
+            close: true
+        });
+        YAHOO.vv_freezer.visitCal.selectEvent.subscribe(handeVisitDateSel, YAHOO.vv_freezer.visitCal, true);
+        YAHOO.vv_freezer.visitCal.render();
+
+        YAHOO.util.Event.addListener("visit_date", "focus", showVisitCal, YAHOO.vv_freezer.visitCal, true);
+
+        YAHOO.vv_freezer.confirmNewPatient = new YAHOO.widget.Overlay("overlay2", {
+            visible: false,
+            width: "300px",
+            context: ["patientInput", "tl", "tl", ["beforeShow", "windowResize"]]
+        });
+        YAHOO.vv_freezer.confirmNewPatient.setHeader("Overlay #2 from Script");
+        YAHOO.vv_freezer.confirmNewPatient.setBody('<input type="button" value="Confirm" onclick="confirmNewPat()" /><input type="button" value="Cancel" onclick="cancelNewPat()" />');
+        YAHOO.util.Dom.addClass(YAHOO.vv_freezer.confirmNewPatient.element, "overlay");
+        YAHOO.vv_freezer.confirmNewPatient.render(document.body);
+    }
+    YAHOO.util.Event.addListener(window, "load", init);
+
+    function handeVisitDateSel(type, args, obj) {
+        var year = args[0][0][0];
+        var month = parseInt(args[0][0][1]) < 10 ? "0" + args[0][0][1] : args[0][0][1];
+        var day = parseInt(args[0][0][2]) < 10 ? "0" + args[0][0][2] : args[0][0][2];
+        var visit_date = document.getElementById('visit_date');
+        visit_date.value = year + "-" + month + "-" + day;
+        checkVisitDate(visit_date);
+        YAHOO.vv_freezer.visitCal.hide();
+    }
+
+    function showVisitCal(obj) {
+        var calCtr = document.getElementById('visitCalContainer');
+        var visitDateInp = document.getElementById('visit_date');
+        with(calCtr.style) {
+            left = visitDateInp.offsetLeft + "px";
+            top = visitDateInp.offsetTop + "px";
+        }
+        YAHOO.vv_freezer.visitCal.show();
+    }
+
+    // show message if patient Id is not found
+    var unmatchedItemSelectHandler = function(oSelf, sSelection) {
+        patient_input = sSelection[0].getInputEl()
+        viroverse.ajax_patient_id = ""; //clear this just in case
+        var cohort_sel = document.getElementById('cohort');
+        var cohort = cohort_sel.options[cohort_sel.selectedIndex].text;
+        var bad_patient_id = patient_input.value;
+        if (bad_patient_id == "") { // no need to scream on empty patient id here
+            return;
+        } else if (bad_patient_id.search(/^\d{4}$/) > -1) { //new patient id
+            YAHOO.vv_freezer.confirmNewPatient.setHeader("Create New Subject " + cohort + " " + bad_patient_id + "?")
+            YAHOO.vv_freezer.confirmNewPatient.show();
+            return;
+        }
+        var errDiv = document.getElementById('error');
+        errDiv.innerHTML = "Subject " + bad_patient_id + " was not found in the " + cohort + " cohort";
+        errDiv.style.display = "block";
+        //FF needs the extra time to wrap it's increasingly addled brain around finding the element
+        setTimeout("patient_input.select();", 15);
+
+    };
+
+    function confirmNewPat() {
+        YAHOO.vv_freezer.confirmNewPatient.hide();
+        viroverse.ajax_patient_id = "new";
+    }
+
+    function cancelNewPat() {
+        YAHOO.vv_freezer.confirmNewPatient.hide();
+        viroverse.ajax_patient_id = "";
+        document.getElementById('patientInput').value = "";
+    }
+
+
+
+    function tissueChange(sel) {
+        var which = sel.id.split("_");
+        var tissue = sel.options[sel.selectedIndex].text;
+        var amt = document.getElementById('amount_' + which[1]);
+        amt.value = "";
+        var unit_sel = document.getElementById("unit_" + which[1]);
+        unit_sel.selectedIndex = -1;
+        var unit = '';
+        var add_sel = document.getElementById("additive_" + which[1]);
+        add_sel.selectedIndex = -1; //reset additive
+        if (isNaN(sel.options[sel.selectedIndex].value)) {
+            otherTissue(sel, sel.options[sel.selectedIndex].value);
+            return;
+        }
+
+        if (tissue.search(/plasma/i) > -1) {
+            unit = 'ml';
+            add_sel.selectedIndex = 1;
+            if (tissue.search(/large/i) > -1) {
+                amt.value = 3.5;
+            } else if (tissue.search(/small/i) > -1) {
+                amt.value = 1;
+            } else if (tissue.search(/thawed/i) > -1) {
+                amt.value = .5;
+            }
+
+        } else if (tissue.search(/serum/i) > -1) {
+            unit = 'ml';
+            add_sel.selectedIndex = 2;
+            amt.value = 1;
+
+        } else if (tissue.search(/pbmc/i) > -1) {
+            unit = '10^6 cells';
+            amt.value = 10
+            add_sel.selectedIndex = 1;
+
+        } else if (tissue.search(/supernatant/i) > -1) {
+            unit = 'ml';
+        } else if (tissue.search(/pellet/i) > -1) {
+            amt.value = 1;
+            unit = 'pellet';
+        }
+        if (unit != '') {
+            for (var i = 0; i < unit_sel.options.length; i++) {
+                var opt = unit_sel.options.item(i);
+                if (opt.text == unit) {
+                    unit_sel.selectedIndex = opt.index;
+                }
+            }
+        }
+    }
+
+    function otherTissue(sel, list_key) {
+        sel.options.length = 0;
+        sel.options[0] = new Option("", "", false, false);
+        for (var i = 0; i < Tissues[list_key].length; i++) {
+            t = Tissues[list_key][i];
+            sel.options[sel.options.length] = new Option(t.name, t.id, false, false);
+        }
+        if (list_key == 'all') {
+            sel.options[sel.options.length] = new Option("Show Common", "common", false, false);
+        } else {
+            sel.options[sel.options.length] = new Option("Show All", "all", false, false);
+        }
+    }
+
+    function moreTubes(clkd) {
+        var tubesets = document.getElementById('tubesets');
+        var product_set = tubesets.getElementsByTagName('fieldset');
+        var num_tube_grps = document.getElementById('num_tube_grps');
+        var next_grp_num = parseInt(num_tube_grps.value) + 1;
+        var parent = document.createElement('fieldset');
+        parent.id = "set_" + next_grp_num;
+        var p_legend = document.createElement('legend');
+        p_legend.innerHTML = "Product" + (product_set.length + 1);
+        parent.appendChild(p_legend);
+
+        var tissue_lbl = document.createElement('label');
+        tissue_lbl.htmlFor = "tissue_" + next_grp_num;
+        tissue_lbl.innerHTML = "Tissue"
+        var tissue = document.createElement('select');
+        tissue.id = "tissue_" + next_grp_num;
+        tissue.name = "tissue_" + next_grp_num;
+        tissue.addEventListener("change", function() {
+            tissueChange(this);
+        }, false);
+        tissue.options[0] = new Option("", "", false, false);
+        for (var i = 0; i < Tissues.common.length; i++) {
+            var idx = i + 1;
+            tissue.options[idx] = new Option(Tissues.common[i].name, Tissues.common[i].id, false, false);
+        }
+        tissue.options[tissue.options.length] = new Option("Show All", "all", false, false);
+
+        var num_tube_lbl = document.createElement('label');
+        num_tube_lbl.htmlFor = "numtubes_" + next_grp_num;
+        num_tube_lbl.innerHTML = "Number Tubes";
+        var numtubes = document.createElement('input');
+        numtubes.type = "text";
+        numtubes.id = "numtubes_" + next_grp_num;
+        numtubes.name = "numtubes_" + next_grp_num;
+
+        var amt_lbl = document.createElement('label');
+        amt_lbl.htmlFor = "amount_" + next_grp_num;
+        amt_lbl.innerHTML = "Amount";
+        var amt = document.createElement('input');
+        amt.type = "text";
+        amt.id = "amount_" + next_grp_num;
+        amt.name = "amount_" + next_grp_num;
+
+        var unit = document.createElement('select');
+        unit.id = "unit_" + next_grp_num;
+        unit.name = "unit_" + next_grp_num;
+        unit.options[0] = new Option("", "", false, false);
+        for (var i = 0; i < Units.length; i++) {
+            var idx = i + 1;
+            unit.options[idx] = new Option(Units[i].name, Units[i].unit_id, false, false);
+        }
+
+        var additive_lbl = document.createElement('label');
+        additive_lbl.htmlFor = "additive_" + next_grp_num;
+        additive_lbl.innerHTML = "Additive";
+        var additive_sel = document.createElement("select");
+        additive_sel.name = "additive_" + next_grp_num;
+        additive_sel.id = "additive_" + next_grp_num;
+        additive_sel.options[0] = new Option("", "", false, false);
+        for (var i = 0; i < Additives.length; i++) {
+            var idx = i + 1;
+            additive_sel.options[idx] = new Option(Additives[i].name, Additives[i].additive_id, false, false);
+        }
+
+        var remB = document.createElement("input");
+        remB.type = "button";
+        remB.value = "Remove";
+        remB.addEventListener("click", function() {
+            removeProd(this);
+        }, false);
+
+
+        parent.appendChild(tissue_lbl);
+        parent.appendChild(tissue);
+        parent.appendChild(document.createElement("br"));
+        parent.appendChild(num_tube_lbl);
+        parent.appendChild(numtubes);
+        parent.appendChild(document.createElement("br"));
+        parent.appendChild(amt_lbl);
+        parent.appendChild(amt);
+        parent.appendChild(unit);
+        parent.appendChild(document.createElement("br"));
+        parent.appendChild(additive_lbl);
+        parent.appendChild(additive_sel);
+        parent.appendChild(document.createElement("br"));
+        parent.appendChild(remB);
+        parent.appendChild(document.createElement("br"));
+        parent.appendChild(document.createElement("br"));
+
+        tubesets.insertBefore(parent, clkd);
+
+        num_tube_grps.value = next_grp_num;
+
+    }
+
+    function checkVisitDate(visit_input) {
+        if (!viroverse.ajax_patient_id || viroverse.ajax_patient_id == "" || viroverse.ajax_patient_id == "new") { //no valid patient no visit
+            return;
+        }
+        var visit_id = document.getElementById('visit_id');
+        visit_id.value = "";
+        var old_visit_samp = document.getElementById('old_visit_samp');
+        old_visit_samp.innerHTML = "";
+        var http = make_xmlhttp();
+        http.open('POST', viroverse.url_base + "/freezer/input/checkVisitDate/" + viroverse.ajax_patient_id + "/" + visit_input.value, true);
+        http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        http.onreadystatechange = function() {
+            if (http.readyState == 4) {
+                var visit_info = evalJSON(http);
+                var has_aliq = false;
+                if (visit_info.length < 1) { // new visit nothing to do
+                    return
+                }
+                document.getElementById('visit_id').value = visit_info[0].visit_id;
+                for (var i = 0; i < visit_info.length; i++) {
+                    if (visit_info[i].number_aliq > 0) {
+                        old_visit_samp.innerHTML += "<p>" + visit_info[i].number_aliq + " X " + visit_info[i].vol + " " + visit_info[i].units + " " + visit_info[i].sample_name + "</p>";
+                        has_aliq = true;
+                    }
+                }
+                if (has_aliq) {
+                    var head = document.createElement("h4");
+                    head.innerHTML = "Existing Sample Products for this Subject Visit";
+                    old_visit_samp.insertBefore(head, old_visit_samp.firstChild);
+                }
+            }
+        }
+        http.send();
+    }
+
+    function showUnits(vol_id) {
+        //document.getElementById('unit_1').focus();
+        setTimeout("document.getElementById('unit_1').focus();", 15);
+    }
+
+
+    //parse form and send to server
+    //a valid response places new aliquots in the sidebar and forwards to add_to_box
+    function addToInven() {
+        var params = form2url(document.getElementById('patient_visit'));
+        var cohortDD = document.getElementById('cohort');
+        var http = make_xmlhttp();
+
+
+        var product_sets = document.getElementById('tubesets').getElementsByTagName('fieldset');
+        params += "&prod_keys=0"; //force array if only one product made
+        for (var i = 0; i < product_sets.length; i++) {
+            var set_nums = product_sets.item(i).id.split("_");
+            params += "&prod_keys=" + set_nums[1];
+        }
+
+        params += "&patient_id=" + viroverse.ajax_patient_id;
+        params += "&ex_patient_id=" + encodeURIComponent(document.getElementById('patientInput').value);
+        params += "&cohort=" + encodeURIComponent(cohortDD.options[cohortDD.selectedIndex].text);
+        http.open('POST', viroverse.url_base + "/freezer/input/addNewAliquots", true);
+        http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        http.onreadystatechange = function() {
+            if (http.readyState == 4) {
+                var result = evalJSON(http);
+                if (result == 1) {
+                    window.location = viroverse.url_base + "freezer/input/add_to_box/";
+                }
+            }
+        }
+        http.send(params.replace(/^[^?]*\?/, ""));
+    }
+
+    function setUpAutoSel() {
+        // We handle forcing a selection or confirming new patient creation
+        // ourselves right below.
+        YAHOO.viroverse.patAutocomplete.forceSelection = false;
+        YAHOO.viroverse.patAutocomplete.unmatchedItemSelectEvent.subscribe(unmatchedItemSelectHandler);
+        YAHOO.viroverse.patAutocomplete.itemSelectEvent.subscribe(function() {
+            document.getElementById('error').style.display = "none";
+            var visit_date = document.getElementById('visit_date');
+            if (visit_date.value.search(/^\d{4}-\d{2}-\d{2}$/) > -1) {
+                checkVisitDate(visit_date);
+            }
+        });
+    }
+
+    function removeProd(clicked) {
+        clicked.parentNode.parentNode.removeChild(clicked.parentNode);
+        var tubesets = document.getElementById('tubesets');
+        var product_set = tubesets.getElementsByTagName('fieldset');
+        for (var i = 0; i < product_set.length; i++) {
+            var idx = i + 1;
+            product_set.item(i).getElementsByTagName('legend').item(0).innerHTML = "Product " + idx;
+        }
+    }
+</script>
+<style>
+        #visitCalContainer {
+        display:none;
+        position:absolute;
+        z-index:1
+    }
+
+    label{
+        margin: 2px 2px 0px 2px;
+    }
+</style>
+</head>
+
+<body onload="setUpAutoSel();" class='yui-skin-sam'>
+[%- INCLUDE 'body-top.tt' -%]
+<div id="error" class="error" style="display:none"></div>
+<pre id="debug"></pre>
+<form id="patient_visit">
+    <input type="hidden" id="cohort_id_h" value="1" name='cohort_id_h' />
+    <label>Cohort</label>
+    <select name="cohort_id" id="cohort" >
+        <option value="-1" [%- IF selected_cohort; ''; ELSE; 'selected="selected"' ; END-%]>Choose one</option> 
+        [% FOREACH cohort IN cohorts.keys.sort %]
+                <option value="[%- cohorts.$cohort.cohort_id -%]" [%- IF cohorts.$cohort.cohort_id == selected_cohort; 'selected="selected"'; ELSE; '' ; END -%]>[%- cohorts.$cohort.name -%]</option>
+        [% END %]
+        </select> 
+    <br clear='all' />
+                       
+     <label>Subject ID</label> 
+     <div id="patientSpan">
+         <input type="text" id="patientInput" class='auto' name="patient" size="36" onkeydown="document.getElementById('error').style.display = 'none';" />
+        <div id='patient_name_div' class='y_auto' style='margin-left:90px'></div> 
+     </div> 
+    <br clear='all' />
+    <label for="visit_date">Clinic Date</label><input type="text" id="visit_date" name="visit_date" value="" readonly="readonly" onchange="checkVisitDate(this)" /><br />
+    <label for="samp_label">Custom Sample Label</label><input type="text" id="samp_label" name="samp_label" value="" />
+    <input type="hidden" id="visit_id" value="" name='visit_id' />
+    <div id="old_visit_samp"></div>
+    <fieldset id="tubesets"><legend>Incoming Sample Products</legend>
+    <fieldset id="set_1"><legend>Product 1</legend>
+        <label for="tissue_1">Tissue</label>
+        <select id="tissue_1" name="tissue_1" onchange="tissueChange(this);">
+        <option></option>
+        [% FOREACH t IN commonTissues %]
+        <option value="[%- t.id -%]">[%- t.name -%]</option>
+        [% END %]
+        <option value="all">Show All</option>
+        </select><br />
+        <label for="numtubes_1" >Number Tubes</label><input type="text" value="" id="numtubes_1" name="numtubes_1"/><br/>
+        <label for="amount_1" >Amount</label><input type="text" value="" id="amount_1" name="amount_1" onblur="showUnits(this.id);"/>
+        <select id="unit_1" name="unit_1">
+        <option value=""></option>
+        [% FOREACH u IN units %]
+        <option value="[%- u.unit_id -%]">[%- u.name -%]</option>
+        [% END %]
+        </select><br/>
+        <label for="additive_1">Additive</label>
+        <select id="additive_1" name="additive_1">
+        <option value=""></option>
+        [% FOREACH additive IN additives %]
+        <option value="[%- additive.additive_id -%]">[%- additive.name -%]</option>
+        [% END %]
+        </select><br />
+        <input type="button" value="Remove" onclick="removeProd(this)" name='button' />
+    </fieldset>
+    <input type="button" value="Add More Tubes" onclick="moreTubes(this)" />
+    <input type="hidden" id="num_tube_grps" value="1" name='num_tube_grps' />
+    </fieldset>
+    <input type="button" name="subFrm" onclick="addToInven()" value="Add to Inventory" />
+</form>
+<div id="visitCalContainer"></div> 
+[% INCLUDE 'body-bottom.tt' %]
+[% INCLUDE 'body-end.tt' %]
+
+</body>
+</html>

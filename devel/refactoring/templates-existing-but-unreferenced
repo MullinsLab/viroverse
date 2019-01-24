@@ -1,0 +1,17 @@
+#!/bin/bash
+set -e -o pipefail
+
+for file in $(find root -type f -name '*.tt'); do
+    # *_mini.tt, menu-*.tt, and import/partials/*.tt templates are all
+    # dynamically included based on the names of objects, thus they don't
+    # appear in the source code.  Although these are ripe for becoming
+    # orphaned, we can never know if they're used or not statically, so just
+    # skip them for now.
+    if [[ $file =~ _mini\.tt || $file =~ /menu- || $file =~ /import/partials/ ]]; then
+        continue
+    fi
+
+    if ! git grep -qF ${file#root/*/} lib/ root/; then
+        echo $file
+    fi
+done

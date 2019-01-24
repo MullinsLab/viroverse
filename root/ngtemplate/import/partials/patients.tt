@@ -1,0 +1,38 @@
+<div class="row">
+  <div class="col-md-12">
+    [% INCLUDE select_column_key_help %]
+    <p>
+      Cohort is set for the whole import job under “Job options”.
+    </p>
+  </div>
+  <div class="col-md-6">
+    <h2>Assign data columns</h2>
+    [%
+      fields = [
+        { key: 'external_patient_id', label: 'Primary alias',     optional: 0 },
+        { key: 'publication_id',      label: 'Publication alias', optional: 1 },
+        { key: 'alternate_id',        label: 'Alternate alias',   optional: 1 },
+        { key: 'gender',              label: 'Gender',            optional: 1 },
+        { key: 'birth',               label: 'Birth date',        optional: 1 },
+      ]
+    %]
+    [% FOR field IN fields %]
+      <div class="form-group">
+        <label for="[% field.key %]_key">[% field.label %]</label>
+        [% INCLUDE select_column_key key = field.key, optional = field.optional %]
+        [% IF field.optional %]
+          <span id="[% field.key %]_hint" class="help-block">
+            Optional.
+          </span>
+        [% END %]
+      </div>
+    [% END %]
+  </div>
+  <div class="col-md-6">
+    <h2>Job options</h2>
+    <div class="form-group">
+      <label for="cohort">Cohort</label>
+      [% select_from_virodb("cohort", "Cohort") | none %]
+    </div>
+  </div>
+</div>

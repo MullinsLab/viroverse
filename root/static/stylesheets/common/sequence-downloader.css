@@ -1,0 +1,30 @@
+.toolbar-download-sequences label {
+    display: block;
+    margin: 0;
+    padding: 0;
+    font-weight: normal !important;
+}
+.toolbar-download-sequences input[name=sep] {
+    width: 2em;
+    padding: 2px 0.3em;
+}
+.sequence-name-parts, .sequence-name-options {
+    margin: 0.5em 0;
+}
+.sequence-name-parts label {
+    margin: 0 0 0 2em;
+}
+.sequence-name-parts label.suboption {
+    margin-left: 3.5em;
+}
+.sequence-name-parts .sortable, .sequence-name-parts .sortable label {
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+    cursor: grab;
+}
+.sequence-name-parts .sortable-proxy {
+    visibility: hidden;
+}
+.sequence-name-parts label.inline, .sequence-name-options label.inline {
+    display: block;
+}

@@ -1,0 +1,14 @@
+.vega-actions a {
+  margin-right: 5px;
+}
+
+#patient-chart .hoverRule,
+#patient-chart .primaryPanel .infectionRule,
+#patient-chart .samplesPanel .sampleRules {
+  shape-rendering: crispEdges;
+}
+
+#patient-chart .hoverRule,
+#patient-chart .hoverDate {
+  pointer-events: none;
+}

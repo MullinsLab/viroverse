@@ -1,0 +1,16 @@
+<div class='pcr_loc'>
+    <strong>[%- object.name -%]</strong>
+    PCR product # [%- object.get_id -%] entered [%- object.date_entered -%]<br>
+    By [%- object.scientist_id.name -%] performed [%- object.date_completed -%]<br>
+    <u>[%- object.to_string -%]</u> [%- IF object.enzyme_id -%] amplified with [%- object.enzyme_id.name -%] [%- END -%]<br>
+    Notes:
+    <pre>[%- object.notes -%]</pre>
+
+    [%- IF object.copyNumberResults -%]
+    <h3>QUALITY Copy Number Results</h3>
+    [% FOREACH cp_num IN object.copyNumberResults %]
+        [% cp_num.toString %]<br />
+    [% END %]
+    [%- END -%]
+
+</div>

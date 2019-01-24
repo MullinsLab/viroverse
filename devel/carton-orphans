@@ -1,0 +1,8 @@
+#!/bin/bash
+# From the releases mentioned in cpanfile.snapshot, filter out those mentioned in `carton tree`
+if ! grep --version | grep -q GNU; then
+    echo "GNU grep is required; BSD grep is too feeble"
+    exit 1
+fi
+
+grep -vFf <(carton tree | grep -oP '(?<=\().+(?=\))') <(grep -P '^  \S' cpanfile.snapshot) | cut -c 3-

@@ -1,0 +1,169 @@
+# Abuse server root a little to allowed a shared modlist below
+<IfDefine OS_DARWIN>
+    ServerRoot /usr/libexec/apache2
+</IfDefine>
+<IfDefine OS_LINUX>
+    ServerRoot /etc/httpd/modules
+</IfDefine>
+
+LoadModule version_module mod_version.so
+
+LoadModule authn_file_module mod_authn_file.so
+<IfVersion = /^2\.2\./>
+    LoadModule authn_default_module mod_authn_default.so
+</IfVersion>
+<IfVersion = /^2\.4\./>
+    LoadModule authn_core_module mod_authn_core.so
+</IfVersion>
+LoadModule authz_host_module mod_authz_host.so
+LoadModule authz_groupfile_module mod_authz_groupfile.so
+LoadModule authz_user_module mod_authz_user.so
+<IfVersion = /^2\.2\./>
+    LoadModule authz_default_module mod_authz_default.so
+</IfVersion>
+<IfVersion = /^2\.4\./>
+    LoadModule authz_core_module mod_authz_core.so
+</IfVersion>
+LoadModule auth_basic_module mod_auth_basic.so
+LoadModule auth_digest_module mod_auth_digest.so
+LoadModule deflate_module mod_deflate.so
+LoadModule log_config_module mod_log_config.so
+LoadModule env_module mod_env.so
+LoadModule mime_magic_module mod_mime_magic.so
+LoadModule expires_module mod_expires.so
+LoadModule headers_module mod_headers.so
+LoadModule setenvif_module mod_setenvif.so
+LoadModule proxy_module mod_proxy.so
+LoadModule proxy_http_module mod_proxy_http.so
+LoadModule ssl_module mod_ssl.so
+LoadModule mime_module mod_mime.so
+LoadModule autoindex_module mod_autoindex.so
+LoadModule cgi_module mod_cgi.so
+LoadModule vhost_alias_module mod_vhost_alias.so
+LoadModule negotiation_module mod_negotiation.so
+LoadModule dir_module mod_dir.so
+LoadModule alias_module mod_alias.so
+LoadModule rewrite_module mod_rewrite.so
+<IfDefine OS_DARWIN>
+    LoadModule php5_module libphp5.so
+    LoadModule hfs_apple_module mod_hfs_apple.so
+</IfDefine>
+<IfDefine OS_LINUX>
+    LoadModule php5_module libphp5.so
+</IfDefine>
+
+<IfVersion = /^2\.4\./>
+    LoadModule access_compat_module mod_access_compat.so
+    LoadModule slotmem_shm_module mod_slotmem_shm.so
+    LoadModule unixd_module mod_unixd.so
+</IfVersion>
+
+User {{RUNNING_USER}}
+
+<IfDefine OS_DARWIN>
+    Group _www
+</IfDefine>
+<IfDefine OS_LINUX>
+    Group apache
+</IfDefine>
+
+DocumentRoot {{DOCUMENT_ROOT}}
+Listen {{LISTEN}}
+
+<Directory "{{DOCUMENT_ROOT}}">
+    Options Indexes FollowSymLinks MultiViews
+    AllowOverride None
+    Order allow,deny
+    Allow from all
+</Directory>
+
+RewriteEngine on
+RewriteRule ^/?$ /viroverse/ [R,L]
+
+ProxyPass        /viroverse http://localhost:8080
+ProxyPass        /viroverse/static !
+ProxyPassReverse /viroverse http://localhost:8080
+
+RequestHeader set X-Forwarded-HTTPS %{HTTPS}s
+RequestHeader set X-Forwarded-REMOTE-USER {{REMOTE_USER}}
+RequestHeader set X-Request-Base http://%{HTTP_HOST}s/viroverse
+
+Alias /viroverse/static {{DOCUMENT_ROOT}}/static
+Alias /assemblies       {{VIROVERSE_ROOT}}/var/assemblies
+Alias /viroblast        {{VIROVERSE_ROOT}}/var/viroblast
+
+<IfModule dir_module>
+    DirectoryIndex index.html
+</IfModule>
+
+<FilesMatch "^\.([Hh][Tt]|[Dd][Ss]_[Ss])">
+    Order allow,deny
+    Deny from all
+    Satisfy All
+</FilesMatch>
+
+#
+# Apple specific filesystem protection.
+#
+<Files "rsrc">
+    Order allow,deny
+    Deny from all
+    Satisfy All
+</Files>
+<DirectoryMatch ".*\.\.namedfork">
+    Order allow,deny
+    Deny from all
+    Satisfy All
+</DirectoryMatch>
+
+LogLevel info
+ErrorLog /tmp/error_log-viroverse
+
+<LocationMatch "/cgi(-bin)?/">
+    Options ExecCGI Indexes FollowSymlinks
+    PassEnv PERL5LIB
+</LocationMatch>
+
+<IfVersion = /^2\.2\./>
+    DefaultType text/plain
+</IfVersion>
+
+<IfModule mime_module>
+    <IfDefine OS_DARWIN>
+        TypesConfig /etc/apache2/mime.types
+    </IfDefine>
+    <IfDefine OS_LINUX>
+        TypesConfig /etc/mime.types
+    </IfDefine>
+    AddType application/x-compress .Z
+    AddType application/x-gzip .gz .tgz
+    AddHandler cgi-script .cgi
+</IfModule>
+
+<IfModule php5_module>
+    AddType application/x-httpd-php .php
+    AddType application/x-httpd-php-source .phps
+
+    <IfModule dir_module>
+        DirectoryIndex index.html index.php
+    </IfModule>
+</IfModule>
+
+PidFile /tmp/httpd-viroverse.pid
+
+<IfVersion = /^2\.2\./>
+    LockFile /tmp/httpd-accept-viroverse.lock
+</IfVersion>
+<IfVersion = /^2\.4\./>
+    DefaultRuntimeDir /tmp
+</IfVersion>
+
+<IfModule mpm_prefork_module>
+    StartServers          1
+    MinSpareServers       1
+    MaxSpareServers      10
+    ServerLimit          50%
+    MaxClients           50
+    MaxClients           50%
+    MaxRequestsPerChild   0
+</IfModule>

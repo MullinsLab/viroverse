@@ -1,0 +1,13 @@
+<div id='error' class='error' [%- IF error -%] style='display:block'[%- END -%] >
+    [% IF error %]
+    [%- error -%]
+    [% disabled = "disabled = 'true'" %]
+    [% END %]
+</div>
+
+<div id='notice' class='notice' [%- IF notice -%] style='display:block'[%- END -%] >
+    [% IF notice %]
+    [%- notice -%]
+    [% disabled = "disabled = 'true'" %]
+    [% END %]
+</div>

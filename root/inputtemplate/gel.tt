@@ -1,0 +1,92 @@
+
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse: gel</title>
+
+[% INCLUDE 'in-head.tt' %]
+
+    <link href="[%- uri_base -%]static/stylesheets/autosuggest.css" rel="stylesheet" type="text/css" />    
+    <link href="[%- uri_base -%]static/stylesheets/y.css" rel="stylesheet" type="text/css" />    
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/javascripts/yui_2.8.1/container.css">
+
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/sidebar-collect.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/gel.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/util.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/yahoo-dom-event.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/element-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/connection-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/datasource-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/autocomplete-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/dragdrop-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/datatable-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/animation-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/container-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/suggestion-scientist.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/suggestion-patient.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/prod.js"></script>
+    [% c.upload_progress_javascript %]
+    <script type='text/javascript' language='javascript'>
+        var finder;
+        var local_find_a = new Array;
+        [%- FOREACH type IN find_a -%]
+        local_find_a.push('[%- type.name -%]');
+        [%- END -%]
+
+        var gel_finder; 
+        function go_time () {
+            finder = new product_finder(local_find_a,'finder','error',gel_add_product);
+            finder.addl_buttons.push('delbtn');
+            finder.add_fn_arguments = 'error';
+            finder.add_multiple = true;
+
+            [% IF pos_pcr.count ~%]
+                finder.from_ids('pos_pcr', [% pos_pcr.map("id").json %]);
+            [%~ END %]
+
+            gel_finder = new product_finder(new Array('gel'),'gel_finder','error',sidebar_add);
+            gel_finder.add_fn_arguments = new Array('gel');
+            gel_finder.add_multiple = true;
+
+            viroverse.messageAnimate = new YAHOO.util.ColorAnim('message',{ backgroundColor: { from: '#FF6', to: '#FFF' } },2 );
+            viroverse.errorAnimate = new YAHOO.util.ColorAnim('error',{ backgroundColor: { from: '#F33', to: '#FFF' } },2 );
+        }
+
+    YAHOO.util.Event.onDOMReady(go_time);
+    </script>
+</head>
+
+<body class='yui-skin-sam'>
+[% INCLUDE 'body-top.tt' %]
+[%- PROCESS 'body-error.tt' -%]
+    <h2>PCR Gel Visualization</h2>
+    [%- addl_btn = BLOCK -%]
+        <input class='finderbtn delbtn' id='delbtn' type='button' value='Delete from database' onclick='finder.confirm_delete()'>
+    [%- END -%]
+    [%- INCLUDE prod_find.tt -%]
+    [%- addl_html = BLOCK -%]
+        <form action='[%- uri_base -%]input/receive_gel' method='post' enctype='multipart/form-data' onsubmit='return startEmbeddedProgressBar(this)' id='gel_image'>
+            <label for='gel_file'>upload new gel</label><input class='formw' type='file' name='gel_file' [%- disabled -%] />
+            <input type='submit' value='upload >>' [%- disabled -%]><br clear='all'>
+            <div class='formw'>Accepts JPEG, PNG, and TIFF formats.</div>
+        </form>
+    [%- END -%]
+    [%- addl_btn = '' -%]
+
+    [%- finder_var = 'gel_finder' -%]
+    [%- find_a = [{name => 'gel', label => 'Gel Image'}] -%]
+    [%- INCLUDE prod_find.tt -%]
+
+[% INCLUDE 'in-body-bottom.tt' %]
+
+    <div id="sidebar">
+        <div id='progress'></div>
+        [% INCLUDE 'gel-sidebar.tt' %]
+    </div>
+
+[% INCLUDE 'body-end.tt' %]
+
+<div class="spacer">&nbsp;</div>
+</body>
+
+</html>

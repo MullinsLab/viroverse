@@ -1,0 +1,19 @@
+[%- MACRO sub_template_highlight(sub_template_name) BLOCK -%]
+    [%- IF sub_template_name == template.name -%]
+style='font-weight:bold'
+    [%- ELSE -%]
+    [%- END -%]
+[%- END -%]
+
+
+<div class='nav'>
+<a href="[%- uri_base -%]freezer">Freezers</a>
+<% IF scientist.is_admin %>
+<a href="[%- uri_base -%]admin/cohort">Cohorts</a>
+<a href="[%- uri_base -%]tissue">Tissue types</a>
+<a href="[%- uri_base -%]admin/protocol">Generic protocols</a>
+<a href="[%- uri_base -%]protocol">Derivation protocols</a>
+<a href="[%- uri_base -%]import">Import</a>
+<a href="[%- uri_base -%]admin/scientist">Scientists</a>
+<% END %>
+</div>

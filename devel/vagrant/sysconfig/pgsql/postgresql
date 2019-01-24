@@ -1,0 +1,2 @@
+PGDATA=/var/lib/pgsql/8.4/data
+PGLOG=/var/lib/pgsql/8.4/pgstartup.log

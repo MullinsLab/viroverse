@@ -1,0 +1,102 @@
+[% USE crumbs = Viroverse::Breadcrumbs({ page_record => sequence, leaf_label => 'New revision', context => c }) %]
+[%- page = {
+        title       = "Revise sequence",
+        breadcrumbs = crumbs.breadcrumbs
+    }
+-%]
+
+<div class="row">
+    <div class="col-sm-12">
+        <h1 class="page-header">
+          Sequence
+          [% sequence.idrev %]
+          <small><% INCLUDE sequence/partials/labels.tt %></small>
+        </h1>
+    </div>
+</div>
+<div class="row" ng-controller="ReviseSequence as $ctrl">
+    <div class="col-md-8 col-sm-12">
+        <p>All fields left blank will remain unchanged in the revised sequence.</p>
+        <form role="form" method="POST" action="[% c.uri_for_action('sequence/create_revision') %]" enctype="multipart/form-data">
+            <div class="form-group row">
+                <div class="col-sm-6"><label for="sequence-name">Sequence name</label></div>
+                <div class="col-sm-6 visible-sm-block visible-md-block visible-lg-block"><label>Currently</label></div>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="sequence-name" name="name"
+                        ng-value="$ctrl.name">
+                </div>
+                <div class="col-sm-6">[% sequence.name %]</div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-12">
+                    <label for="sequence-na_type">NA type</label>
+                </div>
+                <div class="col-sm-6">
+                    <select class="form-control" name="na_type" id="sequence-na_type">
+                        <option value="">unchanged</option>
+                        <option value="DNA">DNA</option>
+                        <option value="RNA">RNA</option>
+                    </select>
+                </div>
+                <div class="col-sm-6">[% sequence.na_type || 'unknown' %]</div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-12">
+                    <label for="sequence-contents">Sequence contents</label>
+                </div>
+                <div class="col-sm-6">
+                    <textarea class="form-control" name="sequence" id="sequence-contents"
+                        ng-value="$ctrl.sequence"></textarea>
+                </div>
+                <div class="col-sm-6">
+                    [% sequence.sequence_bases.length | commafy %]bp<br>
+                    [% sequence.sequence_bases.substr(0,10) %]…[% sequence.sequence_bases.substr(-10) %]
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-12">
+                    <label for="sequence-note">Note</label>
+                </div>
+                <div class="col-sm-6">
+                    <textarea class="form-control" name="note" id="sequence-note"></textarea>
+                </div>
+                <div class="col-sm-6">[% sequence.note || 'none' %]</div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-12">
+                    <label for="scientist_id">Scientist</label>
+                </div>
+                <div class="col-sm-6">
+                    <select id="scientist_id" name="scientist_id" class="form-control">
+                        <option selected value="">unchanged</option>
+                        <option value="[% scientist.scientist_id %]">me!</option>
+                        [% FOR sci IN scientists %]
+                        <option value="[% sci.scientist_id %]">[% sci.name %]</option>
+                        [% END %]
+                    </select>
+                </div>
+                <div class="col-sm-6">[% sequence.scientist.name || 'none' %]</div>
+            </div>
+            <button type="submit" class="btn btn-primary">Create revision</button>
+        </form>
+    </div>
+    <div class="col-md-4 col-sm-12">
+        <p class="alert alert-info" file-drop file-data="$ctrl.fasta" file-data-as="Text">
+            <strong>Got a FASTA file?</strong>  Drag and drop it here to
+            automatically fill in a new sequence name and contents in the
+            fields to the left.
+        </p>
+        <div class="alert alert-danger" ng-if="$ctrl.fasta.length > 1">
+            <p>
+                <strong>Careful!</strong>  It looks like you dropped in a FASTA
+                file containing multiple sequences:
+            </p>
+            <ul>
+                <li ng-repeat="sequence in $ctrl.fasta">{{ sequence.id }}</li>
+            </ul>
+            <p>
+                Only the <strong>first</strong> was copied into the form on the left.
+            </p>
+        </div>
+    </div>
+</div>

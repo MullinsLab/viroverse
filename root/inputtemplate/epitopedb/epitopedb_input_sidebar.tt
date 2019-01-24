@@ -1,0 +1,124 @@
+
+
+[% IF status %]
+    [% IF status == 'exist' %]
+        Your data has already existed in database 
+    [% ELSIF status == 'new' %]
+        Your data has been inputed into database
+    [% ELSIF status == 'updated' %]
+        Your data has been updated in database
+    [% ELSIF status == 'skip' %]
+        Your data has not been updated in database
+    [% ELSE %]
+        Found similar record in database:<br><br>
+        <table><tr>
+        <th></th>
+        <th>Input</th>
+        <th>Database</th>
+        <tr>
+
+        [%  IF (type == "pept_response" || type == "titration" || type == "hal_response" || type == "pool_response") %]
+            <input type='hidden' name='measure_id' value=[%- measure_id -%]>
+            [% IF status.cell %]
+                <input type='hidden' name='input_cell_num' value=[%- input_cell_num -%]>
+                <td align=right>Cells per well: </td>
+                <td align=right>[%- input_cell_num -%]</td>
+                <td align=right>[%- exist_cell_num -%]</td>
+                </tr>
+            [% END %]
+
+            [% IF status.ec50 %]
+                <input type='hidden' name='input_ec50' value=[%- input_ec50 -%]>
+                <td align=right>Ec50: </td>
+                <td align=right>[%- input_ec50 -%]</td>
+                <td align=right>[%- exist_ec50 -%]</td>
+                </tr>
+            [% END %]
+
+            [% IF status.sfc %]
+                <input type='hidden' name='sfcs' value=[%- sfcs -%]>
+                <td align=right>Spot forming cells: </td>
+                <td align=right>[%- sfcs -%]</td>
+                <td align=right>[%- readings -%]</td>
+                </tr>
+            [% END %]
+        [%  ELSIF (type == "epitope_result" || type == "mutant_result") %]
+            [% IF status.eptp %]
+                <input type='hidden' name='source_id' value=[%- input_source.source_id -%]>
+                <input type='hidden' name='eptp_id' value=[%- eptp_id -%]>
+                <td align=right>Source: </td>
+                <td align=right>[%- input_source.source -%]</td>
+                <td align=right>[%- exist_source.source -%]</td>
+                </tr>
+            [% END %]
+
+            [% IF status.mut %]
+                <input type='hidden' name='eptp_id' value=[%- eptp_id -%]>
+                <input type='hidden' name='mut_id' value=[%- mut_id -%]>
+                <input type='hidden' name='patient_id' value=[%- patient_id -%]>
+                <input type='hidden' name='note' value="[%- input_note -%]">
+                <td align=right>Result: </td>
+                <td align=right>[%- input_note -%]</td>
+                <td align=right>[%- exist_note -%]</td>
+                </tr>
+            [% END %]
+        [% ELSIF type == "peptide" %]
+            <input type='hidden' name='pept_id' value="[%- pept_id -%]">
+            [% IF status.name %]
+                <input type='hidden' name='pept_name' value="[%- input_name -%]">
+                <td align=right>Peptide name: </td>
+                <td align=right>[%- input_name -%]</td>
+                <td align=right>[%- exist_name -%]</td>
+                </tr>
+            [% END %]
+
+            [% IF status.seq %]
+                <input type='hidden' name='pept_seq' value="[%- input_seq -%]">
+                <td align=right>Peptide sequence: </td>
+                <td align=right>[%- input_seq -%]</td>
+                <td align=right>[%- exist_seq -%]</td>
+                </tr>
+            [% END %]
+
+            [% IF status.origin %]
+                <input type='hidden' name='origin_id' value="[%- input_origin.origin_id -%]">
+                <td align=right>Origin: </td>
+                <td align=right>[%- input_origin.origin -%]</td>
+                <td align=right>[%- exist_origin.origin -%]</td>
+                </tr>
+            [% END %]
+
+            [% IF status.region %]
+                <input type='hidden' name='gene_id' value="[%- input_region.gene_id -%]">
+                <td align=right>Region: </td>
+                <td align=right>[%- input_region.gene -%]</td>
+                <td align=right>[%- exist_region.gene -%]</td>
+                </tr>
+            [% END %]
+
+            [% IF status.hxb2_start %]
+                <input type='hidden' name='hxb2_start' value="[%- input_hxb2_start -%]">
+                <td align=right>HXB2 start position: </td>
+                <td align=right>[%- input_hxb2_start -%]</td>
+                <td align=right>[%- exist_hxb2_start -%]</td>
+                </tr>
+            [% END %]
+
+            [% IF status.hxb2_end %]
+                <input type='hidden' name='hxb2_end' value="[%- input_hxb2_end -%]">
+                <td align=right>HXB2 end position: </td>
+                <td align=right>[%- input_hxb2_end -%]</td>
+                <td align=right>[%- exist_hxb2_end -%]</td>
+                </tr>
+            [% END %]
+
+        [%  END %]
+        </table>
+
+        <br>
+
+        <input type='hidden' name='type' value=[%- type -%]>
+        <input type='button' value='Update' onClick="update('sidebar_form')">
+        <input type='button' value='Skip' onClick="skip('sidebar_form')>
+    [% END %]
+[% END %]

@@ -1,0 +1,16 @@
+.note-byline {
+  display: inline-block;
+  font-size: 0.85em;
+  padding-left: 0.80em; /* this fudge by 0.05em looks a little better in my testing */
+}
+
+.note-byline::before {
+  display: inline-block;
+  font-size: 0.85em;
+  margin-left: -0.80em; /* this fudge by 0.05em looks a little better in my testing */
+  content: "—";
+}
+
+.note-byline > time {
+  white-space: nowrap;
+}

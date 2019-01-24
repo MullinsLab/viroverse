@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse: Freezer: Aliquot Search</title>
+
+    [% USE date(format=date_format) %]
+    [% INCLUDE 'head.tt' %]
+
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/javascripts/yui_2.8.1/calendar.css">
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/javascripts/yui_2.8.1/container.css">
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/stylesheets/viroverse.css" />
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/stylesheets/input_tools.css" />
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/stylesheets/freezer.css" />
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]static/javascripts/yui_2.8.1r2/tabview.css">
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/stylesheets/autosuggest.css" />
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/stylesheets/tabview.css" />
+
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]static/javascripts/yui_2.8.1r2/paginator.css" />
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]static/javascripts/yui_2.8.1r2/datatable.css" />
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]static/stylesheets/treeble.css" />  
+
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/yahoo-dom-event.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/element-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/container-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/calendar-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1r2/tabview-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/connection-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/datasource-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/autocomplete-min.js"></script> 
+
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/suggestion-patient.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/suggestion-scientist.js" ></script>
+
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/paginator-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/dragdrop-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/datatable-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/treeble/Treeble-280patch.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/treeble/Treeble.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/sidebar-collect.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/treeble-wrap.js" ></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/freezer.js"></script>
+
+    <script src="http://yui.yahooapis.com/2.9.0/build/json/json-min.js"></script>
+
+    <script type="text/javascript" >
+
+        YAHOO.namespace("viroverse");
+        YAHOO.namespace("vv_freezer");
+        YAHOO.namespace("vv_freezer.container");
+        YAHOO.viroverse.product_data;
+        YAHOO.viroverse.oTreeble;
+
+        function init(){
+            YAHOO.vv_freezer.container.manageVial = new YAHOO.widget.Overlay("edit_vial", { visible:false, modal:true, close:true, zindex:4, draggable: true, width:"300px"} );
+            YAHOO.vv_freezer.container.manageVial.render(document.body);
+            YAHOO.util.Event.addListener("cancelVialEdit",   "click",  YAHOO.vv_freezer.container.manageVial.hide, YAHOO.vv_freezer.container.manageVial, true);
+            YAHOO.util.Event.addListener("cohort", "change", function (e) {document.getElementById('patientFilters').style.display = 'inline'; resetOptions();}, true);
+
+            // create control arrays
+            viroverse.oScientistCtls   = {scientist:  document.frmScientist.scientist_name_ac,
+                                          filters:    document.frmScientist.chkScientistFilter};
+            viroverse.oPatientBaseCtls = {patient_id: document.frmPatient.hidden_patient,
+                                          patient:    document.frmPatient.patientInput,
+                                          min_vials:  document.frmPatient.txtMinimum,
+                                          filters:    document.frmPatient.chkPatientFilter};
+            viroverse.oPatientTissCtls = {patient_id: document.frmPatient.hidden_patient,
+                                          patient:    document.frmPatient.patientInput,
+                                          min_vials:  document.frmPatient.txtMinimum,
+                                          tissues:    document.frmPatient.selTissue,
+                                          filters:    document.frmPatient.chkPatientFilter};
+            viroverse.oPatientRsltCtls = {patient_id: document.frmPatient.hidden_patient,
+                                          patient:    document.frmPatient.patientInput,
+                                          min_vials:  document.frmPatient.txtMinimum,
+                                          tissues:    document.frmPatient.selTissue,
+                                           dates:      document.frmPatient.selDates,
+                                          filters:    document.frmPatient.chkPatientFilter};
+            viroverse.oPatientFullCtls = {patient:    document.frmPatient.patientInput,
+                                          patient_id: document.frmPatient.hidden_patient,
+                                          min_vials:  document.frmPatient.txtMinimum,
+                                          tissues:    document.frmPatient.selTissue,
+                                           dates:      document.frmPatient.selDates,
+                                          filters:    document.frmPatient.chkPatientFilter};
+                                          
+            // async request urls
+            viroverse.oURLs = {options: viroverse.url_base + 'freezer/search_freezers/aliquot_summary_selection?',
+                               results: viroverse.url_base + 'freezer/search_freezers/aliquot_admin_summary_by_patient?'};
+
+            // set up buttons                              
+            YAHOO.util.Event.addListener("btnScientist", "click", function (e) {getResults(viroverse.oScientistCtls)});
+            YAHOO.util.Event.addListener("btnPatient",   "click", function (e) {getResults(viroverse.oPatientRsltCtls)});
+
+            viroverse.onNewPatientid = newPatient;
+            viroverse.onInvalidPatient = invalidPatient;
+            document.getElementById("yui-panels").style.display = "block";
+        }
+        YAHOO.util.Event.addListener(window, "load", init);
+
+        // build product summary treeble on specimens tab
+        function load_treeble() {
+
+            // build treeble sort map
+            trblBuildSortMap({
+                              checked:    trblSortEnum.checkbox,
+                              patient:    trblSortEnum.string,
+                              visit_date: trblSortEnum.string,
+                              tissue:     trblSortEnum.string,
+                              labs:       trblSortEnum.string,
+                              count:      trblSortEnum.integer,
+                              vol:        trblSortEnum.volume
+                              },
+                              'date');
+
+            // build treeble data source
+            var arrData = ["id", "rack_id", "box_id", "checked", "patient", "visit_date", "tissue", "location", "count", "vol", "unit", "name", "additive"];
+
+            load_aliquot_count_totals(YAHOO.viroverse.product_data.products, 'aliquots');
+            load_aliquot_vol_totals(YAHOO.viroverse.product_data.products, 'aliquots');
+            var oSrc    = trblBuildDataSource(arrData, YAHOO.viroverse.product_data.products, false, 'aliquots');
+
+            // custom formatter to transform locations, if present, to links
+            YAHOO.widget.DataTable.Formatter.aliquot_search_link_format = function (cell, rec, col, data) {
+                var rack_id, box_id;
+                if (rec && (rack_id = rec.getData('rack_id')) && (box_id = rec.getData('box_id'))) {
+                    var arrText     = data.match('(^.*)( /.*$)');
+                       cell.innerHTML  = "<a href='[%- c.uri_for('/') -%]freezer/summary/rack/" + rack_id + "/" + box_id + "'>" + arrText[1] + "</a>" + arrText[2];
+                }
+                else {
+                    cell.innerHTML = data;
+                }
+            };
+
+            // build treeble
+            var arrColumns = [
+                {key:"checked", label:"Add", resizable:false, formatter:"freezerCheckBox", sortable:true, child_only:true},
+                {key:"patient", label:"Subject", resizeable:true, formatter:'freezerArray', sortable:true},
+                {key:"visit_date", label:"Date", resizeable:true, sortable:true},
+                {key:"tissue", label:"Tissue", resizeable:true, sortable:true},
+                {key:"count", label:"Aliquots", resizeable:true, sortable:true, className:'align-right', formatter:"freezerCnt"},
+                {key:"vol", label:"Vol", resizeable:true, sortable:true, className:'align-right', formatter:"freezerVol"},
+                {key: "location", label:"Location", resizable:true, formatter:"aliquot_search_link_format", sortable:false},
+                {key:"name", label:"Name", resizable:true, sortable:false},
+                {key:"additive", label:"Additive", resizable:true, sortable:false}
+            ];
+            return trblBuildTable(arrColumns, oSrc, 'prod_treeble', 'prod_treeble_pag', YAHOO.viroverse.product_data.products.length);
+        }
+
+        function newPatient (nId) {
+            viroverse.oPatientFullCtls.patient_id.value = nId;
+            getPatientOptions(viroverse.oPatientFullCtls.patient_id);
+        }
+
+        var invalidPatient = function() {
+            resetOptions();
+            viroverse.oPatientFullCtls.patient_id.value = '';
+            writeError('Subject not found.  Please try again.');
+        }
+
+        // clear top of patient form
+        function resetOptions() {
+            resetSel(viroverse.oPatientFullCtls.dates);
+            resetSel(viroverse.oPatientFullCtls.tissues);
+            resetPatientFilters();
+        }
+
+        // reset selection boxes
+        function resetSel(o) {
+            o.options.length = 0;
+            o.size = 1;
+            o.multiple = "multiple";
+        }
+
+        // clear bottom 
+        function resetResults() {
+            document.getElementById('results').style.display = 'none';
+            removeChildNodes(document.getElementById('prod_treeble'));
+            removeChildNodes(document.getElementById('prod_treeble_pag'));
+        }
+
+        function resetPatientFilters() {
+            document.frmPatient.chkOffSite.checked  = false;
+            document.frmPatient.chkReserved.checked = false;
+            document.frmPatient.chkGivenOut.checked = true;
+            document.frmPatient.chkEmpty.checked    = true;
+        }
+
+        // pull patient visits dates and tissues
+        function getPatientOptions(oSender) {
+
+            if (!isNumber(viroverse.oPatientFullCtls.min_vials.value)){
+                writeError("Min # Aliquots must be a number");
+                return;
+            }
+
+            var sData = (oSender.id == 'selTissue') ? buildQuery(viroverse.oPatientTissCtls) : buildQuery(viroverse.oPatientBaseCtls);
+            if (sData) {
+                clearError();
+                asyncRequest(viroverse.oURLs.options, sData, viroverse.oPatientFullCtls, handleOptionsSuccess); 
+            }
+        }
+
+        // pull patient or scientist query results
+        function getResults(oCtrls) {
+            var sData = buildQuery(oCtrls);
+            if (sData) {
+                clearError();
+                resetResults();
+                asyncRequest(viroverse.oURLs.results, sData, oCtrls, handleResultsSuccess); 
+            }
+        } 
+
+        // handle successful patient option async request
+        var handleOptionsSuccess = function(o) {
+            var ret = evalJSON(o);
+
+            // process visit dates
+            if ('visits' in ret) {
+                var oDates = o.argument.dates;
+                resetSel(oDates);
+                for (var i = 0, len = ret.visits.length; i < len; i++) {
+                    oDates.options[oDates.options.length] = new Option(ret.visits[i].visit_date, ret.visits[i].visit_date, false, false);
+                }
+                if (ret.visits.length > 5) {
+                    oDates.size = 5;
+                }
+                else if (ret.visits.length > 0) {
+                    oDates.size = ret.visits.length;
+                }
+                else {
+                    oDates.options[0] = new Option("No Visit Dates Found", -1, false, true);
+                }
+                oDates.selectedIndex = 0;
+            }
+
+            // process tissues
+            if ('tissues' in ret) {
+                var oTissues = o.argument.tissues;
+                ret.tissues.sort(
+                    function(x,y) {
+                        var a = String(x.tissue).toLowerCase(); 
+                        var b = String(y.tissue).toLowerCase(); 
+                        return a > b ? 1 : a < b ? -1 : 0;
+                    }); 
+                resetSel(oTissues);
+                for (var i = 0, len = ret.tissues.length; i < len; i++){
+                    oTissues.options[oTissues.options.length] = new Option(ret.tissues[i].tissue, ret.tissues[i].tissue_type_id, false, false);
+                }
+                if (ret.tissues.length > 0) {
+                    oTissues.size = ret.tissues.length > 5 ? 5 : ret.tissues.length;
+                    oTissues.selectedIndex = -1;
+                }
+                else {
+                    oTissues.options[0] = new Option("No Tissues Found", -1, false, true);
+                    oTissues.selectedIndex = 0;
+                }
+            }
+        };
+
+        // handle successful patient or scientist results async request
+        var handleResultsSuccess = function(o) {
+            YAHOO.viroverse.product_data = { products: evalJSON(o) };
+
+            if (YAHOO.viroverse.product_data.products.length) {
+                var sHeader = '';
+                if ('patient_id' in o.argument) {
+                    sHeader = 'Aliquots for Subject ID ' + o.argument.patient.value + ' (Min Vials: ' + o.argument.min_vials.value + ', Filters:';
+                }
+                else if ('scientist' in o.argument) {
+                    sHeader = 'Aliquots assigned to ' + o.argument.scientist.value + ' (Filters:';
+                }
+
+                // Add filters to header
+                var filters = o.argument.filters;
+                var sFiltered = '';
+                for (var i = 0, len = filters.length; i < len; i++) {
+                    if (filters[i].checked) {
+                        var sLabel = filters[i].id.replace(/^chk/, 'lbl');
+                        sFiltered += " '" + document.getElementById(sLabel).innerHTML + "', ";
+                    }
+                }
+                sHeader += (sFiltered) ? sFiltered.substring(0, sFiltered.length - 2) : ' None';
+                sHeader += ')';
+
+                // this procedure re-creates the treeble with the new data array.  it would be better 
+                // to make an empty request getDataSource().sendRequest('',... or simply post via the datatable
+                document.getElementById('resultsHeader').innerHTML = sHeader;
+                document.getElementById('results').style.display   = 'block';
+                YAHOO.viroverse.oTreeble = load_treeble();
+            }
+            else {
+                writeError('No aliquots found.  Please try again');
+            }
+        }
+
+        // build parameter string for asynchronous request
+        function buildQuery(oCtrls, sParmName, arrParms) {
+
+            arrParms = arrParms || new Array();
+            for (var key in oCtrls) {
+                if (oCtrls.hasOwnProperty(key)) {
+                    if (typeof oCtrls[key] !== "undefined") {
+                        var tag   = oCtrls[key].tagName;
+                        var type  = oCtrls[key].type;
+                        if (tag in {INPUT: 1, OPTION: 1}) {
+                            if (type == 'checkbox' && !oCtrls[key].checked)  continue;
+                            if (tag  == 'OPTION'   && !oCtrls[key].selected) continue;
+                            if (!oCtrls[key].value.length) return '';
+                            arrParms.push((sParmName || key) + '=' + oCtrls[key].value);
+                        }
+                        else {
+                            ctrls = oCtrls[key].options ? oCtrls[key].options : oCtrls[key];
+                            buildQuery(ctrls, key, arrParms);
+                        }
+                    }
+                }
+            }
+
+            var sQuery = '';
+            if (arrParms.length)
+                sQuery = arrParms.join('&');
+            return sQuery
+        }
+    </script>
+
+    <style type="text/css">
+        select.multi {vertical-align: top;}
+        #results {display: none}
+        #patientFilters {display: none; }
+    </style>
+</head>
+
+<body class='yui-skin-sam'>
+    [% INCLUDE 'body-top.tt' %]
+
+    <div id='error' class='error' [%- IF error -%] style='display:block'[%- END -%] >[%- error -%]</div>
+
+    <div id="demo" class="yui-navset">
+        <!-- BEGIN TAB DEFINITIONS -->
+        <ul class="yui-nav">
+               <li class="selected"><a href="#tab1"><em>Subject</em></a></li>
+            <li><a href="#tab2"><em>Assigned Scientist</em></a></li>
+        </ul>  
+        <!-- END TAB DEFINITIONS -->
+    
+        <!-- BEGIN TABS -->          
+           <div class="yui-content">
+    
+            <!-- BEGIN TAB 1 (Patient Visit) -->
+            <div id="tab1">
+                <h2>Find Aliquots by Visit</h2>
+                <form method="post" onsubmit="return false;" id="frmPatient" name="frmPatient">
+                    <label>Cohort</label>
+                    [% INCLUDE 'cohort-select.tt' %]
+                    <br clear='all' />
+     
+                     <div id="patientSpan">
+                        <label for="patient" class="inline">Subject ID</label><input type="text" id="patientInput" class='auto' name="patient" size="36" />
+                        <input type="hidden" name="patient_id" id='hidden_patient'  />
+                        <label for="txtMinimum" class="inline">Min # Aliquots</label><input type="text" id="txtMinimum" size="1" value="1" onchange="getPatientOptions(this);" />
+                        <label for="selTissue"  class="inline">Tissues</label><select id="selTissue" name="selTissue" class="multi" onchange="getPatientOptions(this);" ></select>
+                        <label for="selDates"   class="inline">Visit Dates</label><select class="multi" name="selDates" id="selDates" ></select>
+                        <div id='patient_name_div' class='y_auto' style='margin-left:90px'></div>
+                    </div>
+                     <br clear='all' />
+
+                    <span id="patientFilters">
+                        Exclude aliquots which are: 
+                        <input type="checkbox" id="chkOffSite"  name="chkPatientFilter" value="offsite"   onchange="getPatientOptions(this);" /><label for='chkOffSite' class='inline' id="lblOffSite">Off-site</label>
+                        <input type="checkbox" id="chkReserved" name="chkPatientFilter" value="reserved"  onchange="getPatientOptions(this);" /><label for='chkReserved' class='inline' id="lblReserved">Reserved</label>
+                        <input type="checkbox" id="chkGivenOut" name="chkPatientFilter" value="given_out" checked="true" onchange="getPatientOptions(this);" /><label for='chkGivenOut' class='inline' id="lblGivenOut">Given Out</label>
+                        <input type="checkbox" id="chkEmpty"    name="chkPatientFilter" value="empty"     checked="true" onchange="getPatientOptions(this);" /><label for='chkEmtpy' class='inline' id="lblEmpty">Empty</label>
+                    </span>
+
+                    <div class="buttons">
+                        <label></label> 
+                        <span class="formButton">
+                            <input type="button" id='btnPatient' value="Load" [%- disabled -%]/>
+                        </span> 
+                    </div> <!--end row-->
+                </form>   
+            </div>
+            <!-- END TAB 1 (Patient Visit) -->
+    
+            <!-- BEGIN TAB 2 (Scientist) -->
+            <div id="tab2">
+                <h2>Find Aliquots by Possessing Scientist</h2>
+                <form method="post" onsubmit="return false;" id="frmScientist" name="frmScientist">
+                    <label for="scientist_name_ac">Scientist</label>[%- no_default_sci = 1 ; INCLUDE 'scientist-select.tt' -%]<br />
+
+                    <span id="scientistFilters">
+                        Exclude aliquots which are: 
+                        <input type="checkbox" id="chkOffSite" name="chkScientistFilter" value="offsite" onchange="getPatientOptions(this);" /><label for='chkOffSite' class='inline' id="lblOffSite">Off-site</label>
+                        <input type="checkbox" id="chkEmpty"   name="chkScientistFilter" value="empty"   checked="true" onchange="getPatientOptions(this);" /><label for='chkEmtpy' class='inline' id="lblEmpty">Empty</label>
+                    </span>
+
+                    <div class="buttons">
+                        <label></label> 
+                        <span class="formButton">
+                            <input type="button" id='btnScientist' value="Load" [%- disabled -%]/>
+                        </span> 
+                    </div> <!--end row-->
+                </form>
+            </div>
+             <!-- END TAB 2 (Scientist) --> 
+                                        
+        </div>
+        <!-- END TABS -->
+
+    </div>
+    <!-- Instantiate TabView -->
+    <script>new YAHOO.widget.TabView('demo');</script>
+    <!-- Instantiate TabView -->
+
+    <!-- Results view -->
+    <div id="results">
+
+        <h2 id="resultsHeader"></h2>
+
+        [% INCLUDE 'treeble-buttons.tt' %]
+        <br clear='all' />
+
+        <div id="prod_treeble_pag"></div>
+        <div id="prod_treeble"></div><br />
+    
+          [% INCLUDE 'treeble-buttons.tt' %]
+      </div>
+  
+    [% INCLUDE 'body-bottom.tt' %]
+
+    <div id="sidebar">
+        <div id='progress'></div>
+        [% INCLUDE 'freezer-sidebar.tt' %]
+    </div>
+    
+    [% INCLUDE 'body-end.tt' %]
+
+    <div id="yui-panels" style="display: none" >
+        [% INCLUDE 'manage-aliquot-overlay.tt' %]
+    </div>
+
+    <div class="spacer">&nbsp;</div>
+</body>
+</html>

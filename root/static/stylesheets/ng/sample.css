@@ -1,0 +1,111 @@
+dl.extraction-properties dt {
+    float: left;
+    font-weight: normal;
+    margin-right: 1ex;
+    text-align: right;
+    min-width: 16.66666666667%;
+}
+
+dl.extraction-properties dt:after {
+    content: ":";
+}
+
+.extraction .empty-notes {
+    font-style: italic;
+}
+
+/* Sample tree */
+.sample-tree .current-node > span {
+    font-style: italic;
+    background-color: yellow;
+}
+
+.sample-tree ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.sample-tree.loose ul ul {
+    padding-left: 16px;
+}
+
+.sample-tree.tight ul ul {
+    padding-left: 4px;
+}
+
+.sample-tree li {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sample-tree li.omitted:only-child {
+    margin-left: -14px;
+}
+.sample-tree li.omitted:only-child::before {
+    content: "↳ ";
+}
+
+/* Hide hinting of depth omission when the primogenitor is our current node */
+.sample-tree > ul > li.sample.current-node li.omitted.omitted-depth {
+    display: none;
+}
+
+.sample-tree .missing > span {
+    font-style: italic;
+    color: rgba(0,0,0,0.5);
+}
+
+.sample-tree .missing > span > .glyphicon {
+  font-size: 0.9em;
+  margin-left: 1px;
+  margin-right: 4px;
+}
+
+p.panel-big-label {
+    font-size: 32px;
+    text-align: center;
+}
+
+p.panel-med-label {
+    font-size: 24px;
+    text-align: center;
+}
+
+p.panel-little-label {
+    text-align: center;
+}
+
+#sample-details .panel-title a {
+    color: inherit;
+}
+
+#sample-details .panel > .list-group a.list-group-item {
+    color: #428bca;
+}
+
+#sample-details .panel > .list-group a.list-group-item:hover {
+    color: #2a6496;
+    text-decoration: underline;
+}
+
+#sample-details .panel-body p:last-of-type {
+    margin-bottom: 0;
+}
+
+#sample-aliquot-panel table tr td:first-of-type {
+    border-top: none;
+    padding-right: 0;
+}
+
+#sample-aliquot-panel table tr td:nth-of-type(2) {
+    border-top: none;
+    padding-left: 0;
+    padding-right: 0;
+    width: 1em;
+}
+
+#sample-aliquot-panel table tr td:last-of-type {
+    border-top: none;
+    padding-left: 0;
+}

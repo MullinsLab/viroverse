@@ -1,0 +1,32 @@
+[%- page = { 
+        title = "Copy number details" 
+    }
+-%]
+<div class="row">
+    <div class="col-md-9">
+        <h1>Copy number details <small>#[% copy_number.id %]</small></h1>
+        <dl>
+        <dt>Subject</dt>
+        <dd><a href="[% c.uri_for_action('/patient/show_by_id',[sample.patient.id]) %]">[% sample.patient.name %]</a></dd>
+        <dt>Sample</dt>
+        <dd><a href="[% c.uri_for_action('/sample/show', [ sample.id ]) %]">[% sample.tissue_type.name %] [% sample.date.strftime('%Y-%m-%d') %]</a></dd>
+        <dt>Final round PCR primers</dt>
+        <dd>[% copy_number.pcr_primers.join(', ') %]</dd>
+        <dt>Copies per unit</dt>
+        <dd>[% copy_number.value %] ± [% copy_number.std_error %]</dd>
+        <dt>Scientist</dt>
+        <dd>[% copy_number.scientist.name %]</dd>
+        <dt>Date calculated</dt>
+        <dd>[% copy_number.date_created.ymd %]</dd>
+        </dl>
+        [% FOR gel IN gels %]
+        <h2><a href="[% c.uri_for('/summary/gel',gel.key) %]">Gel [%gel.key%]</a></h2>
+        <p>Included lanes: [% FOR lane IN gel.value -%]
+        [%- lane.label %][% IF lane.nickname %] ([% lane.nickname %])[% END %][%-IF NOT loop.last()%], [% END -%]
+        [% END -%]
+        </p>
+        <img src="[% c.uri_for('/summary/gel_img', gel.key) %]"
+             class="img-responsive">
+        [% END %]
+    </div>
+</div>

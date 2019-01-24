@@ -1,0 +1,48 @@
+[%- page = {
+        title  = "Derivation protocol details",
+        breadcrumbs     = [
+          [ 'Admin',                c.uri_for_action('/admin/index') ],
+          [ 'Derivation protocols', c.uri_for_action('/derivationprotocol/index') ],
+          [ protocol.name ]
+        ]
+    }
+-%]
+
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="page-header">
+          [% protocol.name %]
+        </h1>
+        <h2>Default outputs</h2>
+        <p>When creating a new derivation using this protocol, one output sample of each of
+        the following tissue types will be created.</p>
+        <table class="table">
+        <thead>
+            <tr>
+                <th>Tissue type</th>
+            </tr>
+        <tbody>
+            [% FOR tissue_type IN protocol.output_tissue_types %]
+            <tr>
+                <td>[% tissue_type.name %]</td>
+            </tr>
+            [% END %]
+        </tbody>
+        </table>
+        <h3>Add default output</h3>
+        <form action="[% c.uri_for_action('/derivationprotocol/add_output', [protocol.id]) %]" method="POST">
+            <div class="row">
+                <div class="form-group col-md-4">
+                    <label for="tissue_type_id">Tissue type</label>
+                    <select name="tissue_type_id" class="form-control">
+                        [% FOR tissue IN tissue_types %]
+                            <option value="[% tissue.id %]">[% tissue.name %]</option>
+                        [% END %]
+                    </select>
+                </div>
+            </div>
+            <input class="btn btn-primary" type="submit" />
+        </form>
+
+    </div>
+</div>

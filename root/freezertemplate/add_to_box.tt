@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<style>
+    label.selected {
+        background-color: #1f669b;
+        color: white;
+    }
+</style>
+
+<link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/stylesheets/viroverse.css" />
+<link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/stylesheets/freezer.css" />
+
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<title>Viroverse::Freezer: Place Vials</title>
+[% INCLUDE 'head.tt' %]
+
+<script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/yahoo-dom-event.js" ></script> 
+<script type="text/javascript" src="[%- uri_base -%]/static/javascripts/drag_util.js"></script>
+<script type="text/javascript" src="[%- uri_base -%]/static/javascripts/freezer.js" ></script>
+
+<script type="text/javascript" >
+    function highlight_cb(cb){
+       var label = cb.parentNode;
+       if(cb.checked){
+          YAHOO.util.Dom.addClass(label, "selected");
+       }else{
+          YAHOO.util.Dom.removeClass(label, "selected");
+       }
+    }
+    
+    //FF was checking different boxes on reload/back when Freezer DD was selected. So best to just clear them out
+    function uncheckAliqs(){
+       var ctr = document.getElementById('add_aliqs');
+       var boxes = ctr.getElementsByTagName('input');
+       for(var i = 0 ; i < boxes.length ; i++){
+          boxes.item(i).checked = false;
+       }
+    }
+    
+    
+</script>
+<style>
+    label.aliq {
+       float: none;
+       display:block;
+       text-align: left
+    }
+</style>
+</head>
+
+<body class="yui-skin-sam" onload="resetFreezer(); uncheckAliqs();">
+[%- INCLUDE 'body-top.tt' -%]
+
+<div id="error" class="error"></div>
+<pre id="debug"></pre>
+<h2>Choose Box to Place Vials In.</h2>
+[% INCLUDE "freezer_finder.tt" %]
+<div id="box_display" style="float: left; clear:both">
+</div>
+<div style="clear: both; padding-top: 5px; font-style: italic; width: 750px">
+    Click on an empty spot in the box to move vials into box.
+    If multiple vials are selected the box will be filled left to right until all vials have been placed or an occupied space is reached
+</div>
+[% INCLUDE 'in-body-bottom.tt' %]
+
+    <div id="sidebar">
+       <h2>Add Vials to Freezer</h2>
+       <div id="add_aliqs" style="border: 1px inset #1f669b; padding: 2px 2px 2px 2px;">
+          [% FOREACH a IN aliquot %]
+                <label class="aliq" ><input type="checkbox" name="aliquot" value="aliquot_[%- a.aliquot_id -%]" onchange="highlight_cb(this)" />[%- a.to_string -%]</label>
+            [% END %]
+          <a class="clk" onclick="checkAll(this.parentNode)" id="check_all_link">Check All</a> <a class="clk" onclick="clearAll(this.parentNode, 'aliquot')">Clear All</a>
+       </div>
+       <div style="padding-top: 5px; font-style: italic;">
+       Click vials to highlight (Shift or Cmd/Ctrl click to select multiple).
+       </div>
+       <div id="placeHist">
+       <h2>History</h2>
+       </div>
+       
+    </div>
+
+[% INCLUDE 'body-end.tt', match_body_top = 1 %]
+
+</body>
+</html>

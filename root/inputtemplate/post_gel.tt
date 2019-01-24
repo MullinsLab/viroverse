@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse: Positive PCR</title>
+
+[% USE Dumper %]
+[% USE date(format=date_format) %]
+[% INCLUDE 'in-head.tt' %]
+    <link href="[%- uri_base -%]static/stylesheets/autosuggest.css" rel="stylesheet" type="text/css" />    
+    <link href="[%- uri_base -%]static/stylesheets/y.css" rel="stylesheet" type="text/css" />    
+
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/sidebar-collect.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/yahoo-dom-event.js" ></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/connection-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/element-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/datasource-min.js"></script>   
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/autocomplete-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/dragdrop-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/yui_2.8.1/datatable-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/suggestion-scientist.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/suggestion-patient.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/prod.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/pcr.js"></script>
+
+    <script type='text/javascript' language='javascript'>
+    //adapted from suggestion-scientist.js
+
+    var dataschema = ['Response','name']
+    YAHOO.widget.AutoComplete.prototype.formatResult = function (aResultItem, sQuery) {
+        return aResultItem[0];
+    }
+
+    YAHOO.util.Event.onAvailable ( 'purif_scientist_name_div',
+    function (){
+        var autocomplete = new YAHOO.widget.AutoComplete('purif_scientist_name','purif_scientist_name_div',viroverse.sciDataSource);
+    }, this);
+
+    YAHOO.util.Event.onAvailable ( 'conc_scientist_name_div',
+    function (){
+        var autocomplete = new YAHOO.widget.AutoComplete('conc_scientist_name','conc_scientist_name_div',viroverse.sciDataSource);
+    }, this);
+
+
+    var finder;
+    var local_find_a = new Array;
+    [%- FOREACH type IN find_a -%]
+    local_find_a.push('[%- type.name -%]');
+    [%- END -%]
+    function go_time () {
+        finder = new product_finder(local_find_a,'finder','error',add_product_box);
+        finder.add_fn_arguments = new Array ('to_do','error');
+
+        [% IF pos_pcr.count ~%]
+            finder.from_ids('pos_pcr', [% pos_pcr.map("id").json %]);
+        [%~ END %]
+    }
+
+    YAHOO.util.Event.onDOMReady(go_time);
+    function prod_clear (divid) {
+        var d = document.getElementById(divid);
+        removeChildNodes(d);
+        return false;
+    }
+    </script>
+</head>
+
+<body>
+[% INCLUDE 'body-top.tt' %]
+    <h2>Positive PCR Products</h2>
+    [%- INCLUDE prod_find.tt -%]
+    <br clear='all' />
+    [%- PROCESS 'body-error.tt' -%]
+    <form id='post_pcr' method='post' action='[%- uri_base -%]/input/pos_pcr_add'>
+    <a class='clk' onclick='checkAll(document.getElementById("to_do"))'>select all</a> &#xB7;
+    <a class='clk' onclick='clearAll(document.getElementById("to_do"), "pos_pcrbox")'>select none</a> &#xB7;
+    <a class='clk' onclick='return prod_clear("to_do")'>clear</a>
+        <div id='to_do'>
+    [% FOREACH pcr_o IN pos_pcr %]
+            <input type='checkbox' name='pos_pcrbox' id='box[%- pcr_o.give_id -%]' value='[%- pcr_o.give_id -%]' checked='true'></input><label class='check' for='box[%- pcr_o.give_id -%]'>[% pcr_o.to_string %] <strong>[%- pcr_o.name -%]</strong></label><br />
+    [% END %]
+        </div>
+    <br clear='all' />
+    </fieldset>
+
+    <fieldset><legend>Purification</legend>
+        <label>Method</label>
+        <span class='formw'>
+            <select name='purification_kit' [%- disabled -%]>
+                <option value='' default='yes'>not performed</option>
+                [% FOREACH p IN purification_protocols %]<option value="[%- p.id -%]">[%- p.name -%]</option>[% END %]
+            </select>
+        </span>
+    <br clear='all' />
+        <label>Scientist</label> 
+        <div class="formw">
+            <input id="purif_scientist_name" name="purif_scientist_name" class='auto' size="30" type="text" value='[%- scientist.name -%]' [%- disabled -%]/>
+            <div class='y_auto' id='purif_scientist_name_div'></div>
+        </div> 
+    <br clear='all' />
+        <label>Date</label> 
+        <span class="formw"><input name="purif_date" type="text" placeholder="YYYY-MM-DD" class="quickfill-today" size="14" maxlength='10' value="" [%- disabled -%] id='pdate'/></span>
+    <br clear='all' />
+        <label>Final<br>Concentration</label> 
+        <span class="formw"><input name="purif_final_conc" type="text" size="12" maxlength='10' [%- disabled -%]/> ng/&mu;L</span> 
+    <br clear='all' />
+    <label>Notes</label> 
+    <span class="formw"><textarea name="purif_notes" rows="5" cols="37" [%- disabled -%]></textarea></span> 
+    <br clear='all' />
+    </fieldset>
+
+    <fieldset><legend>Concentration</legend>
+        <label>Method</label>
+        <span class='formw'>
+            <select name='concentration_kit' [%- disabled -%]>
+                <option value='' default='yes'>not performed</option>
+                [% FOREACH p IN concentration_protocols %]<option value="[%- p.id -%]">[%- p.name -%]</option>[% END %]
+            </select>
+        </span>
+    <br clear='all' />
+        <label>Scientist</label> 
+        <div class="formw">
+            <input id="conc_scientist_name" name="conc_scientist_name" class='auto' size="30" type="text" value='[%- scientist.name -%]' [%- disabled -%]/>
+            <div class='y_auto' id='conc_scientist_name_div'></div>
+        </div> 
+    <br clear='all' />
+        <label>Date</label> 
+        <span class="formw"><input name="conc_date" type="text" placeholder="YYYY-MM-DD" class="quickfill-today" size="14" maxlength='10' value="" [%- disabled -%] id='cdate' /></span>
+    <br clear='all' />
+        <label>Final<br>Concentration</label> 
+        <span class="formw"><input name="conc_final_conc" type="text" size="12" maxlength='10' [%- disabled -%]/> ng/&mu;L</span> 
+    <br clear='all' />
+    <label>Notes</label> 
+    <span class="formw"><textarea name="conc_notes" rows="5" cols="37" [%- disabled -%]></textarea></span> 
+    <br clear='all' />
+    </fieldset>
+
+    <div class="buttons">
+        <label></label> 
+        <span class="formButton">
+            <a href="#" onClick="window.location.reload()" class="clear-form">Clear this form</a>&nbsp;
+            <input type="button" onClick="form_to_sidebar_ajax('post_pcr','pos_pcr','error')" value="Add >>"  [%- disabled -%]/>
+        </span> 
+    </div> <!--end row-->
+    </form>
+
+[% INCLUDE 'body-bottom.tt' %]
+
+    <div id="sidebar">
+        [%- INCLUDE 'pcr_more-sidebar.tt' -%]
+    </div>
+
+[% INCLUDE 'body-end.tt' %]
+
+<div class="spacer">&nbsp;</div>
+</body>
+</html>

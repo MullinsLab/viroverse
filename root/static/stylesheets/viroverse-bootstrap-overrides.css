@@ -1,0 +1,96 @@
+/*
+ * Please only put styles in here which apply to generic Bootstrap-styled
+ * content in _both_ next-gen and previous-gen templates.  If it's specific to
+ * one ecosystem or the other, don't dirty this shared file.  If it's specific
+ * to a Viroverse component, please put it in an appropriate file.  This is for
+ * generic rules.
+ *    -trs, 22 Sept 2016
+ */
+
+/* use "medium devices" width even for "large devices" */
+.formBody .bootstrapped .container {
+    max-width: 970px;
+    padding: 0;
+}
+
+.bootstrapped .container > h2:first-child,
+.bootstrapped .row > div > h1:first-child,
+.bootstrapped .row > div > h2:first-child,
+.bootstrapped .row > div > h3:first-child,
+.bootstrapped .row > div > h4:first-child,
+.bootstrapped .row > div > h5:first-child,
+.bootstrapped .row > div > h6:first-child {
+    margin-top: 0;
+}
+
+.bootstrapped .list-unstyled {
+    margin-bottom: 0;
+}
+
+.bootstrapped p.bg-error, .bootstrapped p.bg-success {
+    padding: 10px;
+}
+
+.bootstrapped div.form-error {
+    padding: 10px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.bootstrapped dd:empty {
+    /* Prevents a <dt> following an empty <dd> from floating up next to the
+     * previous <dt>.  <dt>s float, so this clears the <dt> associated with
+     * this empty <dd>. */
+    clear: left;
+}
+
+/* Content within button links should be underlined in its own text color, not
+ * the button's text color (which may be different).  The underline takes its
+ * color only from the element it is declared on, despite rendering underneath
+ * all descendant text.  Let all elements of a hovered/focused button link
+ * inherit the text-decoration (the underline) from the button link, which
+ * allows the underline to match the text color of inner elements separately.
+ */
+.bootstrapped .btn-link:hover *,
+.bootstrapped .btn-link:focus * {
+    text-decoration: inherit;
+}
+
+/* Hack to get rid of bootstrap's float hacks on the sample grid */
+#sample-details .col-md-4 {
+    display: inline-block;
+    float: none;
+    vertical-align: top;
+    margin-right: -1ex;
+    padding-left: -1ex;
+}
+
+/* equal spacing for the footer columns */
+footer.bootstrapped .sitemap {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+}
+
+footer.bootstrapped .column {
+    display: block;
+    padding: 0;
+    flex-basis: 13em;
+    flex-grow: 1;
+}
+
+footer.bootstrapped .column h5 {
+    margin-top: 0;
+    padding-top: 0;
+}
+
+footer.bootstrapped .copyright {
+    display: block;
+    width: 100%;
+    padding-top: 1em;
+}
+

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse: Peptide/Epitope Search</title>
+
+[% INCLUDE 'summ-head.tt' %]
+
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/remotesuggestions.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/autosuggest2.js"></script>
+<!--    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/peptide.js"></script>-->
+
+</head>
+
+<body class='yui-skin-sam'>
+[% INCLUDE 'body-top.tt' %]
+<h2>Peptide Pool Search Result</h2>
+[%  IF results.count == 0 %]
+    <h3>No match data in database</h3>
+[%  ELSE %]
+    <div>
+    <table id='sampleSel'>
+    <tr>
+        <th>Pool</th><th>Test Patient</th>
+        <th><abbr title="Maximum of Corrected average number of spot-forming cells in multiple experiments">Corrected SFC</abbr></th>
+        <th><abbr title="Peptides in given pool">Peptides</abbr></th>
+    </tr>
+
+        [% SET i = 0 %]
+        [%- FOREACH result IN results -%]
+            [% i = i + 1 %]
+            [% IF (i % 2 == 0) %]
+                <tr bgcolor='#CCCCFF'>
+            [% ELSE %]
+                <tr bgcolor='#FFFFFF'>
+            [% END %]
+
+        <td>[%- result.name -%]</td>
+        <td>[%- result.patient -%]</td>
+        <td><a href="elispot?pool_id=[%- result.pool_id -%]&patient_id=[%- result.patient_id -%]">[%- result.max_corravg -%]</a></td>
+        <td>[%- result.peptides -%]</td>
+
+        </tr>
+        [%- END -%]
+
+    </table>
+    </div>
+[% END %]
+
+[% INCLUDE 'body-bottom.tt' %]
+    <div id="sidebar">
+        <input type="submit" value="Download .csv">
+        <pre>
+        <!-- [% sql %] -->
+        </pre>
+    </div>
+[% INCLUDE 'body-end.tt' %]
+</body>
+</html>

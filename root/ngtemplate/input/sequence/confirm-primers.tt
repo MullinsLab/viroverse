@@ -1,0 +1,43 @@
+[%- page = {
+        title  = "Confirm sequencing primers",
+        has_js = 0,
+    }
+-%]
+
+<div class="row">
+  <div class="col-sm-12">
+    <h2>Confirm sequencing primers</h2>
+    <form action="[% c.uri_for('/input/sequence/update_primers') %]" method="post" enctype="multipart/form-data">
+      [% FOR seq IN sequences %]
+        <div class="row" class="confirm-primers">
+          <h3 class="col-md-12">[% seq.name %]</h3>
+          [% FOR chromat IN @(seq.chromats.sort) -%]
+            <div class="form-group col-md-4">
+              <label for="chromat-[% chromat.id %]-primer">[% chromat.name %]</label>
+              <select class="form-control" id="chromat-[%chromat.id%]-primer" name="chromat-[% chromat.id %]-primer">
+              <optgroup label="Best guesses">
+                [% FOR primer IN chromat.plausible_primers -%]
+                  <option [% IF loop.first %]selected[% END %] value="[% primer.id %]">[% primer.name %]</option>
+                [%- END -%]
+              </optgroup>
+              <optgroup label="All primers">
+                [% FOR primer IN all_primers -%]
+                  <option value="[% primer.id %]">[% primer.name %]</option>
+                [%- END -%]
+              </select>
+              [% IF @(chromat.plausible_primers).size == 0 -%]
+                <p class="primer-note text-danger"><i class="glyphicon glyphicon-question-sign"></i> No matched primers</p>
+              [%- ELSIF @(chromat.plausible_primers).size > 1 -%]
+                <p class="primer-note text-info"><i class="glyphicon glyphicon-info-sign"></i> [% @(chromat.plausible_primers).size %] matched primers</p>
+              [%- END %]
+            </div>
+            <% IF loop.number % 3 == 0 %>
+              <div class="clearfix visible-md-block visible-lg-block"></div>
+            <% END %>
+          [%- END -%]
+        </div>
+      [%- END -%]
+      <button class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+</div>

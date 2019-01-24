@@ -1,0 +1,118 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+use Getopt::Long;
+use ViroDB;
+
+my ($user, $name, $email, $role, $group, $as, $batch_mode);
+
+GetOptions(
+    'name=s'    => \$name,
+    'uwnetid=s' => \$user,
+    'user=s'    => \$user,
+    'email=s'   => \$email,
+    'role=s'    => \$role,
+    'group=s@'  => \$group,
+    'as=s'      => \$as,
+    'batch'     => \$batch_mode,
+    'help'      => sub { usage(); exit },
+);
+
+sub usage {
+    print <<'    USAGE';
+--name ...      Full name of this scientist
+--user ...      The username of this scientist
+--email ...     The email address of this scientist
+--role ...      The role of this scientist: scientist (default), supervisor, admin, retired
+--group ...     Add the new scientist to the specified group (optional, repeatable)
+--as ...        Change the acting scientist (defaults to $USER, $USERNAME, or `whoami`)
+--batch         Create multiple users in batch mode via CSV to stdin
+                Data should be headerless and with columns: name,email,username,role,group
+--help          Display this usage
+    USAGE
+}
+
+if ($batch_mode and ($user or $name or $email or $role or $group)) {
+    print "Cannot combine batch mode with any other option except --as.\n\n";
+    usage();
+    exit 1;
+}
+elsif (not ($user and $name)) {
+    print "A full name and username (often UW NetID) are required.\n\n";
+    usage();
+    exit 1;
+}
+
+my $db = ViroDB->instance;
+my $txn = $db->txn_scope_guard;
+
+if ($as) {
+    my $as_sci = $db->resultset("Scientist")->find({ username =>  $as })
+        or die "Couldn't find adding scientist with username '$as'\n";
+    $as = $as_sci;
+} else {
+    $as = $db->resultset("Scientist")->find(0);
+}
+
+my @data;
+if ($batch_mode) {
+    while (<STDIN>) {
+        chomp;
+        next if /(^#|^\s*$)/;
+        push @data, [split /,/, $_];
+    }
+} else {
+    push @data, [$name, $email, $user, $role, $group];
+}
+
+for my $tuple (@data) {
+    my ($name, $email, $user, $role, $groups) = @$tuple;
+    unless ($user and $name) {
+        print "Skipping row [<", join("> <", @$tuple) ,">]: a full name and username are required.\n";
+        next;
+    }
+
+    $groups = [$groups] if $groups and not ref $groups;
+
+    for my $group (@$groups) {
+        my @groups = $db->resultset("ScientistGroup")->search({ name => $group })
+            or die "Failed to find group '$group'\n";
+        warn "More than one group found with name '$group'!\n"
+            if @groups > 1;
+        $group = shift @groups;
+    }
+
+    my @existing = $db->resultset("Scientist")->search({ username => $user });
+    die "Found existing scientist(s)! ", join(", ", map { join " - ", $_->scientist_id, $_->name } @existing), "\n"
+        if @existing;
+
+    my $scientist = $db->resultset("Scientist")->create({
+        name     => $name,
+        username => $user,
+        ( $email
+            ? (email => $email)
+            : () ),
+        ( $role
+            ? (role => $role)
+            : () ),
+    });
+
+    if ($scientist and my $id = $scientist->id) {
+        print "Created scientist #$id: ", $scientist->name, " (", $scientist->username, ")\n";
+    } else {
+        die "Failed to create scientist!";
+    }
+
+    for my $group (@$groups) {
+        my $gm = $db->resultset("ScientistGroupMember")->create({
+            scientist_group_id  => $group->id,
+            scientist_id        => $scientist->id,
+            ($as
+                ? (creating_scientist_id => $as->id)
+                : ()),
+        }) or die "Unable to add scientist to group '", $group->name, "'!\n";
+    }
+}
+
+$txn->commit;

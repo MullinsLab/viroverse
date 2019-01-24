@@ -1,0 +1,104 @@
+#!/bin/bash
+export PGHOST=${PGHOST:-localhost}
+export PGDATABASE=${PGDATABASE:-viroverse}
+export PGUSER=${PGUSER:-vverse_admin}
+
+# Allow -d foo to set the database, just like psql
+if [[ $1 == "-d" ]]; then
+    PGDATABASE=$2
+    shift 2
+fi
+
+table=$1
+column=$2
+[[ $column == "id" ]] && column=${table#*.}_id
+value=$3
+[[ -z $table ]] && echo "usage: `basename $0` [schema.]table [column|'id' [value]]" && exit 1
+
+case "$table" in
+    *.*)
+        # already got a schema
+        ;;
+    *)
+        table=viroserve.$table
+        ;;
+esac
+
+if [[ -n $value ]]; then
+    show_data=1
+    condition=" = ''$value''"
+else
+    show_data=0
+fi
+
+echo "Connecting to $PGDATABASE as $PGUSER"
+echo
+if [[ -n $column ]]; then
+    [[ $show_data = 1 ]] && echo -n Rows || echo -n Columns
+    echo -n " referring to $table.$column"
+    [[ -n $condition ]] && echo -n " where the referring value $condition"
+else
+    echo -n "Tables referring to $table"
+fi
+echo
+echo
+echo "Ctrl-C to cancel, Enter to proceed."
+read
+
+if [[ -n $column ]]; then
+    column_constraint="= '$column'"
+    if [[ $show_data == 1 ]]; then
+        select="
+            SELECT array_to_string(array_agg('SELECT ''' || tbl || ''' AS tbl
+                  ,''' || COALESCE(pk_col, 'NONE') || ''' AS pk_col
+                  ,'   || COALESCE(pk_col, 'NULL') || '::text AS pk_col_val
+                  ,''' || fk_col || ''' AS fk_col
+                  FROM ' || tbl || ' WHERE ' || fk_col || ' $condition'), '
+            UNION ALL
+            ') || ';'
+            FROM   x;
+        "
+    else
+        select="
+            SELECT array_to_string(array_agg('SELECT ''' || tbl || ''' AS tbl
+                  ,''' || fk_col || ''' AS fk_col'), '
+            UNION ALL
+            ') || ';'
+            FROM   x;
+        "
+    fi
+else
+    column_constraint='IS NOT NULL'
+    select="
+        SELECT array_to_string(array_agg('SELECT ''' || tbl || ''' AS tbl
+              ,''' || fk_col || ''' AS fk_col'), '
+        UNION ALL
+        ') || ';'
+        FROM   x;
+    "
+fi
+
+SELECT_RELATIONS=$(psql -Aqt <<<"
+WITH x AS (
+ SELECT c.conrelid::regclass    AS tbl
+          ,c.confrelid::regclass   AS ftbl
+          ,quote_ident(k.attname)  AS fk_col
+          ,quote_ident(pf.attname) AS pk_col
+ FROM   pg_constraint c
+ JOIN   pg_attribute  k  ON (k.attrelid, k.attnum) = (c.conrelid, c.conkey[1])
+ JOIN   pg_attribute  f  ON (f.attrelid, f.attnum) = (c.confrelid, c.confkey[1])
+ LEFT   JOIN pg_constraint p  ON p.conrelid = c.conrelid AND p.contype = 'p'
+ LEFT   JOIN pg_attribute  pf ON (pf.attrelid, pf.attnum) = (p.conrelid, p.conkey[1])
+ WHERE  c.contype   = 'f'
+ AND    c.confrelid = '$table'::regclass -- references to this tbl
+ AND    f.attname     $column_constraint -- and (optionally) only to this column
+)
+$select
+")
+
+psql -q <<SQL | less
+\\echo
+\\echo '# Foreign key relationships'
+\\echo '‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾'
+$SELECT_RELATIONS;
+SQL

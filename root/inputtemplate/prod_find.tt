@@ -1,0 +1,61 @@
+[%- DEFAULT
+    finder_var = 'finder'
+    button_text = 'Add to reaction below'
+    date_field  = 'date_completed'
+    date_label  = 'Completed Date'
+    scientist_filter = 'yes'
+ -%]
+    <fieldset><legend>Find 
+[%- IF find_a.count == 1 -%][%- find_a.first.label -%][%- END -%]
+</legend>
+<form name='product_find' id='[%- finder_var -%]_finder' action='[%- uri_base -%]enum/find_generic' >
+
+        [%- IF find_a.count == 1 -%]
+        <!-- Note: this isn't supported with the new prefixes and is stored in finder object <input type='hidden' name='find_a' value='[%- find_a.first.name -%]' /> -->
+        [%- ELSE -%]
+        <div class='filter'>
+            <label>Product Type</label>
+            <select name='[%- finder_var -%]_find_a' id='[%- finder_var -%]_product_type' onChange='[%- finder_var -%].ontypechange()'>
+            [%- FOREACH type=find_a -%]
+                <option value='[%- type.name -%]'>[%- type.label -%]</option>
+            [%- END -%]
+            </select>
+        </div>
+        [%- END -%]
+
+        [% IF scientist_filter == 'yes' %]
+        <div class='filter'>
+            <label>Scientist</label>
+            [%- INCLUDE 'scientist-select.tt' -%]
+        </div> 
+        [% END %]
+
+        <div class='filter'>
+            <label><abbr title='YYYY-MM-DD or mm/dd/yy format. Use a > or < at the beginning for a range.'>[% date_label | html %]</abbr></label>
+            <span class="formw"><input name="[% date_field | html %]" type="text" size='10' maxlength='12' [%- disabled -%] class="date"/></span>
+        </div>
+
+            <div class='filter'>
+                <br>
+                <input type='button' onclick="[%- finder_var -%].product_filter()" value='find' />
+            </div>
+    <br clear='all' />
+    <div id='[%- finder_var -%]_product_select' class='yui-skin-sam finder_product_select'>
+            <div id='[%- finder_var -%]_table_replace'>
+
+            </div>
+    </div><br clear='all' />
+    [%- addl_btn -%]
+    <br clear='all' />
+    <div id='[%- finder_var -%]_summary' class='finder_summary'>
+        <div id='[%- finder_var -%]_show'>
+        </div>
+    </div>
+    <br clear='all' />
+    <div id='[%- finder_var -%]_btns'>
+    <input id='[%- finder_var -%]_btn' class='finderbtn' type='button' value='[%- button_text -%]' onclick='[%- finder_var -%].add_product()'>
+    </div>
+    </form>
+    [%- addl_html -%]
+</fieldset>
+

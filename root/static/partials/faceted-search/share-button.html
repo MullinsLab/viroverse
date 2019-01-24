@@ -1,0 +1,14 @@
+<button class="btn btn-default"
+  ng-disabled="!search.hasQuery"
+  uib-popover-template="'share-link.html'"
+  popover-placement="left"
+  popover-trigger="'outsideClick'">
+  <span class="glyphicon glyphicon-link"></span>
+  Share this search
+  <script type="text/ng-template" id="share-link.html">
+    <div class="share-link">
+      <p>Copy and paste the URL below:</p>
+      <input ng-model="search.permalink" select-on-focus autofocus class="form-control">
+    </div>
+  </script>
+</button>

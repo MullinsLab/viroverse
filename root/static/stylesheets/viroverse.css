@@ -1,0 +1,407 @@
+body, p { font-family: Trebuchet MS, Arial, Helvetica, sans-serif; font-size: 11pt; margin: 0px; color:#000; }
+p,h1,pre { margin:0px 30px 10px 30px; }
+
+h1 span, h2 span, h3 span, h4 span {
+    font-weight: normal;
+    font-size: 0.8em;
+    color: #666;
+    display: block;
+}
+
+hr { color: #1f669b; display:block; background-color: #1f669b; }
+label { vertical-align:top; float:left; clear:left; min-width:80px; text-align:right; padding-right:10px; margin-bottom:10px; }
+label.inline {
+    float: none;
+    min-width: inherit;
+    text-align: inherit;
+    padding: inherit;
+    margin: inherit;
+    vertical-align: inherit;
+}
+
+a { color: black; }
+a:hover { color: #333; }
+.yui-dt-selected a:visited, .yui-dt-selected a:link { color: inherit }
+
+a.clk{
+    cursor: pointer;
+    color: #1f669b;
+    text-decoration: underline;
+    margin: 2px 2px 2px 2px;
+}
+
+a.clk:hover{
+    font-weight: bold;
+}
+
+/* Show clickables as clickable, even if the browser (such as Chrome) doesn't */
+a[onclick]:not([href]), a.clickable {
+    cursor: pointer;
+}
+
+/* These are still used for sub-nav elements on legacy pages. */
+div.nav {
+    position: relative;
+    background-color: #1f669b;
+    color: white;
+    padding: 5px;
+}
+
+div.nav a { text-decoration:none; margin:0px; padding:5px; background-color: #1f669b; color: white; }
+div.nav a:hover { text-decoration:underline; }
+div.nav a:active {
+    background-color: white !important;
+    color: #1f669b !important;
+}
+
+.nav .subsection-title {
+    font-weight: bold;
+    padding: 5px;
+}
+.nav .subsection-title::after {
+    content: ":";
+}
+
+.nav #smenu {
+    margin: -5px 0; /* counteract the additive paddings + margins due to floats */
+}
+
+.yui-skin-sam .nav .yuimenubaritem-selected,
+.yui-skin-sam #smenu .yuimenubaritem-selected {
+    background: none;
+}
+.yui-skin-sam .nav .yuimenubaritemlabel {
+    padding-left: 5px;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+.yui-skin-sam .nav .yuimenubaritemlabel:not(.yuimenubaritemlabel-hassubmenu) {
+    padding-right: 5px;
+}
+
+.formBox { background:#FFFFFF; font-size: 11pt; border: 1px solid #1f669b; padding: 0px 0px 8px 0px; overflow:visible; margin-left: 0; margin-bottom: 15px; }
+
+.formBody { padding: 10px; }
+
+.formHeader { background-color: #1f669b; color:white; font-family: Trebuchet MS, Verdana, Arial; font-size: 11pt; color: black; padding-top: 6px; padding-bottom: 6px; }
+
+h2, .header { font-weight: bold; font-size: 13pt; }
+
+
+h3 { font-weight: bold; font-size: 11pt; margin-bottom:3px}
+
+h4 { margin-top:0px;  margin-bottom:2px}
+
+div.row { clear:both; padding-top:5px; padding-bottom:10px; padding-left:20px; overflow:visible; }
+
+.buttons {
+    text-align: left;
+    margin-top: 1em;
+}
+.buttons > label:first-child:empty { display: none }
+.buttons a.clear-form {
+    /* "Clear this form" link */
+    min-width: 85px;
+    display: inline-block;
+}
+
+div.row span.nf { float:right; text-align:left; color: #666666;  } 
+  
+div.box { border:1px dotted #1f669b; margin-top: 10px; margin-bottom: 5px; padding-top: 10px; padding-bottom: 10px; }
+
+input, textarea, select, button { font-size: 11pt; }
+
+/* Standardize button appearance in Chrome/Safari */
+button, input[type=button], input[type=submit] {
+    -webkit-appearance: push-button;
+}
+
+input.auto { background-color: #FFFFCC; width:15em }
+
+.bootstrapped .form-control[typeahead] {
+    background-color: #FFC;
+}
+  
+span.patientInfo { padding-left: 5px; padding-right: 5px; min-width:500px; }
+  
+span.spanName span.spanTissue span.spanDrawDate span.spanRecDate span.patientInfo { padding: 3px; }
+
+#header h1 { padding:5px; margin:0; }
+
+/* Intended to match Bootstrap's .container styles so legacy pages are
+ * less different than modern pages.
+ */
+main {
+    display: flex;
+    box-sizing: border-box;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+@media (min-width:  768px) { main { width:  750px } }
+@media (min-width:  992px) { main { width:  970px } }
+@media (min-width: 1200px) { main { width: 1170px } }
+
+#main {
+    flex: 1 0 auto;
+    box-sizing: border-box;
+    min-width: 530px;
+}
+
+#sidebar, .sidebar {
+    flex: 0 0 auto; /* none */
+    align-self: start;
+    box-sizing: border-box;
+    min-width: 170px;
+    border: 1px solid #1f669b;
+    margin: 0 25px;
+    padding: 10px;
+    background: white;
+}
+
+#sidebar.sidebar-nested, .sidebar.sidebar-nested {
+    border: none;
+    float: none;
+    margin: 25px 0 0 0;
+    padding: 0;
+}
+
+#sidebar > *:first-child, .sidebar > *:first-child {
+    margin-top: 0;
+}
+
+div.spacer { clear: both; }
+ 
+div.auto_complete { position:absolute; width:250px; background-color:white; border:1px solid #888; margin:0px; padding:0px; }
+
+.filter { margin:5px; float:left; line-height:1em; }
+.filter label { display:block; position:static; float:none; text-align:center; margin-bottom:2px; padding-bottom:0; min-width: 0; }
+.filter input, .filter select { display:block; position:static; float:none; margin-top:0; padding-top:0; }
+.filter div { text-align:center; }
+
+.filter .filter {margin-top:0}
+
+label.check { float:none; text-align:left; }
+
+.check_r { margin-left:25px; text-align:left; margin-right:10px; }
+
+div.formw { padding-left:90px; /* this shoves over subsequent lines that aren't pushed right by the floating label */ }
+
+fieldset { clear:left; }
+
+fieldset + fieldset {
+    margin-top: 1em;
+}
+
+legend { font-weight: bold; }
+
+#list { margin:0; margin-top:10px; padding:0; list-style-type: none; width:250px; }
+
+#list li { margin:0; margin-bottom:4px; padding:5px; border:1px solid #888; cursor:move; } 
+
+#sampleList { border:1px solid black; padding:10px; }
+
+.error { padding: 10px; border: 2px solid #900; background-color: #FC9; font-size:2em; color: #900; display:none; }
+
+.optional { font-style: italic }
+
+.computed { color: #666; }
+
+.active { border: 1px solid #1f669b; background: #1f669b; background-color: #1f669b; color: #1f669b; }
+
+.tab_sheets { border:1px solid black; padding: 10px; }
+
+.sq_off {background:#FFF;border:1px solid black;color:black}
+.sq_on {background:#1f669b;border:1px solid black;color:white}
+
+.editError {background:#F11}
+
+#gelbox .formw label { float:none;padding-left:5px;text-align:left;min-width:auto }
+#gelbox .formw { margin-bottom:10px }
+
+table#sampleSel {border-collapse:collapse;border:1px solid #333}
+table#sampleSel tr:first-child {border-left-width:0}
+table#sampleSel td {padding:3px;border-left:1px dotted #333;border-right:1px dotted #333;text-align:right;margin-top:0;margin-bottom:0;border-collapse:collapse}
+table#sampleSel th {padding:3px;border-left:1px dotted #333;border-right:1px dotted #333;border-bottom:1px solid #333;margin-bottom:0;border-collapse:collapse}
+
+.del_link {border:1px solid black;padding:2px;margin:1px}
+
+.targetActive {border:2px solid black}
+.targetInactive {border:none}
+
+#add_to_labels input {display:block}
+
+#status input {margin-left:10px;}
+.completed {background-color:#999}
+
+div.static-gel-label {color: #666}
+.gel_label_table td div + span {position:relative;top:-1em}
+
+table#summary {border:1px solid black;margin-bottom:5px;}
+table#summary tr.conflict, table#data tr.conflict {color:#FF3333;font-weight:bold}
+table#summary tr.add, table#data tr.add {font-weight:bold}
+table#summary tr.omitted, table#data tr.omitted {color:#ccc}
+table#summary tr.match, table#data tr.match {color:#666}
+
+table#data {border-collapse:collapse}
+table#data td {text-align:center;border:1px solid #ccc}
+table#data td :first {border-left:1px solid #000}
+table#data td {padding-top:3px;padding-bottom:3px}
+
+.finder_product_select {clear:left;float:left}
+.finder_summary {float:left;margin-left:1em}
+.finderbtn { clear: left;margin-top:1em;visibility:hidden }
+.delbtn {color:#900}
+a.off {text-decoration:none;color:#666}
+
+.pcr_line {display:inline}
+.pcr_line label {clear:none;float:none;margin-left:2em;vertical-align:bottom }
+.pcr_line input {width:auto;display:inline;min-width:3em; }
+.activities * li {list-style:none}
+
+.pcrRound p {border:1px solid blue;margin-top:0}
+.pcrRound input {vertical-align:bottom;display:inline}
+.pcrRound a {margin-right:1em}
+hr.fraction {width:5em;margin-left:0;margin-right:auto}
+
+#templateSelect {display:inline}
+.form_error {display:none;color:red;font-weight:bold;font-size:2em}
+
+#templates span {border-width:1px;padding-top:5px;clear:left}
+#templates span.more,td.more {border:2px solid black;color:#666}
+#slider {width:209px;height:30px;padding-top:10px;background-repeat:no-repeat;background-position:5px 0;margin-left:90px;}
+
+#virus2 {margin-left:3em}
+.viral_ratio {margin:0 2px 0 0;text-align:right}
+
+ .overlay {border:1px solid black;visibility:hidden;z-index:10;display:block;background-color:white;}
+
+.primers div {margin-bottom:1em}
+
+.button_row {clear:left;clear:right}
+.button_row input {float:left;margin:3px;}
+
+#message {padding:10px;display:none}
+#inoc_output div {float:left;}
+#inoc_output h3 {text-align:center;margin-top:0}
+
+.ex {border-width:0;font-size:1.5em;text-align:center;padding:.25em}
+
+#primer_auto_btn {
+    display: block;
+    margin:3px;
+}
+
+div.notice{
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+.yui-skin-sam .yuimenubar, .yui-skin-sam .yuimenu {
+    border-width:0;
+}
+
+.yui-skin-sam .yuimenubaritemlabel-selected,
+.yui-skin-sam .yuimenuitemlabel-selected {
+    margin-left: 0 !important;
+}
+
+.yui-skin-sam .yuimenubaritemlabel,
+.yui-skin-sam .yuimenuitemlabel,
+.yui-skin-sam .yuimenubaritemlabel:visited,
+.yui-skin-sam .yuimenuitemlabel:visited  {
+    color:white;
+    border: none !important;
+}
+
+.yui-skin-sam .yuimenubarnav .yuimenubaritem {
+    border: none !important;
+}
+
+.yui-skin-sam .yuimenu .bd,
+.yui-skin-sam .yuimenubar .bd {
+    background-color: #1f669b;
+    color:white;
+    border: none !important;
+}
+
+.yuimenubaritemlabel[href], .yuimenuitemlabel[href] {
+    cursor: pointer;
+}
+
+/* Menu labels without a real link */
+.yuimenubaritemlabel-hassubmenu[href^="#"], .yuimenubaritemlabel-hassubmenu:not([href]) {
+    cursor: default;
+}
+
+.nick_base {
+    font-weight:bold;
+}
+
+.nick_auto {
+    color:#999;
+}
+
+h3.patient-pub-aliases {
+    color: #666;
+    margin: 0;
+}
+h3.patient-aliases {
+    color: #666;
+    margin-top: 0;
+    margin-bottom: 1em;
+}
+
+table.file-preview th {
+    text-align: left;
+}
+
+.inline { display: inline }
+
+/* Sample detail page */
+
+ul.notes {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+ul.notes > li > span {
+    color: #666;
+}
+
+.molecular-products li       { list-style-type: none; }
+.molecular-products li.title { font-weight: bold; }
+.molecular-products .selected,
+.molecular-products a.selected li {
+    background-color: #99F
+}
+.molecular-products .selected ul {
+    background-color: #FFF
+}
+
+#sidebar_lock {
+    border: 1px solid #1f669b;
+    float: left;
+    padding: 5px;
+    margin: 1em;
+}
+
+/* RT product RNA:cDNA ratio things */
+
+#ratio-special-controls[data-special=default] {
+    display: none;
+}
+
+#ratio-special-controls[data-special=special] {
+    display: block;
+}
+
+input.ratio-part {
+    width: 4em;
+}
+
+abbr[title] {
+  border-bottom: 1px dotted #444;
+  cursor: help;
+}

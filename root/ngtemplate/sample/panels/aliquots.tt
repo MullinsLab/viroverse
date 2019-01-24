@@ -1,0 +1,41 @@
+<div class="panel panel-default" id="sample-aliquot-panel">
+    <div class="panel-heading"><h3 class="panel-title">
+        <a href="[% c.uri_for_action('/sample/manage_aliquots', [ sample.id ]) %]">Available aliquots</a>
+    </h3></div>
+    [% has_any_aliquots = $(sample.aliquots).has_rows %]
+    [% has_available_aliquots = $(sample.aliquots.available).has_rows %]
+    [% IF sample.additive OR !has_any_aliquots OR (has_any_aliquots AND !has_available_aliquots) %]
+    <div class="panel-body">
+        [% IF sample.additive %]
+        <p>Aliquoted with [% sample.additive.name %]</p>
+        [% END %]
+        [% IF has_any_aliquots AND !has_available_aliquots %]
+        [% count = $(sample.aliquots).count %]
+        <p>[% IF count == 1 THEN "The only" ELSIF count == 2 THEN "Both" ELSE "All $count" END %] 
+           [% Inflect.phrase("<#d:$count> <N:aliquot> <V:has>") %]
+           been given out</p>
+        [% ELSIF !has_any_aliquots %]
+        <p>Viroverse is missing aliquot information for this sample</p>
+        [% END %]
+    </div>
+    [% END %]
+    [% IF has_available_aliquots %]
+    <table class="table table-condensed">
+        <tbody>
+        [% FOR qty IN $(sample.aliquots.available).rollup_by_quantity %]
+            <tr>
+                <td class="text-right">[% qty.get_column('count') | commafy %]</td>
+                <td class="text-center">&times;</td>
+                <td>[% IF qty.vol.defined %][% qty.vol %] [% qty.unit.name %][% ELSE %]unknown amount[% END %]</td>
+            </tr>
+        [% END %]
+        </tbody>
+    </table>
+    [% END %]
+
+    [% IF has_any_aliquots %]
+    <div class="list-group">
+        <a class="list-group-item" href="[% c.uri_for_action('/sample/manage_aliquots', [ sample.id ]) %]">Manage aliquots</a>
+    </div>
+    [% END %]
+</div>

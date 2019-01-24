@@ -1,0 +1,239 @@
+#!/bin/bash
+HOST_USER=${1:-$USER}
+
+# Seatbelts
+set -e -o pipefail
+source "$(dirname $0)/provision-common"
+
+function _test_sql() {
+    sudo -u postgres -i psql -q --no-psqlrc --set ON_ERROR_STOP=1 <<<"$1" >/dev/null 2>&1
+}
+function pg_user_exists() {
+    _test_sql "select 1/count(*) from pg_roles where rolname='$1'"
+}
+function db_exists() {
+    _test_sql "select 1/count(*) from pg_database where datname='$1'"
+}
+function install_rpm() {
+    pkg=$1
+    pkgsrc=$2
+    if ! rpm --quiet -q $pkg; then
+        try curl -fsSLO $pkgsrc
+        try sudo rpm -i $(basename $pkgsrc)
+        rm $(basename $pkgsrc)
+    fi
+}
+
+# Let 'er rip!
+
+pushd ~
+
+# Build and install server pieces
+
+[ -d build ] || mkdir build
+pushd build
+
+## This script requires curl
+
+    try sudo yum install -y \
+        curl
+
+## Necessary third-party yum repos
+
+    install_rpm epel-release  https://download.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-7-11.noarch.rpm
+    install_rpm pgdg-centos94 https://download.postgresql.org/pub/repos/yum/9.4/redhat/rhel-7-x86_64/pgdg-centos94-9.4-3.noarch.rpm
+
+## Install external libraries and binaries
+
+    try sudo yum install -y \
+        bzip2{,-libs,-devel} \
+        db4{,-devel} \
+        expat{,-devel} \
+        gcc \
+        gcc-c++ \
+        gd{,-devel} \
+        git \
+        httpd \
+        libjpeg{,-devel} \
+        libpng{,-devel} \
+        libtiff{,-devel} \
+        lsof \
+        man \
+        mod_ssl \
+        mysql{,-devel} \
+        nc \
+        ncurses{,-devel} \
+        patch \
+        perl \
+        php53 \
+        postgresql94 \
+        postgresql94-server \
+        postgresql94-pl{perl,python} \
+        postgresql94-contrib \
+        postgresql94-devel \
+        readline{,-devel} \
+        syck \
+        syck-devel \
+        telnet \
+        time \
+        vim-enhanced \
+        yum-utils
+
+## Configure service defaults
+
+    try sudo mkdir -p /etc/sysconfig/pgsql
+    try sudo rsync -rv /{vagrant,etc}/sysconfig/pgsql/
+
+    sudo test -d /var/lib/pgsql/9.4/data/base \
+        || try sudo -u postgres /usr/pgsql-9.4/bin/initdb -D /var/lib/pgsql/9.4/data/
+
+    try sudo cp /vagrant/pg_hba.conf     /var/lib/pgsql/9.4/data/pg_hba.conf
+    try sudo cp /vagrant/postgresql.conf /var/lib/pgsql/9.4/data/postgresql.conf
+
+    if sudo /usr/bin/systemctl status postgresql-9.4; then
+        try sudo /usr/bin/systemctl restart postgresql-9.4
+    else
+        try sudo /usr/bin/systemctl start postgresql-9.4
+    fi
+    try sudo /usr/bin/systemctl enable postgresql-9.4
+    try sudo /usr/bin/systemctl disable httpd
+
+    if [[ ! -L /usr/bin/pg_config ]]; then
+        try sudo /usr/sbin/alternatives --install \
+            /usr/bin/pg_config \
+            pgsql-pg_config \
+            /usr/pgsql-9.4/bin/pg_config \
+            940
+    fi
+
+## Create database superuser
+    pg_user_exists vagrant || try sudo -u postgres -i createuser -s vagrant
+
+## Setup and run iptables rules
+
+    try sudo cp /vagrant/iptables /root/iptables
+    grep -q /root/iptables /etc/rc.local \
+        || try sudo tee -a /etc/rc.local <<</root/iptables
+    try sudo /root/iptables
+
+## Install and configure beanstalkd (packaged version is too old)
+
+    if [ ! -x /usr/local/bin/beanstalkd ]; then
+        rm -rf beanstalkd
+        try git clone git://github.com/kr/beanstalkd.git
+        pushd beanstalkd
+            try git checkout dev1.10
+            try make
+            try sudo make install
+        popd
+        rm -rf beanstalkd
+    fi
+
+    try curl -fsS https://raw.githubusercontent.com/tsibley/beanstalkd-init/master/beanstalkd \
+        | sudo tee /etc/init.d/beanstalkd >/dev/null
+    try sudo chmod +rx /etc/init.d/beanstalkd
+    [ -d /opt/beanstalk ] || try sudo mkdir -p /opt/beanstalk
+    try sudo chown -R nobody:nobody /opt/beanstalk
+    try sudo tee /etc/sysconfig/beanstalkd <<<"HOST=0.0.0.0" >/dev/null
+    try sudo /sbin/chkconfig --add beanstalkd
+    try sudo /sbin/chkconfig beanstalkd on
+    if sudo /sbin/service beanstalkd status; then
+        try sudo /sbin/service beanstalkd restart
+    else
+        try sudo /sbin/service beanstalkd start
+    fi
+
+## Install file(1)/libmagic (RHEL 5 packaged version is too old)
+
+    if [ ! -x /usr/local/bin/file ]; then
+        rm -rf file-5.29
+        try curl -fsS ftp://ftp.astron.com/pub/file/file-5.29.tar.gz | tar xzp
+        pushd file-5.29
+            try ./configure
+            try make
+            try sudo make install
+        popd
+        rm -rf file-5.29
+    fi
+
+## Install EMBOSS
+
+    if [ ! -x /usr/local/bin/needle ]; then
+        try curl -fsS ftp://emboss.open-bio.org/pub/EMBOSS//EMBOSS-6.6.0.tar.gz | tar xzp
+        pushd EMBOSS-6.6.0
+            try ./configure
+            try make
+            try sudo make install
+        popd
+        rm -rf EMBOSS-6.6.0
+    fi
+
+## Install QUALITY
+
+    if [ ! -x /usr/local/bin/quality ]; then
+        try tar xzpf /vagrant/quality.tar.gz
+        pushd quality
+            try patch -p1 < /vagrant/quality-cstring.patch
+            try make -f MAKEFILE
+            try sudo install quality /usr/local/bin/
+        popd
+        rm -rf quality
+    fi
+
+popd
+
+## Install and setup perlbrew
+
+    if [ -z `which perlbrew` ]; then
+        try curl -fsS https://raw.githubusercontent.com/gugod/App-perlbrew/master/perlbrew-install | bash
+    fi
+
+## Setup shell environment for user
+
+    cp /vagrant/bashrc ~/.bashrc
+    . ~/.bashrc
+
+## Install Perl 5.18.1
+
+    if [ ! -x ~/perl5/perlbrew/perls/5.18/bin/perl ]; then
+        # Perl's tests for its debugger fail when the default TERM is left as
+        # vt100, I'm guessing due to some interaction with how vagrant is
+        # running this provisioner.
+        try env TERM=xterm perlbrew install --as 5.18 5.18.1
+    fi
+
+## Create and switch to a local lib
+
+    if ! (perlbrew list || true) | grep -q "5.18@viroverse"; then
+        try perlbrew lib create 5.18@viroverse
+    fi
+    perlbrew switch 5.18@viroverse
+
+## Install cpanm
+
+    try curl -fsS https://raw.githubusercontent.com/miyagawa/cpanminus/master/cpanm | perl - App::cpanminus
+
+## Install Carton into your new 5.18@viroverse local::lib
+
+    try cpanm Carton
+
+
+# Setup Viroverse application
+
+    pushd ~/viroverse
+
+## install a problematic perl dep
+
+    IM_ENABLE="JPEG PNG TIFF" try cpanm -L local Imager
+
+## Use carton to install deps
+
+    try carton install --deployment
+
+## Bootstrap a new database
+
+    db_exists viroverse || try ./devel/create-database
+
+## Create an admin user
+
+    try ./vv scripts/add-scientist --user $HOST_USER --role admin --name $HOST_USER --email vagrant@localhost

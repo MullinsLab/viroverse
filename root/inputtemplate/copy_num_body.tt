@@ -1,0 +1,52 @@
+<h2>Quality Copy Number Analysis</h2>
+<span style="font-style: italic">Lanes not marked as positive or negative will not be included in the analysis</span>
+<div class="qual-grps">
+[%- FOREACH result IN quality -%]
+    [% NEXT IF rm_from_quality.exists(result.key) %]
+    <div id="[%- result.key -%]">
+    <h3>[% result.value.name %]</h3>
+    <input type="checkbox" name="[%- result.key -%]-q" value="yes" checked="checked" />Include in Copy Number Analysis&nbsp;&nbsp;<a class="clk"  onclick="show_qual_rows('[% result.key %]')">Highlight Lanes</a>
+    <table class="qual_set_up" id="qsu_[% result.key %]" >
+        <tr>
+            <th>Template volume/PCR:</th>
+            [%- FOREACH dil IN result.value.q.dils -%]
+        <td>[% dil %]</td>
+        [% END %]
+    </tr>
+    <tr>
+        <th># PCRs:</th>
+            [%- FOREACH pcr_sum IN result.value.q.pcrs -%]
+        <td>[% pcr_sum %]</td>
+        [% END %]
+    </tr>
+    <tr>
+            <th># of Pos:</th>
+            [%- FOREACH pos_sum IN result.value.q.pos -%]
+        <td>[% pos_sum %]</td>
+        [% END %]
+    </tr>
+    </table>
+    [%- IF show_results -%]
+    <div id="[% result.key %]_results" style="display: none">
+        <p># of copies per unit: [% result.value.copy_num %]</p>
+        <p>Standard Error: [% result.value.std_err %]</p>
+    </div>
+    [%- END - %]
+    [%- FOREACH pcr IN result.value.pcrs -%]
+     <input  type="hidden" name="[%- result.key -%]_pcr" value="[%- pcr.pcr_product_id -%]" />
+    [%- END -%]
+    [%- FOREACH lane IN result.value.lanes -%]
+     <input  type="hidden" name="[%- result.key -%]_lane" value="[%- lane -%]" />
+    [%- END -%]
+    </div>
+[%- END -%]
+[% IF rm_from_quality.count > 0 %]
+<h2> The Following Will Not Be Included In Quality Copy Number Analysis Because The Same PCR Product (same tube/well) Is Present More Than Once</h2>
+    [%- FOREACH result IN rm_from_quality -%]
+    <div id="[% result.key %]">
+    <h3>[% result.value.name %]</h3>
+    <a class="clk"  onclick="show_qual_rows('[% result.key %]')">Highlight Lanes</a>
+    </div>
+    [%- END -%]
+[%- END -%]
+</div>

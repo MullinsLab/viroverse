@@ -1,0 +1,23 @@
+<div class="log-viewer">
+  <h2>Log output</h2>
+  <div class="log-actions">
+    <a ng-href="{{ $ctrl.url }}"
+       download="log.txt"
+       class="download">
+      <span class="glyphicon glyphicon-download-alt"></span>
+      Download
+    </a>
+    <label>
+      <input type="checkbox"
+        ng-init="showDebug = false"
+        ng-model="showDebug">
+      Show debug output
+    </label>
+  </div>
+
+<pre class="log">
+<span ng-repeat="l in $ctrl.messages"
+  class="log-level-{{ l.level | lowercase }}"
+  ng-show="(l.level !== 'DEBUG' && l.level !== 'TRACE') || showDebug">{{ l.message }}</span></pre>
+
+</div>

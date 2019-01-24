@@ -1,0 +1,9 @@
+.input-progress .btn + .btn {
+  margin-left: 1.5em;
+}
+
+.project-panels .panel > .panel-heading {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

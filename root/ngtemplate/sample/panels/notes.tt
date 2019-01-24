@@ -1,0 +1,27 @@
+<div class="panel panel-default">
+    <div class="panel-heading"><h3 class="panel-title">Notes</h3></div>
+    <div class="panel-body">
+        [% IF $(sample.notes).has_rows %]
+            [% FOR note IN $(sample.notes).order_by({"-desc" => "time_created"}) %]
+            <p>
+              [% note.body %]
+              <span class="note-byline text-muted">
+                [%- note.scientist.name ? note.scientist.name _ ', ' : '' %]
+                <time datetime="[% note.time_created.ymd %]">[% note.time_created.strftime("%b %e, %Y") %]</time>
+              </span>
+            </p>
+            [% END %]
+        [% ELSE %]
+            <p class="panel-little-label">No notes</p>
+        [% END %]
+    </div>
+
+    <form role="form" method="POST" action="[% c.uri_for_action('/sample/create_note', [ sample.id ] )%]">
+        <div class="input-group">
+            <input name="body" class="form-control" placeholder="New note…">
+            <span class="input-group-btn">
+                <button class="btn btn-default"><span class="glyphicon">+</span></button>
+            </span>
+        </div>
+    </form>
+</div>

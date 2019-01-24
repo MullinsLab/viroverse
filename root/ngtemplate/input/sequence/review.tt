@@ -1,0 +1,38 @@
+[%- page = {
+        title  = "Review sequences",
+        has_js = 1,
+    }
+-%]
+[%- BLOCK javascript -%]
+<script type="text/javascript" src="[%- c.uri_for('/') -%]static/javascripts/sidebar-collect.js"></script>
+[%- END -%]
+
+<div class="row">
+    <div class="col-md-9">
+    <h1 class="page-header">Your uploaded sequences</h1>
+    <table class="table">
+        <thead><tr>
+            <th>Accession number</th>
+            <th>Sequence name</th>
+            <th>Primers</th>
+            <th>Length</th>
+            <th>Type</th>
+        </tr></thead>
+        <tbody>
+        [% FOR seq IN sequences %]
+        [%- seq_link = c.uri_for_action('/sequence/show', [ seq.idrev ]) -%]
+            <tr>
+                <td><a href="[% seq_link %]">[% seq.idrev %]</a></td>
+                <td><a href="[% seq_link %]">[% seq.name %]</a></td>
+                <td>[% @(seq.chromats).map(->{this.primer.name}).join(', ')%]</td>
+                <td>[% seq.sequence_bases.length %]</td>
+                <td>[% seq.type.name %]</td>
+            </tr>
+        [% END %]
+        </tbody>
+    </table>
+    </div>
+    <div class="col-md-3 best-sidebar-ever" id="sidebar">
+        [% INCLUDE 'sidebar/dna_sequence.tt' %]
+    </div>
+</div>

@@ -1,0 +1,50 @@
+#!/bin/bash
+# usage: create-database [--no-roles]
+#
+# Creates a fresh Viroverse database that is empty except for static data.
+# The new database will be named "viroverse".
+#
+#   --no-roles      Skip creation of the three primary database roles/users
+#   --help -h       Show this usage information
+#
+# This must be run as a PostgreSQL superuser, often "postgres", either by
+# running under a Unix user of the same name or by setting PGUSER.
+#
+# Connects to localhost by default, but you can change that by setting PGHOST.
+set -e -o pipefail
+
+psql="psql --no-psqlrc --set ON_ERROR_STOP=1"
+create_roles=1
+
+for arg; do
+    case "$arg" in
+        --no-roles)
+            create_roles=0
+            shift; break;;
+        -h|--help)
+            perl -ne '2 .. not s/^# ?// ? print : exit' -- "$0"
+            exit 0;;
+        --)
+            shift; break;;
+    esac
+done
+
+if [[ $create_roles -ne 0 ]]; then
+    if ! $psql template1 < sql/bootstrap/01-roles.sql; then
+        echo "ERROR: Role creation failed" >&2
+        echo "HINT: If the three roles already exist (perhaps from a previous run),"
+        echo "      you can run this script again with the --no-roles option."
+        exit 1
+    fi
+fi
+if ! $psql template1 < sql/bootstrap/02-create-db.sql; then
+    echo "ERROR: Database creation failed" >&2
+    echo "HINT: If you ran this script previously and want to run it again,"
+    echo "      first delete the existing database by running the command"
+    echo "      \"dropdb viroverse\" and then run this script again."
+    exit 1
+fi
+$psql --single-transaction viroverse < sql/bootstrap/03-schema.sql
+$psql --single-transaction viroverse < sql/bootstrap/04-data.sql
+$psql --single-transaction viroverse < sql/bootstrap/04-data-hla.sql
+$psql --single-transaction viroverse < sql/bootstrap/05-refresh-views.sql

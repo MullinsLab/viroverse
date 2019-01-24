@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse: Epitope/Mutant Input</title>
+[% INCLUDE 'head.tt' %]
+    <link href="[%- uri_base -%]/static/stylesheets/autosuggest.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/remotesuggestions.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/autosuggest2.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/epitopedb.js"></script>
+
+</head>
+
+<body>
+[% INCLUDE 'body-top.tt' %]
+<h2>Epitope and Mutant</h2>
+<form id='epitope_mutant_result' name='epitope_mutant_result' action='[%- uri_base -%]/input/epitopedb/epitope/result' method='post'>
+    <fieldset><legend>Wild type</legend>
+    <label>Peptide Name</label>
+    <span class='formw'>
+        <input type='text' id='ept_name' name='ept_name' class='auto'>
+    </span>&nbsp;&nbsp;
+    Or Sequence
+    <span class='formw'>
+        <input type='text' id='ept_seq' name='ept_seq' class='auto'>
+    </span><br clear='all' />
+    <label>Source</label>
+    <span class='formw'>
+        <select name='source'>
+        <option value="" selected>Choose one</option>
+            [% FOREACH source IN sources %]
+                 <option value="[%- source.source_id -%]">[%- source.source -%]</option>
+            [% END %]
+
+        </select>
+    </span><br clear='all' />
+    <div class="buttons">
+        <span class="formButton">
+                <input type='button' name='ept_submit' value='Import Epitope' onClick="if (validate_form(this.form, 'epitope')) {to_sidebar_ajax('epitope_mutant_result', 'error', 'epitope_result')}">&nbsp;<input type='reset' name='reset' value=' Reset '>
+        </span> 
+    </div>
+
+    </fieldset>
+
+    <div id='error' class='error' [%- IF error -%] style='display:block'[%- END -%] >
+
+    </div>
+
+    <fieldset><legend>Mutant</legend>
+    <label>Peptide Name</label>
+    <span class='formw'>
+        <input type='text' id='mut_name' name='mut_name' class='auto'>
+    </span>&nbsp;&nbsp;
+    Or Sequence
+    <span class='formw'>
+        <input type='text' id='mut_seq' name='mut_seq' class='auto'>
+    </span><br clear='all' />
+
+    <fieldset><legend>Result</legend>
+    <label>Cohort Name</label>
+    <span class="formw">
+        <select name="cohort" id="cohort" onchange="getPatient(this.value)">
+             <option value="" selected>Choose one</option> 
+                [% FOREACH cohort IN cohorts.keys.sort %]
+                 <option value="[%- cohorts.$cohort.cohort_id -%]">[%- cohorts.$cohort.show_name -%]</option>
+                [% END %]
+        </select> 
+    </span> 
+    <br clear='all' />
+
+    <label>Patient ID</label> 
+    <span class="formw" id="patientSpan">
+    </span><br clear='all' />
+
+    <label>Result</label>
+    <span class='formw'>
+        <select name='note'>
+            <option value="" selected>Choose one</option>
+            <option >Full escape</option>
+            <option >Partial escape</option>
+            <option >No escape</option>
+        </select>
+    </span><br clear='all' />
+    </fieldset><br clear='all' />
+
+
+    <div class="buttons">
+        <span class="formButton">
+            <input type='button' name='mut_submit' value='Import Mutant' onClick="if (validate_form(this.form, 'mutant')) {to_sidebar_ajax('epitope_mutant_result', 'error', 'mutant_result')}">&nbsp;<input type='reset' name='reset' value=' Reset '>
+        </span> 
+    </div>
+    </fieldset>
+</form>
+
+[% INCLUDE 'body-bottom.tt' %]
+<form id='sidebar_form' name='sidebar_form' action='[%- uri_base -%]/input/epitopedb/input_sidebar/update'>
+    <div id="sidebar">
+        <h2>Epitope/Mutant Input Result</h2>
+        <div id="sidebar_content">
+
+        </div>
+    </div>
+</form> 
+[% INCLUDE 'body-end.tt' %]
+</body>
+<script  type="text/javascript">
+new AutoSuggestControl(document.getElementById("ept_name"), new RemoteSuggestions("pept_name"));
+new AutoSuggestControl(document.getElementById("ept_seq"), new RemoteSuggestions("pept_seq"));
+new AutoSuggestControl(document.getElementById("mut_name"), new RemoteSuggestions("pept_name"));
+new AutoSuggestControl(document.getElementById("mut_seq"), new RemoteSuggestions("pept_seq"));
+</script>
+</html>

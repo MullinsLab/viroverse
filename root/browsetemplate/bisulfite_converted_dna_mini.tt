@@ -1,0 +1,9 @@
+<div class="bisulfite_converted_dna">
+    Bisulfite-converted DNA # [%- object.get_id -%] entered [%- object.date_entered -%]<br>
+    By [%- object.scientist_id.name -%] on [%- object.date_completed -%]<br>
+    Conversion of [% object.input_product.to_string %]
+    using [% object.protocol_id.name || "unknown kit" %] <br>
+    <br>
+    Notes:
+    <pre>[%- object.note -%]</pre>
+</div>

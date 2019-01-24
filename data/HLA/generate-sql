@@ -1,0 +1,119 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+use FindBin qw($RealBin);
+use lib map { "$RealBin/../../$_" } "lib";
+
+use Viroverse::Model::hla_genotype;
+use Path::Tiny;
+use Getopt::Long;
+
+my $prefix;
+my $insert_all = 0;
+
+GetOptions(
+    "output=s" => \$prefix,
+    "all"      => \$insert_all,
+    "new"      => sub { $insert_all = 0 },
+);
+
+die "--output <name> must be specified\n"
+    unless $prefix;
+
+my (@insert, @parsed);
+while (<>) {
+    next if /^\s*#/;
+    chomp;
+
+    my ($locus, undef, $allele) = split /;/, $_;
+    next unless $allele and $locus;
+
+    $locus =~ s/\*$//;
+
+    my $type = "$locus*$allele";
+    my $parsed = Viroverse::Model::hla_genotype->parse_genotype($type)
+        or die "Can't parse HLA type <$type>, from ", $ARGV || "stdin", " line $.: $_\n";
+
+    push @parsed, $parsed;
+    push @insert, $parsed
+        if $insert_all or not Viroverse::Model::hla_genotype->retrieve_by_genotype($type);
+}
+
+my $dbh = Viroverse::Model::hla_genotype->db_Main;
+my @columns = qw(
+    locus
+    workshop
+    type
+    subtype
+    synonymous_polymorphism
+    utr_polymorphism
+    expression_level
+    ambiguity_group
+);
+my %is_char = (
+    locus            => 1,
+    workshop         => 1,
+    expression_level => 1,
+    ambiguity_group  => 1,
+);
+
+sub coalesced {
+    my ($col, $val) = @_;
+    $dbh->quote(
+        (not defined $val)
+            ? ($is_char{$col} ? '' : 0)
+            : $val
+    );
+}
+
+my $coalesced_columns = join ", ", map {
+    sprintf "COALESCE(%s, %s)", $_, $dbh->quote($is_char{$_} ? '' : 0)
+} @columns;
+
+my ($deploy, $revert, $verify)
+    = map { path("$prefix-$_.sql")->openw_utf8 }
+        qw( deploy revert verify );
+
+if (@insert) {
+    # COPY with NULL values
+    my @rows = map {
+        my $row = $_;
+        join "\t",
+            map { defined($_) ? $_ : '\N' }
+            map { $row->{$_} }
+                @columns;
+    } @insert;
+
+    print { $deploy } "COPY viroserve.hla_genotype(", join(", ", @columns), ") FROM stdin;\n";
+    print { $deploy } "$_\n" for @rows;
+    print { $deploy } "\\.\n";
+
+    # DELETE using COALESCED values to match
+    my @coalesced_rows = map {
+        my $row = $_;
+        join(", ", map { coalesced($_, $row->{$_}) } @columns)
+    } @insert;
+
+    print { $revert } "DELETE FROM viroserve.hla_genotype WHERE ROW($coalesced_columns) IN (\n";
+    print { $revert } "    ", join ",\n    ", map { "ROW($_)" } @coalesced_rows;
+    print { $revert } ");\n";
+}
+
+if (@parsed) {
+    # VERIFY using all COALESCED values
+    my @all_rows = map {
+        my $row = $_;
+        join(", ", map { coalesced($_, $row->{$_}) } @columns)
+    } @parsed;
+
+    my $expected = @parsed;
+
+    print { $verify } <<"";
+SELECT 1/CASE WHEN COUNT(*) = $expected THEN 1 ELSE 0 END
+  FROM viroserve.hla_genotype
+ WHERE ROW($coalesced_columns) IN (
+
+    print { $verify } "    ", join ",\n    ", map { "ROW($_)" } @all_rows;
+    print { $verify } ");\n";
+}

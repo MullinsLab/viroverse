@@ -1,0 +1,17 @@
+.toolbar {
+    margin: 1em 0;
+}
+
+.toolbar-thin {
+    margin: 0.5em 0;
+}
+
+ul.sidebar-items {
+    padding: 0;
+}
+
+ul.sidebar-items li {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

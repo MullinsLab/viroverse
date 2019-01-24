@@ -1,0 +1,40 @@
+[%- page = {
+        title = "Assigned samples",
+        breadcrumbs     = [
+          [ 'Projects',  c.uri_for_action('/project/index') ],
+          [ project.name, c.uri_for_action('project/show', [ project.id ]) ],
+          [ "Assigned to $this_scientist.name" ]
+        ]
+    }
+-%]
+[% PROCESS 'macros.tt' %]
+
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="page-header">[% this_scientist.name %]’s [% project.name %] samples</h1>
+    </div>
+    <div class="col-md-8">
+        <table class="table table-condensed">
+            <thead>
+                <tr>
+                    <th>Subject</th>
+                    <th>Sample</th>
+                    <th>Sample name</th>
+                </tr>
+            </thead>
+            <tbody>
+            [% FOR project_sample IN project_samples %]
+                <tr>
+                    <td>[% link_to_patient(project_sample.sample.patient) | none %]</td>
+                    <td><a href="[% c.uri_for_action('/sample/show', [ project_sample.sample.id ] ) %]">
+                        [%- project_sample.sample.tissue_type.name || "unknown tissue," %]
+                        [% project_sample.sample.date.strftime('%Y-%m-%d') || "unknown date"-%]
+                        </a>
+                    </td>
+                    <td>[% project_sample.sample.name %]</td>
+                </tr>
+            [% END %]
+            </tbody>
+        </table>
+    </div>
+</div>

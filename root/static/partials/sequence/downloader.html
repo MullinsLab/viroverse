@@ -1,0 +1,45 @@
+<div class="toolbar-download toolbar-download-sequences">
+  <form action="{{ $ctrl.endpoint() }}" method="POST" id="{{ $ctrl.form }}">
+    Name sequences with (drag to reorder):
+    <div class="sequence-name-parts"
+      sortable="{ draggable: '.sortable', ghostClass: 'sortable-proxy' }">
+
+      <div class="sortable">
+        <label class="inline">
+          <input type="hidden" name="name_parts" id="name_part_accession"
+            ng-init="withRevision = true"
+            value="{{ withRevision ? 'idrev' : 'id' }}">
+          <input type="checkbox" checked disabled>
+          Viroverse accession number (mandatory)
+        </label>
+        <label class="inline suboption">
+          <input type="checkbox" id="name_part_accession_revision"
+            ng-model="withRevision">
+          …with revision
+        </label>
+      </div>
+      <label class="inline sortable" ng-repeat="part in $ctrl.nameParts | omit: 'name.match(\'^id(rev)?$\')' track by part.name">
+        <input type="checkbox" name="name_parts" value="{{ part.name }}"
+          ng-checked="part.name === 'name' || part.name === 'scientist'">
+        {{ part.label }}
+      </label>
+    </div>
+    <div class="sequence-name-options">
+      <label class="inline">
+        Separated by: <input type="text" name="sep" placeholder="|">
+      </label>
+      <label class="inline">
+        <input type="radio" name="replace_spaces" value="0">
+        Leave spaces alone
+      </label>
+      <label class="inline">
+        <input type="radio" name="replace_spaces" value="_" checked>
+        Replace spaces with underscores
+      </label>
+      <label class="inline">
+        <input type="radio" name="replace_spaces" value="1">
+        Remove spaces
+      </label>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,11 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = ssh://hercules.mullins.microbiol.washington.edu/opt/git/mullins-modules.git
+	branch = master
+	commit = ff2081cd839f37017d4c29dafaaabbb5a32b784a
+	parent = d3156b2c9fc8c9dcbc3c7bb2bb4d43095ccdf906
+	cmdver = 0.3.1

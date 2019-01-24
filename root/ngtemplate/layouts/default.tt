@@ -1,0 +1,53 @@
+[% IF page.skip_wrapper %]
+[% content | none%]
+[% ELSE %]
+<!DOCTYPE html>
+<html ng-app="vv">
+<head>
+    <title>Viroverse[% IF page.title %]: [% page.title %][%END%]</title>
+
+    [% INCLUDE 'head-bootstrap.tt' no_reset = 1 %]
+    [% PROCESS 'head-common.tt' %]
+    <link href="[%- uri_base -%]static/stylesheets/ng/base.css" rel="stylesheet" type="text/css" />
+    <script type='text/javascript' language='javascript'>
+        viroverse.frontend_ng = true;
+    </script>
+    [% IF page.has_head_insert %]
+    [% PROCESS head_insert %]
+    [% END %]
+</head>
+
+<body class="yui-skin-sam">
+    [% INCLUDE 'nav.tt' %]
+
+    <main class="bootstrapped">
+        <div class="container">
+            [% IF page.breadcrumbs %]
+                <div class="row">
+                    [% INCLUDE 'breadcrumbs.tt' %]
+                </div>
+            [% END %]
+            <div class="row">
+                <div class="col-md-12" id="messages">
+                    [% IF status_msg %]
+                    <div class="alert alert-info" role="alert">
+                        [% status_msg %]
+                    </div>
+                    [% END %]
+                    [% IF error_msg %]
+                    <div class="alert alert-danger" role="alert">
+                        [% error_msg %]
+                    </div>
+                    [% END %]
+                </div>
+            </div>
+            [% content | none%]
+        </div>
+    </main>
+    [% INCLUDE 'footer.tt' %]
+    [% IF page.has_js %]
+    [% PROCESS javascript FILTER none%]
+    [% END %]
+</body>
+</html>
+[% END %]

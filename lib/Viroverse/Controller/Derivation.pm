@@ -1,0 +1,107 @@
+use strict;
+use warnings;
+use utf8;
+use 5.018;
+
+package Viroverse::Controller::Derivation;
+use Moose;
+use Catalyst::ResponseHelpers;
+use Try::Tiny;
+use Viroverse::SampleTree;
+use namespace::autoclean;
+
+BEGIN { extends 'Viroverse::Controller' }
+
+sub base : Chained('/') PathPart('derivation') CaptureArgs(0) { }
+
+sub create_with_default_outputs : POST Chained('base') PathPart('create_with_default_outputs') Args(0) {
+    my ($self, $c) = @_;
+    my %params = %{$c->req->params};
+    my $new_derivation = $c->model("ViroDB::Derivation")->create_with_default_outputs({
+        input_sample_id => $params{input_sample_id},
+        protocol_id     => $params{protocol_id},
+        scientist_id    => $params{scientist_id},
+        date_completed  => DateTime->today->ymd,
+    });
+    Redirect($c, $self->action_for("show"), [ $new_derivation->id ]);
+}
+
+sub load : Chained('base') PathPart('') CaptureArgs(1) {
+    my ($self, $c, $id) = @_;
+    my $derivation = $c->model("ViroDB::Derivation")->find($id)
+        or return NotFound($c,"No such derivation «$id»");
+    $c->stash( current_model_instance => $derivation );
+}
+
+sub show : Chained('load') PathPart('') Args(0) {
+    my ($self, $c) = @_;
+    my @tissue_types = $c->model("ViroDB::TissueType")->search({}, {order_by => "name"})->all;
+    my @units = $c->model("ViroDB::Unit")->order_by("name")->all;
+    my $related_samples = Viroverse::SampleTree->new(current_node => $c->model);
+    $c->stash(
+        template        => 'derivation/show.tt',
+        derivation      => $c->model,
+        tissue_types    => \@tissue_types,
+        units           => \@units,
+        related_samples => $related_samples,
+    );
+    $c->detach( $c->view("NG") );
+}
+
+sub update : POST Chained('load') PathPart('') Args(0) {
+    my ($self, $c) = @_;
+    my $params = $c->req->params;
+    $c->model->update({
+        map {; $_ => $params->{$_} }
+            qw[ date_completed uri ]
+    });
+    Redirect($c, $self->action_for("show"), [ $c->model->id ]);
+}
+
+sub add_sample : POST Chained('load') PathPart('add_sample') Args(0) {
+    my ($self, $c) = @_;
+
+    return Forbidden($c)
+        unless $c->stash->{scientist}->is_admin || $c->stash->{scientist}->is_supervisor;
+
+    my $params = $c->req->params;
+    try {
+        die unless $params->{tissue_type_id};
+        $c->model->add_to_output_samples({
+            tissue_type_id => $params->{tissue_type_id},
+            name           => $params->{name} || undef,
+            date_collected => $params->{date_collected} || undef,
+        });
+    } catch {
+        my $mid = $c->set_error_msg("Couldn't create sample");
+        Redirect($c, $self->action_for("show"), [ $c->model->id ], { mid => $mid });
+    };
+    Redirect($c, $self->action_for("show"), [ $c->model->id ]);
+}
+
+sub add_aliquots : POST Chained('load') PathPart('add_aliquots) Args(0) {
+    my ($self, $c) = @_;
+
+    return Forbidden($c)
+        unless $c->stash->{scientist}->is_admin || $c->stash->{scientist}->is_supervisor;
+
+    my @aliquot_ids;
+    my $unit_id = $c->req->params->{unit_id};
+
+    my $txn = $c->model->result_source->schema->txn_scope_guard;
+    for my $sample ($c->model->output_samples) {
+        my $aliquot = $sample->add_to_aliquots({
+            creating_scientist_id => $c->stash->{scientist}->scientist_id,
+            unit_id => $unit_id,
+        });
+        $aliquot->discard_changes;
+        push @aliquot_ids, $aliquot->id;
+    }
+    $txn->commit;
+
+    $c->controller('sidebar')->clear($c, 'found_aliquots');
+    $c->controller('sidebar')->add($c, 'found_aliquots' => @aliquot_ids);
+    return Redirect($c, "/freezer/search_freezers/aliquot_search");
+}
+
+1;

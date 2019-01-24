@@ -1,0 +1,40 @@
+<div class="row">
+    <div class="col-md-12">
+        [% INCLUDE select_column_key_help %]
+        <p>
+            Cohort, assay type, and creating scientist are set for the whole
+            import job under “Job options”.
+        </p>
+    </div>
+    <div class="col-md-6">
+        <h2>Assign data columns</h2>
+        <div class="form-group">
+            <label for="external_patient_id_key">Patient alias</label>
+            [% INCLUDE select_column_key key = "external_patient_id" %]
+        </div>
+        <div class="form-group">
+            <label for="visit_date_key">Visit date</label>
+            [% INCLUDE select_column_key key = "visit_date" %]
+        </div>
+        <div class="form-group">
+            <label for="value_key">Lab result value</label>
+            [% INCLUDE select_column_key key = "value" %]
+        </div>
+    </div>
+    <div class="col-md-6">
+        <h2>Job options</h2>
+        <div class="form-group">
+            <label for="cohort">Cohort</label>
+            [% select_from_virodb("cohort", "Cohort") | none %]
+        </div>
+        <div class="form-group">
+            <label for="lab_result_type">Lab type</label>
+            [% select_from_virodb("lab_result_type", "NumericLabResultType") | none %]
+        </div>
+        <div class="form-group">
+            [% INCLUDE 'scientist-dropdown.tt' %]
+        </div>
+
+    </div>
+
+</div>

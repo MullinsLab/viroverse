@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse : Freezer</title>
+
+    [% USE date(format=date_format) %]
+    [% INCLUDE 'summ-head.tt' %]
+
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/javascripts/yui_2.8.1/calendar.css">
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/javascripts/yui_2.8.1/container.css">
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/stylesheets/viroverse.css" />
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/stylesheets/input_tools.css" />
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/stylesheets/freezer.css" />
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/stylesheets/autosuggest.css" />
+
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/yahoo-dom-event.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/container-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/calendar-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/connection-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/datasource-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/autocomplete-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/suggestion-scientist.js" ></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/sidebar-collect.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/freezer.js" ></script>
+
+    <script type="text/javascript" >
+
+        YAHOO.namespace("viroverse");
+        YAHOO.namespace("vv_freezer");
+        YAHOO.namespace("vv_freezer.container");
+
+        function init(){
+               YAHOO.vv_freezer.container.manageVial = new YAHOO.widget.Overlay("edit_vial", { visible:false, modal:true, close:true, zindex:4, draggable: true, width:"300px"} );
+               YAHOO.vv_freezer.container.manageVial.render(document.body);
+               YAHOO.util.Event.addListener("cancelVialEdit", "click", YAHOO.vv_freezer.container.manageVial.hide, YAHOO.vv_freezer.container.manageVial, true);
+               document.getElementById("yui-panels").style.display = "block";
+        }
+        YAHOO.util.Event.addListener(window, "load", init);
+    </script>
+    <style>
+        a.body-link{
+            color: #1f669b !important;
+            text-decoration: none;
+        }
+        a.body-link:hover{
+            font-weight: bold;
+            text-decoration: underline;
+        }
+        ul li{
+            list-style: none;
+        }
+    </style>
+</head>
+
+<body class="yui-skin-sam" style="position:relative">
+    [%- INCLUDE 'body-top.tt' -%]
+    <h2>Viroverse Freezer Inventory System</h2>
+
+    <h3><a class="body-link" href="[%- uri_base -%]freezer/summary" >Browse Freezers</a></h3>
+    <p>View/edit freezer details and browse through racks and boxes in a freezer</p>
+    <h3><a class="body-link" href="[%- uri_base -%]freezer/search_freezers/aliquot_search/" >Find Aliquots</a></h3>
+    <p>Find aliquots from visits based on known subjects</p>
+    <% IF scientist.can_manage_freezers %>
+      <h3><a class="body-link" href="[%- uri_base -%]freezer/input/add_samples" >New Aliquots</a></h3>
+      <p>Create samples and aliquots then add them to the freezer</p>
+    <% END %>
+    <h3><a class="body-link" href="[%- uri_base -%]freezer/search_freezers/aliquot_summary_by_box/" >Find Boxes</a></h3>
+    <p>Find boxes based on all or part of a box name</p>
+
+    [% INCLUDE 'body-bottom.tt' %]
+
+    <div id="sidebar">
+        <div id='progress'></div>
+        [% INCLUDE 'freezer-sidebar.tt' %]
+    </div>
+
+    [% INCLUDE 'body-end.tt' %]
+
+    <div id="yui-panels" style="display: none" >
+        [% INCLUDE 'manage-aliquot-overlay.tt' %]
+    </div>
+
+    <div class="spacer">&nbsp;</div>
+</body>
+</html>

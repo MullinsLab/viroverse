@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse: Peptide/Epitope Search</title>
+
+[% INCLUDE 'summ-head.tt' %]
+
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/remotesuggestions.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/autosuggest2.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/epitopedb.js"></script>
+
+</head>
+
+<body class='yui-skin-sam'>
+[% INCLUDE 'body-top.tt' %]
+<h2>Peptide HLA Restriction Result</h2>
+<h3>Peptide: [%- peptide.peptide -%], Sequence: [%- peptide.sequence -%], Patient: [%- patient.patient -%]</h3>
+    <div>
+    <table id='sampleSel'>
+    <tr>
+        <th>Exp. Date</th><th>Peptide</th><th>Sample Date</th><th>Sample Tissue</th>
+        <th><abbr title="B lymphoblastoid cell line">BLCL</abbr></th>
+        <th>Cell Number</th>
+        <th><abbr title="Number of spot-forming cells">SFC</abbr></th>
+        <th><abbr title="Average number of spot-forming cells">Average</abbr></th>
+        <th><abbr title="Standard deviation">Stdev</abbr></th>
+        <th><abbr title="Covariance">CV</abbr></th>
+        <th><abbr title="Standard error">SE</abbr></th>
+        <th><abbr title="Corrected average number of spot-forming cells">Corr_Avg</abbr></th>
+        <th><abbr title="Corrected standard error">Corr_SE</abbr></th>
+        <th><abbr title="Corrected standard error per 1,000,000 cells">SE/1,000,000 cells</abbr></th>
+        <th><abbr title="Corrected average number of spot-forming cells per 1,000,000 cells">SFC/1,000,000 cells</abbr></th>
+        <th>Ratio</th>
+    </tr>
+
+        [% SET i = 0 %]
+        [%- FOREACH hla_restriction IN hla_restrictions -%]
+            [% i = i + 1 %]
+            [%- FOREACH reading IN hla_restriction -%]
+            [% IF (i % 2 == 0) %]
+                <tr bgcolor='#CCCCFF'>
+            [% ELSE %]
+                <tr bgcolor='#FFFFFF'>
+            [% END %]
+            <td>[%- reading.exp_date -%]</td><td>[%- reading.peptide -%]</td><td>[%- reading.sample_date -%]</td>
+            <td>[%- reading.sample_tissue -%]</td><td>[%- reading.blcl -%]</td><td>[%- reading.cell_num -%]</td><td>[%- reading.value -%]</td>
+            <td>[%- reading.avg -%]</td><td>[%- reading.stdev -%]</td><td>[%- reading.cv -%]</td><td>[%- reading.se -%]</td>
+            <td>[%- reading.corr_avg -%]</td><td>[%- reading.corr_se -%]</td><td>[%- reading.se_per -%]</td><td>[%- reading.sfc -%]</td>
+            <td><a href="" onClick="to_search_sidebar_ajax('H', '[%- peptide.sequence -%]', '[%- reading.exp_date -%]', '[%- reading.sample_date -%]', '[%- reading.sample_tissue -%]');return false;">[%- reading.ratio -%]</a></td>
+            </tr>
+            [%- END -%]
+        [%- END -%]
+
+    </table>
+    </div>
+
+[% INCLUDE 'body-bottom.tt' %]
+    <div id="sidebar">
+        <div id="search_sidebar_content">
+
+        </div>
+        <input type="submit" value="Download .csv">
+    </div>
+[% INCLUDE 'body-end.tt' %]
+</body>
+</html>

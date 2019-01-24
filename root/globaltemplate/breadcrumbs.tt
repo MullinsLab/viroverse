@@ -1,0 +1,11 @@
+<ol class="breadcrumb">
+    [% FOR pair IN page.breadcrumbs %]
+        <li [% IF loop.last %] class="active" [% END %]>
+            [% IF !loop.last && pair.1 %]
+                <a href="[% pair.1 %]">[% pair.0 %]</a>
+            [% ELSE %]
+                [% pair.0 %]
+            [% END %]
+        </li>
+    [% END %]
+</ol>

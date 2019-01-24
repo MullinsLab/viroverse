@@ -1,0 +1,41 @@
+<svg width="100%" height="110" viewBox="0 0 [% model.image_width %] 110">
+    <g class="hxb2-axis" transform="translate(0,34)">
+        <line x1="[% model.x_padding %]" y1="4" x2="[% model.axis_size + model.x_padding %]", y2="4" stroke-width="2px" stroke="black"/>
+        [% FOR tick IN [ 0,1,2,3,4,5,6,7,8,9,9.719 ] %]
+        [% my_x = model.one_base * 1000 * tick + model.x_padding %]
+        <line x1="[% my_x %]" y1="0" x2="[% my_x %]" y2 = "8" stroke-width="2px" stroke="black" />
+        <text text-anchor="middle" x="[% my_x %]" y="30">[% tick * 1000 %]</text>
+        [% END %]
+    </g>
+    <g class="hxb2-pieces" transform="translate(0,24)">
+        [% FOR piece IN model.sequence.hxb2_aln.pairwise_pieces %]
+        <line x1="[% piece.reference_start * model.one_base + model.x_padding %]"
+              y1="1"
+              x2="[% piece.reference_end * model.one_base + model.x_padding %]"
+              y2="1"
+              stroke-width="14px"
+              shape-rendering="crispEdges"
+              stroke="#f8d400" />
+        [% END %]
+    </g>
+    <g class="genes" transform="translate(0,64)">
+        [% FOR region IN model.reference_regions %]
+        <line x1="[% model.one_base * region.base_start + model.x_padding %]" y1="[% 10 * region.reading_frame %]"
+              x2="[% model.one_base * region.base_end + model.x_padding %]" y2="[% 10 * region.reading_frame %]"
+              stroke="#59a639"
+              stroke-width="4px" />
+        [% UNLESS region.name.match('vpu|tat|rev') %]
+            [% IF region.name == 'nef' THEN twiddle = -2 ELSE twiddle = 0 END%]
+            <text x="[% model.one_base * region.base_start + twiddle + model.x_padding %]" y="[% 10 * region.reading_frame + 14 %]" text-anchor="start">[% region.name %]</text>
+        [% END %]
+        [% END %]
+    </g>
+    <g class="primers" transform="translate(0,14)">
+    [% FOR pair IN model.primer_positions %]
+        [% primer = pair.primer; position = pair.position %]
+        [% arrow_x = model.one_base * pair.x_pos + model.x_padding %]
+        <polygon points="[% arrow_x%],11 [% arrow_x - (pair.flip * 8) %],4 [% arrow_x - (pair.flip * 8)%],18" fill="#393ae6"/>
+        <text x="[% arrow_x + pair.text_twiddle %]" y="0" text-anchor="[% pair.anchor %]">[% primer.name %]</text>
+    [% END %]
+    </g>
+</svg>

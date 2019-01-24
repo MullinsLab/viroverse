@@ -1,0 +1,12 @@
+[% IF !no_label %]
+<label for="scientist_id">Scientist</label>
+[% END %]
+<select id="scientist_id" name="scientist_id" class="form-control">
+<% IF with_no_one %>
+<option value="">No one</option>
+<% END %>
+<option selected value="[% scientist.scientist_id %]">me!</option>
+[% FOR sci IN scientists %]
+<option value="[% sci.scientist_id %]">[% sci.name %]</option>
+[% END %]
+</select>

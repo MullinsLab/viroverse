@@ -1,0 +1,28 @@
+        <div id='progress'></div>
+        [%- FOREACH type=to_gel.keys.sort -%]
+        <h2>[%- IF type == 'pcr'; type.upper; ELSE; type.ucfirst; END -%]</h2>
+            [%- IF type=='pcr' -%]
+                <a onClick='return reload_sidebar("gel_remove_first_round_pcr")' href='#' name='1stPurge'>Remove 1st round products</a> &#xB7;
+                <a onClick='return reload_sidebar("gel_remove_first_and_second_round_pcr")' href='#' name='2ndPurge'>Remove 1st and 2nd round products</a> &#xB7;
+                <a onClick='return reload_sidebar("gel_organize_pcr_by_primer")' href='#' name='PrimerSort'>Sort by primers</a><br clear='all'>
+            [%- END -%]
+            [%- FOREACH lane=to_gel.$type -%]
+            <a onClick='return gel_remove("[%- type -%]","[%- loop.index -%]")' href='#' name='remove'>del</a> [%- lane.to_string -%] [% IF type == 'pcr' %]<strong>[%- lane.name -%]</strong>[% END %]<br clear='all' />
+            [%- END -%]
+        [%- END -%]
+        <h2>Selected Gel Images</h2>
+            <table  id="gelList">
+
+            </table> 
+[% FOREACH gel_i IN gel %]
+    <a onClick='return sidebar_remove("gel","[%- gel_i.get('gel_id') -%]")' href='#' name='remove'>del</a> [%- gel_i.to_string %]<br />
+[% END %]
+
+
+[%- IF (to_gel.keys AND gel) OR (gel AND gel.first.lanes.count) -%]
+    <br>
+    <button onclick='location.href="[%- c.uri_for('/') -%]input/gel_label"'>[% IF to_gel.keys; 'label gel'; ELSE; 're-label gel'; END %]</button>
+[%- END -%]
+[%- IF to_gel.keys OR gel -%]
+    <br><a href='#' onClick='return gel_sidebar_clear()'>clear all selections</a>
+[%- END -%]

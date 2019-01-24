@@ -1,0 +1,14 @@
+span[title] {
+  cursor: help;
+  border-bottom: 1px dotted #777;
+}
+
+.bootstrapped h1 > small > .label {
+    /* Nicer vertical positioning for indicator labels in page headers */
+    vertical-align: text-top;
+}
+
+.bootstrapped pre.small {
+    /* Default for .small is 85%, but <pre> text is larger to start with. */
+    font-size: 75%;
+}

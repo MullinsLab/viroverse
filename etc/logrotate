@@ -1,0 +1,12 @@
+# Backend server logs
+/home/vverse/viroverse/var/log/server.log {
+    weekly
+    rotate 4
+
+    missingok
+    notifempty
+    copytruncate
+
+    compress
+    delaycompress
+}

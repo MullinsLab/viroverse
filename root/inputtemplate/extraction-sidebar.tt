@@ -1,0 +1,13 @@
+        <h2>Selected Extractions</h2>
+[% FOREACH e IN extraction %]
+    <a onClick='sidebar_remove("extraction","[%- e.extraction_id -%]")' href='#' name='remove'>del</a> [%- e.to_string %]<br />
+[% END %]
+
+<br>
+
+[% IF extraction_has_rna %]
+    <input type='button' onClick='location.href="[%- uri_base -%]input/RT"' value='cDNA'>
+[%- END -%]
+[%- IF extraction_has_dna -%]
+    <input type='button' onClick='location.href="[%- uri_base -%]input/PCR"' value='PCR'>
+[%- END -%]

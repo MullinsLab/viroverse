@@ -1,0 +1,114 @@
+body {
+  /* Base legacy <body> styles */
+  font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;
+  font-size: 11pt;
+  margin: 0px;
+  color: #000;
+
+  /* Always show a scroll bar so content doesn't jump left and right by the
+   * width of a scrollbar when navigating between long pages (which need a
+   * scrollbar) and short pages (which don't). */
+  overflow-y: scroll;
+}
+
+
+/* Sticky footer, using flexbox. */
+html, body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+body > main {
+  /* Expand to fill, don't shrink, start with width/height properties */
+  flex: 1 0 auto;
+}
+
+
+/* New navigation styles */
+.navbar.navbar-viroverse {
+  border: none;
+  background: #1f669b;
+}
+
+.navbar.navbar-viroverse .navbar-brand {
+  padding: 5px 15px 5px 0 !important;
+}
+
+.navbar.navbar-viroverse .navbar-text.user-greeting {
+  margin-left: 3em;
+  padding-top: 1px;  /* align with link baselines */
+}
+
+.navbar.navbar-viroverse .navbar-nav > li > a,
+.navbar.navbar-viroverse .navbar-brand,
+.navbar.navbar-viroverse .navbar-text {
+  color: #dfdfdf;
+  text-shadow: none;
+}
+
+.navbar.navbar-viroverse .navbar-nav > li.active > a,
+.navbar.navbar-viroverse .navbar-nav > li > a:hover,
+.navbar.navbar-viroverse .navbar-nav > li > a:focus {
+  color: white;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.navbar.navbar-viroverse .navbar-brand:hover,
+.navbar.navbar-viroverse .navbar-brand:active {
+  color: white;
+}
+
+.navbar.navbar-viroverse .navbar-brand:hover > img.hidden-hover,
+.navbar.navbar-viroverse .navbar-brand:active > img.hidden-hover {
+  display: none;
+}
+
+.navbar.navbar-viroverse .navbar-brand > img.visible-hover,
+.navbar.navbar-viroverse .navbar-brand > img.visible-hover {
+  display: none;
+}
+
+.navbar.navbar-viroverse .navbar-brand:hover > img.visible-hover,
+.navbar.navbar-viroverse .navbar-brand:active > img.visible-hover {
+  display: inline;
+}
+
+footer {
+  clear: both;
+  padding-top: 5em;
+  padding-bottom: 2em;
+}
+
+footer > .container {
+  border-top: 1px solid #eee;
+}
+
+.copyright {
+  color: #777;
+}
+
+.sitemap {
+  margin-bottom: 3em;
+}
+
+.sitemap h5 {
+  font-weight: bold;
+  color: #777;
+  margin-top: 2em !important;
+}
+
+.sitemap a {
+  color: #aaa;
+}
+
+.sitemap a:hover {
+  color: #444;
+}
+
+.sitemap ul + ul {
+  margin-top: 1em;
+}

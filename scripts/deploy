@@ -1,0 +1,97 @@
+#!/bin/bash
+LOG=var/log/deploy.log
+LOGDETAILS=var/log/deploy.details.log
+
+FAIL="\033[1;31m"
+OK="\033[1;32m"
+TRACE="\033[4m"
+RESET="\033[0m"
+
+# Seatbelts
+set -o errexit
+set -o nounset
+set -o pipefail
+trap "echo -e '=$FAIL NOT OK - error running previous command!$RESET' >&2" ERR
+
+function try() {
+    echo -ne "$PS4$TRACE"
+    echo "$@"
+    echo -ne "$RESET"
+    "$@"
+}
+
+if ! grep -qsF viroverse.git .git/config; then
+    try cd ~vverse/viroverse
+fi
+
+# Setup detailed logging for this entire script
+# In bash 4 it'd be: exec |& tee -a var/log/deploy.details.log
+npipe=`mktemp -t vv-deploy-$$.XXXX`
+rm -f $npipe
+mkfifo $npipe
+trap "rm -f $npipe" EXIT
+tee <$npipe -a $LOGDETAILS &
+exec 1>&-
+exec 1>$npipe
+exec 2>&1
+
+# Are we on a production host?
+host=`hostname -s`
+if grep -qF $host etc/production-hostname; then
+    PRODUCTION=1
+else
+    PRODUCTION=0
+fi
+
+# Enough stalling, punch the gas
+start=`date`
+tag=deploy-$host-`date -u +%FT%H%M%SZ`
+echo "= Deploying to $host on $start"
+
+# Require a clean git dir
+if [[ -n `git status --porcelain --untracked-files=no` ]]; then
+    echo "Please commit or stash these uncommitted local changes first."
+    echo
+    git status
+    echo
+    echo -e "=$FAIL NOT OK - aborting deploy!$RESET" >&2
+    exit 1
+fi
+
+# Record starting sha
+echo "$start @ `git rev-parse HEAD` " >>$LOG
+
+# Fast-forward to latest master
+try git pull --ff
+
+# Install deps
+try carton install --deployment --without develop --without test
+
+# Deploy any database changes
+if carton exec sqitch status | grep 'Undeployed change' >/dev/null; then
+    try carton exec sqitch deploy
+
+    # Create a squitch deploy tag
+    if [[ $PRODUCTION -eq 1 ]]; then
+        try carton exec sqitch tag $tag -m "Deployed to $host"
+        try git commit schema/sqitch.plan -m "Tag sqitch deploy to $host"
+    fi
+fi
+
+# crontab, logwatch, ...
+try make etc
+
+# Restart!
+try ./vv scripts/restart-server
+
+if [[ $PRODUCTION -eq 1 ]]; then
+    try git tag -am "Deployed to $host" $tag
+    try git push --tags origin HEAD
+fi
+
+# Record the final sha
+perl -pi -e 'chomp if eof' $LOG
+git rev-parse HEAD >>$LOG
+
+echo -e "=$OK OK$RESET"
+echo

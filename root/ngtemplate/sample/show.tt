@@ -1,0 +1,41 @@
+[% USE crumbs = Viroverse::Breadcrumbs({ page_record => sample, context => c }) %]
+[% page = {
+    title = "Sample $sample.id"
+    breadcrumbs = crumbs.breadcrumbs
+} %]
+
+[% WRAPPER 'sample/base.tt' %]
+<div id="sample-details">
+    <div class="row">
+        <div class="col-md-4 col-sm-6">
+            [% INCLUDE 'sample/panels/sequences.tt' %]
+        </div>
+        <div class="col-md-4 col-sm-6">
+            [% INCLUDE 'sample/panels/aliquots.tt' %]
+        </div>
+        <div class="col-md-4 col-sm-6">
+            [% INCLUDE 'sample/panels/assignments.tt' %]
+        </div>
+        <div class="col-md-4 col-sm-6">
+            [% INCLUDE 'sample/panels/derivations.tt' %]
+        </div>
+        [% IF features.ice_cultures %]
+        <div class="col-md-4 col-sm-6">
+            [% INCLUDE 'sample/panels/ice-cultures.tt' %]
+        </div>
+        [% END %]
+        <div class="col-md-4 col-sm-6">
+            [% INCLUDE 'sample/panels/extractions.tt' %]
+        </div>
+        <div class="col-md-4 col-sm-6">
+            [% INCLUDE 'sample/panels/dates.tt' %]
+        </div>
+        <div class="col-md-4 col-sm-6">
+            [% INCLUDE 'sample/panels/viral-load.tt' %]
+        </div>
+        <div class="col-md-4 col-sm-6">
+            [% INCLUDE 'sample/panels/notes.tt' %]
+        </div>
+    </div>
+</div>
+[% END %]

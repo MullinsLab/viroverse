@@ -1,0 +1,69 @@
+[%- page = {
+        title  = "Protocols",
+        has_js = 0
+    }
+-%]
+
+<div class="row">
+    <div class="col-md-9">
+        <h1 class="page-header">Protocols</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-9">
+        <p>
+            Protocols specify a set of actions that have been performed on
+            something, usually in the wet lab.  They are currently represented
+            only by well-known unique names.
+        </p>
+
+        <table class="table table-condensed table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <form action="[% c.uri_for('/admin/protocol/add') %]" method="POST"
+                      id="add-protocol" role="form" class="form-inline">
+                <tr>
+                    <td><input type="text" name="name" placeholder="New protocol name…" size="45" class="form-control"></td>
+                    <td>
+                        <select class="form-control" name="protocol_type_id" style="margin-bottom: 10px" form="add-protocol">
+                            <option value=""></option>
+                            [% FOREACH type IN protocol_types %]
+                            <option value="[% type.id | html %]">[% type.name | html %]</option>
+                            [% END %]
+                        </select>
+                    </td>
+                    <td class="text-right"><button type="submit" class="btn btn-primary">Create</button></td>
+                </tr>
+                </form>
+                [% FOREACH protocol IN protocols %]
+                <tr>
+                    <td>[% protocol.name | html %]</td>
+                    <td>[% protocol.protocol_type_id.name %]</td>
+                    <td></td>
+                </tr>
+                [% END %]
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-3">
+        <h3>Add a type</h3>
+        <p>
+            Protocols are classified by type of activity, such as PCR or
+            extraction.  If an existing type doesn't suite your new protocol,
+            you may need to add a new type first.
+        </p>
+        <form action="[% c.uri_for('/admin/protocol/add_type') %]" method="POST" role="form">
+            <div class="form-group">
+                <input type="text" name="name" placeholder="New protocol type keyword…" size="45" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-default">Create</button>
+        </form>
+    </div>
+</div>

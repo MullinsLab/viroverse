@@ -1,0 +1,115 @@
+[% USE crumbs = Viroverse::Breadcrumbs({ page_record => virodb_patient, context => c }) %]
+[% page.breadcrumbs = crumbs.breadcrumbs %]
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse: Summary of [%- virodb_patient.name -%]</title>
+<% INCLUDE 'head-bootstrap.tt' %>
+[% INCLUDE 'summ-head.tt' %]
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/javascripts/yui_2.8.1/container.css">
+
+    <link href="[%- uri_base -%]/static/stylesheets/autosuggest.css" rel="stylesheet" type="text/css" />
+
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/connection-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/datasource-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/autocomplete-min.js"></script>
+
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/sidebar-collect.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/suggestion-patient.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]static/javascripts/yui_2.8.1r2/tabview.css">
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/stylesheets/tabview.css" />
+
+</head>
+
+<body class='yui-skin-sam'>
+[% INCLUDE 'body-top.tt' %]
+[% INCLUDE 'sum-patient-top.tt' %]
+<div id="patient-tabs" class="yui-navset">
+
+[% PROCESS 'sum-patient-tabs.tt', current_tab = 'summary' %]
+    <!-- BEGIN TABS -->
+    <div class="yui-content">
+
+        <!-- BEGIN TAB 1 (Summary) -->
+        <div id="tab1">
+            [% MACRO date_range(date) BLOCK %]
+                [%- IF (date.0 || date.1) -%]
+                    [%- IF (date.0 == date.1) -%]
+                        [%- date.0 -%]
+                    [%- ELSE -%]
+                        [%- IF date.0 -%]
+                            [%- date.0 -%]
+                        [%- ELSE -%]
+                            <em>unknown</em>
+                        [%- END -%]
+                        -
+                        [%- IF date.1 -%]
+                            [%- date.1 -%]
+                        [%- ELSE -%]
+                            <em>unknown</em>
+                        [%- END -%]
+
+                        <% IF date.2 %>(midpoint: <% date.2 | html %>)<% END %>
+                    [%- END -%]
+                [%- ELSE -%]
+                    <em>unknown</em>
+                [%- END -%]
+            [% END %]
+
+            <div class="bootstrapped">
+              <table class="table table-condensed table-bordered">
+                <col style="width: 14em">
+                <tr><th>Member of</th><td>[%- patient.groups.join(', ') -%]</td></tr>
+                <tr><th>Best estimate of infection</th><td><% patient.get_prop('estimated_infection_date') | html %></td></tr>
+                <tr><th>Acquisition window</th><td>[% date_range(patient.get_prop('infection_date')) %]</td></tr>
+                <tr><th>Onset of Symptoms</th><td> [% date_range(patient.get_prop('symptom_date')) %]</td></tr>
+                <tr><th>Seroconversion window</th><td>[% date_range(patient.get_prop('seroconversion_date')) %]</td></tr>
+                <tr><th>HLA</th><td>[%- patient.get_prop('hla').sort.join(', ') -%]</td></tr>
+                <tr><th>Time to First ART</th><td>[%- IF (!patient.time_to_first_art) -%]
+                                                      <em>unknown</em>
+                                                  [%- ELSIF (patient.time_to_first_art >= 365) -%]
+                                                      [%- patient.time_to_first_art / 365.25 | format('%.1f') -%] years
+                                                  [%- ELSE -%]
+                                                    [%- patient.time_to_first_art -%] days
+                                                  [%- END -%]</td></tr>
+              </table>
+            </div>
+
+            <!--
+              XXX TODO: At some point this will want to be a component.
+              Right now, we only use it here so it's simpler to inline.
+              -trs, 18 May 2016
+            -->
+            <div id="patient-chart"></div>
+            <script type="text/javascript">
+              (function(){
+                var embedSpec = {
+                  url: "<% c.uri_for_action('/patient/chart_spec', [ patient.give_id ]) %>",
+                  actions: {
+                    export: true,   // Allows folks to save as SVG!
+                    source: false,
+                    editor: false
+                  },
+                  renderer: "svg"
+                };
+                vg.embed("#patient-chart", embedSpec);
+              })();
+            </script>
+        </div>
+        <!-- END TAB 1 (Summary) -->
+
+    </div>
+    <!-- END TABS -->
+
+</div>
+
+[% INCLUDE 'body-bottom.tt' %]
+<div id="sidebar">
+[% INCLUDE 'sidebar/dna_sequence.tt' %]
+</div>
+
+[% INCLUDE 'body-end.tt' %]
+
+</body>
+</html>

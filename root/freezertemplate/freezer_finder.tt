@@ -1,0 +1,8 @@
+        <form id="find_box">
+            <label for="freezer_id">Freezer</label><select id="freezer_id" onchange="freezer_sel(this, [%- IF custom ; custom ; ELSE ; "false" ; END -%])">
+                <option value="">Choose one</option> 
+                [% FOREACH f IN freezers %]
+                <option value="[%- f.freezer_id -%]">[% f.name %]</option>
+                [% END %]
+            </select>
+        </form>

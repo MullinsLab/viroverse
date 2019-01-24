@@ -1,0 +1,11 @@
+p.record-properties {
+  font-size: 16px;
+}
+
+p.record-properties i {
+  font-weight: bold;
+  font-style: normal;
+}
+
+.derivation-summary #edit        { display: none }
+.derivation-summary #edit:target { display: block }

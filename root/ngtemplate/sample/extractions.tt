@@ -1,0 +1,59 @@
+[% USE crumbs = Viroverse::Breadcrumbs({ page_record => sample, context => c, leaf_label => "Extractions" }) %]
+[% page = {
+    title = "Extractions of sample $sample.id"
+    breadcrumbs = crumbs.breadcrumbs
+} %]
+[% WRAPPER 'sample/base.tt' %]
+<h2>Extractions</h2>
+<a href="[% c.uri_for_action('sample/new_extraction', [ sample.id ]) %]" class="btn btn-default">
+  Add extraction for this sample
+</a>
+[%- FOREACH extraction IN sample.extractions -%] [%# probably the wrong sort but oh well %]
+    <div class="extraction">
+        <h3>
+            [% extraction.extract_type.name %]
+            <small>[% extraction.id %]</small>
+        </h3>
+        <div class="row">
+            <div class="col-md-4">
+                <dl class="extraction-properties">
+                    <dt>Molecule</dt>
+                    <dd>[% extraction.extract_type.name %]</dd>
+                    <dt>Concentration</dt>
+                    <dd>[% extraction.concentration || 'unknown'%] [% extraction.concentration_unit.name %]</dd>
+                    <dt>Extraction date</dt>
+                    <dd>[% extraction.date_completed.ymd || 'unknown' %]</dd>
+                    <dt>Extracted by</dt>
+                    <dd>[% extraction.scientist.name %]</dd>
+                </dl>
+            </div>
+            <div class="col-md-4">
+                <h4>Notes</h4>
+                [%- IF extraction.notes -%]
+                <p>[% extraction.notes %]</p>
+                [%- ELSE -%]
+                <p class="empty-notes">No notes</p>
+                [%- END -%]
+            </div>
+            <div class="col-md-4">
+                <h4>Copy number summary</h4>
+                [% IF extraction.extract_type.name == "DNA" %]
+                    [% summary = extraction.copy_number_summary %]
+                [% ELSE %]
+                    [% summary = extraction.copy_number_summary_of_rts %]
+                [% END %]
+                [% FOREACH primerset IN summary %]
+                    <h5>[% primerset.key %]</h5>
+                    <ul>
+                        [% FOREACH copy_number IN primerset.value %]
+                        <li><a href="[% c.uri_for_action('summary/copy_number', copy_number.id) %]">
+                        [% copy_number.value %]
+                        </a> <small>[% copy_number.date_created %]</small></li>
+                        [% END %]
+                    </ul>
+                [% END %]
+            </div>
+        </div>
+    </div>
+[%- END -%]
+[%- END -%]

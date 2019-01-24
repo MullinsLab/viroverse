@@ -1,0 +1,8 @@
+        <h2>Selected Converted DNA</h2>
+[% FOREACH e IN bisulfite_converted_dna %]
+    <a onClick='sidebar_remove("bisulfite_converted_dna","[%- e.bisulfite_converted_dna_id -%]")' href='#' name='remove'>del</a> [%- e.to_string %]<br />
+[% END %]
+
+<br>
+
+<input type='button' onClick='location.href="[%- uri_base -%]input/PCR"' value='PCR'>

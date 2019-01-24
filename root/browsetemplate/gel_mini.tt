@@ -1,0 +1,16 @@
+<div>
+    <strong>[%- object.name -%]</strong><br />
+    Gel # [%- object.get_id -%] entered [%- object.date_entered -%] by [%- object.scientist_id.name -%]<br>
+    [%- object.lanes.count -%] annotated lanes
+    <table>
+    [%- FOREACH label IN object.lanes -%]
+    <tr>
+        <td>[%- label.name -%]</td>
+        <td>[%- label.product.to_string -%]</td>
+    </tr>
+    [%- END -%]
+    </table>
+    Notes:
+    <pre>[%- object.notes -%]</pre>
+
+</div>

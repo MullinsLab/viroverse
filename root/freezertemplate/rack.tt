@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse::Freezer: [% rack.freezer.name %] Rack: [% rack.name %]</title>
+
+    [% USE date(format=date_format) %]
+    [% INCLUDE 'head.tt' %]
+
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/javascripts/yui_2.8.1/calendar.css">
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/stylesheets/viroverse.css" />
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/stylesheets/input_tools.css" />
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/stylesheets/freezer.css" />
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/stylesheets/autosuggest.css" />
+
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/yahoo-dom-event.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/container-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/calendar-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/connection-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/datasource-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/autocomplete-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/animation-min.js"></script>
+
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/suggestion-scientist.js" ></script>
+
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/dragdrop-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/freezer.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/rack.js"></script>
+
+    <script type="text/javascript" >
+
+        YAHOO.namespace("vv_freezer");
+        YAHOO.namespace("vv_freezer.container");
+
+        // urls
+        viroverse.oURLs = {rename: viroverse.url_base + '/freezer/input/renameBox?',
+                           move:   viroverse.url_base + '/freezer/input/x_fer_box/[%- rack.rack_id -%]/'};
+                               
+        function init(){
+            YAHOO.vv_freezer.container.renameBox = new YAHOO.widget.Overlay("rename_box", { visible:false, modal:true, close:true, zindex:4, draggable: true, width:"300px", context: ["box_display","tl","tl",["beforeShow", "windowResize"]] } );
+            YAHOO.vv_freezer.container.renameBox.render(document.body);
+            YAHOO.util.Event.addListener("cancelRenameBox", "click", YAHOO.vv_freezer.container.renameBox.hide, YAHOO.vv_freezer.container.renameBox, true);
+
+            YAHOO.vv_freezer.container.manageVial = new YAHOO.widget.Overlay("edit_vial", { visible:false, modal:true, close:true, zindex:4, draggable: true, width:"300px"} );
+            YAHOO.vv_freezer.container.manageVial.render(document.body);
+            YAHOO.util.Event.addListener("cancelVialEdit", "click", YAHOO.vv_freezer.container.manageVial.hide, YAHOO.vv_freezer.container.manageVial, true);
+       
+            YAHOO.vv_freezer.container.confirmDelete = new YAHOO.widget.Overlay("confirm_delete", { visible:false, modal:true, close:true, zindex:4, draggable: false, width:"300px", fixedcenter:true } );
+            YAHOO.vv_freezer.container.confirmDelete.render(document.body);
+            YAHOO.util.Event.addListener("cancelDeleteBox", "click", YAHOO.vv_freezer.container.confirmDelete.hide, YAHOO.vv_freezer.container.confirmDelete, true);
+    
+            [% IF box_id %]
+                var box_to_load_id = [% box_id %];
+                fetchBox(box_to_load_id);
+                setActiveBox(document.getElementById(box_to_load_id));
+            [% END %]
+            document.getElementById("yui-panels").style.display = "block";
+        }
+        YAHOO.util.Event.addListener(window, "load", init);
+
+        function showRenameBox(name){
+            name_input = document.getElementById("box_name");
+            name_input.value = name;
+            setTimeout("name_input.focus()", 50); 
+            YAHOO.vv_freezer.container.renameBox.show();
+        }
+
+        function renameBox() {
+            var box_id   = document.getElementById('box_id').value;
+            var new_name = document.getElementById('box_name').value;
+            var old_name = document.getElementById(box_id).title;
+
+            clearError();
+            if (new_name != old_name) {
+
+                // Make sure the name is not already used
+                var boxes = YAHOO.util.Dom.getElementsByClassName('freezer-box', 'div');
+                for (var i = 0, len = boxes.length; i < len; i++) {
+                    if (boxes[i].title === new_name) {
+                        writeError("Box '" + new_name + "' already exists in this rack. Please try another name");
+                        return;
+                    }
+                }
+                var enc_name = encodeURIComponent(new_name);
+                var sData = "name=" + enc_name + "&box_id=" + box_id;
+                asyncRequest(viroverse.oURLs.rename, sData, {name: new_name, box_id: box_id}, handleRenameSuccess); 
+            }
+            else {
+                YAHOO.vv_freezer.container.renameBox.hide();
+            }
+        }
+
+        // handle successful patient option async request
+        var handleRenameSuccess = function(o) {
+
+            // Update header
+            var nameHead = document.getElementById('box_display').getElementsByTagName("h2").item(0);
+            var names = nameHead.innerHTML.split("/");
+            names[2] = o.argument.name;
+            nameHead.innerHTML = names.join(' / ')
+
+            // Update box title
+            var box = document.getElementById(o.argument.box_id);
+            box.title = o.argument.name;
+
+            // Update box text
+            var box_name = box.getElementsByTagName("span").item(0).lastChild.data = format_box_name(o.argument.name);
+
+            // Move on...
+            YAHOO.vv_freezer.container.renameBox.hide();
+        }
+
+        if (viroverse.scientist.can_manage_freezers)
+            setUpDragAndDrop(function() { fnRackInit('rack'); }, reorderBoxes);
+    </script>
+
+    <style type="text/css">
+        body { margin:0; padding:0; }
+        div.rack {
+            width: [% rack.num_columns * 110 + 10 -%]px; 
+            height:[% rack.num_rows * 56 -%]px;
+        }
+    </style>
+</head>
+    
+<body class='yui-skin-sam'>
+    [% INCLUDE 'body-top.tt' %]
+
+    <div class="error" id="error"></div>
+
+    <h2>Freezer: [% rack.freezer.name %] / Rack: [% rack.name %]</h2>
+
+    <!-- rack -->
+    <div class="rack" id="rack" data-rack_id="[% rack.rack_id %]">
+
+        <!-- row numbers -->
+        [% count = 0 ~%]
+        <div id="colRow" name="colRow" class="rack-row-col">
+        [%~ FOREACH box IN rack.boxes ~%]
+            [% UNLESS count mod rack.num_columns %]
+            <div class="box-label">[% count / rack.num_columns + 1 %]</div>
+            [%~ END ~%]
+            [%~ count = count + 1 ~%]
+        [% END %]
+        </div>
+
+        <!-- boxes -->
+        <div id="colBox" name="colBox" class="rack-box-col">
+        [% FOREACH box IN rack.boxes =%]
+            <div class="freezer-box" id="[% box.box_id %]" onclick="setActiveBox(this); fetchBox([% box.box_id %])" title="[% box.name %]"><span><script type="text/javascript">document.write(format_box_name("[% box.name %]"))</script></span></div>
+        [% END ~%]
+        </div>
+    </div>
+
+    <!-- box -->
+    <div id="box_display"></div>
+
+    <% IF scientist.can_manage_freezers %>
+    <input type="button" style="float: left; clear: both; margin-top: 2px;" value="Move Boxes to Different Rack" onclick="window.location = viroverse.oURLs.move" />
+    <% END %>
+
+    [% INCLUDE 'body-bottom.tt' %]
+
+    [% INCLUDE 'body-end.tt' %]
+
+    <!-- Rename box dialogue -->
+    <div id="yui-panels" style="display: none" >
+        <div id="rename_box"class="overlay" >
+            <div class="hd">Rename Box</div>
+            <div class="bd" >
+                <label class="inline" for="num_canes">Box Name</label><input id="box_name" type="text" value="" />
+                <input type="hidden" id="box_id" value="" />
+            </div>
+            <div class="ft"><button onclick="renameBox()">Save</button> <button id="cancelRenameBox">Cancel</button></div>
+        </div>
+        <div id="confirm_delete"class="overlay" >
+            <div class="hd">Confirm Delete</div>
+            <div class="bd" ></div>
+            <div class="ft"><button  onclick="deleteBox()">Delete</button> <button id="cancelDeleteBox">Cancel</button></div>
+        </div>
+        [% INCLUDE 'manage-aliquot-overlay.tt' %]
+    </div>
+</body>
+</html>

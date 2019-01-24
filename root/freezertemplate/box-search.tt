@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse: Box Search</title>
+
+    [% USE date(format=date_format) %]
+    [% INCLUDE 'summ-head.tt' %]
+
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/javascripts/yui_2.8.1/calendar.css">
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/javascripts/yui_2.8.1/container.css">
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]static/javascripts/yui_2.8.1r2/paginator.css" />
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]static/javascripts/yui_2.8.1r2/datatable.css" />
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/stylesheets/viroverse.css" />
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/stylesheets/input_tools.css" />
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/stylesheets/freezer.css" />
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]static/stylesheets/treeble.css" />
+
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/yahoo-dom-event.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/container-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/calendar-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/element-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/connection-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/datasource-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/paginator-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/dragdrop-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/datatable-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/yahoo-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/event-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/treeble/Treeble-280patch.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/treeble/Treeble.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/sidebar-collect.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/treeble-wrap.js" ></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/freezer.js" ></script>
+
+    <script type="text/javascript">
+
+        YAHOO.namespace("viroverse");
+        YAHOO.namespace("vv_freezer");
+        YAHOO.namespace("vv_freezer.container");
+
+        // data for box treeble
+        [% max_detail_rows = 100 %]
+        [% box_count = boxes.count %]
+        var box_data = {
+              boxes: [
+                 [%- IF box_count > max_detail_rows -%]
+              [%- FOREACH box = boxes %]
+                {name: "<a href='[%- c.uri_for('/') -%]freezer/summary/rack/[%- box.rack -%]/[%- box.box_id -%]'>[% box.box %]</a>", location: '[% box.location %]',},
+              [%- END %]
+                 [%- ELSIF box_count > 0 -%]
+              [%- FOREACH box = boxes %]
+                {name: "<a href='[%- c.uri_for('/') -%]freezer/summary/rack/[%- box.rack -%]/[%- box.box_id -%]'>[% box.box %]</a>", location: '[% box.location %]',
+                [%- IF box.aliquots.count > 0 -%]
+                  kids: [
+                         [%- FOREACH a = box.aliquots %]
+                    {id: [% a.id %], name: '[% a.name %]', location: '[% a.location %]', patient: [[% FOREACH patient_name = a.patient %]'[% patient_name %]',[% END %]], visit_date: '[% a.visit_date %]', tissue: '[% a.tissue %]', vol: '[% a.vol %]', status: "[% a.status %]", additive: '[% a.additive %]'},
+                      [%- END -%]]
+                [%- END -%]},
+              [%- END %]
+            [%- ELSE -%]
+                {}
+            [%- END -%]]
+        };
+
+        function init(){
+            load_treeble();
+               YAHOO.vv_freezer.container.manageVial = new YAHOO.widget.Overlay("edit_vial", { visible:false, modal:true, close:true, zindex:4, draggable: true, width:"300px"} );
+               YAHOO.vv_freezer.container.manageVial.render(document.body);
+               YAHOO.util.Event.addListener("cancelVialEdit", "click", YAHOO.vv_freezer.container.manageVial.hide, YAHOO.vv_freezer.container.manageVial, true);
+               new YAHOO.widget.Tooltip("tt_boxSpan", { context:"boxSpan", text:"Wildcards: use <b>*</b> for zero or more characters, <b>?</b> for exactly one." });
+               document.getElementById("yui-panels").style.display = "block";
+        }
+        YAHOO.util.Event.addListener(window, "load", init);
+
+        // build box summary treeble on specimens tab
+        function load_treeble() {
+
+            // build treeble sort map
+            trblBuildSortMap({name:     trblSortEnum.link,
+                              location: trblSortEnum.name,
+                              checked: trblSortEnum.checkbox},
+                              'name');
+
+            // build treeble data source
+            var dataFlds = ["id", "checked", "name", "location", "patient", "visit_date", "tissue", "vol", "status", "additive"];
+            var dataSrc = trblBuildDataSource(dataFlds, box_data.boxes, false);
+
+            // build treeble
+            var columnDefsArr = [
+                {key:"checked", label:"Add", resizable:false, formatter:"freezerCheckBox", sortable:true, child_only:true},
+                {key:"name", label:"Name", resizeable:true, sortable:true},
+                {key:"location", label:"Location", resizable:true, sortable:true},
+                {key:"patient", label:"Subject", resizeable:true, formatter:'freezerArray', sortable:false, child_only:true},
+                {key: "visit_date", label:"Date", resizable:true, sortable:false, width:50, child_only:true},
+                {key: "tissue", label:"Tissue", resizable:true, sortable:false, child_only:true},
+                {key: "vol", label:"Vol", resizable:true, sortable:false, child_only:true},
+                {key: "status", label:"Status", resizable:true, sortable:false, width:100, child_only:true},
+                {key: "additive", label:"Additive", resizable:true, sortable:false, child_only:true}
+            ];
+            YAHOO.viroverse.oTreeble = trblBuildTable(columnDefsArr, dataSrc, 'box_treeble', 'box_treeble_pag', 100, [100, 50, 40, 30, 20, 10])
+        };
+    </script>
+
+    <style type="text/css">[%- IF box_count > max_detail_rows; '.hide_over_max {display:none;}'; ELSE; '.hide_under_max {display:none;}'; END -%]</style>
+
+</head>
+
+<body class='yui-skin-sam'>
+    [% INCLUDE 'body-top.tt' %]
+
+    <fieldset>
+        <legend>Change Box Name</legend>
+        <form method="post" action="[%- uri_base -%]freezer/search_freezers/aliquot_summary_by_box" name="boxForm" id="boxForm">
+
+            <div class="filter" id="boxSpan">
+                <label>Box Name</label>
+                <input type="text" id="pattern" class='auto' name="pattern" size="50" />
+            </div>
+            <input type='submit' class='filter' style='margin-top:1.5em'>
+        </form>
+    </fieldset>
+
+    <h2>[%- box_pattern -%] ([%- box_count -%][%- IF box_count == 1; ' match'; ELSE; ' matches'; END -%])</h2>
+
+    <p text-class="hide_under_max" style="margin-left: 0">Note: aliquots are not listed if over [%- max_detail_rows.chunk(-3).join(',') -%] boxes are found. </p>
+
+    [% INCLUDE 'treeble-buttons.tt' %]
+    <br clear='all' />
+
+    <div id="box_treeble_pag"></div>
+    <div id="box_treeble"></div><br />
+
+    [% INCLUDE 'treeble-buttons.tt' %]
+
+    [% INCLUDE 'body-bottom.tt' %]
+
+    <div id="sidebar">
+        <div id='progress'></div>
+        [% INCLUDE 'freezer-sidebar.tt' %]
+    </div>
+
+    [% INCLUDE 'body-end.tt' %]
+
+    <div id="yui-panels" style="display: none" >
+        [% INCLUDE 'manage-aliquot-overlay.tt' %]
+    </div>
+
+    <div class="spacer">&nbsp;</div>
+</body>
+</html>

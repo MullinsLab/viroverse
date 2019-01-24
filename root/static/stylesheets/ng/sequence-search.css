@@ -1,0 +1,69 @@
+faceted-search[sequence-search] .search-facets .facet.facet-field-protocol .facet-values {
+  max-height: 10.15em;
+}
+
+faceted-search[sequence-search] table.search-results .accession {
+  width: 8em;
+}
+
+faceted-search[sequence-search-ui=within-patient] .search-results {
+  margin-top: 0;
+}
+
+/* The sequence table on the patient page looks nicer when the text in
+ * the rows doesn't break across lines. In order to use text-overflow
+ * on the cells in that table, the columns need to have a fixed width.
+ * It would be nicer to have more control over the automatic table
+ * layout algorithm, using grid-like or flexbox-like parameters, but
+ * we aren't so lucky. So I designed some fixed widths that empirically
+ * seemed to give some good results. silby@ 2017-06-14
+ */
+
+faceted-search[sequence-search-ui=within-patient] .search-results table {
+  table-layout: fixed;
+}
+
+faceted-search[sequence-search-ui=within-patient] .search-results .accession {
+  width: 5em;
+}
+
+faceted-search[sequence-search-ui=within-patient] .search-results .tissue {
+  max-width: 11em;
+}
+
+faceted-search[sequence-search-ui=within-patient] .search-results .name {
+  width: 18em;
+}
+
+faceted-search[sequence-search-ui=within-patient] .search-results .na-type {
+  width: 3em;
+}
+
+faceted-search[sequence-search-ui=within-patient] .search-results td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+faceted-search[sequence-search-ui=within-patient] .search-facets,
+faceted-search[sequence-search-ui=within-sample]  .search-facets {
+  border-bottom: none;
+}
+
+faceted-search[sequence-search-ui=within-patient] .search-facets .facet .facet-values {
+  max-height: none;
+  overflow-y: visible;
+  padding-right: 0;
+}
+
+faceted-search[sequence-search-ui=within-patient] .search-facets .facet.facet-field-region .facet-values {
+  max-height: 10.15em;
+  overflow-y: scroll;
+  padding-right: 0;
+}
+
+faceted-search[sequence-search-ui=within-sample] .search-facets .facet.facet-field-region .facet-values {
+  max-height: 9em;
+  overflow-y: scroll;
+  padding-right: 0;
+}

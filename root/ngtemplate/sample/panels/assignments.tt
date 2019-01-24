@@ -1,0 +1,19 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <a href="[% c.uri_for_action('/sample/assignments', [ sample.id ]) %]">Assignments</a>
+        </h3>
+    </div>
+    <div class="panel-body">
+        [%- IF $(sample.project_assignments).has_rows -%]
+            [% FOR assn IN @(sample.project_assignments) %]
+                <p>[%- assn.assigned_scientist.name -%] ([%- assn.project.name -%])</tr>
+            [% END %]
+        [%- ELSE -%]
+            <p>This sample is unassigned</p>
+        [%- END -%]
+    </div>
+    <div class="list-group">
+        <a class="list-group-item" href="[% c.uri_for_action('/sample/assignments', [ sample.id ]) %]">Manage assignments</a>
+    </div>
+</div>

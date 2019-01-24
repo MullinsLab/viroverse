@@ -1,0 +1,21 @@
+[%- page = {
+        title  = "Subject cohorts",
+    }
+-%]
+
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="page-header">Cohorts</h1>
+        <ul class="cohort-list">
+        [% FOREACH cohort IN cohorts %]
+            <li><a href="[% c.uri_for_action("/cohort/show", [cohort.id] ) %]">[% cohort.name %]</a> ([% $(cohort.patient_cohorts).count + 0 %])</li>
+        [% END %]
+        </ul>
+        <h2>Subject groups</h1>
+        <ul class="cohort-list">
+        [% FOREACH group IN patient_groups %]
+            <li><a href="[% c.uri_for_action("/patientgroup/show", [group.id] ) %]">[% group.name %]</a> ([% $(group.memberships).count + 0 %])</li>
+        [% END %]
+        </ul>
+    </div>
+</div>

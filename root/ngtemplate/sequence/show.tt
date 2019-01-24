@@ -1,0 +1,184 @@
+[% USE crumbs = Viroverse::Breadcrumbs({ page_record => virodb_sequence, context => c }) %]
+[%- page = {
+        title  = "Sequence details",
+        has_js = 1,
+        breadcrumbs = crumbs.breadcrumbs
+    }
+-%]
+
+[%- BLOCK javascript -%]
+<script type="text/javascript" src="[%- c.uri_for('/') -%]static/javascripts/sidebar-collect.js"></script>
+[%- END -%]
+
+[% PROCESS 'macros.tt' %]
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="page-header">
+          Sequence
+          [% sequence.idrev %]
+          <small><% INCLUDE sequence/partials/labels.tt %></small>
+        </h1>
+    </div>
+    <div class="col-md-8">
+        [% IF sequence.deleted %]
+        <p class="alert alert-danger">
+            [% IF sequence.deletion_reason %]
+            Deleted by [% sequence.deletion_reason.scientist_id.name %] on [% sequence.deletion_reason.date_added %]: [% sequence.deletion_reason.note.remove('\[Delete\] ') %]
+            [% ELSE %]
+            Deleted by an unknown person on an unknown date for an unknown reason.
+            [% END %]
+        </p>
+        [% END %]
+        <p>
+            Sequence <strong>[% sequence.idrev %]</strong>,
+            originally named <strong>[% sequence.name %]</strong>, is
+            [% Inflect.noun(virodb_sequence.type.name || sequence.na_type || 'sequence').indef_article %]
+            <strong>[% virodb_sequence.type.name %] [% sequence.na_type %]</strong> sequence
+            obtained by <strong>[% sequence.scientist_id.name %]</strong>
+            and entered on <strong>[% sequence.entered_date %]</strong>.
+            Final round amplification primers are <strong>[% sequence.input_product.primer_strings || 'unknown' %]</strong>.
+            [% IF sequence.genbank_acc %]
+            Sequence released to GenBank as
+            <a href="https://www.ncbi.nlm.nih.gov/nuccore/[% sequence.genbank_acc %]">[%- sequence.genbank_acc -%]</a>.
+            [% END %]
+        </p>
+        <p>
+        [% IF @(sequence.revisions).size > 1 %]
+            [% IF sequence.na_sequence_revision == sequence.latest_revision.na_sequence_revision %]
+            This is the current version of this sequence. The previous version is
+            <a href="[% c.uri_for_action('/sequence/show', [ sequence.parent_revision.idrev ])%]">[% sequence.parent_revision.idrev %]</a>.
+            [% ELSE %]
+                [% IF NOT sequence.parent_revision %]
+                This is the earliest version of this sequence.
+                [% ELSE %]
+                This is an earlier version of this sequence. The previous version is
+                    <a href="[% c.uri_for_action('/sequence/show', [ sequence.parent_revision.idrev ])%]">[% sequence.parent_revision.idrev %]</a>.
+                [% END %]
+                The current version is <a href="[% c.uri_for_action('/sequence/show', [ sequence.latest_revision.idrev ])%]">[% sequence.latest_revision.idrev %]</a>.
+            [% END %]
+        [% ELSE %]
+            This is the only version of this sequence.
+        [% END %]
+        </p>
+        [% IF sequence.notes || sequence.note%]
+        <h3>Notes</h3>
+        [% FOR note IN sequence.notes %]
+        <p>[% note.note %] —[% note.scientist_id.name %], [% note.date_added %]</p>
+        [% END %]
+        [% IF sequence.note %]
+        <p>[% sequence.note %]</p>
+        [% END %]
+        [% END %]
+        [% IF virodb_sequence.type.name eq 'Genomic' && sequence.hxb2_aln %]
+            <h2>HXB2 alignment</h2>
+            <p>
+               Sequence [% sequence.idrev %] spans HXB2 bases <strong>[% sequence.hxb2_coverage.join('–') %]</strong>, 
+               completely covers
+               [% IF @(cds.covers).size -%]<strong>[% cds.covers.join(', ') %]</strong>[%- ELSE -%]no defined regions[%- END -%],
+               and partially overlaps
+               [% IF @(cds.overlaps).size -%]<strong>[% cds.overlaps.join(', ') %]</strong>[%- ELSE -%]no defined regions[%- END -%].
+           </p>
+           <p><% INCLUDE 'partials/alignment-visualization.tt', model = alignment_visualization %></p>
+           <p class="small">Showing alignment <a href="[% c.uri_for_action('/summary/alignment/display', [ sequence.hxb2_aln.idrev ]) %]">[% sequence.hxb2_aln.idrev %]</a>.</p>
+        [% END %]
+        <h2>Chromats</h2>
+        [% IF sequence.chromats %]
+        <p>
+          Click a filename to download an individual chromat or
+          <a href="<% c.uri_for_action('/sequence/chromats', [ sequence.idrev ]) %>">
+            <span class="glyphicon glyphicon-save small"></span> download them all</a>.
+        </p>
+        <div class="row"><div class="col-md-8">
+            <table class="table table-condensed small">
+                <thead>
+                    <tr><th>Filename</th><th>Sequencing primer</th></tr>
+                </thead>
+                <tbody>
+                    [% FOR chromat IN sequence.chromats %]
+                    <tr><td><a href="[% c.uri_for_action('/download/chromat', [ chromat.id, sequence.idrev _ "-" _ chromat.name ]) %]">[% chromat.name %]</a></td><td>[% chromat.primer_id.name %]</td></tr>
+                    [% END %]
+                </tbody>
+            </table>
+        </div></div>
+        [% ELSE %]
+        <p>Chromats not recorded.</p>
+        [% END %]
+        <h2>
+          Sequence contents
+          <small>
+            <% sequence.seq.length %>bp
+
+            <button clipboard-target="#seq" clipboard-strip-newlines ng-cloak class="btn btn-xs btn-link">
+              <ng-switch on="$copyStatus">
+                <span ng-switch-default        class="text-primary">Copy</span>
+                <span ng-switch-when="success" class="text-success">Copied!</span>
+                <span ng-switch-when="error"   class="text-danger">Copy failed</span>
+              </ng-switch>
+            </button>
+          </small>
+        </h2>
+        <pre class="seq" id="seq">[%- sequence.seq.replace("(.{50})", "\$1\n") -%]</pre>
+    </div>
+    <div class="col-md-4">
+        <h3>Sequence origin</h3>
+        <% INCLUDE 'partials/sample-tree.tt', model = sequence_origin %>
+
+        <div id="sequence-buttons">
+        <button class="btn btn-default"
+        onclick="sidebar_add('dna_sequence',[%- sequence.give_id -%],null, new Array)">Add sequence to cart</button>
+        <input form="sequence-downloader-modal" type="hidden" name="seq_ids" value="[% sequence.idrev %]">
+        <button class="btn btn-primary" modal-on-click="'/static/partials/sequence/download-modal.html'">
+            <span class="glyphicon glyphicon-save"></span>
+            Download this sequence as FASTA
+        </button>
+      [% IF !sequence.deleted %]
+        <% IF virodb_sequence.scientist_can_revise(scientist) %>
+          [% IF sequence.na_sequence_revision == sequence.latest_revision.na_sequence_revision %]
+              <p><a class="btn btn-default" href="[% c.uri_for_action('/sequence/revise', [ sequence.idrev ] )%]">Revise this sequence</a></p>
+          [% ELSE %]
+              <p><a class="btn btn-default" href="[% c.uri_for_action('/sequence/revise', [ sequence.latest_revision.idrev ] )%]">Revise latest revision of this sequence</a></p>
+          [% END %]
+        <% END %>
+        <% IF sequence.scientist_can_delete(scientist) %>
+          <!--
+            XXX TODO: This component should become an Angular directive instead
+            of manually attaching the controller.
+              -trs, 6 December 2016
+          -->
+          <form ng-controller="DeleteSequence" ng-submit="delete()" name="DeleteForm"
+                ng-init="id = <% sequence.na_sequence_id.json | html %>"
+                class="form-inline"
+                role="form">
+            <div class="form-group" ng-show="!unlocked">
+              <button type="button" class="btn btn-danger" ng-click="unlocked = true">
+                Delete this sequence&hellip;
+              </button>
+            </div>
+            <div ng-show="unlocked">
+              <div class="form-group">
+                <input type="text"
+                       name="reason"
+                       size=50
+                       placeholder="Reason for deletion... (required)"
+                       ng-model="reason" required=1><br>
+              </div>
+              <button class="btn btn-success"
+                      ng-disabled="DeleteForm.$invalid">
+                Delete sequence and all revisions
+              </button>
+              <button type="button" class="btn btn-cancel btn-sm" ng-click="unlocked = false">
+                Nevermind
+              </button>
+              <div class="form-error bg-danger" ng-show="error != null">
+                Whoops, something went wrong: {{error}}
+              </div>
+            </div>
+          </form>
+        <% END %>
+      [% END %]
+      </div>
+        <div class="best-sidebar-ever" id="sidebar">
+            [% INCLUDE 'sidebar/dna_sequence.tt' %]
+        </div>
+    </div>
+</div>

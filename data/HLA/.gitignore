@@ -1,0 +1,11 @@
+/new-ambiguity-groups-deploy.sql
+/new-ambiguity-groups-revert.sql
+/new-ambiguity-groups-verify.sql
+/new-genotypes-deploy.sql
+/new-genotypes-revert.sql
+/new-genotypes-verify.sql
+/everything-deploy.sql
+/everything-revert.sql
+/everything-verify.sql
+/hla_nom_filtered.txt
+/recs

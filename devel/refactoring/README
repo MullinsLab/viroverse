@@ -1,0 +1,4 @@
+These tools are meant to help find dangling code left by refactoring and
+rewriting.  They are not perfect, but merely hueristics for what to look
+further at.  There will be false positives as well as false negatives.  It's
+still someone's job to find those false negatives by other means!

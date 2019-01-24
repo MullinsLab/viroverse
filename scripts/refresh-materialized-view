@@ -1,0 +1,27 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use utf8;
+use Viroverse::Logger -script => qw< :log >;
+use ViroDB;
+
+# It is probably overly conservative to prevent ourselves from SQL injecting
+# ourselves, but whitelisting always makes me happier.
+my @views = qw(
+    sequence_search
+    distinct_sample_search
+    project_material_scientist_progress
+);
+
+my $view = shift @ARGV;
+die "Invalid view name '$view'" unless grep { $_ eq $view } @views;
+
+my $fn = "refresh_$view()";
+
+ViroDB->connect_default->storage->dbh_do(sub {
+    my ($storage, $dbh) = @_;
+    $dbh->begin_work;
+    $dbh->do("SELECT viroserve.$fn;")
+        or die $dbh->errstr;
+    $dbh->commit;
+});

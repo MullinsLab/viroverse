@@ -1,0 +1,10 @@
+<ul uib-pagination
+    total-items="search.result.total"
+    items-per-page="search.query.rows"
+    ng-model="search.query.page"
+    ng-if="search.result.total > search.query.rows"
+    ng-change="search.run()"
+    max-size="5"
+    force-ellipses="true"
+    boundary-link-numbers="true"
+    class="pagination"></ul>

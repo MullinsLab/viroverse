@@ -1,0 +1,8 @@
+.file-drop-hover {
+  /* Bootstrap's .alert-success styles look nice here */
+  color: #3c763d !important;
+  background-color: #dff0d8 !important;
+  border-color: #d6e9c6 !important;
+  background-image: linear-gradient(to bottom,#dff0d8 0,#c8e5bc 100%) !important;
+  background-repeat: repeat-x !important;
+}

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse: Summary of clone [%- clones.0.id -%]</title>
+
+[% INCLUDE 'head.tt' %]
+[%- USE Dumper -%]
+
+</head>
+
+<body>
+[% INCLUDE 'body-top.tt' %]
+<h2>clone [%- clones.0.id -%]</h2>
+Name: [%- clones.0.name %] <br />
+<pre class='seq'>[%- Dumper.dump(clones)-%]</pre>
+
+    <table class='labs'>
+        <tr>
+            <th style='border:none'></th>
+            [%- FOREACH c=clones -%]
+                [%- c.id -%]
+                [%- FOREACH l=c.labs.fetchrow_arrayref -%]
+                    <th>[%- l.0 -%] [%- l.1 -%]</th>
+                [%- END -%]
+            [%- END -%]
+        </tr>
+
+            [%- FOREACH c=clones -%]
+                [%- FOREACH l=c.labs.fetchrow_array -%]
+                <tr>
+                    <td>[%- l.2 -%]</td>
+                </tr>
+                [%- END -%]
+            [%- END -%]
+    </table>
+
+[% INCLUDE 'body-bottom.tt' %]
+
+
+[% INCLUDE 'body-end.tt' %]
+</body>
+</html>

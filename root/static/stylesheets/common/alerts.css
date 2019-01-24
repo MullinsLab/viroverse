@@ -1,0 +1,13 @@
+/* Bootstrap removes the bottom margin from <p> and <ul> within alerts, which
+ * doesn't look good if there's more than one element in the alert.  Instead,
+ * remove the bottom margin from just the last child of the alert, to avoid
+ * spacing issues.
+ */
+.bootstrapped .alert > p,
+.bootstrapped .alert > ul {
+  margin-bottom: 10px;
+}
+
+.bootstrapped .alert > :last-child {
+  margin-bottom: 0;
+}

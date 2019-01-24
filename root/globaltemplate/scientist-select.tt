@@ -1,0 +1,4 @@
+    <div class='sci_ac'>
+        <input name="scientist_name" id="scientist_name_ac" class='auto scientist_name_ac' size="15" type="text" value="[%- IF no_default_sci ; "" ; ELSE ; scientist.name | html ; END -%]" [%- disabled -%]/>
+        <div class='y_auto' class='scientist_name_div'></div>
+    </div>

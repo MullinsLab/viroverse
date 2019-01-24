@@ -1,0 +1,8 @@
+<!-- head.tt -->
+<link href="[%- c.uri_for('/') -%]static/stylesheets/viroverse.css" rel="stylesheet" type="text/css" />
+<% PROCESS 'head-bootstrap.tt' %>
+<% PROCESS 'head-common.tt' %>
+<script type='text/javascript' language='javascript'>
+    viroverse.max_results_json = [%- max_results_json -%];
+</script>
+<!-- head.tt -->

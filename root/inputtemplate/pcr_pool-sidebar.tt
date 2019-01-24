@@ -1,0 +1,11 @@
+        <h2>Pooled PCR products</h2>
+[% FOREACH pcr_i IN pcr_pool %]
+    <a onClick='sidebar_remove("pcr_pool","[%- pcr_i.get('pcr_product_id') -%]")' href='#' name='remove'>del</a> [%- pcr_i.to_string %] <strong>[%- pcr_i.name -%]</strong><br />
+[% END %]
+
+[%- IF pcr_pool -%]
+    <br>
+    <input type='button' onClick='location.href="[%- c.uri_for_action("/input/pos_pcr") -%]"' value='purify/concentrate'>
+    <input type='button' onClick='location.href="[%- uri_base -%]input/clone"' value='clone'>
+    <input type='button' onClick='location.href="[%- uri_base -%]input/sequence"' value='sequence'>
+[%- END -%]

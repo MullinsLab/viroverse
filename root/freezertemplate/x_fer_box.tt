@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse::Freezer: Transfer Box</title>
+
+    [% USE date(format=date_format) %]
+    [% INCLUDE 'head.tt' %]
+
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/stylesheets/viroverse.css" />
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/stylesheets/freezer.css" />
+
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/yahoo-dom-event.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/container-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/connection-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/animation-min.js"></script>
+
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/dragdrop-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/freezer.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/rack.js"></script>
+
+    <script type="text/javascript" >
+
+        // urls
+        viroverse.oURLs = {move: viroverse.url_base + '/freezer/input/moveBox/', };
+                           
+        function moveBox(box_id, src) {
+            var new_rack_id = src.parentNode.getAttribute("data-rack_id");
+            var r1_boxes = YAHOO.util.Dom.getElementsByClassName('freezer-box', 'div', 'rack1');
+            var r2_boxes = YAHOO.util.Dom.getElementsByClassName('freezer-box', 'div', 'rack2');
+            var arrData = new Array;
+            for (var i = 0, len = r1_boxes.length; i < len; i++) {
+                arrData.push("rack1_boxes=" + r1_boxes[i].id);
+            }
+            for (var i = 0, len = r2_boxes.length; i < len; i++) {
+                arrData.push("rack2_boxes=" + r2_boxes[i].id);
+            }
+            var sData = arrData.join('&');
+            asyncRequest(viroverse.oURLs.move + box_id + "/" + new_rack_id + "?", sData, {}, function (){}); 
+        }
+
+        setUpDragAndDrop(function() { fnRackInit('rack1'); fnRackInit('rack2'); }, moveBox);
+        YAHOO.util.Event.addListener(window, "load", function () {document.getElementById('freezer_id').selectedIndex = 0;});
+    </script>
+
+    <style type="text/css">
+        body { margin:0; padding:0; }
+        #rack1 { 
+            width: [% rack.num_columns * 110 -%]px; 
+            height:[% rack.num_rows * 56 -%]px;
+        }
+        div.rack_ctr {
+            float: left;
+            clear: none;
+            padding: 2px 5px 2px 2px;
+            text-align: center;
+        }
+    </style>
+</head>
+    
+<body class='yui-skin-sam'>
+    [% INCLUDE 'body-top.tt' %]
+
+    <div class="error" id="error"></div>
+
+    <!-- First Rack -->
+    <div id="rack_ctr1" class="rack_ctr">
+        <h2>Freezer:  [% rack.freezer.name %] / Rack: [% rack.name %]</h2>
+        <div class="rack" id="rack1" data-rack_id="[% rack.rack_id ~%]">
+            [%= FOREACH box IN rack.boxes =%]
+            <div class="freezer-box" id="[%- box.box_id -%]" onclick="fetchBox([% box.box_id %])" title="[%- box.name -%]"><span><script type="text/javascript">document.write(format_box_name("[% box.name %]"))</script></span></div>
+            [% END ~%]
+          </div>
+    </div>
+
+    <div id="rack2_finder" class="rack_ctr">
+        <h2>Move To</h2>
+        [% custom = 'fetchDDRack' %]
+        [% INCLUDE freezer_finder.tt %]
+    </div>   
+
+    <!-- Second Rack -->
+    <div id="rack_ctr2" class="rack_ctr">
+          <div class="rack" id="rack2">
+          </div>
+    </div>
+
+    [% INCLUDE 'body-bottom.tt' %]
+
+    [% INCLUDE 'body-end.tt' %]
+
+</body>
+</html>

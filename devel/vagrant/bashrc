@@ -1,0 +1,20 @@
+# .bashrc
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+    . /etc/bashrc
+fi
+
+export TZ=America/Los_Angeles
+
+# User specific aliases and functions
+export PATH="/usr/local/bin:$PATH"
+
+export PAGER=less
+export LESS=FSRX
+
+. /usr/share/git-core/contrib/completion/git-prompt.sh
+export GIT_PS1_SHOWDIRTYSTATE=1 GIT_PS1_SHOWUPSTREAM=auto
+export PS1='[\u@\h \W$(__git_ps1 " (%s)")]\$ '
+
+. ~/perl5/perlbrew/etc/bashrc

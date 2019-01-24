@@ -1,0 +1,13 @@
+#!/bin/bash
+home=`dirname $0`/..
+pidfile=$home/var/run/server-starter.pid
+
+cd $home
+
+if [[ -s $pidfile ]]; then
+    echo -n "Stopping server... "
+    xargs kill < $pidfile \
+    && echo "done" || echo "FAILED ($?)"
+else
+    echo "No server running (no pid file: $pidfile)"
+fi

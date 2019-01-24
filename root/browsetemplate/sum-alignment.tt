@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse: Summary of Alignment [%- alignment.give_id -%]</title>
+
+[% INCLUDE 'summ-head.tt' %]
+
+
+</head>
+
+<body class="yui-skin-sam" >
+[% INCLUDE 'body-top.tt' %]
+<h2>
+    Alignment #<% alignment.idrev %> <%- alignment.name -%>
+    - <a href='<%- uri_base -%>summary/alignment/<%- alignment.idrev -%>/export/fasta'>Download</a>
+</h2>
+[%- alignment.alignment_length -%] bp entered [%- alignment.date_entered -%] by [%- alignment.scientist_id.name -%] from [%- alignment.alignment_method_id.name -%] <br />
+[%- alignment.na_sequences.length -%] taxa:
+    <ul>
+    [%- FOREACH s IN alignment.na_sequences -%]
+    <li>
+        <a href="<% c.uri_for_action("/sequence/show", [ s.idrev ]) %>">[%- s.give_id -%].[%- s.na_sequence_revision -%]</a> [% s.name -%]
+        [%- IF s.deleted -%]
+            <div style="color: red">Sequence deleted[% IF s.note %]: [%- s.note -%][% END %]</div>
+        [%- END -%]
+    </li>
+    [%- END -%]
+    </ul>
+Notes: [% alignment.notes %] <br />
+
+[% INCLUDE 'body-bottom.tt' %]
+
+    <div id="sidebar">
+    </div>
+
+[% INCLUDE 'body-end.tt' %]
+</body>
+</html>

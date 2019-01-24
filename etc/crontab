@@ -1,0 +1,29 @@
+# uncomment and set an alternate email for cron errors
+#MAILTO=developers@example.org
+
+# Edit with path to Viroverse install dir as necessary
+VIROVERSE=/home/vverse/viroverse
+VV=/home/vverse/viroverse/vv
+
+# Every boot (or restart of crond)
+@reboot    $VV $VIROVERSE/scripts/restart-server
+
+# ~5m
+10 3 * * * $VV $VIROVERSE/scripts/update-blast.pl
+
+# workers
+* * * * *  env VVQUIET=1 $VV $VIROVERSE/scripts/worker Align::Needle
+* * * * *  env VVQUIET=1 VIROVERSE_LOG_LEVEL=debug $VV $VIROVERSE/scripts/worker ImportJob
+
+# Every day queue unaligned sequences for reference alignment; almost all
+# sequences should be queued at creation.
+01 1 * * * env VVQUIET=1 $VV $VIROVERSE/scripts/align-to-reference --unaligned
+
+# Update the sequence and sample search materialized view every five minutes.
+# They take ~12s and ~2s, respectively.
+*/5 * * * * env VVQUIET=1 $VV $VIROVERSE/scripts/refresh-materialized-view sequence_search
+*/5 * * * * env VVQUIET=1 $VV $VIROVERSE/scripts/refresh-materialized-view distinct_sample_search
+
+# Update the project material progress view every minute. At time of writing, it
+# takes less than a second
+* * * * * env VVQUIET=1 $VV $VIROVERSE/scripts/refresh-materialized-view project_material_scientist_progress

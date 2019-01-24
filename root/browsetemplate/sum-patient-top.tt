@@ -1,0 +1,22 @@
+<fieldset><legend>Switch Subjects</legend>
+<form method="post" action="[%- uri_base -%]subject" name="patientForm" id="patientForm">
+    <div class='filter'>
+        <label>Cohort</label>
+        [% INCLUDE 'cohort-select.tt' %]
+    </div>
+                                  
+    <div class="filter" id="patientSpan">
+        <label>Subject ID</label> 
+        <input type="text" required id="patientInput" class='auto' name="ext_pat_id" size="8" />
+        <input type="hidden" name="visit.patient_id" id='hidden_patient'  />
+        <div id ='patient_name_div' class='y_auto'></div> 
+    </div> 
+    <input type='submit' class='filter' style='margin-top:1.5em'>
+</form>
+</fieldset>
+
+<h2>[%- patient_names.join("/") -%]</h2>
+
+<h3 class="patient-pub-aliases">[%- patient_pub_ids.join(" / ") -%]</h3>
+<h3 class="patient-aliases">[%- patient_aliases.join(" / ") -%]</h3>
+

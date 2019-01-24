@@ -1,0 +1,55 @@
+.upload-list {
+    min-height: 4em;
+    position: relative;
+}
+
+.upload-list ul {
+    margin-top: 0.5em;
+}
+
+.upload-list input[type=file] {
+    max-width: 100%;
+}
+
+.upload-list.has-files {
+    background-image: linear-gradient(to bottom, #cacaf5, #f5f5f5);
+}
+
+.upload-list.active-dropzone {
+    background: #dff0d8;
+}
+
+/* This prevents children of the upload list widget from interfering with an
+ * active drag operation by disabling mouse events on all children during an
+ * active drag within the widget.  Otherwise, for example, the file input would
+ * cause spurious dragleave/dragenter events that we don't want. */
+.upload-list.active-dropzone * {
+    pointer-events: none;
+}
+
+/* If the upload list is also a Bootstrap well, style any bare buttons into the
+ * bottom right corner nicely. */
+.upload-list.well > button.upload-list-clear,
+.upload-list.well > button.upload-list-add {
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+/* If the upload list is also a Bootstrap well, style a button group into the
+ * bottom right corner nicely. */
+.upload-list.well .btn-group {
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+}
+
+.upload-list.well .btn-group > button:first-child {
+    border-bottom-left-radius: 0;
+}
+
+.upload-list.well .btn-group > button:last-child {
+    border-top-right-radius: 0;
+}

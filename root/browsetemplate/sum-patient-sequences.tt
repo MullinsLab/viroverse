@@ -1,0 +1,71 @@
+[% USE crumbs = Viroverse::Breadcrumbs({ page_record => virodb_patient, leaf_label => "Sequences", context => c }) %]
+[% page.breadcrumbs = crumbs.breadcrumbs %]
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse: Summary of [%- patient.get_prop('patient_name') -%]</title>
+[%- USE dumper -%]
+<% INCLUDE 'head-bootstrap.tt' %>
+[% INCLUDE 'summ-head.tt' %]
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/javascripts/yui_2.8.1/container.css">
+
+
+    <link href="[%- uri_base -%]/static/stylesheets/autosuggest.css" rel="stylesheet" type="text/css" />
+
+    <link href="[%- uri_base -%]static/stylesheets/input_tools.css" rel="stylesheet" type="text/css" />  
+    <link href="[%- uri_base -%]static/stylesheets/ng/faceted-search.css" rel="stylesheet" type="text/css" />
+    <link href="[%- uri_base -%]static/stylesheets/ng/sequence-search.css" rel="stylesheet" type="text/css" />
+
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/yahoo-dom-event.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/element-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/connection-min.js"></script> 
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/datasource-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/autocomplete-min.js"></script>
+
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/container-min.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/yui_2.8.1/animation-min.js"></script>
+
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/sidebar-collect.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]static/javascripts/suggestion-patient.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]static/javascripts/yui_2.8.1r2/tabview.css">
+    <link rel="stylesheet" type="text/css" href="[%- uri_base -%]/static/stylesheets/tabview.css" /> 
+
+</head>
+
+<body class='yui-skin-sam'>
+[% INCLUDE 'body-top.tt' %]
+[% INCLUDE 'sum-patient-top.tt' %]
+
+<div id="patient-tabs" class="yui-navset">
+[% PROCESS 'sum-patient-tabs.tt', current_tab = 'sequences' %]
+
+    <!-- BEGIN TABS -->          
+    <div class="yui-content" style="padding: 0.5em">
+    
+        <!-- BEGIN TAB 5 (Sequences) -->
+        <div id="tab5" class="bootstrapped">
+          <div class="container" style="width: 1100px;">
+            <faceted-search sequence-search
+              sequence-search-ui="within-patient"
+              rows-per-page="50"
+              endpoint="<% c.uri_for_action("/patient/sequences/search", [ patient.give_id ]) %>">
+            </faceted-search>
+          </div>
+        </div>
+         <!-- END TAB 5 (Sequences) -->    
+
+    </div>
+    <!-- END TABS -->
+    
+</div>
+
+[% INCLUDE 'body-bottom.tt' %]
+<div id="sidebar">
+[% INCLUDE 'sidebar/dna_sequence.tt' %] 
+</div>
+
+[% INCLUDE 'body-end.tt' %]
+
+</body>
+</html>

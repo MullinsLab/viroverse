@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Viroverse: Peptide ELISpot Data Input</title>
+[% INCLUDE 'head.tt' %]
+    <link href="[%- uri_base -%]/static/stylesheets/autosuggest.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/remotesuggestions.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/autosuggest2.js"></script>
+    <script type="text/javascript" src="[%- uri_base -%]/static/javascripts/epitopedb.js"></script>
+
+</head>
+
+<body>
+[% INCLUDE 'body-top.tt' %]
+<h2>Peptide ELISpot</h2>
+<form id='peptide_elispot_result' name='peptide_elispot_result' action='[%- uri_base -%]/input/epitopedb/peptide_elispot/result' method='post' enctype="multipart/form-data">
+    <fieldset><legend>Experiment</legend>
+    <label>Date</label>
+    <span class='formw'>
+        <select name='exp_year'>
+            <option value='' selected>Year</option>
+            [% FOREACH year IN years %]
+                <option>[%- year -%]</option>
+            [% END %]
+        </select>
+        <select name='exp_month'>
+            <option value='' selected>Month</option>
+            [% FOREACH month IN months %]
+                <option>[%- month -%]</option>
+            [% END %]
+        </select>
+        <select name='exp_day'>
+            <option value='' selected>Day</option>
+            [% FOREACH day IN days %]
+                <option>[%- day -%]</option>
+            [% END %]
+        </select>
+    </span><br clear='all' />
+    <label>Note</label>
+    <span class='formw'>
+        <input type='text' id='exp_note' name='exp_note'>
+    </span><br clear='all' />
+    <label>Plate No.</label>
+    <span class='formw'>
+        <input type='text' id='plate' name='plate' maxlength='2'>
+    </span><br clear='all' />
+    </fieldset>
+
+    <fieldset><legend>Sample</legend>
+    <label>Cohort Name</label>
+    <span class="formw">
+        <select name="cohort" id="cohort" onchange="getPatient(this.value)">
+             <option value="" selected>Choose one</option> 
+                [% FOREACH cohort IN cohorts.keys.sort %]
+                 <option value="[%- cohorts.$cohort.cohort_id -%]">[%- cohorts.$cohort.show_name -%]</option>
+                [% END %]
+        </select> 
+    </span> 
+    <br clear='all' />
+
+    <label>Patient ID</label> 
+    <span class="formw" id="patientSpan">
+
+    </span><br clear='all' />
+
+    <label>Date and Tissue</label>  
+    <span class="formw" id="patientInfo">
+
+    </span><br clear='all' />
+
+    <label>Cells per well</label>
+    <span class='formw'>
+        <input type='text' name='cell_num'>
+    </span><br clear='all' />
+    </fieldset>
+
+    <div id='error' class='error' [%- IF error -%] style='display:block'[%- END -%] >
+<!--    [% IF error %]
+    Form Disabled: [%- error -%]
+    [% disabled = "disabled = 'true'" %]
+    [% END %]-->
+    </div>
+
+    <fieldset><legend>Peptide</legend>
+    <label>Name</label>
+    <span class='formw'>
+        <input type='text' name='pept_name' id='pept_name' class='auto'>
+    </span><br clear='all' />
+    <label>Or Sequence</label>
+    <span class='formw'>
+        <input type='text' name='pept_seq' id='pept_seq' class='auto'>
+    </span><br clear='all' />
+    </fieldset>
+
+    <fieldset><legend>Spot forming cells</legend>
+        <div>
+            <label>Measure 1</label>
+            <span class='formw'>
+                <input type='text' name='sfc'>
+            </span>
+            <span>
+                <input type='button' value='+' onclick="addMeasure(this)">
+            </span>
+        </div>
+    </fieldset>
+    <br>
+    <div>
+        <label>Or import data by uploading a <a href="[%- uri_base -%]/static/epitopedb/inputtemplate/pept_elispot.xls">formatted file</a>, which you must save as <b>tab-separated values (tsv)</b>:</label><br>
+        <span class='formw'>
+            <input type='file' name='inputfile' />
+        </span><br clear='all' />
+    </div>
+    <br>
+    <div class="buttons">
+        <span class="formButton">
+            <input type='button' name='pept_elispot_submit' value='Submit' onClick="if (validate_form(this.form)) {to_sidebar_ajax('peptide_elispot_result', 'error')}">&nbsp;<input type='reset' name='reset' value=' Reset '>
+        </span> 
+    </div>
+
+</form>
+
+[% INCLUDE 'body-bottom.tt' %]
+<form id='sidebar_form' name='sidebar_form' action='[%- uri_base -%]/input/epitopedb/input_sidebar/update'>
+    <div id="sidebar">
+        <h2>Peptide ELISpot Data Input Result</h2>
+        <div id="sidebar_content">
+            [% status %]
+        </div>
+    </div>
+</form> 
+[% INCLUDE 'body-end.tt' %]
+</body>
+<script  type="text/javascript">
+new AutoSuggestControl(document.getElementById("pept_name"), new RemoteSuggestions("pept_name"));
+new AutoSuggestControl(document.getElementById("pept_seq"), new RemoteSuggestions("pept_seq"));
+</script>
+</html>

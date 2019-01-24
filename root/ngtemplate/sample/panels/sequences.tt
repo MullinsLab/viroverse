@@ -1,0 +1,38 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <a href="[% c.uri_for_action('/sample/sequences', [ sample.id ]) %]">Sequences</a>
+        </h3>
+    </div>
+    [% IF $(sample.na_sequences.latest_revisions).has_rows %]
+        <table class="table">
+            <tfoot>
+                <tr>
+                    <th>Total</th>
+                    <th class="text-right">[% $(sample.na_sequences.latest_revisions).count | commafy %]</th>
+                </tr>
+            </tfoot>
+            <tbody>
+                [% FOREACH gene IN sequence_freq %]
+                <tr>
+                    <td>[% gene.key %]</td>
+                    <td class="text-right">[% gene.value | commafy %]</td>
+                 </tr>
+                [% END %]
+                [% FOR row IN $(sample.na_sequences.latest_revisions.non_genomic).rollup_by_type %]
+                    [% IF row.get_column('count') %]
+                        <tr>
+                            <td>[% row.get_column('sequence_type') %]</td>
+                            <td class="text-right">[% row.get_column('count') %]</td>
+                        </tr>
+                    [% END %]
+                [% END %]
+              </tbody>
+        </table>
+        <div class="list-group">
+            <a class="list-group-item" href="[% c.uri_for_action('/sample/sequences', [ sample.id ]) %]">Search sequences</a>
+        </div>
+    [% ELSE %]
+        <div class="panel-body"><p class="panel-little-label">No sequences</p></div>
+    [% END %]
+</div>

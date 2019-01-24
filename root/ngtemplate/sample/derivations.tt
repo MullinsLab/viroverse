@@ -1,0 +1,50 @@
+[% USE crumbs = Viroverse::Breadcrumbs({ page_record => sample, context => c, leaf_label => "Derivations" }) %]
+[%- page = {
+    title  = "Derivations of sample $sample.id",
+    has_js = 1,
+    breadcrumbs = crumbs.breadcrumbs
+} -%]
+
+[% WRAPPER 'sample/base.tt' %]
+<h3>Derivations</h3>
+<h4>New derivation</h4>
+
+<form action="[% c.uri_for_action('/derivation/create_with_default_outputs', []) %]" method="POST">
+    <input type="hidden" name="input_sample_id" value="[% sample.id %]" />
+    <div class="row">
+        <div class="form-group col-md-4">
+            <label for="protocol_id">Workflow step/protocol</label>
+            <select name="protocol_id" class="form-control col-xs-4">
+                [% FOR proto IN protocols %]
+                    <option value="[% proto.id %]">[% proto.name %]</option>
+                [% END %]
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-4">[% INCLUDE 'scientist-dropdown.tt' %]</div>
+    </div>
+    <button class="btn btn-primary" type="submit">
+        Create derivation
+    </button>
+</form>
+<table class="table">
+<thead>
+    <tr>
+        <th>Derivation ID</th>
+        <th>Protocol</th>
+        <th>Date performed</th>
+        <th>Scientist</th>
+    </tr>
+<tbody>
+    [% FOR derivation IN $(sample.child_derivations).order_by('!date_completed') %]
+    <tr>
+        <td><a href="[%c.uri_for_action("/derivation/show", [ derivation.id ]) %]">[% derivation.id %]</a></td>
+        <td>[% derivation.protocol.name %]</td>
+        <td>[% derivation.date_completed.strftime("%Y-%m-%d") %]</td>
+        <td>[% derivation.scientist.name %]</td>
+    </tr>
+    [% END %]
+</tbody>
+</table>
+[% END %]

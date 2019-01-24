@@ -1,0 +1,10 @@
+<div id="calcVolcDNA" class="overlay"> 
+<div class="hd">Calculate the volume of cDNA based on copy number</div> 
+<div class="bd">
+    <p>To produce 1 in <input type="text" size="2" id="pos_rat" value="5" onchange="calcVolcDNA(this.value)" onkeyup="calcVolcDNA(this.value)" /> Positive Reactions</p>
+    <p>use <span id="cp_num_calc_vol"></span> &mu;l cDNA per reaction</p>
+    <input type="hidden" id="copy_num" value="" />
+</div>
+<div class="ft"><input type="button" onclick="setInputVol()" value="Use" />&nbsp;&nbsp;<input type="button" id="hideCalc" value="Cancel" /></div>
+
+</div> 
