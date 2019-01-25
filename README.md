@@ -1,13 +1,31 @@
 # Viroverse
 
-This repository is the public, open-source version of Viroverse, a platform for
-the collection, storage, retrieval, and analysis of experimental data for
-laboratory workflows.  Learn more about Viroverse at
+Viroverse is a platform for the collection, storage, retrieval, and
+analysis of experimental data for laboratory workflows. Developed
+in-house for twelve years, it serves as the principal data store for HIV
+sequencing experiments conducted in the Mullins Lab. Viroverse currently
+houses tens of thousands of viral nucleotide sequences, together with
+comprehensive metadata about their creation including PCR protocols, gel
+images, subject clinical data, and more. Learn more about Viroverse at
 <https://viroverse.washington.edu>.
 
-Currently Viroverse is in very early pre-release and has many, many rough edges
-and approximately no documentation.  If you're interested in trying out
-Viroverse yourself, your best bet is to [reach out to us][] so we can engage
+The initial public release of Viroverse has many rough edges and very
+little documentation. If you’re interested in using Viroverse in
+production after trying it out in dev mode, please [reach out to
+us](mailto:mullspt+cfar@uw.edu?subject=Viroverse) so we can engage
 one-on-one to help you out.
 
-[reach out to us]: mailto:mullspt+cfar@uw.edu?subject=Viroverse
+## Getting Started
+
+The easiest way to run Viroverse in a development environment is to start a
+local virtual machine using [Vagrant](https://www.vagrantup.com) and
+[VirtualBox](https://www.virtualbox.org). After installing VirtualBox and
+Vagrant, running `vagrant up` in the root of a clone of this repository will
+start and provision a development VM. This will take quite some time! The
+provisioning script will install dependencies, create a database, and if all
+goes well, create a user account named after your username on the host system.
+To run the development server, log in to the VM with `vagrant ssh`, enter the
+`/home/vagrant/viroverse` directory, and run `REMOTE_USER=username ./vv
+plackup`, replacing `username` with your desktop login name. The application
+should start and its web interface should be available by browsing to
+<http://192.168.0.2:5000> from your desktop.
