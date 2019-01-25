@@ -234,6 +234,14 @@ popd
 
     db_exists viroverse || try ./devel/create-database
 
+## Make a directory for CAS storage
+
+    [ -d ../vagrant-storage ] || try mkdir ../vagrant-storage
+
+## Copy a default config_local.pm if none is present
+
+    [ -x lib/Viroverse/config_local.pm ] || try cp devel/vagrant/config_local.pm lib/Viroverse/
+
 ## Create an admin user
 
     try ./vv scripts/add-scientist --user $HOST_USER --role admin --name $HOST_USER --email vagrant@localhost
