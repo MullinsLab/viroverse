@@ -24,9 +24,9 @@ our $read_write_user    = 'viroverse_w';
 our $read_write_pw      = '';
 
 # Contact
-our $help_name   = 'Viroverse Development Team';
-our $help_email  = 'vverse@u.washington.edu';
-our $error_email = 'viroverse_boom@u.washington.edu';
+our $help_name   = 'Your Local Viroverse Administrator';
+our $help_email  = $unix_user . '@' . $hostname;
+our $error_email = $unix_user . '@' . $hostname;
 
 # Viroverse's local ViroBLAST install paths
 #
