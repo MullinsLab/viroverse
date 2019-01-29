@@ -9,6 +9,7 @@
     <h2>Confirm sequencing primers</h2>
     <form action="[% c.uri_for('/input/sequence/update_primers') %]" method="post" enctype="multipart/form-data">
       [% FOR seq IN sequences %]
+      [%- IF seq.chromats.size -%]
         <div class="row" class="confirm-primers">
           <h3 class="col-md-12">[% seq.name %]</h3>
           [% FOR chromat IN @(seq.chromats.sort) -%]
@@ -36,6 +37,7 @@
             <% END %>
           [%- END -%]
         </div>
+      [%- END -%]
       [%- END -%]
       <button class="btn btn-primary">Submit</button>
     </form>
