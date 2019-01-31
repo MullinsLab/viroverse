@@ -84,8 +84,10 @@ for my $tuple (@data) {
     }
 
     my @existing = $db->resultset("Scientist")->search({ username => $user });
-    die "Found existing scientist(s)! ", join(", ", map { join " - ", $_->scientist_id, $_->name } @existing), "\n"
-        if @existing;
+    if (@existing) {
+        warn "Found existing scientist(s)! ", join(", ", map { join " - ", $_->scientist_id, $_->name } @existing), "\n";
+        next;
+    }
 
     my $scientist = $db->resultset("Scientist")->create({
         name     => $name,
