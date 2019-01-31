@@ -15,6 +15,17 @@ production after trying it out in dev mode, please [reach out to
 us](mailto:mullspt+cfar@uw.edu?subject=Viroverse) so we can engage
 one-on-one to help you out.
 
+## Help us fund Viroverse!
+
+Development of Viroverse has been supported by the US National Institutes of
+Health grants P01AI057005, R01AI111806, R01AI125026, R21AI122361, R37AI047734,
+and R21AI087161 to Jim Mullins and P30AI027757 to the University of Washington
+Center for AIDS Research.
+
+**You can help us maintain funding for Viroverse** by [letting us
+know](mailto:mullspt+cfar@uw.edu?subject=Viroverse) when you give Viroverse a
+try or adopt it for use in your lab. We very much appreciate hearing from you.
+
 ## Getting Started
 
 The easiest way to run Viroverse in a development environment is to start a

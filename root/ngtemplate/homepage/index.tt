@@ -4,6 +4,14 @@
 -%]
 <div class="row">
     <div class="col-md-12" ng-controller="LocationHash as locationHash">
+        [% IF nag %]
+            <div class="alert alert-info" role="alert">
+                <p>Please help us maintain funding for Viroverse development by
+                <a href="mailto:mullspt+cfar@uw.edu?subject=Viroverse">emailing
+                us</a> and letting us know who you are and what you're using
+                Viroverse for!</p>
+            </div>
+        [% END %]
         <h2>My Active Samples</h2>
         [% IF my_projects.size > 0 %]
             <uib-tabset active="locationHash.value" ng-cloak>

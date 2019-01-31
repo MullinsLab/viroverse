@@ -9,6 +9,7 @@ use Moose;
 use Catalyst::ResponseHelpers;
 use Viroverse::Logger qw< :log >;
 use List::Util qw< reduce >;
+use Viroverse::config;
 use namespace::autoclean;
 
 BEGIN { extends 'Viroverse::Controller' }
@@ -43,10 +44,13 @@ sub index : Chained('base') PathPart('') Args(0) {
         reduce { push @{ $a->{ $b->project->name } ||= [] }, $b; $a }
             +{}, @assignments;
 
+    my $nag = !$Viroverse::config::registered;
+
     $c->stash(
         template        => 'homepage/index.tt',
         active_projects => [ $active->order_by('name')->all ],
         my_projects     => $my_projects,
+        nag             => $nag,
     );
     $c->detach( $c->view("NG") );
 }
