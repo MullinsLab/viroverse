@@ -64,12 +64,4 @@ sub volume_with_unit {
     return $self->unit_id->with_magnitude($self->volume);
 }
 
-sub input_product_vv_uid {
-    my $self = shift;
-    croak 'Instance method!' unless ref $self;
-
-    my $parent = $self->input_product;
-    return $parent ? $parent->vv_uid : undef;
-}
-
 1;
