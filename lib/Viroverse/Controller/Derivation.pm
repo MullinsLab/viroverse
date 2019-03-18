@@ -36,13 +36,11 @@ sub load : Chained('base') PathPart('') CaptureArgs(1) {
 sub show : Chained('load') PathPart('') Args(0) {
     my ($self, $c) = @_;
     my @tissue_types = $c->model("ViroDB::TissueType")->search({}, {order_by => "name"})->all;
-    my @units = $c->model("ViroDB::Unit")->order_by("name")->all;
     my $related_samples = Viroverse::SampleTree->new(current_node => $c->model);
     $c->stash(
         template        => 'derivation/show.tt',
         derivation      => $c->model,
         tissue_types    => \@tissue_types,
-        units           => \@units,
         related_samples => $related_samples,
     );
     $c->detach( $c->view("NG") );
@@ -77,31 +75,6 @@ sub add_sample : POST Chained('load') PathPart('add_sample') Args(0) {
         Redirect($c, $self->action_for("show"), [ $c->model->id ], { mid => $mid });
     };
     Redirect($c, $self->action_for("show"), [ $c->model->id ]);
-}
-
-sub add_aliquots : POST Chained('load') PathPart('add_aliquots) Args(0) {
-    my ($self, $c) = @_;
-
-    return Forbidden($c)
-        unless $c->stash->{scientist}->is_admin || $c->stash->{scientist}->is_supervisor;
-
-    my @aliquot_ids;
-    my $unit_id = $c->req->params->{unit_id};
-
-    my $txn = $c->model->result_source->schema->txn_scope_guard;
-    for my $sample ($c->model->output_samples) {
-        my $aliquot = $sample->add_to_aliquots({
-            creating_scientist_id => $c->stash->{scientist}->scientist_id,
-            unit_id => $unit_id,
-        });
-        $aliquot->discard_changes;
-        push @aliquot_ids, $aliquot->id;
-    }
-    $txn->commit;
-
-    $c->controller('sidebar')->clear($c, 'found_aliquots');
-    $c->controller('sidebar')->add($c, 'found_aliquots' => @aliquot_ids);
-    return Redirect($c, "/freezer/search_freezers/aliquot_search");
 }
 
 1;
