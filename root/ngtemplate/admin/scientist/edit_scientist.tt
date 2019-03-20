@@ -17,7 +17,7 @@
       <h2>Role</h2>
       <label for="role">Change [% scientist_to_update.name %]'s role to:</label>
       <select class="form-control" name="role">
-        [% FOR role IN [ 'scientist', 'supervisor', 'admin', 'retired' ] %]
+        [% FOR role IN [ 'browser', 'scientist', 'supervisor', 'admin', 'retired' ] %]
         <option [% IF scientist_to_update.role == role %]selected="selected"[% END %] value="[% role %]">[% role %]</option>
         [% END %]
       </select>
