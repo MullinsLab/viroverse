@@ -16,6 +16,9 @@ sub base : Chained('/') PathPart('derivation') CaptureArgs(0) { }
 
 sub create_with_default_outputs : POST Chained('base') PathPart('create_with_default_outputs') Args(0) {
     my ($self, $c) = @_;
+
+    return Forbidden($c) unless $c->stash->{scientist}->can_edit;
+
     my %params = %{$c->req->params};
     my $new_derivation = $c->model("ViroDB::Derivation")->create_with_default_outputs({
         input_sample_id => $params{input_sample_id},
@@ -23,6 +26,7 @@ sub create_with_default_outputs : POST Chained('base') PathPart('create_with_def
         scientist_id    => $params{scientist_id},
         date_completed  => DateTime->today->ymd,
     });
+
     Redirect($c, $self->action_for("show"), [ $new_derivation->id ]);
 }
 
@@ -48,6 +52,9 @@ sub show : Chained('load') PathPart('') Args(0) {
 
 sub update : POST Chained('load') PathPart('') Args(0) {
     my ($self, $c) = @_;
+
+    return Forbidden($c) unless $c->stash->{scientist}->can_edit;
+
     my $params = $c->req->params;
     $c->model->update({
         map {; $_ => $params->{$_} }
