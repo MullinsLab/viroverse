@@ -4,10 +4,11 @@ use strict;
 use warnings;
 use base 'Viroverse::Controller::freezer';
 
-sub addFoundToFreezer : Local {
-    my ($self, $context) = @_;
+sub base : ChainedParent PathPart('search_freezers') CaptureArgs(0) {}
 
-    my @ids = @{$context->req->args()};
+sub addFoundToFreezer : Chained('base') PathPart('addFoundToFreezer') Args {
+    my ($self, $context, @ids) = @_;
+
     my @can_add = ('aliquot');
     foreach my $id (@ids) {
         my $a = Viroverse::Model::aliquot->retrieve($id);
@@ -25,7 +26,7 @@ sub addFoundToFreezer : Local {
     return;
 }
 
-sub aliquot_admin_summary_by_patient : Local {
+sub aliquot_admin_summary_by_patient : Chained('base') PathPart('aliquot_admin_summary_by_patient') Args(0) {
 # routine to provide results for find aliquots search (patient visit or assigned scientist)
     my ($self, $c) = @_;
 
@@ -65,7 +66,7 @@ sub aliquot_admin_summary_by_patient : Local {
     return;
 }
 
-sub aliquot_search : Local {
+sub aliquot_search : Chained('base') PathPart('aliquot_search') Args(0) {
 # provides list of cohorts the current user can access
     my ($self, $c) = @_;
     $c->forward('Viroverse::Controller::sidebar','sidebar_to_stash');
@@ -75,7 +76,7 @@ sub aliquot_search : Local {
     return;
 }
 
-sub aliquot_summary_by_box : Local {
+sub aliquot_summary_by_box : Chained('base') PathPart('aliquot_summary_by_box') Args(0) {
 # pull summary information by box name
     my ($self, $c) = @_;
 
@@ -109,7 +110,7 @@ sub aliquot_summary_by_box : Local {
     return;
 }
 
-sub aliquot_summary_selection : Local {
+sub aliquot_summary_selection : Chained('base') PathPart('aliquot_summary_selection') Args(0) {
 # supplies visit dates and tissues types to find aliquots/patient visit page when patient id/alias, min aliquot count or tissue type is selected.
     my ($self, $c) = @_;
 

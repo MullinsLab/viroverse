@@ -26,7 +26,9 @@
         </p>
         <ul class="nav navbar-nav navbar-right">
           <li><a href="[% c.uri_for_action("/project/index") %]">Projects</a></li>
+          [% IF scientist.can_edit %]
           <li><a href="[% c.uri_for_action("/admin/index") %]">Admin</a></li>
+          [% END %]
           <li><a href="mailto:<% help_email | uri | html %>?body=<% help_body | uri %>">Need help?</a></li>
         </ul>
 
