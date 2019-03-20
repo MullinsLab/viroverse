@@ -11,6 +11,7 @@ use Viroverse::Model::rt;
 use Viroverse::Model::bisulfite_converted_dna;
 use Viroverse::sample;
 use Viroverse::Model::scientist;
+use Catalyst::ResponseHelpers;
 
 use Fasta;
 
@@ -44,6 +45,7 @@ Catalyst Controller.
 
 sub auto : Private {
     my ($self,$context) = @_;
+    return Forbidden($context) unless $context->stash->{scientist}->can_edit;
     $context->stash->{cohorts} = $context->model("ViroDB::Cohort")->list_all;
     return 1;
 }

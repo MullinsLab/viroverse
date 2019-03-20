@@ -17,7 +17,9 @@
           <li><a href="[% c.uri_for_action("/cohort/index") %]">Browse subjects</a></li>
           <li><a href="[% c.uri_for_action("/sample/index") %]">Search samples</a></li>
           <li><a href="[% c.uri_for_action("/sequence/index") %]">Search sequences</a></li>
+          [% IF scientist.can_edit %]
           <li><a href="[% c.uri_for_action("/input/index") %]">Enter data</a></li>
+          [% END %]
         </ul>
 
         <!-- Right side items -->
