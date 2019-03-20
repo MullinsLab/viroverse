@@ -68,7 +68,7 @@ sub auto : Private {
     }
 
     my $sci = ViroDB->instance->resultset("Scientist")->find({ username => $username });
-    if ($sci and not $sci->is_retired) {
+    if ($sci and $sci->can_browse) {
         $context->stash->{scientist} = $sci;
         $context->req->env->{'viroverse.scientist'} = $sci;
     } else {
