@@ -1,9 +1,11 @@
+[%~ verb = scientist.can_edit ? 'Manage' : 'Browse' ~%]
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
             <a href="[% c.uri_for_action('/sample/extractions', [ sample.id ]) %]">Extractions</a>
         </h3>
     </div>
+    [% IF scientist.can_edit || extractions.size %]
     <div class="list-group">
         [% IF extractions.size %]
             [% FOR xt IN extractions.slice(0,[extractions.max,4].min) %]
@@ -14,12 +16,17 @@
                 [%~ IF remaining > 0 ~%]
                 …and [% remaining %] more
                 [%~ ELSE ~%]
-                Manage extractions
+                [% verb %] extractions
                 [%~ END ~%]
             </a>
         [% END %]
+        [% IF scientist.can_edit %]
         <a class="list-group-item" href="[% c.uri_for_action('/sample/new_extraction', [ sample.id ]) %]">
             Add an extraction
         </a>
+        [% END %]
     </div>
+    [% ELSE %]
+        <div class="panel-body"><p class="panel-little-label">No extractions</p></div>
+    [% END %]
 </div>

@@ -33,7 +33,7 @@
     </table>
     [% END %]
 
-    [% IF has_any_aliquots %]
+    [% IF scientist.can_edit && has_any_aliquots %]
     <div class="list-group">
         <a class="list-group-item" href="[% c.uri_for_action('/sample/manage_aliquots', [ sample.id ]) %]">Manage aliquots</a>
     </div>
