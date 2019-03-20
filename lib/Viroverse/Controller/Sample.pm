@@ -155,7 +155,7 @@ sub ice_cultures : Chained('page_base') PathPart('ice-cultures') Args(0) {
     $c->detach( $c->view("NG") );
 }
 
-sub create_note : POST Chained('page_base') PathPart('notes') Args(0) {
+sub create_note : POST Chained('load') PathPart('notes') Args(0) {
     my ($self, $c) = @_;
     $c->model->notes->create({
         body         => $c->req->params->{body},
