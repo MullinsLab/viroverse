@@ -542,6 +542,8 @@ __PACKAGE__->has_many(
 use JSON::MaybeXS;
 use namespace::autoclean;
 
+sub can_browse    { $_[0]->role ne "retired" }
+sub can_edit      { $_[0]->can_browse && $_[0]->role ne "browser" }
 sub is_supervisor { $_[0]->role eq "supervisor" }
 sub is_admin      { $_[0]->role eq "admin" }
 sub is_retired    { $_[0]->role eq "retired" }

@@ -9,9 +9,14 @@
 <h2>Assignments</h2>
 <table class="table table-condensed">
     <thead>
-        <tr><th>Project</th><th>Scientist</th><th></th></tr>
+        <tr>
+            <th>Project</th>
+            <th>Scientist</th>
+            [% IF scientist.can_edit %]<th></th>[% END %]
+        </tr>
     </thead>
     <tbody>
+    [% IF scientist.can_edit %]
         <form method="POST" action="[% c.uri_for_action('/sample/assign', [ sample.id ]) %]">
         <tr>
             <td>
@@ -25,10 +30,12 @@
             <td><button type="submit" class="btn btn-default">Assign</button></td>
         </tr>
         </form>
+    [% END %]
         [% FOR pm IN @(sample.project_assignments) %]
         <tr>
             <td><a href="[% c.uri_for_action('/project/show', [ pm.project.id ]) %]">[% pm.project.name %]</a></td>
             <td><a href="[% c.uri_for_action('/project/assigned_samples_for_scientist', [ pm.project.id, pm.assigned_scientist.id ]) %]">[% pm.assigned_scientist.name %]</a></td>
+            [% IF scientist.can_edit %]
             <td>
                 <form class="form-inline" method="POST"
                     action="[% c.uri_for_action('/sample/unassign', [ sample.id ]) %]">
@@ -36,6 +43,7 @@
                     <button type="submit" class="btn btn-link btn-xs">delete</button>
                 </form>
             </td>
+            [% END %]
         </tr>
         [% END %]
     </tbody>

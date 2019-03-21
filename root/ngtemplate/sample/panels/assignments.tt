@@ -13,7 +13,9 @@
             <p>This sample is unassigned</p>
         [%- END -%]
     </div>
+    [% IF scientist.can_edit %]
     <div class="list-group">
         <a class="list-group-item" href="[% c.uri_for_action('/sample/assignments', [ sample.id ]) %]">Manage assignments</a>
     </div>
+    [% END %]
 </div>

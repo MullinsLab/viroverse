@@ -35,7 +35,7 @@ Additionally stashes the following values:
 
 =item C<< $c->req->env->{"viroverse.scientist"} >>
 
-Set to the currently logged in L<Viroverse::Model::scientist> record.
+Set to the currently logged in L<ViroDB::Result::Scientist> record.
 
 =item C<< $c->stash->{debug} >>
 
@@ -68,7 +68,7 @@ sub auto : Private {
     }
 
     my $sci = ViroDB->instance->resultset("Scientist")->find({ username => $username });
-    if ($sci and not $sci->is_retired) {
+    if ($sci and $sci->can_browse) {
         $context->stash->{scientist} = $sci;
         $context->req->env->{'viroverse.scientist'} = $sci;
     } else {

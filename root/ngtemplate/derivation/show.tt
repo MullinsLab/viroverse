@@ -32,35 +32,37 @@
               This derivation has no external link.
             [% END %]
         </p>
-        <p>
-            <a class="small" href="#edit">
-              <span class="glyphicon glyphicon-pencil"></span>
-              edit
-            </a>
-        </p>
-        <div id="edit">
-          <h3>Edit this derivation</h3>
-          <form method="POST" role="form" action="<% c.uri_for_action('/derivation/update', [ derivation.id ]) %>">
-            <div class="form-group">
-              <label for="update-date-completed">Date performed</label>
-              <input name="date_completed" id="update-date-completed" type="date" value="<% derivation.date_completed.ymd %>" class="form-control">
+        [% IF scientist.can_edit %]
+            <p>
+                <a class="small" href="#edit">
+                  <span class="glyphicon glyphicon-pencil"></span>
+                  edit
+                </a>
+            </p>
+            <div id="edit">
+              <h3>Edit this derivation</h3>
+              <form method="POST" role="form" action="<% c.uri_for_action('/derivation/update', [ derivation.id ]) %>">
+                <div class="form-group">
+                  <label for="update-date-completed">Date performed</label>
+                  <input name="date_completed" id="update-date-completed" type="date" value="<% derivation.date_completed.ymd %>" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label for="update-uri">Reference URI</label>
+                  <input name="uri" id="update-uri" type="text" value="<% derivation.uri %>" class="form-control">
+                </div>
+                <div class="form-group">
+                  <button type="submit" class="btn btn-primary btn-sm">
+                    <span class="glyphicon glyphicon-ok"></span>
+                    Save
+                  </button>
+                  <a class="btn btn-link btn-sm" href="#">
+                    <span class="glyphicon glyphicon-remove"></span>
+                    Cancel
+                  </a>
+                </div>
+              </form>
             </div>
-            <div class="form-group">
-              <label for="update-uri">Reference URI</label>
-              <input name="uri" id="update-uri" type="text" value="<% derivation.uri %>" class="form-control">
-            </div>
-            <div class="form-group">
-              <button type="submit" class="btn btn-primary btn-sm">
-                <span class="glyphicon glyphicon-ok"></span>
-                Save
-              </button>
-              <a class="btn btn-link btn-sm" href="#">
-                <span class="glyphicon glyphicon-remove"></span>
-                Cancel
-              </a>
-            </div>
-          </form>
-        </div>
+        [% END %]
         <table class="table table-condensed table-striped">
         <thead>
             <tr>

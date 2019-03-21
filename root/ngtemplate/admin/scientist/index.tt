@@ -30,6 +30,7 @@
                         <td><input type="text" name="username" placeholder="Scientist username" style="width:100%" class="form-control"></td>
                         <td><input type="text" name="email" placeholder="Scientist email" style="width:100%" class="form-control"></td>
                         <td><select class="form-control" name="role" style="margin-bottom: 10px">
+                            <option value="browser">browser</option>
                             <option value="scientist">scientist</option>
                             <option value="supervisor">supervisor</option>
                             <option value="admin">admin</option>

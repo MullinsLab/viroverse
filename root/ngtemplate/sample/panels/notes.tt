@@ -16,6 +16,7 @@
         [% END %]
     </div>
 
+    [% IF scientist.can_edit %]
     <form role="form" method="POST" action="[% c.uri_for_action('/sample/create_note', [ sample.id ] )%]">
         <div class="input-group">
             <input name="body" class="form-control" placeholder="New note…">
@@ -24,4 +25,5 @@
             </span>
         </div>
     </form>
+    [% END %]
 </div>

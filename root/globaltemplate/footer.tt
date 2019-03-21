@@ -18,6 +18,7 @@
         [% END %]
       </div>
 
+      [% IF scientist.can_edit %]
       <div class="column">
         <h5>PCR &amp; Sequencing</h5>
         <ul class="list-unstyled">
@@ -64,6 +65,7 @@
           <% END %>
         </ul>
       </div>
+      [% END %]
 
       <% IF scientist.is_admin OR scientist.is_supervisor %>
         <div class="column">

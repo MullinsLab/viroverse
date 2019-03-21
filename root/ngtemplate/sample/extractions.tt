@@ -5,9 +5,11 @@
 } %]
 [% WRAPPER 'sample/base.tt' %]
 <h2>Extractions</h2>
+[% IF scientist.can_edit %]
 <a href="[% c.uri_for_action('sample/new_extraction', [ sample.id ]) %]" class="btn btn-default">
   Add extraction for this sample
 </a>
+[% END %]
 [%- FOREACH extraction IN sample.extractions -%] [%# probably the wrong sort but oh well %]
     <div class="extraction">
         <h3>

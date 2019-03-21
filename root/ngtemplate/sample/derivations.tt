@@ -7,6 +7,7 @@
 
 [% WRAPPER 'sample/base.tt' %]
 <h3>Derivations</h3>
+[% IF scientist.can_edit %]
 <h4>New derivation</h4>
 
 <form action="[% c.uri_for_action('/derivation/create_with_default_outputs', []) %]" method="POST">
@@ -28,6 +29,7 @@
         Create derivation
     </button>
 </form>
+[% END %]
 <table class="table">
 <thead>
     <tr>

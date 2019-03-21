@@ -32,6 +32,11 @@ sub load : Chained('base') PathPart('') CaptureArgs(1) {
     $c->stash( current_model_instance => $sample );
 }
 
+sub mutate : Chained('load') PathPart('') CaptureArgs(0) {
+    my ($self, $c) = @_;
+    return Forbidden($c) unless $c->stash->{scientist}->can_edit;
+}
+
 sub show_json : Chained('load') PathPart('') Args(0)
               : Does(MatchRequestAccepts) Accept('application/json') {
     my ($self, $c) = @_;
@@ -155,7 +160,7 @@ sub ice_cultures : Chained('page_base') PathPart('ice-cultures') Args(0) {
     $c->detach( $c->view("NG") );
 }
 
-sub create_note : POST Chained('page_base') PathPart('notes') Args(0) {
+sub create_note : POST Chained('mutate') PathPart('notes') Args(0) {
     my ($self, $c) = @_;
     $c->model->notes->create({
         body         => $c->req->params->{body},
@@ -164,14 +169,14 @@ sub create_note : POST Chained('page_base') PathPart('notes') Args(0) {
     return Redirect($c, $self->action_for("show"), [ $c->model->id ]);
 }
 
-sub new_extraction : Chained('load') PathPart('extraction/new') Args(0) {
+sub new_extraction : Chained('mutate') PathPart('extraction/new') Args(0) {
     my ($self, $c) = @_;
     $c->controller("sidebar")->clear($c, 'sample', 'extraction');
     $c->controller("sidebar")->add($c, sample => $c->model->sample_id);
     return Redirect($c, '/input/extraction' );
 }
 
-sub assignment : Chained('load') PathPart('assignment') CaptureArgs(0) {
+sub assignment : Chained('mutate') PathPart('assignment') CaptureArgs(0) {
     my ($self, $c) = @_;
     my $project_id = $c->req->params->{project_id};
     my $project = $c->model("ViroDB::Project")->find($project_id)
@@ -200,14 +205,14 @@ sub unassign : POST Chained('assignment') PathPart('delete') Args(0) {
     return Redirect($context, $self->action_for("assignments"), [ $context->model->id ]);
 }
 
-sub manage_aliquots : Chained('load') PathPart('manage-aliquots') Args(0) {
+sub manage_aliquots : Chained('mutate') PathPart('manage-aliquots') Args(0) {
     my ($self, $c) = @_;
     $c->controller('sidebar')->clear($c, 'found_aliquots');
     $c->controller('sidebar')->add($c, 'found_aliquots' => map { $_->id } $c->model->aliquots);
     return Redirect($c, "/freezer/search_freezers/aliquot_search");
 }
 
-sub new_rt_product : Chained('load') PathPart('rt_product/new') Args(0) {
+sub new_rt_product : Chained('mutate') PathPart('rt_product/new') Args(0) {
     my ($self, $c) = @_;
     my $id = $c->stash->{scientist}->scientist_id;
     $c->controller("sidebar")->clear($c, 'rt', 'extraction');
@@ -215,7 +220,7 @@ sub new_rt_product : Chained('load') PathPart('rt_product/new') Args(0) {
     return Redirect($c, '/input/RT' );
 }
 
-sub new_pcr_product : Chained('load') PathPart('pcr_product/new') Args(0) {
+sub new_pcr_product : Chained('mutate') PathPart('pcr_product/new') Args(0) {
     my ($self, $c) = @_;
     my $id = $c->stash->{scientist}->scientist_id;
     $c->controller("sidebar")->clear($c, 'rt', 'extraction', 'pos_pcr');
@@ -224,7 +229,7 @@ sub new_pcr_product : Chained('load') PathPart('pcr_product/new') Args(0) {
     return Redirect($c, '/input/PCR' );
 }
 
-sub new_sequence : Chained('load') PathPart('sequence/new') Args(0) {
+sub new_sequence : Chained('mutate') PathPart('sequence/new') Args(0) {
     my ($self, $c) = @_;
     my $id = $c->stash->{scientist}->scientist_id;
     $c->controller("sidebar")->clear($c, 'pcr_more');
