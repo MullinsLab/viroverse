@@ -3,6 +3,9 @@
         has_js = 1,
     }
 -%]
+[%- BLOCK javascript -%]
+<script type="text/javascript" src="[%- c.uri_for('/') -%]static/javascripts/by_products.js"></script>
+[%- END -%]
 
 <div class="row">
   <div class="col-sm-12">
@@ -47,9 +50,6 @@
                 </div>
             </div>
             <div class="form-group">
-                <label><input type="checkbox" name="prod-[% pcr.id %]-skip_chromats" value="1"> Chromats not required
-            </div>
-            <div class="form-group">
                 <label for="prod-<% pcr.id %>-sequence-type">Sequence type</label>
                 <select class="form-control" name="prod-<% pcr.id %>-sequence-type" id="prod-<% pcr.id %>-sequence-type">
                     <option value="">unknown</option>
@@ -73,6 +73,13 @@
                         </option>
                     <% END %>
                 </select>
+            </div>
+            <div class="form-group">
+                <label><input type="checkbox" name="prod-[% pcr.id %]-skip_chromats" class="skip-chromats" value="1"> Chromats not required</label>
+                <button type="button" class="btn btn-xs btn-default skip-chromats-toggle">toggle all</button>
+                <p class="help-block">Chromats should be uploaded for all Sanger
+                sequencing. Only omit chromats when adding consensus sequences
+                based on next-generation sequencing.</p>
             </div>
         </div>
         <div class="col-md-6">
