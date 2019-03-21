@@ -422,7 +422,7 @@ sub scientist_can_revise {
     my $sci  = shift;
     (ViroDBRecord["Scientist"])->assert_valid($sci);
     return $sci->can_edit && (
-        $sci->is_supervisor || $sci->is_admin || $self->scientist_id
+        $sci->is_supervisor || $sci->is_admin || ($sci->id == $self->scientist_id)
     );
 }
 
