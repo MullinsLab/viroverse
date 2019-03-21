@@ -3,6 +3,9 @@
         has_js = 1,
     }
 -%]
+[%- BLOCK javascript -%]
+<script type="text/javascript" src="[%- c.uri_for('/') -%]static/javascripts/by_products.js"></script>
+[%- END -%]
 
 <div class="row">
   <div class="col-sm-12">
@@ -47,7 +50,8 @@
                 </div>
             </div>
             <div class="form-group">
-                <label><input type="checkbox" name="prod-[% pcr.id %]-skip_chromats" value="1"> Chromats not required
+                <label><input type="checkbox" name="prod-[% pcr.id %]-skip_chromats" class="skip-chromats" value="1"> Chromats not required</label>
+                <button type="button" class="btn btn-xs btn-default" onclick="return toggleAllChromats()">set all</button>
             </div>
             <div class="form-group">
                 <label for="prod-<% pcr.id %>-sequence-type">Sequence type</label>
