@@ -290,6 +290,7 @@ __PACKAGE__->belongs_to(
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:IJMiKJr+JBV1odQHhd6SZw
 
 use List::Util 1.33 qw< any >;
+use Viroverse::Types -types;
 
 __PACKAGE__->many_to_many("chromats", "sequence_chromats", "chromat");
 
@@ -411,22 +412,18 @@ sub create_revision {
 
 =head2 scientist_can_revise
 
-Given a L<ViroDB::Result::Scientist> or L<Viroverse::Model::scientist> object,
-returns a boolean indicating if the scientist may revise this sequence or not.
-
-TODO: If this method is never called with a L<Viroverse::Model::scientist>
-argument, it should use L<ViroDB::Result::Scientist>'s role predicates instead.
+Given a L<ViroDB::Result::Scientist>, returns a boolean indicating if the
+scientist may revise this sequence or not.
 
 =cut
 
 sub scientist_can_revise {
     my $self = shift;
     my $sci  = shift;
-    return 0 if $sci->role eq "browser"; # browsers can never edit anything
-    return 1 if $sci->role eq "admin";
-    return 1 if $sci->role eq "supervisor";
-    return 1 if $sci->id == $self->scientist_id;
-    return 0;
+    (ViroDBRecord["Scientist"])->assert_valid($sci);
+    return $sci->can_edit && (
+        $sci->is_supervisor || $sci->is_admin || $self->scientist_id
+    );
 }
 
 sub idrev {
