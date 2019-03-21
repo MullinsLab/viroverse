@@ -27,6 +27,9 @@ sub auto : Private {
     unless ($context->stash->{features}->{epitopedb}) {
         return NotFound($context, "Feature disabled: EpitopeDB");
     }
+
+    return Forbidden($context)
+        unless $context->stash->{scientist}->can_edit;
 }
 
 1;
