@@ -548,6 +548,10 @@ sub is_supervisor { $_[0]->role eq "supervisor" }
 sub is_admin      { $_[0]->role eq "admin" }
 sub is_retired    { $_[0]->role eq "retired" }
 
+# Wrapping this test in a predicate method because the criteria
+# might evolve etc.
+sub censor_dates { $_[0]->role eq "browser" }
+
 sub can_manage_freezers { $_[0]->is_admin || $_[0]->is_supervisor }
 
 sub as_hash {
