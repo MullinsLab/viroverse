@@ -110,11 +110,6 @@
 
     </div><br clear='all' />
 
-    <!--
-    <label>filename</label> <span class="formw"><input name="pcr_name" type="text" size="40" /></span> 
-    <br clear='all' />
-    -->
-
     <label>Scientist</label> 
     <div class="formw">
         [%- INCLUDE 'scientist-select.tt' -%]
