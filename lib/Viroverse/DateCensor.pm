@@ -51,7 +51,8 @@ sub BUILD {
 sub represent_date {
     my ($self, $date) = @_;
 
-    (InstanceOf['DateTime'])->assert_valid($date);
+    return undef unless
+        (InstanceOf['DateTime'])->check($date);
 
     return $date->strftime($self->strftime_format)
         unless $self->censor;
