@@ -21,7 +21,8 @@ has strftime_format => (
 has relative_unit => (
     is       => 'ro',
     isa      => Enum[qw[ days weeks months years ]],
-    required => 1
+    required => 1,
+    default  => 'days',
 );
 
 has censor => (
