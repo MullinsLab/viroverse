@@ -12,9 +12,9 @@
     .directive('aliquotsInput', subdirective('aliquots-input', { orientation: '@?' }))
   ;
 
-  directive.$inject = ['$log'];
+  directive.$inject = ['$log', '$window'];
 
-  function directive($log) {
+  function directive($log, $window) {
     return {
       restrict: 'A',
       require: 'facetedSearch',
@@ -35,8 +35,10 @@
         // template.
         ctrl.isCohortSelected    = ctrl.isFacetValueSelected.bind(ctrl, 'cohort');
         ctrl.isProjectSelected   = ctrl.isFacetValueSelected.bind(ctrl, 'project');
-        ctrl.isScientistSelected = ctrl.isFacetValueSelected.bind(ctrl, 'scientist');
+        ctrl.isScientistSelected = ctrl.isFacetValueSelected.bind(ctrl, '');
         ctrl.minAvailableAliquots = minAvailableAliquots;
+
+        ctrl.scientist = $window.viroverse.scientist;
 
         ctrl.init();
       },

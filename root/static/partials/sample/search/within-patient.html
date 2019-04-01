@@ -47,7 +47,12 @@
         <tbody>
           <tr ng-repeat="sample in search.result.rows track by sample.sample_id">
             <td><a vv-href="/sample/{{ sample.sample_id }}">{{ sample.sample_id }}</a></td>
-            <td class="text-nowrap">{{ sample.sample_date }}</td>
+            <td class="text-nowrap"
+                ng-if="!search.scientist.censor_dates || sample.derivation_protocol_id"
+                >{{ sample.sample_date }}</td>
+            <td class="text-nowrap"
+                ng-if="search.scientist.censor_dates && !sample.derivation_protocol_id"
+                >{{ sample.relative_date }}</td>
             <td>{{ sample.tissue_type }}</td>
             <td><a vv-href="/sample/{{ sample.sample_id }}">{{ sample.name }}</a></td>
             <td>{{ sample.derivation_protocol }}</td>

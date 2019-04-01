@@ -86,7 +86,8 @@
         </td>
         <td><a vv-href="/sample/{{ sample.sample_id }}">{{ sample.patient }}</a></td>
         <td>{{ sample.tissue_type }}</td>
-        <td>{{ sample.sample_date }}</td>
+        <td ng-if="!search.scientist.censor_dates || sample.derivation_protocol_id">{{ sample.sample_date }}</td>
+        <td ng-if="search.scientist.censor_dates && !sample.derivation_protocol_id">{{ sample.relative_date }}</td>
         <td><a vv-href="/sample/{{ sample.sample_id }}">{{ sample.name }}</a></td>
         <td>{{ sample.derivation_protocol }}</td>
         <td class="text-right">
