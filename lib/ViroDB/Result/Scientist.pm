@@ -562,7 +562,15 @@ sub as_hash {
 
         # Add the convenience booleans for the benefit of our JS
         map { $_ => $self->$_ ? JSON->true : JSON->false }
-            qw[ is_supervisor is_admin is_retired can_manage_freezers ]
+            qw[
+                is_supervisor
+                is_admin
+                is_retired
+                can_manage_freezers
+                censor_dates
+                can_browse
+                can_edit
+             ]
     };
 }
 
