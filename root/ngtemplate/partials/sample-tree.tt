@@ -65,7 +65,12 @@
             <span>
               <a href="<% c.uri_for_action("/sample/show", [ node.id ]) %>">
                 <% IF node.visit %>
-                  <% node.tissue_type.name %> from <% node.date.ymd || 'unknown date' %>
+                  <% USE Censor = Viroverse::DateCensor({
+                        'censor'          => scientist.censor_dates
+                        'relative_unit'   => 'years',
+                        'patient'         => sample.patient,
+                        }) %>
+                  <% node.tissue_type.name %> from <% Censor.represent_date(node.date) || 'unknown date' %>
                 <% ELSE %>
                   <% IF node.name %><% node.name %> <% END %><% node.tissue_type.name %>
                 <% END %>
