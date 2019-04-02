@@ -540,6 +540,7 @@ __PACKAGE__->has_many(
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:9GuX/zENmQwnb/oPeU2u+A
 
 use JSON::MaybeXS;
+use Viroverse::config;
 use namespace::autoclean;
 
 sub can_browse    { $_[0]->role ne "retired" }
@@ -548,9 +549,9 @@ sub is_supervisor { $_[0]->role eq "supervisor" }
 sub is_admin      { $_[0]->role eq "admin" }
 sub is_retired    { $_[0]->role eq "retired" }
 
-# Wrapping this test in a predicate method because the criteria
-# might evolve etc.
-sub censor_dates { $_[0]->role eq "browser" }
+sub censor_dates {
+    $Viroverse::config::features->{censor_dates} && $_[0]->role eq "browser"
+}
 
 sub can_manage_freezers { $_[0]->is_admin || $_[0]->is_supervisor }
 
