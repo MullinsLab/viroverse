@@ -9,6 +9,7 @@ use Types::Standard qw< :types >;
 use Types::Common::String qw< NonEmptySimpleStr >;
 use Viroverse::Types qw< ViroDBRecord >;
 use Viroverse::Logger qw< :log >;
+use DateTime::Format::Duration;
 use namespace::clean;
 
 has strftime_format => (
