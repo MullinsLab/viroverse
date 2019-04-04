@@ -540,6 +540,7 @@ __PACKAGE__->has_many(
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:9GuX/zENmQwnb/oPeU2u+A
 
 use JSON::MaybeXS;
+use Viroverse::config;
 use namespace::autoclean;
 
 sub can_browse    { $_[0]->role ne "retired" }
@@ -547,6 +548,10 @@ sub can_edit      { $_[0]->can_browse && $_[0]->role ne "browser" }
 sub is_supervisor { $_[0]->role eq "supervisor" }
 sub is_admin      { $_[0]->role eq "admin" }
 sub is_retired    { $_[0]->role eq "retired" }
+
+sub censor_dates {
+    $Viroverse::config::features->{censor_dates} && $_[0]->role eq "browser"
+}
 
 sub can_manage_freezers { $_[0]->is_admin || $_[0]->is_supervisor }
 
@@ -558,7 +563,15 @@ sub as_hash {
 
         # Add the convenience booleans for the benefit of our JS
         map { $_ => $self->$_ ? JSON->true : JSON->false }
-            qw[ is_supervisor is_admin is_retired can_manage_freezers ]
+            qw[
+                is_supervisor
+                is_admin
+                is_retired
+                can_manage_freezers
+                censor_dates
+                can_browse
+                can_edit
+             ]
     };
 }
 

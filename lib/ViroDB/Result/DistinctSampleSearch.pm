@@ -186,8 +186,18 @@ __PACKAGE__->add_unique_constraint("distinct_sample_search_sample_id_idx", ["sam
 # Created by DBIx::Class::Schema::Loader v0.07042 @ 2017-09-15 15:28:22
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:u9fDqxKbNCcofXcTn204jw
 
+use strict;
+use warnings;
+use 5.018;
+use Viroverse::DateCensor;
+
 sub as_hash {
     my $self = shift;
+
+    my $patient = $self->result_source->schema->resultset("Patient")
+        ->find($self->get_column('patient_id'));
+    my $censor = Viroverse::DateCensor->new({ patient => $patient, censor => 1, });
+
     return {
         %{ $self->next::method(@_) },
 
@@ -199,6 +209,8 @@ sub as_hash {
         viral_load => defined $self->get_column('viral_load') ?
                                 0+$self->get_column('viral_load') :
                                 undef,
+        relative_date => $censor->represent_date($self->sample_date),
+
     };
 }
 

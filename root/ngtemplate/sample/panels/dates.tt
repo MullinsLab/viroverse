@@ -1,3 +1,9 @@
+[% USE Censor = Viroverse::DateCensor({
+    'patient' => sample.patient,
+    'censor'  => scientist.censor_dates,
+    'strftime_format' => '%b %e, %Y',
+    'relative_unit' => 'years'
+    }) %]
 <div class="panel panel-default">
     <div class="panel-heading"><h3 class="panel-title">Dates</h3></div>
     <table class="table table-condensed"><tbody>
@@ -5,7 +11,7 @@
             <tr>
                 <td>Visit
                 [%~ IF sample.visit.visit_number %] (#[% sample.visit.visit_number %])[% END %]</td>
-                <td class="text-right">[% sample.visit.visit_date.strftime("%b %e, %Y") || 'unknown'%]</td>
+                <td class="text-right">[% Censor.represent_date(sample.visit.visit_date) || 'unknown'%]</td>
             </tr>
         [% END %]
         [% IF sample.parent_derivation %]

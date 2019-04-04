@@ -6,6 +6,8 @@ use 5.018;
 package Viroverse::Controller::Patient;
 use Moose;
 use Catalyst::ResponseHelpers qw< :helpers :status >;
+use JSON::MaybeXS;
+use List::Util qw< first >;
 use List::MoreUtils qw< uniq >;
 use Viroverse::patient;
 use namespace::clean;
@@ -206,7 +208,21 @@ sub chart_spec : Chained('load_by_id') PathPart('chart-spec.json') Args(0) {
             $c->model("ViroDB::Medication")->new_unknown->arv_class,
         ],
     });
-    $c->detach($vega);
+    if ($c->stash->{scientist}->censor_dates) {
+        # hack up the processed Vega spec to remove the streams from the
+        # publicationMode signal and make it always be on
+        my $prepared_spec = $vega->process_spec;
+        my $signal = first { $_->{name} eq "publicationMode" }
+            @{ $prepared_spec->{signals} };
+        $signal->{init} = JSON->true;
+        delete $signal->{streams};
+        return FromCharString($c,
+            $vega->json->encode($prepared_spec),
+            'application/json; charset=UTF-8'
+        );
+    } else {
+        $c->detach($vega);
+    }
 }
 
 1;

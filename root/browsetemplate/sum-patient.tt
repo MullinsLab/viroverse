@@ -61,10 +61,12 @@
               <table class="table table-condensed table-bordered">
                 <col style="width: 14em">
                 <tr><th>Member of</th><td>[%- patient.groups.join(', ') -%]</td></tr>
+                [% IF ! scientist.censor_dates %]
                 <tr><th>Best estimate of infection</th><td><% patient.get_prop('estimated_infection_date') | html %></td></tr>
                 <tr><th>Acquisition window</th><td>[% date_range(patient.get_prop('infection_date')) %]</td></tr>
                 <tr><th>Onset of Symptoms</th><td> [% date_range(patient.get_prop('symptom_date')) %]</td></tr>
                 <tr><th>Seroconversion window</th><td>[% date_range(patient.get_prop('seroconversion_date')) %]</td></tr>
+                [% END %]
                 <tr><th>HLA</th><td>[%- patient.get_prop('hla').sort.join(', ') -%]</td></tr>
                 <tr><th>Time to First ART</th><td>[%- IF (!patient.time_to_first_art) -%]
                                                       <em>unknown</em>

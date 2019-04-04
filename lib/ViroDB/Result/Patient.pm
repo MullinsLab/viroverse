@@ -359,5 +359,30 @@ sub aliases {
     return map { $_->external_patient_id } $self->patient_aliases->all;
 }
 
+=head2 estimated_date_infected
+
+=head2 first_visit
+
+These methods are shims to emulate the interface of L<ViroDB::Result::CohortPatientSummary>,
+to allow L<ViroDB::Result::Patient> records to be used interchangeably with them
+as the reference point used to censor dates.
+
+=cut
+
+
+# columns of the cohort_patient_summary table. This is used
+
+sub estimated_date_infected {
+    my $self = shift;
+    return undef unless $self->infections->has_rows;
+    return $self->infections->first->estimated_date;
+}
+
+sub first_visit {
+    my $self = shift;
+    return undef unless $self->visits->has_rows;
+    return $self->visits->order_by('visit_date')->first->visit_date;
+}
+
 __PACKAGE__->meta->make_immutable;
 1;

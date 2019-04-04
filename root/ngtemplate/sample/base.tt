@@ -16,9 +16,16 @@
             [% END %] is
             [% Inflect.noun(sample.tissue_type.name || 'unknown tissue type').indef_article %]
             <i>[% sample.tissue_type.name || 'unknown tissue type' %]</i>
-            sample obtained on
-            <i>[% sample.date.strftime("%B %e, %Y") || 'an unknown date' %]</i>
+            sample obtained
             [%~ IF sample.visit %]
+              [% scientist.censor_dates ? 'at' : 'on' %]
+              [% USE Censor = Viroverse::DateCensor({
+                'censor'          => scientist.censor_dates
+                'relative_unit'   => 'years',
+                'patient'         => sample.patient,
+                'strftime_format' => "%B %e, %Y"
+              }) %]
+              <i>[% Censor.represent_date(sample.date) || 'an unknown date' %]</i>
                 [% IF sample.visit.visit_number %]
                     (visit <i>[% sample.visit.visit_number %]</i>)
                 [% END %]
@@ -26,6 +33,8 @@
                 <a href="[% c.uri_for_action("/patient/show_by_id", [ sample.patient.id ]) %]">
                     <i>[% sample.patient.name %]</i></a>.
             [%~ ELSIF sample.parent_derivation %]
+                on
+                <i>[% sample.date.strftime("%B %e, %Y") || 'an unknown date' %]</i>
                 [% derivation = sample.parent_derivation %]
                 by
                 <i><a href="[% c.uri_for_action('/derivation/show', [ derivation.id ]) %]">
@@ -37,7 +46,13 @@
                 </a></i>
                 performed by
                 <i>[% derivation.scientist.name %]</i>.
-            [%~ ELSE ~%].
+            [%~ ELSE %]
+                [% IF scientist.censor_dates %]
+                from an unknown source.
+                [% ELSE %]
+                on
+                <i>[% sample.date.strftime("%B %e, %Y") || 'an unknown date' %]</i>
+                [% END %]
             [% END %]
         </p>
         [% content | none %]

@@ -5,7 +5,9 @@
 <thead class="sticky">
     <tr>
         <th>Subject ID</th>
+        [% IF ! scientist.censor_dates %]
         <th>Est. Date Infected</th>
+        [% END %]
         <th id="cohort-col-first-visit">First visit</th>
         <th id="cohort-col-vl">Viral load history</th>
         <th id="cohort-col-latest-visit">Latest visit</th>
@@ -21,12 +23,17 @@
 </thead>
 <tbody>
     [% FOR patient IN patients %]
+    [% USE Censor = Viroverse::DateCensor({'censor'        => scientist.censor_dates,
+                                           'relative_unit' => 'years',
+                                           'patient'       => patient }) %]
     <tr>
         <td class="text-nowrap">[% link_to_patient(patient) | none%]</td>
+        [% IF ! scientist.censor_dates %]
         <td class="text-nowrap">[% patient.estimated_date_infected.strftime("%Y-%m-%d") %] </td>
-        <td class="text-nowrap">[% patient.first_visit.strftime("%Y-%m-%d") %]</td>
+        [% END %]
+        <td class="text-nowrap">[% Censor.represent_date(patient.first_visit) %]</td>
         <td class="sparkline">[% Sparkline.xy_sparkline(patient.viral_loads_scaled) | none %]</td>
-        <td class="text-nowrap">[% patient.latest_visit.strftime("%Y-%m-%d") %]</td>
+        <td class="text-nowrap">[% Censor.represent_date(patient.latest_visit) %]</td>
         <td class="text-right">
             [%~ IF patient.days_to_first_art.defined ~%]
                 [%~ IF (patient.days_to_first_art >= 365) -%]

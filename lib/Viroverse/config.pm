@@ -54,6 +54,7 @@ our $features = {
     ice_cultures => 0,
     epitopedb => 0,
     isla_sequences => 0,
+    censor_dates => 0,
 };
 
 # Load up our local overrides, if any.
