@@ -38,12 +38,12 @@ __PACKAGE__->table("viroserve.primer_position");
 
 =head2 hxb2_start
 
-  data_type: 'integer'
+  data_type: 'numeric'
   is_nullable: 0
 
 =head2 hxb2_end
 
-  data_type: 'integer'
+  data_type: 'numeric'
   is_nullable: 0
 
 =cut
@@ -52,9 +52,9 @@ __PACKAGE__->add_columns(
   "primer_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
   "hxb2_start",
-  { data_type => "integer", is_nullable => 0 },
+  { data_type => "numeric", is_nullable => 0 },
   "hxb2_end",
-  { data_type => "integer", is_nullable => 0 },
+  { data_type => "numeric", is_nullable => 0 },
 );
 
 =head1 UNIQUE CONSTRAINTS
@@ -96,8 +96,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07042 @ 2018-12-28 10:44:31
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:HQ43EV/CGYDxwcpr1JjcpQ
+# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-04-08 14:52:37
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:i4kOc6dLfSythNvrH9Ok+w
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
