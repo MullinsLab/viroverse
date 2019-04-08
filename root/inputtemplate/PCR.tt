@@ -116,6 +116,16 @@
     </div> 
     <br clear='all' />
 
+    <label>Endpoint dilution?
+        <input type="checkbox" name="endpoint" value="1" />
+    </label>
+    <br clear='all' />
+
+    <label>Multiplex?</label>
+        <input id="multiplex" name="multiplex" type="checkbox" value="1" />
+    </span>
+    <br clear='all' />
+
     <div id="rounds">
         <fieldset id='round1'><legend>Round 1 <input type='button' value="+" onClick="addRound(this,1)" /></legend>
             <input id='count_round_1' name='pcr_rounds' type='hidden' value='1'>
@@ -140,35 +150,6 @@
                     [% FOREACH p IN protocols %]<option value="[%- p.id -%]">[%- p.name -%]</option>[% END %]
                     <option value="">other (specify in Notes)</option>
                 </select> 
-            </span> 
-            <br clear='all' />
-
-            <label>Endpoint dilution?</label>
-            <span class="formw">
-                <label class="inline"><input name="pcr_round_1_epd" type="radio" value="1"> yes</label>
-                <label class="inline"><input name="pcr_round_1_epd" type="radio" value="0"> no</label>
-            </span>
-            <br clear='all' />
-
-            <div id='pcr_round_1_multiplex'>
-            <label>Multiplex?</label>
-            <span class='formw'>
-                <input name="pcr_round_1_multiplex" type="radio" value="0" checked="true" /> no
-                <input id='pcr_round_1_multiplex_yes' name="pcr_round_1_multiplex" type="radio" value="1" /> yes
-            </span>
-            </div>
-
-            <label>Hot Start?</label> 
-            <span class="formw">
-                <input name="pcr_round_1_hot" type="radio" value="1" checked='true' /> yes
-                <input name="pcr_round_1_hot" type="radio" value="0" /> no
-            </span> 
-            <br clear='all' />
-
-            <label>Genome Portion</label> 
-            <span class="formw">
-                <input name="pcr_round_1_genome_portion" type="radio" value="3" /> whole genome
-                <input name="pcr_round_1_genome_portion" type="radio" value="1" /> targeted
             </span> 
             <br clear='all' />
 
