@@ -327,7 +327,32 @@ __PACKAGE__->belongs_to(
 # Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-04-08 14:52:37
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:aCwbV74FwiG54Lyx9Jz19A
 
+use 5.018;
+use warnings;
+use strict;
 
-# You can replace this text with custom code or comments, and it will be preserved on regeneration
-__PACKAGE__->meta->make_immutable;
+use Viroverse::Logger qw< :log :dlog >;
+use List::Util qw< any >;
+
+# Override the constructor to rewrite "input_product" key in options to the
+# foreign key column for the input product type. It'd be more robust to implement
+# a Moose role (see Viroverse::Model::Role::MolecularProduct for a comparable
+# widget) but for now this is concise and self-contained.
+sub new {
+    my ($class, $attrs) = @_;
+
+    if (my $input = delete $attrs->{input_product}) {
+        my ($pk) = $input->result_source->primary_columns;
+        die "Unexpected foreign key name: $pk"
+            unless any { $_ eq $pk }
+                qw[ sample_id pcr_product_id rt_product_id
+                    extraction_id bisulfite_converted_dna_id ];
+        $attrs->{$pk} = $input->id;
+    }
+
+    my $new = $class->next::method($attrs);
+    return $new;
+}
+
+__PACKAGE__->meta->make_immutable(inline_constructor => 0);
 1;
