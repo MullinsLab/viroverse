@@ -168,6 +168,26 @@ __PACKAGE__->set_primary_key("pcr_template_id");
 
 =head1 RELATIONS
 
+=head2 bisulfite_converted_dna
+
+Type: belongs_to
+
+Related object: L<ViroDB::Result::BisulfiteConvertedDNA>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "bisulfite_converted_dna",
+  "ViroDB::Result::BisulfiteConvertedDNA",
+  { bisulfite_converted_dna_id => "bisulfite_converted_dna_id" },
+  {
+    is_deferrable => 0,
+    join_type     => "LEFT",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
+  },
+);
+
 =head2 extraction
 
 Type: belongs_to
@@ -304,8 +324,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07042 @ 2017-09-07 13:34:53
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:uT4uwaf0/2r4NlCLquwJgQ
+# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-04-08 14:52:37
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:aCwbV74FwiG54Lyx9Jz19A
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

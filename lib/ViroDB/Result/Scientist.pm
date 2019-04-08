@@ -160,6 +160,21 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 bisulfite_converted_dnas
+
+Type: has_many
+
+Related object: L<ViroDB::Result::BisulfiteConvertedDNA>
+
+=cut
+
+__PACKAGE__->has_many(
+  "bisulfite_converted_dnas",
+  "ViroDB::Result::BisulfiteConvertedDNA",
+  { "foreign.scientist_id" => "self.scientist_id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 =head2 boxes_created
 
 Type: has_many
@@ -536,8 +551,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07042 @ 2018-05-15 13:56:14
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:9GuX/zENmQwnb/oPeU2u+A
+# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-04-08 14:52:37
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:fMUFDlNsD1tbstlS9xST2g
 
 use JSON::MaybeXS;
 use Viroverse::config;

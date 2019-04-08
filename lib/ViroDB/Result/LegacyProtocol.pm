@@ -94,6 +94,21 @@ __PACKAGE__->set_primary_key("protocol_id");
 
 =head1 RELATIONS
 
+=head2 bisulfite_converted_dnas
+
+Type: has_many
+
+Related object: L<ViroDB::Result::BisulfiteConvertedDNA>
+
+=cut
+
+__PACKAGE__->has_many(
+  "bisulfite_converted_dnas",
+  "ViroDB::Result::BisulfiteConvertedDNA",
+  { "foreign.protocol_id" => "self.protocol_id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 =head2 extractions
 
 Type: has_many
@@ -175,8 +190,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07042 @ 2018-01-26 10:45:22
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:wHN0LbwKVIS3UCrfikAV4g
+# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-04-08 14:52:37
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:R3AiUfrwm9iGueBsyvUx0g
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

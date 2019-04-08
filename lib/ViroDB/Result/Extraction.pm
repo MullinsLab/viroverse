@@ -190,6 +190,21 @@ __PACKAGE__->set_primary_key("extraction_id");
 
 =head1 RELATIONS
 
+=head2 bisulfite_converted_dnas
+
+Type: has_many
+
+Related object: L<ViroDB::Result::BisulfiteConvertedDNA>
+
+=cut
+
+__PACKAGE__->has_many(
+  "bisulfite_converted_dnas",
+  "ViroDB::Result::BisulfiteConvertedDNA",
+  { "foreign.extraction_id" => "self.extraction_id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 =head2 concentration_unit
 
 Type: belongs_to
@@ -366,8 +381,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07042 @ 2018-01-19 14:42:10
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:CFE80xjkBhMVyW08dLWOjw
+# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-04-08 14:52:37
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:v8VdXgkjOVWgJlxnzLT1yQ
 
 use Hash::Merge qw< merge >;
 

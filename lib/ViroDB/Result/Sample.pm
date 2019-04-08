@@ -196,6 +196,21 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 bisulfite_converted_dnas
+
+Type: has_many
+
+Related object: L<ViroDB::Result::BisulfiteConvertedDNA>
+
+=cut
+
+__PACKAGE__->has_many(
+  "bisulfite_converted_dnas",
+  "ViroDB::Result::BisulfiteConvertedDNA",
+  { "foreign.sample_id" => "self.sample_id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 =head2 categorical_lab_results
 
 Type: has_many
@@ -412,8 +427,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07042 @ 2018-01-19 14:42:10
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:PQ/LNpLSkxWq7vMGbHZ3Cg
+# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-04-08 14:52:37
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:/+/breuzWIM4BVXhBTD1TA
 
 with 'Viroverse::SampleTree::Node';
 
