@@ -68,7 +68,7 @@
                   <% USE Censor = Viroverse::DateCensor({
                         'censor'          => scientist.censor_dates
                         'relative_unit'   => 'years',
-                        'patient'         => sample.patient,
+                        'patient'         => node.patient,
                         }) %>
                   <% node.tissue_type.name %> from <% Censor.represent_date(node.date) || 'unknown date' %>
                 <% ELSE %>
