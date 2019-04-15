@@ -379,6 +379,7 @@ sub pcr_add : Local {
             notes          => $params->{$prefix."_notes"},
             primer_names   => \@primer_names,
             protocol_id    => $params->{$prefix."_protocol"},
+            endpoint       => $params->{endpoint},
             round_number   => $round_number,
             multiplex      => $multiplex // 0,
         };
@@ -475,15 +476,16 @@ sub pcr_add : Local {
                     });
                     $template->discard_changes;
                     my $output_product = $c->model("ViroDB::PolymeraseChainReactionProduct")->create({
-                        pcr_template   => $template,
-                        scientist      => $pcr_scientist,
-                        date_completed => $round->{completed_date},
-                        protocol_id    => $round->{protocol_id},
-                        enzyme_id      => $round->{enzyme_id},
-                        notes          => $round->{notes},
-                        round          =>
+                        pcr_template      => $template,
+                        scientist         => $pcr_scientist,
+                        date_completed    => $round->{completed_date},
+                        protocol_id       => $round->{protocol_id},
+                        enzyme_id         => $round->{enzyme_id},
+                        endpoint_dilution => $round->{endpoint},
+                        notes             => $round->{notes},
+                        replicate         => $replicate,
+                        round             =>
                             $round->{round_number} + $round_number_increment,
-                        replicate      => $replicate,
                     });
                     $output_product->discard_changes;
                     $output_product->set_primers(\@primers);

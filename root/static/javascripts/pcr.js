@@ -23,10 +23,21 @@ function pcr_init (firstRoundDivId,primerIds,primerDivId) {
 
 function pcrRound (parentDiv,prevRound,button,dataSource) {
     this.myParent = parentDiv;
-    var multiplex
-    if (document.getElementById('pcr_round_'+prevRound.rank+'_multiplex_yes') && document.getElementById('pcr_round_'+prevRound.rank+'_multiplex_yes').checked) {
-        multiplex = true;
-        lastRank = prevRound.rank
+    var multiplex;
+    var multiplexElem = document.getElementById('multiplex');
+    /* Switching between multiplex and non-multiplex rounds while setting
+     * up a reaction doesn't make any sense and can't be handled by the backend,
+     * so prevent it a little bit. This doesn't persist when the form is
+     * reloaded on submission but this is just a mild best-effort improvement;
+     * I'm not going to spelunk further into the Old Javascript at this time.
+     * -- silby@ 2019-04-11
+     */
+    if (multiplexElem != null) {
+        multiplex = multiplexElem.checked;
+        multiplexElem.disabled = true;
+    }
+    if (multiplex) {
+        lastRank = prevRound.rank;
         this.rank = lastRank + 1 + (.1 * (viroverse.pcrRounds.length - lastRank )); //only works for first round multiplex!
         this.roundsIndex = viroverse.pcrRounds.push(this) - 1;
     } else {
