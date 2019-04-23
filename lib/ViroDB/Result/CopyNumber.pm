@@ -176,6 +176,26 @@ __PACKAGE__->set_primary_key("copy_number_id");
 
 =head1 RELATIONS
 
+=head2 bisulfite_converted_dna
+
+Type: belongs_to
+
+Related object: L<ViroDB::Result::BisulfiteConvertedDNA>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "bisulfite_converted_dna",
+  "ViroDB::Result::BisulfiteConvertedDNA",
+  { bisulfite_converted_dna_id => "bisulfite_converted_dna_id" },
+  {
+    is_deferrable => 0,
+    join_type     => "LEFT",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
+  },
+);
+
 =head2 copy_number_gel_lanes
 
 Type: has_many
@@ -277,8 +297,8 @@ Composing rels: L</copy_number_gel_lanes> -> gel_lane
 __PACKAGE__->many_to_many("gel_lanes", "copy_number_gel_lanes", "gel_lane");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07042 @ 2018-01-19 14:53:22
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:2HEGujyH1nNjmQJQAFmLIw
+# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-04-08 14:52:37
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:2raLeW+VX9Ke8ianAX6nMg
 
 
 sub pcr_primers {

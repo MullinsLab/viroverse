@@ -3,6 +3,7 @@ use base 'Viroverse::Controller';
 
 use strict;
 use warnings;
+use 5.018;
 
 use Viroverse::Model::extraction;
 use Viroverse::Model::unit;
@@ -11,7 +12,10 @@ use Viroverse::Model::rt;
 use Viroverse::Model::bisulfite_converted_dna;
 use Viroverse::sample;
 use Viroverse::Model::scientist;
+use Viroverse::Logger qw< :log :dlog >;
 use Catalyst::ResponseHelpers;
+use List::Util qw< pairgrep pairvalues uniq >;
+use Try::Tiny;
 
 use Fasta;
 
@@ -341,169 +345,180 @@ sub PCR : Local {
 }
 
 sub pcr_add : Local {
-    my ($self, $context) = @_;
-    my %params = %{$context->req->params};
-    my @new_pcr;
+    my ($self, $c) = @_;
+    my $params = $c->req->params;
 
-    #TODO: extract/extraction?
-    my %column_for = (
-        extract    => 'extraction_id',
-        extraction    => 'extraction_id',
-        'extraction.rna' => 'extraction_id',
-        'extraction.dna' => 'extraction_id',
-        rt_product    => 'rt_product_id',
-        rt           => 'rt_product_id',
-        pcr        => 'pcr_product_id',
-        pos_pcr    => 'pcr_product_id',
-        sample     => 'sample_id',
-        bisulfite_converted_dna => 'bisulfite_converted_dna_id',
+    # Translate flat form parameters into a nested data structure
+    # holding round parameters and templates
+    my @round_names = uniq map { m/pcr_round_\d+(\.\d+)?/; $&; }
+        grep { $_ =~ /^pcr_round_/ }
+        keys %$params;
+
+    my @rounds = sort {
+        ($a->{round_number} <=> $b->{round_number}) ||
+            ($a->{multiplex} <=> $b->{multiplex})
+    } map {
+        my $prefix = $_;
+        # We can't trust the `pcr_round_1_multiplex` form parameter because the
+        # radio control in the round 1 widget can be flipped to "no" after
+        # adding multiplex second rounds; instead parse out the multiplex round
+        # identifier from the parameter names for round 2
+        my ($round_number, $multiplex) = $prefix =~ /(\d+)(?:\.(\d+))?/;
+
+        # The UI doesn't support this but let's avoid anything wacky.
+        return ClientError($c,
+            "Error: Multiplex PCR over more than 2 rounds is not supported")
+            if defined $multiplex && $round_number != 2;
+
+        my $primer_prefix = $prefix."_primer";
+        my @primer_names = pairvalues
+            pairgrep { $a =~ /^$primer_prefix/ } %$params;
+        +{
+            completed_date => $params->{$prefix."_completed_date"},
+            enzyme_id      => $params->{$prefix."_enzyme"},
+            notes          => $params->{$prefix."_notes"},
+            primer_names   => \@primer_names,
+            protocol_id    => $params->{$prefix."_protocol"},
+            endpoint       => $params->{endpoint},
+            round_number   => $round_number,
+            multiplex      => $multiplex // 0,
+        };
+    } @round_names;
+
+    my @template_sets = map {
+            my ($type, $id, $n) = split /-/, $_;
+            +{
+                input_product_type => $type,
+                input_product_id   => $id,
+                replicates         => $params->{$type."box$id"."repl$n"},
+                volume             => $params->{$type."box$id"."vol$n"},
+                unit               => $params->{$type."box$id"."unit$n"},
+            }
+        }
+        uniq map { m/^(\w+)box(\d+)\w+(\d+)/; "$1-$2-$3" }
+        grep { m/^\w+box\d+\w+\d+$/}
+        keys %$params;
+
+    # We need to map these weird one-off keys from various versions of the
+    # submission form to appropriate ViroDB::Result classes. I bet there's a
+    # way to redesign the form and the controller to hide this elsewhere.
+    my %model_for = (
+        extract                 => 'Extraction',
+        extraction              => 'Extraction',
+        'extraction.rna'        => 'Extraction',
+        'extraction.dna'        => 'Extraction',
+        rt_product              => 'ReverseTranscriptionProduct',
+        rt                      => 'ReverseTranscriptionProduct',
+        pcr                     => 'PolymeraseChainReactionProduct',
+        pos_pcr                 => 'PolymeraseChainReactionProduct',
+        sample                  => 'Sample',
+        bisulfite_converted_dna => 'BisulfiteConvertedDNA',
     );
 
-    my @rounds;
-    my $completed_pcr;
-    my %pcr_info; #global info
 
-    my @scientists = Viroverse::Model::scientist->search({ name =>  $params{scientist_name} } );
-    if (@scientists == 1) {
-        $pcr_info{scientist_id} = $scientists[0];
-    } else {
-        $context->log->error('Error: unable to resolve scientist name');
-        $context->response->body('Error: unable to resolve scientist name');
-        return;
-    }
+    my $txn = $c->model("ViroDB")->schema->txn_scope_guard;
+    my @pcr_product_ids_for_sidebar;
 
-    $pcr_info{name} = $params{'pcr_name'};
+    my $pcr_scientist = $c->model("ViroDB::Scientist")->find({
+        name => $params->{scientist_name},
+    });
 
-    # for each template, create a bunch of volumes in replicates
-    # then, for each round 
-    my %boxes;
-    foreach my $p (keys %params) {
-        (my $box) = $p =~ /(.*box\d+)/;
-        $boxes{$box} = 1 if $box;
-    }
+    # all the ClientError messages below start with "Error" so that legacy
+    # frontend code will automatically display them in the page without
+    # modification
 
-    $context->detach('user_error',["no replicates defined","need replicates"]) if (! keys %boxes ) ;
+    return ClientError($c, "Error: Scientist not found")
+        unless $pcr_scientist;
 
-    Viroverse::CDBI->db_Main->begin_work;
-    foreach my $template_label ( keys %boxes ) {
-        my %template_info = (
-            scientist_id => $pcr_info{scientist_id}
-        );
-        my $round_inc = 0;
-        my ($type,$id) = split /box/,$template_label;
-        $context->detach('mk_error',["template type not defined","column_for not defined for $type"]) if (! defined $column_for{$type});
-        $template_info{ $column_for{$type} } = $id;
+    return ClientError($c, "Error: No replicates defined")
+        unless @template_sets;
 
-        if ($type eq 'pcr' || $type eq 'pos_pcr') {
-            $round_inc = Viroverse::Model::pcr->retrieve($id)->round;
+    # outer loop: each set of templates (input, volume, replicate)
+    for my $template_set (@template_sets) {
+        my $class = $model_for{$template_set->{input_product_type}};
+        my $initial_product = $c->model("ViroDB::$class")
+            ->find($template_set->{input_product_id})
+            or return ClientError($c,
+                sprintf "Error: Input product not found",
+                    $class,
+                    $template_set->{input_product_id}
+            );
+
+        my $unit = $c->model("ViroDB::Unit")->find({
+            name => $template_set->{unit},
+        }) or return ClientError($c, "Error: unknown unit $template_set->{unit}");
+
+        my $round_number_increment = 0;
+        if ($initial_product->isa("ViroDB::Result::PolymeraseChainReactionProduct")) {
+            $round_number_increment = $initial_product->round;
         }
 
-        foreach my $round_no (sort $context->req->param('pcr_rounds') ) {
-            my $actual_round_no = int($round_no) + $round_inc;
-            my %pcr_round_info; 
-
-            $pcr_round_info{scientist_id} = $pcr_info{scientist_id};
-            $pcr_round_info{name} = $pcr_info{name};
-
-            my $date = $params{'pcr_round_'.$round_no.'_completed_date'};
-            $context->detach('user_error',['date is required','missing date']) unless $date;
-            $context->detach('user_error',['Date should be in ISO format (YYYY-MM-DD)','bad PCR dates!']) unless Viroverse::db::validate_date($date) ;
-            $pcr_round_info{date_completed} = $date;
-
-            $pcr_round_info{protocol_id} = $params{'pcr_round_'.$round_no.'_protocol'} if $params{'pcr_round_'.$round_no.'_protocol'};
-            $pcr_round_info{notes} = $params{'pcr_round_'.$round_no.'_notes'};
-            $pcr_round_info{genome_portion} = $params{'pcr_round_'.$round_no.'_genome_portion'};
-            $pcr_round_info{hot_start} = $params{'pcr_round_'.$round_no.'_hot'};
-
-            # EPD may be left unmarked
-            $pcr_round_info{endpoint_dilution} = $params{'pcr_round_'.$round_no.'_epd'} ? 1 : 0
-                if defined $params{'pcr_round_'.$round_no.'_epd'};
-
-            if (my $enz = $params{'pcr_round_'.$round_no.'_enzyme'}) {
-                $pcr_round_info{enzyme_id} = $enz;
+        # inner loop: create pcr_template and pcr_product for each round. The
+        # input of the pcr_template is the initial input product for each
+        # replicate of the first round, and each output product from round n
+        # for round n+1
+        my @input_products = ($initial_product) x $template_set->{replicates};
+        for my $round (@rounds) {
+            my @primers = map {
+                $c->model("ViroDB::Primer")->find({ name => $_ })
+                    or return ClientError($c, "Error: unknown primer $_")
+            } @{ $round->{primer_names} };
+            my @output_products;
+            my $replicate = 1;
+            for my $input_product (@input_products) {
+                try {
+                    my $template = $c->model("ViroDB::PolymeraseChainReactionTemplate")->create({
+                        scientist      => $pcr_scientist,
+                        unit           => $unit,
+                        volume         => $template_set->{volume},
+                        date_completed => $round->{completed_date},
+                        input_product  => $input_product,
+                    });
+                    $template->discard_changes;
+                    my $output_product = $c->model("ViroDB::PolymeraseChainReactionProduct")->create({
+                        pcr_template      => $template,
+                        scientist         => $pcr_scientist,
+                        date_completed    => $round->{completed_date},
+                        protocol_id       => $round->{protocol_id},
+                        enzyme_id         => $round->{enzyme_id},
+                        endpoint_dilution => $round->{endpoint},
+                        notes             => $round->{notes},
+                        replicate         => $replicate,
+                        round             =>
+                            $round->{round_number} + $round_number_increment,
+                    });
+                    $output_product->discard_changes;
+                    $output_product->set_primers(\@primers);
+                    push @output_products, $output_product;
+                    push @pcr_product_ids_for_sidebar, $output_product->id;
+                    $replicate++;
+                } catch {
+                    my $err = $_;
+                    log_error {[ "Couldn't save PCR product: %s", $err ]};
+                    return ServerError($c, "Error: Couldn't save PCR product");
+                };
             }
 
-            my @primers;
-            my $pattern = 'pcr_round_'.$round_no.'_primer_';
-            $pattern = qr/$pattern/;
-            foreach my $primer_name ( grep /$pattern/, keys %params ) {
-                $context->detach('user_error',["blank primer name not permitted","blank $pattern"]) if $params{$primer_name} eq '';
-                my @primer_results = Viroverse::Model::primer->search({ name => $params{$primer_name} } ) ; 
-                if (@primer_results ) {
-                    push @primers, pop @primer_results;
-                } else {
-                    $context->detach('user_error',["Could not find primer ".$params{$primer_name},'']);
-                }
-            }
-
-            for my $key (grep { /^\Q${template_label}repl\E/ } keys %params) {
-                return $context->detach( user_error => ["Replicate counts must be positive whole numbers."] )
-                    if $params{$key} != int $params{$key} or $params{$key} < 1;
-                $params{$key} = int $params{$key};
-            }
-
-            my $match = $template_label . 'vol';
-            foreach my $volume (sort { $a <=> $b } grep /$match/, keys %params ) {
-                (my $vol_num) = $volume =~ m/(\d+)$/;
-                my %volume_info = %template_info;
-                $volume_info{date_completed} = $pcr_round_info{date_completed};
-
-                $context->detach('user_error',["unspecified number of replicates for volume # $vol_num","unspecified number of replicates for volume # $vol_num of $type $id"]) if (! $params{$template_label.'repl'.$vol_num} ) ;
-                $context->detach('user_error',["unspecified units for volume # $vol_num","unspecified units for volume # $vol_num of $type $id"]) if (! $params{$template_label.'unit'.$vol_num} ); 
-                $context->detach('user_error',["unspecified volume for volume # $vol_num","unspecified volume for volume # $vol_num of $type $id"] ) if (! $params{$template_label.'vol'.$vol_num} ); 
-                $context->detach('user_error',["illegal volume for volume # $vol_num","unspecified volume for volume # $vol_num of $type $id"] ) if ($params{$template_label.'vol'.$vol_num} !~ m/^(\d+(\.\d+)?)$|^(\.\d+)$/ ); 
-
-                my $unit = $params{$template_label . 'unit' . $vol_num};
-                $volume_info{unit_id} = Viroverse::db::resolve_external_property( $context->stash->{session}, 'unit', $unit )
-                    or $context->detach('user_error', ["unknown unit for volume ($unit)"]);
-
-                if ( $unit eq 'dil' ) {
-                    $volume_info{dil_factor} = $params{ $volume };
-                } else {
-                    $volume_info{volume} = $params{ $volume };
-                }
-                foreach my $repl (1..$params{$template_label.'repl'.$vol_num}) {
-                    my %repl_info = %volume_info; #copy in gloabal template info
-                    my %prod_info = %pcr_round_info;
-                    $prod_info{round} = $actual_round_no;
-                    $prod_info{replicate} = $repl;
-
-                    if ($round_no == 1) { #first submitted round, not nec. first round rxn if template was from prev pcr
-
-                    } else {
-                        # XXX BUG: "dil" is not a valid unit in the database!
-                        # -trs, 11 Feb 2014
-                        my $dilution_unit = Viroverse::db::resolve_external_property( $context->stash->{session}, 'unit', 'dil' )
-                            or $context->detach('mk_error', ["unknown unit <dil>, this shouldn't happen"]);
-                        %repl_info = (
-                            unit_id => $dilution_unit,
-                            dil_factor => 1,
-                            pcr_product_id => $completed_pcr->{$template_label}->{$volume}->{int($round_no) - 1}->{$repl},
-                            scientist_id => $pcr_info{scientist_id},
-                            date_completed => $pcr_round_info{date_completed}
-                        );
-                    }
-
-                    my $new_pcr_template = Viroverse::Model::pcr_template->insert(\%repl_info);
-                    $prod_info{pcr_template_id} = $new_pcr_template;
-                    my $new_pcr = Viroverse::Model::pcr->insert(\%prod_info);
-                    foreach my $primer_id (@primers) {
-                        $new_pcr->add_to_primers({primer_id => $primer_id});
-                    } 
-
-                    $completed_pcr->{$template_label}->{$volume}->{$round_no}->{$repl} = $new_pcr;
-                    push @new_pcr, $new_pcr->pcr_product_id;
-                }
-            }
+            # For single-plex PCR, we conceivably can enter any number of rounds
+            # at once in a single form. After each round, the output products
+            # become the input products for the next round. For multiplex PCR,
+            # the first-round products are used as the input to one or more
+            # second rounds. The interface only allows multiplex second rounds,
+            # not third or subsequent rounds, so we take it for granted that
+            # when we save the results of a multiplex round any more rounds left
+            # to do are using the same inputs as the one we just did (i.e.,
+            # first-round products.
+            @input_products = @output_products
+                unless $round->{multiplex};
         }
     }
 
-    Viroverse::CDBI->db_Main->commit;
 
-    $context->forward('gel_add_label',['pcr',@new_pcr]);
-    $context->forward('Viroverse::Controller::sidebar','gel_sidebar_to_stash');
-    $context->forward('Viroverse::Controller::sidebar','sidebar_to_stash');
+    $txn->commit;
 
+    $c->forward('gel_add_label',['pcr',@pcr_product_ids_for_sidebar]);
+    $c->forward('Viroverse::Controller::sidebar','gel_sidebar_to_stash');
+    $c->forward('Viroverse::Controller::sidebar','sidebar_to_stash');
 }
 
 sub PCR_gel : Local {

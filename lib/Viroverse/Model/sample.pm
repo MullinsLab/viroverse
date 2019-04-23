@@ -6,8 +6,6 @@ use ViroDB;
 use strict;
 use 5.018;
 
-use List::Util qw< pairgrep >;
-
 =head1 NAME
 
 Viroverse::Model::sample -- provide Viroverse::samples to Catalyst
