@@ -101,7 +101,7 @@ sub extraction_post : Local {
 
     my %resolve = (
         unit_id => 'unit_id',
-        scientist_id => 'scientist_id', 
+        scientist_id => 'scientist_id',
         extract_type_id => 'extract_type_id',
         concentration_unit_id => 'unit_id',
         eluted_vol_unit_id => 'unit_id'
@@ -197,9 +197,9 @@ sub rt_add : Local {
     foreach my $field_name (@required) {
             $context->detach('user_error',["$field_name is a required field","missing $field_name"]) unless length($params{$field_name}) > 0  ;
     }
-    if ($params{ratio_toggle} eq "special" 
-            and not (length($params{ratio_special_rna}) 
-                and length($params{ratio_special_cdna}))) 
+    if ($params{ratio_toggle} eq "special"
+            and not (length($params{ratio_special_rna})
+                and length($params{ratio_special_cdna})))
     {
         $context->detach('user_error',["Special RNA:cDNA ratio must be specified", "missing ratio element".length($params{ratio_special_rna})]);
     }
@@ -240,14 +240,14 @@ sub rt_add : Local {
             } else {
                 $used_primers{$primer_name} = 1;
             }
-            my @primer_results = Viroverse::Model::primer->search({ name => $primer_name } ) ; 
+            my @primer_results = Viroverse::Model::primer->search({ name => $primer_name } ) ;
             if (@primer_results ) {
                 $rt->add_to_primers({primer_id => $primer_results[0]});
             } else {
                 $context->detach('user_error',["Could not find primer ".$primer_name,'']);
             }
 
-        } 
+        }
 
         push @new_rt, $rt->give_id;
     }
@@ -274,7 +274,7 @@ sub bisulfite_conversion : Local {
 
 sub bisulfite_conversion_add : Local {
     my ($self, $context) = @_;
-    
+
     my %params = %{$context->req->params};
     my @template_params = grep /box$/, keys %params;
     my ($scientist) = Viroverse::Model::scientist->search({ name => $params{scientist_name} });
@@ -479,7 +479,7 @@ sub pcr_add : Local {
                         pcr_template      => $template,
                         scientist         => $pcr_scientist,
                         date_completed    => $round->{completed_date},
-                        protocol_id       => $round->{protocol_id},
+                        protocol_id       => $round->{protocol_id} || undef,
                         enzyme_id         => $round->{enzyme_id},
                         endpoint_dilution => $round->{endpoint},
                         notes             => $round->{notes},
@@ -563,7 +563,7 @@ sub receive_gel : Local {
     }
 
     my $gel = Viroverse::Model::gel->insert({
-        image=>$img, 
+        image=>$img,
         mime_type => $mime,
         name => $upload->filename,
         scientist_id => $context->stash->{scientist}->scientist_id
@@ -644,7 +644,7 @@ sub pos_pcr_add : Local {
 
         my $p_conc = $params{purif_final_conc};
         if (length($p_conc) > 0 ) {
-            $context->detach('user_error',["Illegal purification final concentration"]) 
+            $context->detach('user_error',["Illegal purification final concentration"])
                 if $p_conc !~ m/^(\d+(\.\d+)?)$|^(\.\d+)$/;
             $new_purif{final_conc} = $p_conc;
         }
