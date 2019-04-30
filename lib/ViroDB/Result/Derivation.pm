@@ -22,11 +22,11 @@ use MooseX::NonMoose;
 use MooseX::MarkAsMethods autoclean => 1;
 extends 'ViroDB::Result';
 
-=head1 TABLE: C<delta.derivation>
+=head1 TABLE: C<viroserve.derivation>
 
 =cut
 
-__PACKAGE__->table("delta.derivation");
+__PACKAGE__->table("viroserve.derivation");
 
 =head1 ACCESSORS
 
@@ -35,9 +35,9 @@ __PACKAGE__->table("delta.derivation");
   data_type: 'integer'
   is_auto_increment: 1
   is_nullable: 0
-  sequence: 'delta.derivation_derivation_id_seq'
+  sequence: 'viroserve.derivation_derivation_id_seq'
 
-=head2 protocol_id
+=head2 derivation_protocol_id
 
   data_type: 'integer'
   is_foreign_key: 1
@@ -73,9 +73,9 @@ __PACKAGE__->add_columns(
     data_type         => "integer",
     is_auto_increment => 1,
     is_nullable       => 0,
-    sequence          => "delta.derivation_derivation_id_seq",
+    sequence          => "viroserve.derivation_derivation_id_seq",
   },
-  "protocol_id",
+  "derivation_protocol_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
   "input_sample_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
@@ -147,7 +147,7 @@ Related object: L<ViroDB::Result::DerivationProtocol>
 __PACKAGE__->belongs_to(
   "protocol",
   "ViroDB::Result::DerivationProtocol",
-  { protocol_id => "protocol_id" },
+  { derivation_protocol_id => "derivation_protocol_id" },
   {
     is_deferrable => 0,
     join_type     => "LEFT",
@@ -172,8 +172,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07042 @ 2017-08-11 15:11:38
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:KFG+nsbG5zE8ucAz+lDVFA
+# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-04-30 16:05:40
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:6e18l3Z+H+V0QFiVx8gMlg
 
 with 'Viroverse::SampleTree::Node';
 
