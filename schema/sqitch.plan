@@ -4,3 +4,4 @@
 
 verify-starting-schema 2019-01-23T18:45:50Z vagrant <vagrant@silby-dev-scratch># Verify the starting point schema for public sqitch migrations
 add-browser-scientist-role 2019-03-19T23:49:16Z vagrant <vagrant@localverse> # Add a scientist role for browse-only users
+retire-delta-schema 2019-04-30T20:54:11Z vagrant <vagrant@localverse> # Rename objects out of the delta schema

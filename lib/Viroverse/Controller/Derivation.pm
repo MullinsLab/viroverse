@@ -21,10 +21,10 @@ sub create_with_default_outputs : POST Chained('base') PathPart('create_with_def
 
     my %params = %{$c->req->params};
     my $new_derivation = $c->model("ViroDB::Derivation")->create_with_default_outputs({
-        input_sample_id => $params{input_sample_id},
-        protocol_id     => $params{protocol_id},
-        scientist_id    => $params{scientist_id},
-        date_completed  => DateTime->today->ymd,
+        input_sample_id        => $params{input_sample_id},
+        derivation_protocol_id => $params{protocol_id},
+        scientist_id           => $params{scientist_id},
+        date_completed         => DateTime->today->ymd,
     });
 
     Redirect($c, $self->action_for("show"), [ $new_derivation->id ]);

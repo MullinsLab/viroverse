@@ -22,15 +22,15 @@ use MooseX::NonMoose;
 use MooseX::MarkAsMethods autoclean => 1;
 extends 'ViroDB::Result';
 
-=head1 TABLE: C<delta.protocol_output>
+=head1 TABLE: C<viroserve.protocol_output>
 
 =cut
 
-__PACKAGE__->table("delta.protocol_output");
+__PACKAGE__->table("viroserve.protocol_output");
 
 =head1 ACCESSORS
 
-=head2 protocol_id
+=head2 derivation_protocol_id
 
   data_type: 'integer'
   is_foreign_key: 1
@@ -45,7 +45,7 @@ __PACKAGE__->table("delta.protocol_output");
 =cut
 
 __PACKAGE__->add_columns(
-  "protocol_id",
+  "derivation_protocol_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
   "tissue_type_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
@@ -57,7 +57,7 @@ __PACKAGE__->add_columns(
 
 =over 4
 
-=item * L</protocol_id>
+=item * L</derivation_protocol_id>
 
 =item * L</tissue_type_id>
 
@@ -67,7 +67,7 @@ __PACKAGE__->add_columns(
 
 __PACKAGE__->add_unique_constraint(
   "protocol_output_protocol_id_tissue_type_id_key",
-  ["protocol_id", "tissue_type_id"],
+  ["derivation_protocol_id", "tissue_type_id"],
 );
 
 =head1 RELATIONS
@@ -83,7 +83,7 @@ Related object: L<ViroDB::Result::DerivationProtocol>
 __PACKAGE__->belongs_to(
   "protocol",
   "ViroDB::Result::DerivationProtocol",
-  { protocol_id => "protocol_id" },
+  { derivation_protocol_id => "derivation_protocol_id" },
   {
     is_deferrable => 0,
     join_type     => "LEFT",
@@ -113,8 +113,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07042 @ 2017-08-11 15:11:38
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:o9ynuil3A32BggRE5npASg
+# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-04-30 16:05:40
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:/Z/NxfkA3tNDFkcDWVdfCg
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

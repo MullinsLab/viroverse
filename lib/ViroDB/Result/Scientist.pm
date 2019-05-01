@@ -551,8 +551,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-04-08 14:52:37
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:fMUFDlNsD1tbstlS9xST2g
+# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-04-30 14:38:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:J61JWqc6CWNtuCFlLaCW7w
 
 use JSON::MaybeXS;
 use Viroverse::config;
