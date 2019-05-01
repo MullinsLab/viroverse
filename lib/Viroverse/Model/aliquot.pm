@@ -174,7 +174,7 @@ sub summary_detail {
                FROM  viroserve.aliquot a
                  JOIN viroserve.sample s
                    ON a.sample_id = s.sample_id
-                 LEFT JOIN delta.derivation d USING (derivation_id)
+                 LEFT JOIN viroserve.derivation d USING (derivation_id)
                  LEFT JOIN viroserve.visit v USING (visit_id)
                  LEFT JOIN viroserve.sample_patient_date p ON (s.sample_id = p.sample_id)
                  LEFT JOIN viroserve.tissue_type t USING (tissue_type_id)
@@ -238,7 +238,7 @@ sub summary_detail_by_box {
                     LEFT JOIN viroserve.visit v
                       ON v.visit_id = s.visit_id
                      AND NOT v.is_deleted
-                    LEFT JOIN delta.derivation d USING (derivation_id)
+                    LEFT JOIN viroserve.derivation d USING (derivation_id)
                     LEFT JOIN viroserve.sample_patient_date p ON (s.sample_id = p.sample_id)
                     LEFT JOIN viroserve.tissue_type tt USING (tissue_type_id)
                  LEFT JOIN viroserve.unit u USING (unit_id)
