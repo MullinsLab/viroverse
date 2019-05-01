@@ -33,9 +33,11 @@ loader_options:
       cohort_patient_summary: CohortPatientSummary
       copy_number: CopyNumber
       copy_number_gel_lane: CopyNumberGelLane
+      derivation: Derivation
+      derivation_protocol: DerivationProtocol
       distinct_sample_search: DistinctSampleSearch
-      extraction: Extraction
       extract_type: ExtractionType
+      extraction: Extraction
       gel: Gel
       gel_lane: GelLane
       genome_region: GenomeRegion
@@ -63,9 +65,10 @@ loader_options:
       primer: Primer
       primer_position: PrimerPosition
       project: Project
-      project_materials: ProjectSample
       project_material_scientist_progress: ProjectSampleProgress
+      project_materials: ProjectSample
       protocol: LegacyProtocol
+      protocol_output: DerivationProtocolOutput
       protocol_type: LegacyProtocolType
       rt_product: ReverseTranscriptionProduct
       sample: Sample
@@ -82,9 +85,6 @@ loader_options:
       unit: Unit
       viral_load: ViralLoad
       visit: Visit
-      derivation: Derivation
-      derivation_protocol: DerivationProtocol
-      protocol_output: DerivationProtocolOutput
     freezer:
       box_pos: BoxPos
       box: Box
