@@ -325,6 +325,21 @@ __PACKAGE__->belongs_to(
   { is_deferrable => 0, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
+=head2 sequencing_run_pcr_products
+
+Type: has_many
+
+Related object: L<ViroDB::Result::SequencingRunPolymeraseChainReactionProduct>
+
+=cut
+
+__PACKAGE__->has_many(
+  "sequencing_run_pcr_products",
+  "ViroDB::Result::SequencingRunPolymeraseChainReactionProduct",
+  { "foreign.pcr_product_id" => "self.pcr_product_id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 =head2 primers
 
 Type: many_to_many
@@ -336,8 +351,8 @@ Composing rels: L</primer_assignments> -> primer
 __PACKAGE__->many_to_many("primers", "primer_assignments", "primer");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07042 @ 2017-12-15 09:40:34
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:CxLjMDvVmK4WX2AsElR5FA
+# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-04-30 17:01:04
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:8cNa18Zv8pOGVAvt6v+UwA
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

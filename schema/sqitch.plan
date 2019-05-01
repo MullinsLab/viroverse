@@ -4,3 +4,4 @@
 
 verify-starting-schema 2019-01-23T18:45:50Z vagrant <vagrant@silby-dev-scratch># Verify the starting point schema for public sqitch migrations
 add-browser-scientist-role 2019-03-19T23:49:16Z vagrant <vagrant@localverse> # Add a scientist role for browse-only users
+add-sequencing-run 2019-04-30T23:40:59Z vagrant <vagrant@localverse># Add multi-PCR-product sequencing runs for consensus sequencing

@@ -550,9 +550,24 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 sequencing_runs
 
-# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-04-08 14:52:37
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:fMUFDlNsD1tbstlS9xST2g
+Type: has_many
+
+Related object: L<ViroDB::Result::SequencingRun>
+
+=cut
+
+__PACKAGE__->has_many(
+  "sequencing_runs",
+  "ViroDB::Result::SequencingRun",
+  { "foreign.scientist_id" => "self.scientist_id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+
+# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-04-30 17:01:04
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:NYk12vH8BcsKE1kXhCxv+g
 
 use JSON::MaybeXS;
 use Viroverse::config;

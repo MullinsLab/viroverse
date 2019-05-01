@@ -17,7 +17,7 @@ loader_options:
     - name
   constraint:
     - - viroserve
-      - '^(visit|sample|sample_type|aliquot|unit|additive|tissue_type|infection|location|medication|patient_medication|arv_class|viral_load|cell_count|sample_search|patient|patient_cohort|patient_alias|patient_patient_group|patient_group|cohort|cohort_patient_summary|scientist|scientist_group|scientist_scientist_group|sequence_search|lab_result_num|lab_result_num_type|lab_result_cat|lab_result_cat_type|lab_result_cat_value|import_job|genome_region|na_sequence|na_sequence_latest_revision|protocol|protocol_type|primer|primer_position|project|project_materials|distinct_sample_search|chromat|chromat_na_sequence|extraction|extract_type|rt_product|pcr_product|pcr_template|organism|sample_note|gel_lane|project_material_scientist_progress|sequence_type|chromat_type|pcr_product_primer|copy_number|copy_number_gel_lane|gel|sample_patient_date|bisulfite_converted_dna)$'
+      - '^(visit|sample|sample_type|aliquot|unit|additive|tissue_type|infection|location|medication|patient_medication|arv_class|viral_load|cell_count|sample_search|patient|patient_cohort|patient_alias|patient_patient_group|patient_group|cohort|cohort_patient_summary|scientist|scientist_group|scientist_scientist_group|sequence_search|lab_result_num|lab_result_num_type|lab_result_cat|lab_result_cat_type|lab_result_cat_value|import_job|genome_region|na_sequence|na_sequence_latest_revision|protocol|protocol_type|primer|primer_position|project|project_materials|distinct_sample_search|chromat|chromat_na_sequence|extraction|extract_type|rt_product|pcr_product|pcr_template|organism|sample_note|gel_lane|project_material_scientist_progress|sequence_type|chromat_type|pcr_product_primer|copy_number|copy_number_gel_lane|gel|sample_patient_date|bisulfite_converted_dna|sequencing_run|sequencing_run_pcr_product)$'
     - - freezer
       - .
     - - delta
@@ -76,6 +76,8 @@ loader_options:
       sample_patient_date: SamplePatientDate
       sample_search: SampleSearch
       sample_type: SampleType
+      sequencing_run: SequencingRun
+      sequencing_run_pcr_product: SequencingRunPolymeraseChainReactionProduct
       scientist: Scientist
       scientist_group: ScientistGroup
       scientist_scientist_group: ScientistGroupMember
@@ -137,6 +139,8 @@ loader_options:
       scientist_scientist_groups: memberships
     ScientistGroupMember:
       scientist_group: group
+    SequencingRun:
+      sequencing_run_pcr_product: pcr_products
     Patient:
       patient_patient_groups: group_memberships
     PatientGroup:
@@ -145,6 +149,7 @@ loader_options:
       patient_group: group
     PolymeraseChainReactionProduct:
       pcr_product_primers: primer_assignments
+      sequencing_run_pcr_product: sequence_runs
     Primer:
       pcr_product_primers: pcr_product_assignments
       primer_positions: positions
