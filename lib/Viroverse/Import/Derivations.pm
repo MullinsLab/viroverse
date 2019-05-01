@@ -221,8 +221,8 @@ sub _find_or_create_derivation {
         $self->_scientists->find($row->{derivation_scientist_name});
 
     my $derivations = $sample->child_derivations->search({
-        protocol_id    => $proto->id,
-        date_completed => $row->{derivation_date},
+        derivation_protocol_id => $proto->id,
+        date_completed         => $row->{derivation_date},
         ($scientist             ? ( scientist_id => $scientist->id ) : ()),
         ($row->{derivation_uri} ? ( uri => $row->{derivation_uri} )  : ()),
     });

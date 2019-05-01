@@ -22,20 +22,20 @@ use MooseX::NonMoose;
 use MooseX::MarkAsMethods autoclean => 1;
 extends 'ViroDB::Result';
 
-=head1 TABLE: C<delta.protocol>
+=head1 TABLE: C<viroserve.derivation_protocol>
 
 =cut
 
-__PACKAGE__->table("delta.protocol");
+__PACKAGE__->table("viroserve.derivation_protocol");
 
 =head1 ACCESSORS
 
-=head2 protocol_id
+=head2 derivation_protocol_id
 
   data_type: 'integer'
   is_auto_increment: 1
   is_nullable: 0
-  sequence: 'delta.protocol_protocol_id_seq'
+  sequence: 'viroserve.derivation_protocol_derivation_protocol_id_seq'
 
 =head2 name
 
@@ -45,12 +45,12 @@ __PACKAGE__->table("delta.protocol");
 =cut
 
 __PACKAGE__->add_columns(
-  "protocol_id",
+  "derivation_protocol_id",
   {
     data_type         => "integer",
     is_auto_increment => 1,
     is_nullable       => 0,
-    sequence          => "delta.protocol_protocol_id_seq",
+    sequence          => "viroserve.derivation_protocol_derivation_protocol_id_seq",
   },
   "name",
   { data_type => "text", is_nullable => 0 },
@@ -60,17 +60,17 @@ __PACKAGE__->add_columns(
 
 =over 4
 
-=item * L</protocol_id>
+=item * L</derivation_protocol_id>
 
 =back
 
 =cut
 
-__PACKAGE__->set_primary_key("protocol_id");
+__PACKAGE__->set_primary_key("derivation_protocol_id");
 
 =head1 UNIQUE CONSTRAINTS
 
-=head2 C<protocol_name_key>
+=head2 C<derivation_protocol_name_key>
 
 =over 4
 
@@ -80,7 +80,7 @@ __PACKAGE__->set_primary_key("protocol_id");
 
 =cut
 
-__PACKAGE__->add_unique_constraint("protocol_name_key", ["name"]);
+__PACKAGE__->add_unique_constraint("derivation_protocol_name_key", ["name"]);
 
 =head1 RELATIONS
 
@@ -95,7 +95,9 @@ Related object: L<ViroDB::Result::Derivation>
 __PACKAGE__->has_many(
   "derivations",
   "ViroDB::Result::Derivation",
-  { "foreign.protocol_id" => "self.protocol_id" },
+  {
+    "foreign.derivation_protocol_id" => "self.derivation_protocol_id",
+  },
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
@@ -110,13 +112,15 @@ Related object: L<ViroDB::Result::DerivationProtocolOutput>
 __PACKAGE__->has_many(
   "protocol_outputs",
   "ViroDB::Result::DerivationProtocolOutput",
-  { "foreign.protocol_id" => "self.protocol_id" },
+  {
+    "foreign.derivation_protocol_id" => "self.derivation_protocol_id",
+  },
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07042 @ 2017-08-11 15:11:38
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:kccPBj8wweUrbTwFTqw5JQ
+# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-04-30 14:38:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:3gtYx5eR85EQw4RXWtCbPA
 
 =head2 output_tissue_types
 =cut

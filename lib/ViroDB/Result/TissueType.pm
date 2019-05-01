@@ -116,8 +116,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07042 @ 2017-08-11 15:11:38
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ubj/S3kJHG/weRRF5H+6yQ
+# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-04-30 14:38:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:zwap0rQ0UuhZg6xj3T2/aw
 
 __PACKAGE__->many_to_many("protocols", "protocol_outputs", "protocol");
 

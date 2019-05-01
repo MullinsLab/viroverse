@@ -9,7 +9,6 @@ loader_options:
   use_moose: 1
   db_schema:
       - viroserve
-      - delta
       - freezer
   qualify_objects: 1
   moniker_parts:
@@ -17,10 +16,8 @@ loader_options:
     - name
   constraint:
     - - viroserve
-      - '^(visit|sample|sample_type|aliquot|unit|additive|tissue_type|infection|location|medication|patient_medication|arv_class|viral_load|cell_count|sample_search|patient|patient_cohort|patient_alias|patient_patient_group|patient_group|cohort|cohort_patient_summary|scientist|scientist_group|scientist_scientist_group|sequence_search|lab_result_num|lab_result_num_type|lab_result_cat|lab_result_cat_type|lab_result_cat_value|import_job|genome_region|na_sequence|na_sequence_latest_revision|protocol|protocol_type|primer|primer_position|project|project_materials|distinct_sample_search|chromat|chromat_na_sequence|extraction|extract_type|rt_product|pcr_product|pcr_template|organism|sample_note|gel_lane|project_material_scientist_progress|sequence_type|chromat_type|pcr_product_primer|copy_number|copy_number_gel_lane|gel|sample_patient_date|bisulfite_converted_dna|sequencing_run|sequencing_run_pcr_product)$'
+      - '^(visit|sample|sample_type|aliquot|unit|additive|tissue_type|infection|location|medication|patient_medication|arv_class|viral_load|cell_count|sample_search|patient|patient_cohort|patient_alias|patient_patient_group|patient_group|cohort|cohort_patient_summary|scientist|scientist_group|scientist_scientist_group|sequence_search|lab_result_num|lab_result_num_type|lab_result_cat|lab_result_cat_type|lab_result_cat_value|import_job|genome_region|na_sequence|na_sequence_latest_revision|protocol|protocol_type|primer|primer_position|project|project_materials|distinct_sample_search|chromat|chromat_na_sequence|extraction|extract_type|rt_product|pcr_product|pcr_template|organism|sample_note|gel_lane|project_material_scientist_progress|sequence_type|chromat_type|pcr_product_primer|copy_number|copy_number_gel_lane|gel|sample_patient_date|bisulfite_converted_dna|derivation|derivation_protocol|protocol_output|sequencing_run|sequencing_run_pcr_product)$'
     - - freezer
-      - .
-    - - delta
       - .
   moniker_map:
     viroserve:
@@ -36,9 +33,11 @@ loader_options:
       cohort_patient_summary: CohortPatientSummary
       copy_number: CopyNumber
       copy_number_gel_lane: CopyNumberGelLane
+      derivation: Derivation
+      derivation_protocol: DerivationProtocol
       distinct_sample_search: DistinctSampleSearch
-      extraction: Extraction
       extract_type: ExtractionType
+      extraction: Extraction
       gel: Gel
       gel_lane: GelLane
       genome_region: GenomeRegion
@@ -66,9 +65,10 @@ loader_options:
       primer: Primer
       primer_position: PrimerPosition
       project: Project
-      project_materials: ProjectSample
       project_material_scientist_progress: ProjectSampleProgress
+      project_materials: ProjectSample
       protocol: LegacyProtocol
+      protocol_output: DerivationProtocolOutput
       protocol_type: LegacyProtocolType
       rt_product: ReverseTranscriptionProduct
       sample: Sample
@@ -87,10 +87,6 @@ loader_options:
       unit: Unit
       viral_load: ViralLoad
       visit: Visit
-    delta:
-      derivation: Derivation
-      protocol: DerivationProtocol
-      protocol_output: DerivationProtocolOutput
     freezer:
       box_pos: BoxPos
       box: Box
@@ -110,8 +106,11 @@ loader_options:
       project_materials: project_assignments
       sample_notes: notes
     Derivation:
+      derivation_protocol: protocol
       samples: output_samples
       sample: input_sample
+    DerivationProtocolOutput:
+      derivation_protocol: protocol
     Box:
       box_pos: box_positions
     BoxPos:
