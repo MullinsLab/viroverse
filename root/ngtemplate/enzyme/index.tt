@@ -1,0 +1,47 @@
+[%- page = {
+        title  = "Enzymes",
+        breadcrumbs     = [
+          [ 'Admin',       c.uri_for_action('/admin/index') ],
+          [ 'Enzymes' ]
+        ]
+    }
+-%]
+
+<div class="row">
+    <div class="col-md-7 col-xs-8">
+        <h1 class="page-header">Enzymes</h1>
+
+        <form method="POST" action="[% c.uri_for_action('/enzyme/create') %]"
+          id="new-enzyme" class="form-inline" role="form">
+        </form>
+
+        <table class="table">
+            <thead>
+                <tr><th>Enzyme name</th><th>Type</th><th /></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <input form="new-enzyme" type="text" name="name" class="form-control" placeholder="New enzyme name…"/>
+                    </td>
+                    <td>
+                        <select form="new-enzyme" class="form-control" name="type">
+                            <option value="polymerase">PCR</option>
+                            <option value="reverse transcriptase">RT</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button form="new-enzyme" type="submit" class="btn btn-primary btn-sm float-left">Add enzyme</button>
+                    </td>
+                </tr>
+                [% FOREACH enzyme IN enzymes %]
+                <tr>
+                    <td>[% enzyme.name %]</td>
+                    <td>[% enzyme.type %]</td>
+                    <td />
+                </tr>
+                [% END %]
+            </tbody>
+        </table>
+    </div>
+</div>

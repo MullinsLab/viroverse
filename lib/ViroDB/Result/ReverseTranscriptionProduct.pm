@@ -183,6 +183,26 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 enzyme
+
+Type: belongs_to
+
+Related object: L<ViroDB::Result::Enzyme>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "enzyme",
+  "ViroDB::Result::Enzyme",
+  { enzyme_id => "enzyme_id" },
+  {
+    is_deferrable => 0,
+    join_type     => "LEFT",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
+  },
+);
+
 =head2 extraction
 
 Type: belongs_to
@@ -254,8 +274,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-04-08 14:52:37
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:uqSDl2mycO3HsWIelI6flQ
+# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-05-06 17:19:55
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Qh8S/F+Goh7Jh5P+3aqhnA
 
 
 with 'ViroDB::Role::HasCopyNumberSummary';
