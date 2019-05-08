@@ -210,6 +210,26 @@ __PACKAGE__->set_primary_key("pcr_product_id");
 
 =head1 RELATIONS
 
+=head2 enzyme
+
+Type: belongs_to
+
+Related object: L<ViroDB::Result::Enzyme>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "enzyme",
+  "ViroDB::Result::Enzyme",
+  { enzyme_id => "enzyme_id" },
+  {
+    is_deferrable => 0,
+    join_type     => "LEFT",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
+  },
+);
+
 =head2 gel_lanes
 
 Type: has_many
@@ -351,8 +371,8 @@ Composing rels: L</primer_assignments> -> primer
 __PACKAGE__->many_to_many("primers", "primer_assignments", "primer");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-04-30 17:01:04
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:8cNa18Zv8pOGVAvt6v+UwA
+# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-05-08 14:51:11
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Nl1ihS0u81qhPNHjPN+qfw
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

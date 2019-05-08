@@ -38,6 +38,8 @@
 [% IF scientist.is_admin %]
 <h3><a class="body-link" href="[%- uri_base -%]tissue">Tissue types</a></h3>
     <p>View and add tissue types</p>
+<h3><a class="body-link" href="[%- uri_base -%]enzyme">Enzymes</a></h3>
+    <p>View and add enzymes</p>
 <h3><a class="body-link" href="[%- uri_base -%]admin/protocol">Generic protocols</a></h3>
     <p>Add protocols of various kinds</p>
 <h3><a class="body-link" href="[%- uri_base -%]protocol">Derivation protocols</a></h3>
