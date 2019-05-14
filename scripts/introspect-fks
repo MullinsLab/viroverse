@@ -13,7 +13,7 @@ table=$1
 column=$2
 [[ $column == "id" ]] && column=${table#*.}_id
 value=$3
-[[ -z $table ]] && echo "usage: `basename $0` [schema.]table [column|'id' [value]]" && exit 1
+[[ -z $table ]] && echo "usage: $( basename "$0" ) [schema.]table [column|'id' [value]]" && exit 1
 
 case "$table" in
     *.*)
@@ -43,7 +43,7 @@ fi
 echo
 echo
 echo "Ctrl-C to cancel, Enter to proceed."
-read
+read -r
 
 if [[ -n $column ]]; then
     column_constraint="= '$column'"
