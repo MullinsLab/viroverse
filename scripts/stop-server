@@ -1,5 +1,5 @@
 #!/bin/bash
-home=$( dirname "$0" )/..
+home=$(dirname "$( dirname "$0" )")
 pidfile=$home/var/run/server-starter.pid
 
 cd "$home" || exit 1
