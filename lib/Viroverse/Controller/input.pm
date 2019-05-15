@@ -991,11 +991,6 @@ sub attach_gel_labels : Local {
 
 Wenjie Deng and Brandon Maust
 
-=head1 LICENSE
-
-This library is free software, you can redistribute it and/or modify
-it under the same terms as Perl itself.
-
 =cut
 
 1;
