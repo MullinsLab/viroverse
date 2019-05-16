@@ -7,4 +7,4 @@
 /node_modules/
 *.pgdb
 /root/static/epitopedb/images/
-viroverse_local.json
+/viroverse_local.json
