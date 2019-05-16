@@ -18,12 +18,12 @@ use 5.018;
 
 use Mail::Send;
 use POSIX ();
-use Viroverse::config;
+use Viroverse::Config;
 use Carp ();
 use Viroverse::Logger qw< :log >;
 
 BEGIN {
-    $Carp::Verbose = 1 if $Viroverse::config::debug;
+    $Carp::Verbose = 1 if Viroverse::Config->conf->{debug};
 }
 
 #
@@ -82,11 +82,11 @@ __PACKAGE__->config( name => 'Viroverse',
 
 Viroverse->config->{'Plugin::Session'} = {
     page_size       => '256k',
-    storage         => join("-", "/tmp/viroverse", $Viroverse::config::instance_name || $$),
+    storage         => join("-", "/tmp/viroverse", Viroverse::Config->conf->{instance_name} || $$),
     unlink_on_exit  => 0,
 };
 
-Viroverse->config->{cache}->{storage} = join("-", "/tmp/viroverse", "cache", $Viroverse::config::instance_name || $$);
+Viroverse->config->{cache}->{storage} = join("-", "/tmp/viroverse", "cache", Viroverse::Config->conf->{instance_name} || $$);
 Viroverse->config->{cache}->{unlink_on_exit} = 0;
 
 Viroverse->config(
@@ -105,13 +105,17 @@ Viroverse->log( Viroverse::Logger->get_logger("Viroverse") );
 #
 __PACKAGE__->setup;
 
-log_info { "Connected to database <$Viroverse::config::dsn>, debug=<$Viroverse::config::debug>" };
+log_info {[
+    "Connected to database <%s>, debug=<%s>",
+    Viroverse::Config->conf->{dsn},
+    Viroverse::Config->conf->{debug}
+]};
 
 =head1 METHODS
 
 =head2 debug
 
-Delegates Catalyst's debug flag to C<Viroverse::config::debug>.
+Delegates Catalyst's debug flag to C<Viroverse::Config->conf->{debug}>.
 
 =head2 finalize_error
 
@@ -119,7 +123,7 @@ Send email on an error when not in debug mode.
 
 =cut
 
-sub debug { $Viroverse::config::debug }
+sub debug { Viroverse::Config->conf->{debug} }
 
 sub finalize_error {
     my $c = shift;
@@ -133,7 +137,7 @@ sub finalize_error {
         {
             local $SIG{CHLD} = 'DEFAULT';
             my $msg = Mail::Send->new;
-            $msg->to($Viroverse::config::error_email);
+            $msg->to(Viroverse::Config->conf->{error_email});
 
 
             my $hn = $c->engine->env->{HTTP_X_FORWARDED_SERVER} || $c->engine->env->{SERVER_NAME} || `hostname`;
@@ -164,7 +168,7 @@ sub finalize_error {
                 next if $thing->[0] eq 'Request';
                 next if $thing->[0] eq 'Response';
                 next if $thing->[0] eq 'Config';
-                print $mfh $thing->[0].":\n".Data::Dump::dump($thing->[1])."\n\n"; 
+                print $mfh $thing->[0].":\n".Data::Dump::dump($thing->[1])."\n\n";
             }
 
             $mfh->close or log_error { "Failed to send error email: $!" };

@@ -9,7 +9,7 @@ use Path::Tiny;
 use Type::Params qw< compile Invocant >;
 use Types::Standard qw< :types slurpy >;
 use Template::Alloy;
-use Viroverse::config;
+use Viroverse::Config;
 use namespace::autoclean;
 
 has path => (

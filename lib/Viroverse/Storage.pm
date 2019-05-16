@@ -24,11 +24,11 @@ correct stored data.
 =cut
 
 use Mullins::Storage::CAS;
-use Viroverse::config;
+use Viroverse::Config;
 
 sub instance {
     my $self = shift;
-    state $cas = Mullins::Storage::CAS->new(path => $Viroverse::config::storage);
+    state $cas = Mullins::Storage::CAS->new(path => Viroverse::Config->conf->{storage});
     return $cas;
 }
 

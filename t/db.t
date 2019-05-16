@@ -10,7 +10,7 @@ use Data::Dumper;
 my $dbh;
 my $session = Viroverse::session->new;
 
-ok($dbh =  Viroverse::db::connect($Viroverse::config::read_only_user,$Viroverse::config::read_only_pw), 'database connect');
+ok($dbh =  Viroverse::db::connect(Viroverse::Config->conf->{read_only_user},Viroverse::Config->conf->{read_only_pw}), 'database connect');
 
 my ($test_sql, $custom_res, $dbi_res);
 

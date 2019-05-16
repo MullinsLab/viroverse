@@ -3,9 +3,9 @@ use warnings;
 use 5.018;
 
 BEGIN {
-    use Viroverse::config;
-    $Viroverse::config::debug = 0;
-    $Viroverse::config::dsn =~ s/(?<=dbname=)([^;]+)/${1}_test/;
+    use Viroverse::Config;
+    Viroverse::Config->conf->{debug} = 0;
+    Viroverse::Config->conf->{dsn} =~ s/(?<=dbname=)([^;]+)/${1}_test/;
 }
 
 package Viroverse::Test;

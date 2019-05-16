@@ -4,13 +4,13 @@ use strict;
 use 5.018;
 use Viroverse::CDBI;
 use Viroverse::Model::sequence::dna;
-use Viroverse::config;
+use Viroverse::Config;
 use File::Temp qw< tempdir >;
 use File::Copy qw< move copy >;
 use File::Path qw< mkpath >;
 
-my $destination = $Viroverse::config::blast_output_path;
-my $makeblastdb = "$Viroverse::config::blast_bin_path/makeblastdb";
+my $destination = Viroverse::Config->conf->{blast_output_path};
+my $makeblastdb = Viroverse::Config->conf->{blast_bin_path} . "/makeblastdb";
 my $working_dir = tempdir('viroblast-update-XXXX', CLEANUP => 1, TMPDIR => 1) or die "unable to create tempdir: $!\n";
 mkpath($destination);
 

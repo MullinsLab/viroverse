@@ -3,13 +3,13 @@ package Viroverse::Model::EpitopeDB;
 use strict;
 use base 'Catalyst::Model::DBIC::Schema';
 
-require Viroverse::config;
+require Viroverse::Config;
 __PACKAGE__->config(
     schema_class => 'EpitopeDB',
     connect_info => {
-        dsn         => $Viroverse::config::dsn,
-        user        => $Viroverse::config::read_only_user,
-        password    => $Viroverse::config::read_only_pw,
+        dsn         => Viroverse::Config->conf->{dsn},
+        user        => Viroverse::Config->conf->{read_only_user},
+        password    => Viroverse::Config->conf->{read_only_pw},
 
         pg_enable_utf8  => 1,
         on_connect_do   => [

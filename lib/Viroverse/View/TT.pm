@@ -3,7 +3,7 @@ package Viroverse::View::TT;
 use strict;
 use base 'Catalyst::View::TT';
 use Template::Stash;
-use Viroverse::config;
+use Viroverse::Config;
 use Scalar::Util ();
 
 # Work around the absurdity that is the behaviour of TT's .size vmethod and the
@@ -80,7 +80,7 @@ Brandon Maust
 sub process {
     my ($self, $context) = @_;
 
-    while ( my ($key,$value) = each %{$Viroverse::config::template_defaults}) {
+    while ( my ($key,$value) = each %{Viroverse::Config->conf->{template_defaults}}) {
         warn "overwriting existing stash value for $key with $value" if exists $context->stash->{$key};
         $context->stash->{$key} = $value;
     }

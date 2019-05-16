@@ -9,7 +9,7 @@ use Moose;
 use Catalyst::ResponseHelpers;
 use Viroverse::Logger qw< :log >;
 use List::Util qw< reduce >;
-use Viroverse::config;
+use Viroverse::Config;
 use namespace::autoclean;
 
 BEGIN { extends 'Viroverse::Controller' }
@@ -44,7 +44,7 @@ sub index : Chained('base') PathPart('') Args(0) {
         reduce { push @{ $a->{ $b->project->name } ||= [] }, $b; $a }
             +{}, @assignments;
 
-    my $nag = !$Viroverse::config::registered;
+    my $nag = !Viroverse::Config->conf->{registered};
 
     $c->stash(
         template        => 'homepage/index.tt',

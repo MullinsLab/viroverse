@@ -6,13 +6,13 @@ use Test::More;
 
 use_ok('Viroverse::config');
 
-like ($Viroverse::config::error_email,qr/\w+@\w+\.\w+/,'valid email destination for errors');
-like ($Viroverse::config::help_email,qr/\w+@\w+\.\w+/,'valid email destination for help requests');
+like (Viroverse::Config->conf->{error_email},qr/\w+@\w+\.\w+/,'valid email destination for errors');
+like (Viroverse::Config->conf->{help_email},qr/\w+@\w+\.\w+/,'valid email destination for help requests');
 
-ok (-x $Viroverse::config::quality,'quality can be run');
-ok (-x $Viroverse::config::needle,'needle can be run');
+ok (-x Viroverse::Config->conf->{quality},'quality can be run');
+ok (-x Viroverse::Config->conf->{needle},'needle can be run');
 
-ok (defined $Viroverse::config::max_results_json,'max_results_json set');
-ok (defined $Viroverse::config::template_defaults->{max_results_json},'max_results_json set for stash');
+ok (defined Viroverse::Config->conf->{max_results_json},'max_results_json set');
+ok (defined Viroverse::Config->conf->{template_defaults}->{max_results_json},'max_results_json set for stash');
 
 done_testing;

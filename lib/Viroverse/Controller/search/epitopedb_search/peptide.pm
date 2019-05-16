@@ -34,7 +34,7 @@ Catalyst Controller.
 =item begin
 =cut
 
-my $schema = EpitopeDB->connect($Viroverse::config::dsn, $Viroverse::config::read_only_user,$Viroverse::config::read_only_pw);
+my $schema = EpitopeDB->connect(Viroverse::Config->conf->{dsn}, Viroverse::Config->conf->{read_only_user},Viroverse::Config->conf->{read_only_pw});
 
 sub section {
     return 'browse';

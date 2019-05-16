@@ -47,7 +47,7 @@ __PACKAGE__->many_to_many(pools => 'pool_pept', 'pool');
 
 sub list_names {
     my ($start) = @_;
-    my $schema = EpitopeDB->connect($Viroverse::config::dsn, $Viroverse::config::read_only_user,$Viroverse::config::read_only_pw);
+    my $schema = EpitopeDB->connect(Viroverse::Config->conf->{dsn}, Viroverse::Config->conf->{read_only_user},Viroverse::Config->conf->{read_only_pw});
     my @objs;
     if ($start) {
         $start = uc $start;
@@ -61,7 +61,7 @@ sub list_names {
 
 sub list_seqs {
     my ($start) = @_;
-    my $schema = EpitopeDB->connect($Viroverse::config::dsn, $Viroverse::config::read_only_user,$Viroverse::config::read_only_pw);
+    my $schema = EpitopeDB->connect(Viroverse::Config->conf->{dsn}, Viroverse::Config->conf->{read_only_user},Viroverse::Config->conf->{read_only_pw});
     my @objs;
     if ($start) {
         $start = uc $start;
