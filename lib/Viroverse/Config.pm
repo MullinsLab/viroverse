@@ -30,61 +30,38 @@ has values => (
 
 $ENV{VIROVERSE_ROOT} //= path(__FILE__)->parent(3)->realpath->stringify;
 
-# Sensible defaults without any configuration
+=pod
+
+=item defaults()
+
+This provides the default hash for things which are dependent on the runtime
+environment. All other defaults are set in viroverse.conf in the project root.
+
+=cut
 sub defaults {
     my $unix_user = $ENV{USER} || `whoami`;
     my $hostname = `hostname -s` || 'unknown-host';
     chomp for $unix_user, $hostname;
 
-    my $max_results_json = 1200;
-
     return {
-        # node information
+        # Default instance name
         instance_name       => "$unix_user-$hostname",
+
+        # Default debug flag
         debug               => $ENV{VVDEBUG} // 1,
 
-        # contact
-        help_name           => 'Your Local Viroverse Administrator',
+        # Default contact address
         help_email          => $unix_user . '@' . $hostname,
+
+        # Default error email destination
         error_email         => $unix_user . '@' . $hostname,
 
-        # storage
+        # Default storage directory
         storage             => "$ENV{VIROVERSE_ROOT}/var/storage",
 
-        # database
-        dsn                 => 'dbi:Pg:host=127.0.0.1;dbname=viroverse;port=5432',
-        read_only_user      => 'viroverse_r',
-        read_only_pw        => '',
-        read_write_user     => 'viroverse_w',
-        read_write_pw       => '',
-
-        # Viroverse's local ViroBLAST install paths
-        #
-        # These defaults likely won't work unless var/viroblast is a checkout of
-        # viroverse-viroblast.git (or a symlink to one).
+        # Default locations of ViroBlast facets
         blast_bin_path      => "$ENV{VIROVERSE_ROOT}/var/viroblast/blast+/bin/",
         blast_output_path   => "$ENV{VIROVERSE_ROOT}/var/viroblast/db/nucleotide/",
-
-        # Product finder limit
-        max_results_json    => $max_results_json,
-
-        # TT2 template defaults
-        template_defaults => {
-            date_format         => '%Y-%m-%d',
-            max_results_json    => $max_results_json,
-        },
-
-        # External executables
-        needle              => '/usr/local/bin/needle',
-        quality             => '/usr/local/bin/quality',
-
-        # Enabled features
-        features => {
-            ice_cultures    => 0,
-            epitopedb       => 0,
-            isla_sequences  => 0,
-            censor_dates    => 0,
-        },
     };
 };
 

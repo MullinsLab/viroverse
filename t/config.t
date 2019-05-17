@@ -12,7 +12,6 @@ like (Viroverse::Config->conf->{help_email},qr/\w+@\w+\.\w+/,'valid email destin
 ok (-x Viroverse::Config->conf->{quality},'quality can be run');
 ok (-x Viroverse::Config->conf->{needle},'needle can be run');
 
-ok (defined Viroverse::Config->conf->{max_results_json},'max_results_json set');
 ok (defined Viroverse::Config->conf->{template_defaults}->{max_results_json},'max_results_json set for stash');
 
 done_testing;
