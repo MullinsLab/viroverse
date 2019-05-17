@@ -224,8 +224,8 @@ sub _run_needle {
     );
     my @needle_opts = map {; "-$_", $needle_opts{$_} || () } sort keys %needle_opts;
 
-    open my $pipe, "-|", $Viroverse::config::needle, @needle_opts
-        or die "failed to run $Viroverse::config::needle: $!";
+    open my $pipe, "-|", Viroverse::Config->conf->{needle}, @needle_opts
+        or die "failed to run Viroverse::Config->conf->{needle}: $!";
 
     my $aligned = $self->_read_fasta_to_array($pipe);
 

@@ -11,7 +11,7 @@ use ViroDB;
 use Viroverse::CachingFinder;
 use Viroverse::Types -types;
 use namespace::clean;
-use Viroverse::config;
+use Viroverse::Config;
 
 with 'Viroverse::Import',
      'Viroverse::Import::HasCreatingScientist';
@@ -74,7 +74,7 @@ has _scientists => (
 );
 
 sub is_enabled {
-    return $Viroverse::config::features->{isla_sequences};
+    return Viroverse::Config->conf->{features}->{isla_sequences};
 }
 
 sub suggested_column_for_key_pattern {

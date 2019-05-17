@@ -3,7 +3,7 @@ use strict;
 use 5.010;
 use utf8;
 
-use Viroverse::config;
+use Viroverse::Config;
 use Viroverse::Logger qw< :log >;
 use Carp qw[confess croak];
 
@@ -22,7 +22,7 @@ my $date_validate_iso = qr/^(?:[0-9]{2})?[0-9]{2}-[01]?[0-9]-[0-3]?[0-9]$/;
 sub connect {
     my ($user,$pass) = @_ or die "need 2 arguments -- username and password";
 
-    $dbh = DBI->connect($Viroverse::config::dsn,$user,$pass) || confess("can't see db -- $DBI::errstr");
+    $dbh = DBI->connect(Viroverse::Config->conf->{dsn},$user,$pass) || confess("can't see db -- $DBI::errstr");
 
     $dbh->{ShowErrorStatement} = 1;
 

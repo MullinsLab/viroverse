@@ -1,7 +1,7 @@
 package Viroverse::session;
 use strict;
 use Viroverse::db;
-use Viroverse::config;
+use Viroverse::Config;
 
 use Digest::MD5 qw(md5_base64);
 use Time::HiRes;
@@ -24,8 +24,8 @@ sub new {
         $self->{'dbr'} = $dbh;
         $self->{'dbw'} = $dbh;
     } else {
-        $self->{'dbr'} = Viroverse::db::connect($Viroverse::config::read_only_user,$Viroverse::config::read_only_pw);
-        $self->{'dbw'} = Viroverse::db::connect($Viroverse::config::read_write_user,$Viroverse::config::read_write_pw);
+        $self->{'dbr'} = Viroverse::db::connect(Viroverse::Config->conf->{read_only_user},Viroverse::Config->conf->{read_only_pw});
+        $self->{'dbw'} = Viroverse::db::connect(Viroverse::Config->conf->{read_write_user},Viroverse::Config->conf->{read_write_pw});
         $self->{'dbw'}->{'RaiseError'} = 1;
         $self->{'dbw'}->{'LongReadLen'} = 10000;
         $self->{'dbr'}->{'LongReadLen'} = 10000;

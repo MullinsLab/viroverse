@@ -4,7 +4,6 @@ use warnings;
 package Viroverse::Controller;
 use base 'Catalyst::Controller';
 
-use Viroverse::config;
 use Viroverse::session;
 use Carp qw <confess croak >;
 

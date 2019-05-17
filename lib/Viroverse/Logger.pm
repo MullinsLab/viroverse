@@ -11,7 +11,7 @@ use Log::Log4perl;
 use Log::Log4perl::Level qw<>;
 use String::Flogger qw< flog >;
 use Types::Standard qw< :types >;
-use Viroverse::config;
+use Viroverse::Config;
 use namespace::clean;
 
 =head1 NAME
@@ -44,7 +44,7 @@ Log::Log4perl->init_once( $ENV{LOG4PERL_CONFIG} || "$ENV{VIROVERSE_ROOT}/logger.
 Log::Log4perl->wrapper_register( __PACKAGE__ );
 
 Log::Log4perl->get_logger("")->level('DEBUG')
-    if $Viroverse::config::debug;
+    if Viroverse::Config->conf->{debug};
 
 Log::Log4perl->get_logger("")->level(uc $ENV{VIROVERSE_LOG_LEVEL})
     if $ENV{VIROVERSE_LOG_LEVEL};

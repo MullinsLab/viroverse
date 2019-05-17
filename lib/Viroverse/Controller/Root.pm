@@ -5,7 +5,7 @@ use warnings;
 use base 'Viroverse::Controller';
 
 use Catalyst::ResponseHelpers;
-require Viroverse::config;
+require Viroverse::Config;
 
 # remove Root from namespace so that it's like they're in Viroverse.pm
 __PACKAGE__->config->{namespace} = '';
@@ -39,7 +39,7 @@ Set to the currently logged in L<ViroDB::Result::Scientist> record.
 
 =item C<< $c->stash->{debug} >>
 
-Reflects state of C<< $c->debug >>, which reflects C<$Viroverse::config::debug>.
+Reflects state of C<< $c->debug >>, which reflects C<Viroverse::Config->conf->{debug}>.
 
 =back
 
@@ -52,10 +52,10 @@ sub auto : Private {
 
     $context->stash->{session} = Viroverse::session->new;
 
-    $context->stash->{help_email} = $Viroverse::config::help_email;
+    $context->stash->{help_email} = Viroverse::Config->conf->{help_email};
     my $auth_error = sub {
         $context->stash->{error_msg}  = shift || "Authentication error";
-        $context->stash->{help_name}  = $Viroverse::config::help_name;
+        $context->stash->{help_name}  = Viroverse::Config->conf->{help_name};
         $context->stash->{template}   = 'auth-error-minimal.tt';
         $context->detach("View::TT");
     };
@@ -88,7 +88,7 @@ uri: $uri
 browser: $agent
 END
 
-    $context->stash->{features} = $Viroverse::config::features;
+    $context->stash->{features} = Viroverse::Config->conf->{features};
 
     $context->load_status_msgs;
 

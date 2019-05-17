@@ -7,10 +7,10 @@ use Getopt::Long;
 use FindBin '$RealBin';
 use lib "$RealBin/../lib";
 
-require Viroverse::config;
+require Viroverse::Config;
 
-die "Can't figure out dbname attribute from DSN '$Viroverse::config::dsn'"
-    unless my ($dbname) = $Viroverse::config::dsn =~ /dbname=([^;]+)/;
+die "Can't figure out dbname attribute from DSN '" . Viroverse::Config->conf{dsn} . "'"
+    unless my ($dbname) = Viroverse::Config->conf{dsn} =~ /dbname=([^;]+)/;
 
 GetOptions("no-drop" => \(my $no_drop));
 

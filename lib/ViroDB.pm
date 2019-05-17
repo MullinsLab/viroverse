@@ -21,11 +21,11 @@ use warnings;
 use 5.018;
 
 sub default_connection_info {
-    require Viroverse::config;
+    require Viroverse::Config;
     return {
-        dsn         => $Viroverse::config::dsn,
-        user        => $Viroverse::config::read_write_user,
-        password    => $Viroverse::config::read_write_pw,
+        dsn         => Viroverse::Config->conf->{dsn},
+        user        => Viroverse::Config->conf->{read_write_user},
+        password    => Viroverse::Config->conf->{read_write_pw},
 
         auto_savepoint  => 1,
         pg_enable_utf8  => 1,

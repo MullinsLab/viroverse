@@ -19,6 +19,8 @@ requires 'Catalyst::View::TT::Alloy', '0.00007';
 requires 'Template::Alloy', '1.020';
 requires 'Catalyst::View::Vega';
 requires 'Catalyst::ResponseHelpers';
+requires 'Config::Any';
+requires 'Config::General';
 
 on 'develop' => sub {
     requires 'Catalyst::Devel';

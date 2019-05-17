@@ -9,7 +9,6 @@ use Viroverse::db;
 use Data::Dumper;
 use Carp qw[croak carp confess cluck];
 use SQL::Abstract;
-use Viroverse::config;
 use strict;
 
 with 'Viroverse::Model::enumerable';

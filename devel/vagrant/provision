@@ -238,9 +238,9 @@ popd
 
     [ -d ../vagrant-storage ] || try mkdir ../vagrant-storage
 
-## Copy a default config_local.pm if none is present
+## Copy a default viroverse_local.json if none is present
 
-    [ -x lib/Viroverse/config_local.pm ] || try cp devel/vagrant/config_local.pm lib/Viroverse/
+    [ -x viroverse_local.json ] || try cp devel/vagrant/viroverse_local.pm .
 
 ## Create an admin user
 

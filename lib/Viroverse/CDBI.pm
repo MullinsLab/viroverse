@@ -3,7 +3,7 @@ use base 'Class::DBI::Pg';
 use Class::DBI::AbstractSearch;
 use Class::DBI::Plugin::RetrieveAll;
 use Carp 'croak';
-use Viroverse::config;
+use Viroverse::Config;
 use Viroverse::CDBI::TxnScopeGuard;
 use Data::Dumper;
 use strict;
@@ -15,7 +15,7 @@ our $is_null = 'is null';
 sub is_null { $is_null };
 sub is_not_null { $is_not_null };
 
-__PACKAGE__->connection($Viroverse::config::dsn,$Viroverse::config::read_write_user,$Viroverse::config::read_write_pw);
+__PACKAGE__->connection(Viroverse::Config->conf->{dsn},Viroverse::Config->conf->{read_write_user},Viroverse::Config->conf->{read_write_pw});
 __PACKAGE__->db_Main->{AutoCommit} = 1;
 __PACKAGE__->autoupdate(1);
 
@@ -24,7 +24,7 @@ __PACKAGE__->autoupdate(1);
 sub _mk_db_closure {
         my ($class, $dsn, $user, $pass, $attr) = @_;
 
-        $attr ||= {}; 
+        $attr ||= {};
         my $dbh;
         my $process_id = $$;
         return sub {
@@ -43,10 +43,10 @@ sub _mk_db_closure {
                     $dbh = DBI->connect_cached($dsn, $user, $pass, $attr);
                             $dbh->{AutoCommit} = 1;
                     $process_id = $$;
-                }   
+                }
                 return $dbh;
-        };      
-        
+        };
+
 }
 
 sub search_ilike { shift->_do_search(ILIKE => @_) };
@@ -74,7 +74,7 @@ sub shorthand {
 =item Viroverse::CDBI->longhand()
     meant to be overridden by classes whose attributes require mre detail than the package name.
     Returns the shorthand name by default.  Any package which overrides it will call this then append any additional name
-    with a dot (.) 
+    with a dot (.)
     e.g.  Viroverse.Model.extraction will override this, call the SUPER function, then append the extraction product type to the end
     (so a dna extraction product would return extraction.dna)
 =cut
@@ -114,7 +114,7 @@ sub search_single {
     my @matches = $pkg->search({$col => $value});
     if (@matches ==1) {
         return $matches[0];
-    } 
+    }
 
     return undef;
 }

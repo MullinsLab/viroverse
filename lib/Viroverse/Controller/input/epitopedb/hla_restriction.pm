@@ -29,7 +29,7 @@ Catalyst Controller.
 =item begin
 =cut
 
-my $schema = EpitopeDB->connect($Viroverse::config::dsn, $Viroverse::config::read_write_user,$Viroverse::config::read_write_pw);
+my $schema = EpitopeDB->connect(Viroverse::Config->conf->{dsn}, Viroverse::Config->conf->{read_write_user},Viroverse::Config->conf->{read_write_pw});
 
 sub section {
     return 'input';

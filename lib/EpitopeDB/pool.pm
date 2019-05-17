@@ -29,7 +29,7 @@ __PACKAGE__->has_many(pool_response_corravg => 'EpitopeDB::pool_response_corravg
 
 sub list_names {
     my ($start) = @_;
-    my $schema = EpitopeDB->connect($Viroverse::config::dsn, $Viroverse::config::read_only_user,$Viroverse::config::read_only_pw);
+    my $schema = EpitopeDB->connect(Viroverse::Config->conf->{dsn}, Viroverse::Config->conf->{read_only_user},Viroverse::Config->conf->{read_only_pw});
     my @objs;
     if ($start) {
         $start = uc $start;

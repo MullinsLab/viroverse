@@ -56,7 +56,7 @@ sub index : Private {
 sub peptide : Local {
     my ( $self, $context ) = @_;
     $context->stash->{'cohorts'} = $context->model("ViroDB::Cohort")->list_all;
-    my $schema = EpitopeDB->connect($Viroverse::config::dsn, $Viroverse::config::read_only_user,$Viroverse::config::read_only_pw);
+    my $schema = EpitopeDB->connect(Viroverse::Config->conf->{dsn}, Viroverse::Config->conf->{read_only_user},Viroverse::Config->conf->{read_only_pw});
 
     $context->stash->{genes} = Viroverse::epitopedb::search::get_genes($schema);
     $context->stash->{hlas} = Viroverse::epitopedb::search::get_hlas($schema);
@@ -69,7 +69,7 @@ sub pool : Local {
     my ( $self, $context ) = @_;
 
 #    $context->stash->{'cohorts'} = $context->model("ViroDB::Cohort")->list_all;
-    my $schema = EpitopeDB->connect($Viroverse::config::dsn, $Viroverse::config::read_only_user,$Viroverse::config::read_only_pw);
+    my $schema = EpitopeDB->connect(Viroverse::Config->conf->{dsn}, Viroverse::Config->conf->{read_only_user},Viroverse::Config->conf->{read_only_pw});
 
     $context->stash->{pools} = Viroverse::epitopedb::search::get_pools($schema);
     $context->stash->{template} = 'epitopedb_search/pool.tt';

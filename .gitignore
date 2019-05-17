@@ -4,7 +4,7 @@
 /.vagrant/
 *.swp
 /var
-lib/Viroverse/config_local.pm
 /node_modules/
 *.pgdb
 /root/static/epitopedb/images/
+/viroverse_local.*
