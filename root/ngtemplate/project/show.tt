@@ -16,7 +16,7 @@
         <table class="table table-condensed">
             <thead>
                 <tr>
-                    <th>Patient</th>
+                    <th>Subject</th>
                     <th>Sample</th>
                     <th>Sample name</th>
                     <th>Assigned scientist</th>
