@@ -431,5 +431,30 @@ sub idrev {
     return join ".", ($self->na_sequence_id, $self->na_sequence_revision);
 }
 
+sub parent_revision {
+    my $self = shift;
+    return if $self->na_sequence_revision == 1;
+    return $self->result_source->schema->resultset("NucleicAcidSequence")
+        ->search(
+            {
+                na_sequence_id       =>       $self->na_sequence_id,
+                na_sequence_revision => {'<', $self->na_sequence_revision}
+            },
+            {
+                order_by      => ['na_sequence_revision desc'],
+                limit         => 1,
+            }
+        )->first;
+}
+
+sub has_revisions {
+    my $self = shift;
+    return $self->result_source->schema->resultset("NucleicAcidSequence")
+                ->search({
+                    na_sequence_id => $self->na_sequence_id,
+                    na_sequence_revision => {'>', 1 }
+                })->has_rows;
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
