@@ -77,6 +77,22 @@ sub show : Chained('load') PathPart('') Args(0) {
     $c->detach( $c->view("NG") );
 }
 
+sub delete : Chained('load') PathPart('') Args(0) DELETE {
+    my ($self, $c) = @_;
+
+    my $seq = $c->model;
+    my $why = $c->req->param('reason');
+
+    my ($ok, $msg) = $seq->mark_deleted_by($c->stash->{scientist}, $why);
+
+    return ClientError($c, $msg) unless $ok;
+
+    return FromCharString($c,
+        JSON->new->encode( { ok => $ok } ),
+        'application/json; charset=UTF-8'
+    );
+}
+
 sub redirect_summary_sequence : Path('/summary/sequence') Args {
     my ($self, $c, $id) = @_;
     my $url = defined $id
