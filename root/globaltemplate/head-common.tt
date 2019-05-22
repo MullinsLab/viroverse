@@ -14,7 +14,6 @@
 <script type='text/javascript' language='javascript'>
     var viroverse = new Object;
     viroverse.url_base = "[%- uri_base -%]";
-    viroverse.api_base = "[%- uri_base -%]api";
 
     viroverse.scientist = <% scientist.json | none %>;
 </script>
