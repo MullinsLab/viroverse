@@ -385,6 +385,21 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 na_sequence_notes
+
+Type: has_many
+
+Related object: L<ViroDB::Result::SequenceNote>
+
+=cut
+
+__PACKAGE__->has_many(
+  "na_sequence_notes",
+  "ViroDB::Result::SequenceNote",
+  { "foreign.scientist_id" => "self.scientist_id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 =head2 na_sequences
 
 Type: has_many
@@ -551,8 +566,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-04-30 14:38:44
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:J61JWqc6CWNtuCFlLaCW7w
+# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-05-23 13:23:28
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:oKMUN/mzkaHGRl/MVWv6qQ
 
 use JSON::MaybeXS;
 use Viroverse::Config;
