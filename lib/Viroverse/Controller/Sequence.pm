@@ -167,6 +167,16 @@ sub create_revision : POST Chained('load_virodb') PathPart('revise') Args(0) {
         : $error->("No changes made. A revised sequence must differ from the original.");
 }
 
+sub create_note : POST Chained('load_virodb') PathPart('notes') Args(0) {
+    my ($self, $c) = @_;
+    return Forbidden($c) unless $c->stash->{scientist}->can_edit;
+    $c->model->notes->create({
+        body         => $c->req->params->{body},
+        scientist_id => $c->stash->{scientist}->scientist_id,
+    });
+    return Redirect($c, $self->action_for("show"), [ $c->model->idrev ]);
+}
+
 sub chromats : Chained('load_virodb') PathPart('chromats') Args(0) {
     my ($self, $c) = @_;
     my $sequence   = $c->model;

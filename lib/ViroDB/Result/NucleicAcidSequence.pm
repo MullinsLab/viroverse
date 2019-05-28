@@ -452,5 +452,17 @@ sub has_revisions {
                 })->has_rows;
 }
 
+=head2 deletion_reason
+
+Finds the note for this sequence giving the deletion reason, if possible.
+
+=cut
+
+sub deletion_reason {
+    my $self = shift;
+    return unless $self->deleted;
+    return $self->notes->search({ body => {-like => "[Delete]%"}})->first;
+}
+
 __PACKAGE__->meta->make_immutable;
 1;

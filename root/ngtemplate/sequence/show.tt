@@ -22,8 +22,10 @@
     <div class="col-md-8">
         [% IF virodb_sequence.deleted %]
         <p class="alert alert-danger">
-            [% IF sequence.deletion_reason %]
-            Deleted by [% sequence.deletion_reason.scientist_id.name %] on [% sequence.deletion_reason.date_added %]: [% sequence.deletion_reason.note.remove('\[Delete\] ') %]
+            [% IF virodb_sequence.deletion_reason %]
+            Deleted by [% virodb_sequence.deletion_reason.scientist.name %]
+            on [% virodb_sequence.deletion_reason.time_created.ymd %]:
+            [% virodb_sequence.deletion_reason.body.remove('\[Delete\] ') %]
             [% ELSE %]
             Deleted by an unknown person on an unknown date for an unknown reason.
             [% END %]
@@ -35,7 +37,7 @@
             [% Inflect.noun(virodb_sequence.type.name || virodb_sequence.na_type || 'sequence').indef_article %]
             <strong>[% virodb_sequence.type.name %] [% virodb_sequence.na_type %]</strong> sequence
             obtained by <strong>[% virodb_sequence.scientist.name %]</strong>
-            and entered on <strong>[% virodb_sequence.entered_date %]</strong>.
+            and entered on <strong>[% virodb_sequence.entered_date.ymd %]</strong>.
             Final round amplification primers are <strong>[% sequence.input_product.primer_strings || 'unknown' %]</strong>.
             [% IF virodb_sequence.genbank_acc %]
             Sequence released to GenBank as
@@ -60,14 +62,31 @@
             This is the only version of this sequence.
         [% END %]
         </p>
-        [% IF sequence.notes || sequence.note%]
         <h3>Notes</h3>
-        [% FOR note IN sequence.notes %]
-        <p>[% note.note %] —[% note.scientist_id.name %], [% note.date_added %]</p>
+        [% IF $(virodb_sequence.notes).has_rows %]
+            [% FOR note IN $(virodb_sequence.notes).order_by("time_created") %]
+            <p>
+              [% note.body %]
+              <span class="note-byline text-muted">
+                [%- note.scientist.name ? note.scientist.name _ ', ' : '' %]
+                <time
+                    datetime="[% note.time_created.ymd %]"
+                    >[% note.time_created.strftime("%b %e, %Y") %]</time>
+              </span>
+            </p>
+            [% END %]
+        [% ELSE %]
+            <p>No notes.</p>
         [% END %]
-        [% IF sequence.note %]
-        <p>[% sequence.note %]</p>
-        [% END %]
+        [% IF scientist.can_edit %]
+            <form role="form" method="POST" action="[% c.uri_for_action('/sequence/create_note', [ virodb_sequence.idrev ] )%]">
+                <div class="input-group">
+                    <input name="body" class="form-control" placeholder="New note…">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default"><span class="glyphicon">+</span></button>
+                    </span>
+                </div>
+            </form>
         [% END %]
         [% IF virodb_sequence.type.name eq 'Genomic' && sequence.hxb2_aln %]
             <h2>HXB2 alignment</h2>

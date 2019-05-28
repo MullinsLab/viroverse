@@ -73,10 +73,8 @@ sub accessor_name_for {
 
 __PACKAGE__->columns(Other =>
    qw[
-          note
           sample_id
           genbank_acc
-          vv_uid
     ]
 );
 
@@ -98,8 +96,7 @@ __PACKAGE__->has_a(
     deflate => 'id',
 );
 
-with 'Viroverse::Model::Role::Notes',
-     'Viroverse::SampleTree::Node';
+with 'Viroverse::SampleTree::Node';
 
 sub input_product {
     my $self = shift;
@@ -328,18 +325,6 @@ sub scientist_can_delete {
     return 0;
 }
 
-=head2 deletion_reason
-
-Finds the note for this sequence giving the deletion reason, if possible.
-
-=cut
-
-sub deletion_reason {
-    my $self = shift;
-    return unless $self->deleted;
-    my @deletion = grep { $_->note =~ /^\[Delete\]/ } $self->notes;
-    return $deletion[0];
-}
 
 =head2 queue_reference_align
 
