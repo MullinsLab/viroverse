@@ -158,14 +158,15 @@
               <p><a class="btn btn-default" href="[% c.uri_for_action('/sequence/revise', [ virodb_sequence.latest_revision.idrev ] )%]">Revise latest revision of this sequence</a></p>
           [% END %]
         <% END %>
-        <% IF sequence.scientist_can_delete(scientist) %>
+        <% IF scientist.is_admin || scientist.is_supervisor %>
           <!--
             XXX TODO: This component should become an Angular directive instead
             of manually attaching the controller.
               -trs, 6 December 2016
           -->
-          <form ng-controller="DeleteSequence" ng-submit="delete()" name="DeleteForm"
-                ng-init="id = <% sequence.na_sequence_id.json | html %>"
+          <form name="DeleteForm"
+                method="POST"
+                action="[% c.uri_for_action('/sequence/delete', [ virodb_sequence.idrev ])%]"
                 class="form-inline"
                 role="form">
             <div class="form-group" ng-show="!unlocked">
@@ -181,16 +182,12 @@
                        placeholder="Reason for deletion... (required)"
                        ng-model="reason" required=1><br>
               </div>
-              <button class="btn btn-success"
-                      ng-disabled="DeleteForm.$invalid">
-                Delete sequence and all revisions
-              </button>
+              <input type="submit" class="btn btn-success"
+                      ng-disabled="DeleteForm.$invalid"
+                      value="Delete sequence and all revisions">
               <button type="button" class="btn btn-cancel btn-sm" ng-click="unlocked = false">
                 Nevermind
               </button>
-              <div class="form-error bg-danger" ng-show="error != null">
-                Whoops, something went wrong: {{error}}
-              </div>
             </div>
           </form>
         <% END %>

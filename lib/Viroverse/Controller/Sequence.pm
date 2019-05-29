@@ -77,20 +77,29 @@ sub show : Chained('load') PathPart('') Args(0) {
     $c->detach( $c->view("NG") );
 }
 
-sub delete : Chained('load') PathPart('') Args(0) DELETE {
+sub delete : POST Chained('load_virodb') PathPart('delete') Args(0) {
     my ($self, $c) = @_;
+
+    return Forbidden($c)
+        unless $c->stash->{scientist}->is_admin || $c->stash->{scientist}->is_supervisor;
 
     my $seq = $c->model;
     my $why = $c->req->param('reason');
+    return ClientError($c, "Must include a deletion reason") unless $why;
 
-    my ($ok, $msg) = $seq->mark_deleted_by($c->stash->{scientist}, $why);
+    my $txn = $seq->result_source->schema->txn_scope_guard;
+    for my $rev ($seq->all_revisions->all) {
+        $rev->update({deleted => 1});
+        $rev->notes->create({
+            body         => "[Delete] $why",
+            scientist_id => $c->stash->{scientist}->id,
+        });
+    }
+    $txn->commit;
 
-    return ClientError($c, $msg) unless $ok;
-
-    return FromCharString($c,
-        JSON->new->encode( { ok => $ok } ),
-        'application/json; charset=UTF-8'
-    );
+    my $mid = $c->set_status_msg("Deleted sequence");
+    return Redirect($c, $self->action_for('show'), [ $seq->idrev ],
+        { mid => $mid });
 }
 
 sub redirect_summary_sequence : Path('/summary/sequence') Args {

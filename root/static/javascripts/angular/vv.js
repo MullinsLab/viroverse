@@ -7,7 +7,6 @@
       'vv.http',
       'vv.filters',
       'vv.ui',
-      'vv.ui.deleteSequence',
       'vv.ui.facetedSearch',
       'vv.ui.sampleSearch',
       'vv.ui.sequenceSearch',

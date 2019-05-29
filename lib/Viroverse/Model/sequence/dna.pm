@@ -208,12 +208,6 @@ __PACKAGE__->set_sql('by_sample' => qq[
      ORDER BY na_sequence_id
 ]);
 
-__PACKAGE__->set_sql('mark_deleted' => qq[
-    UPDATE __TABLE__
-       SET deleted = 't'
-     WHERE na_sequence_id = ?
-]);
-
 sub retrieve_hxb2 {
     shift->retrieve(0);
 }
@@ -269,60 +263,6 @@ sub retrieve_many {
 
 sub insert {
     die "Inserting sequences through the CDBI model is disabled!";
-}
-
-=head2 mark_deleted_by
-
-Mark this sequence as deleted, though the record persists.  Takes a
-L<Viroverse::Model::scientist> object as the first parameter (the I<who>) and a
-textual note (the reason for the deletion) as the second (the I<why>).
-
-B<All revisions> of this sequence are marked deleted.
-
-Returns a tuple of C<(boolean, msg)> where C<boolean> indicates success or
-failure and C<msg> is an error message, if any.
-
-=cut
-
-sub mark_deleted_by {
-    my ($self, $who, $why) = @_;
-    return (0, "Permission denied")  unless $self->scientist_can_delete($who);
-    return (0, "No reason provided") unless defined $why and $why =~ /\S/;
-
-    my $dbh = $self->db_Main;
-    try {
-        $dbh->begin_work;
-
-        my $sth = $self->sql_mark_deleted;
-        $sth->execute($self->na_sequence_id);
-        die "No rows affected by UPDATE"
-            unless $sth->rows >= 1;
-
-        $self->add_note({
-            note         => "[Delete] $why",
-            scientist_id => $who->id,
-        });
-    } catch {
-        $dbh->rollback;
-        log_error {[ "Couldn't mark sequence %d deleted: %s", $self->na_sequence_id, $_ ]};
-        return (0, "Couldn't mark deleted: $_");
-    };
-    $dbh->commit;
-    return 1;
-}
-
-=head2 scientist_can_delete
-
-Given a L<Viroverse::Model::scientist> object, returns a boolean indicating if
-the scientist may mark this sequence deleted or not.
-
-=cut
-
-sub scientist_can_delete {
-    my ($self, $sci) = @_;
-    return 1 if $sci->role eq "admin";
-    return 1 if $sci->role eq "supervisor";
-    return 0;
 }
 
 

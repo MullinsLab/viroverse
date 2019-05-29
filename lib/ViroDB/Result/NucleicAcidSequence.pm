@@ -296,6 +296,12 @@ __PACKAGE__->belongs_to(
   { "foreign.na_sequence_id" => "self.na_sequence_id" }
 );
 
+__PACKAGE__->has_many(
+  "all_revisions",
+  "ViroDB::Result::NucleicAcidSequence",
+  { "foreign.na_sequence_id" => "self.na_sequence_id" }
+);
+
 # Like latest_revision above, but as a LEFT JOIN so that it can be used more
 # broadly for some searches.  This should probably only be used sparingly.
 __PACKAGE__->belongs_to(
