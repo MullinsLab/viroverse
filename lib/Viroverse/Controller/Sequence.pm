@@ -178,7 +178,10 @@ sub create_revision : POST Chained('load_virodb') PathPart('revise') Args(0) {
 
 sub create_note : POST Chained('load_virodb') PathPart('notes') Args(0) {
     my ($self, $c) = @_;
-    return Forbidden($c) unless $c->stash->{scientist}->can_edit;
+    return Forbidden($c)
+        unless $c->stash->{scientist}->can_edit &&
+        $c->model->na_sequence_revision ==
+            $c->model->latest_revision->na_sequence_revision;
     $c->model->notes->create({
         body         => $c->req->params->{body},
         scientist_id => $c->stash->{scientist}->scientist_id,
