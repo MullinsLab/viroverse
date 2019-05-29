@@ -374,7 +374,6 @@ sub create_revision {
         sequence
         trimmed
         deleted
-        note
         pcr_product_id
         clone_id
         sample_id
@@ -409,6 +408,13 @@ sub create_revision {
         na_sequence_revision => $self->na_sequence_revision + 1,
     });
     $new_revision->set_chromats($self->chromats) if $self->chromats->count;
+    for my $note ($self->notes) {
+        $new_revision->notes->create({
+            scientist_id => $note->scientist_id,
+            body         => $note->body,
+            time_created => $note->time_created,
+        });
+    }
     return $new_revision;
 }
 

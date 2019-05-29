@@ -153,7 +153,7 @@ sub create_revision : POST Chained('load_virodb') PathPart('revise') Args(0) {
     my %revised = (
          map {; $_ => $c->req->params->{$_} }
         grep { $c->req->params->{$_} }
-           qw[ name sequence scientist_id na_type note ]
+           qw[ name sequence scientist_id na_type ]
     );
 
     if (exists $revised{sequence}) {
