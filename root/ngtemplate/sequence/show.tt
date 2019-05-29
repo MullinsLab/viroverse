@@ -78,7 +78,8 @@
         [% ELSE %]
             <p>No notes.</p>
         [% END %]
-          [% IF virodb_sequence.na_sequence_revision ==
+          [% IF !virodb_sequence.deleted &&
+                virodb_sequence.na_sequence_revision ==
                 virodb_sequence.latest_revision.na_sequence_revision &&
                 scientist.can_edit %]
             <form role="form" method="POST" action="[% c.uri_for_action('/sequence/create_note', [ virodb_sequence.idrev ] )%]">
