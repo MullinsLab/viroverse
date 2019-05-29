@@ -293,7 +293,7 @@ __PACKAGE__->many_to_many("chromats", "sequence_chromats", "chromat");
 __PACKAGE__->belongs_to(
   "latest_revision",
   "ViroDB::Result::NucleicAcidSequenceLatestRevision",
-  { "foreign.na_sequence_id" => "self.na_sequence_id", "foreign.na_sequence_revision" => "self.na_sequence_revision" }
+  { "foreign.na_sequence_id" => "self.na_sequence_id" }
 );
 
 # Like latest_revision above, but as a LEFT JOIN so that it can be used more
