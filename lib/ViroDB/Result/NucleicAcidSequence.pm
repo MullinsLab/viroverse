@@ -296,6 +296,13 @@ __PACKAGE__->belongs_to(
   { "foreign.na_sequence_id" => "self.na_sequence_id" }
 );
 
+sub possibly_deleted_latest_revision {
+    my $self = shift;
+    return $self->result_source->schema->resultset('NucleicAcidSequence')
+        ->search({ na_sequence_id => $self->na_sequence_id },
+                 { order_by => { -desc => 'na_sequence_revision' }})->first;
+}
+
 __PACKAGE__->has_many(
   "all_revisions",
   "ViroDB::Result::NucleicAcidSequence",

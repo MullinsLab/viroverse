@@ -46,7 +46,7 @@
         </p>
         <p>
         [% IF virodb_sequence.has_revisions %]
-            [% IF virodb_sequence.na_sequence_revision == virodb_sequence.latest_revision.na_sequence_revision %]
+            [% IF virodb_sequence.na_sequence_revision == virodb_sequence.possibly_deleted_latest_revision.na_sequence_revision %]
             This is the current version of this sequence. The previous version is
             <a href="[% c.uri_for_action('/sequence/show',[ virodb_sequence.parent_revision.idrev ])%]">[% virodb_sequence.parent_revision.idrev %]</a>.
             [% ELSE %]
@@ -56,7 +56,7 @@
                 This is an earlier version of this sequence. The previous version is
                     <a href="[% c.uri_for_action('/sequence/show', [ virodb_sequence.parent_revision.idrev ])%]">[% virodb_sequence.parent_revision.idrev %]</a>.
                 [% END %]
-                The current version is <a href="[% c.uri_for_action('/sequence/show', [ virodb_sequence.latest_revision.idrev ])%]">[% virodb_sequence.latest_revision.idrev %]</a>.
+                The current version is <a href="[% c.uri_for_action('/sequence/show', [ virodb_sequence.possibly_deleted_latest_revision.idrev ])%]">[% virodb_sequence.possibly_deleted_latest_revision.idrev %]</a>.
             [% END %]
         [% ELSE %]
             This is the only version of this sequence.
