@@ -18,6 +18,12 @@ sub base : Chained('/') PathPart('') CaptureArgs(0) { }
 
 sub index : Chained('base') PathPart('') Args(0) {
     my ($self, $c) = @_;
+
+    # If we have configured a root redirection, follow it
+    if (Viroverse::Config->conf->{redirect_root_to}) {
+        return RedirectToUrl($c, Viroverse::Config->conf->{redirect_root_to});
+    }
+
     my $active     = $c->model("ViroDB::Project")->active;
 
     # The extensive prefetching below bundles a bunch of relationships into a
