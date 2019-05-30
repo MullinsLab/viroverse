@@ -20,6 +20,11 @@ sub index : Chained('base') PathPart('') Args(0) {
     my ($self, $c) = @_;
     my $active     = $c->model("ViroDB::Project")->active;
 
+    # If we have configured a root redirection, follow it
+    if (Viroverse::Config->conf->{redirect_root_to}) {
+        return $c->response->redirect(Viroverse::Config->conf->{redirect_root_to});
+    }
+
     # The extensive prefetching below bundles a bunch of relationships into a
     # single fairly efficient query without resorting to a database view to
     # power the homepage.
