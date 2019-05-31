@@ -66,12 +66,6 @@ __PACKAGE__->table("viroserve.na_sequence");
   data_type: 'boolean'
   is_nullable: 1
 
-=head2 note
-
-  data_type: 'varchar'
-  is_nullable: 1
-  size: 255
-
 =head2 scientist_id
 
   data_type: 'integer'
@@ -106,13 +100,6 @@ __PACKAGE__->table("viroserve.na_sequence");
 
   data_type: 'boolean'
   is_nullable: 1
-
-=head2 vv_uid
-
-  data_type: 'integer'
-  is_auto_increment: 1
-  is_nullable: 0
-  sequence: 'viroserve.vv_uid'
 
 =head2 na_type
 
@@ -149,8 +136,6 @@ __PACKAGE__->add_columns(
   },
   "trimmed",
   { data_type => "boolean", is_nullable => 1 },
-  "note",
-  { data_type => "varchar", is_nullable => 1, size => 255 },
   "scientist_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
   "pcr_product_id",
@@ -163,13 +148,6 @@ __PACKAGE__->add_columns(
   { data_type => "varchar", is_nullable => 1, size => 8 },
   "deleted",
   { data_type => "boolean", is_nullable => 1 },
-  "vv_uid",
-  {
-    data_type         => "integer",
-    is_auto_increment => 1,
-    is_nullable       => 0,
-    sequence          => "viroserve.vv_uid",
-  },
   "na_type",
   { data_type => "viroserve.na_type", is_nullable => 1 },
   "sequence_type_id",
@@ -191,6 +169,24 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("na_sequence_id", "na_sequence_revision");
 
 =head1 RELATIONS
+
+=head2 notes
+
+Type: has_many
+
+Related object: L<ViroDB::Result::SequenceNote>
+
+=cut
+
+__PACKAGE__->has_many(
+  "notes",
+  "ViroDB::Result::SequenceNote",
+  {
+    "foreign.na_sequence_id"       => "self.na_sequence_id",
+    "foreign.na_sequence_revision" => "self.na_sequence_revision",
+  },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
 
 =head2 pcr_product
 
@@ -286,8 +282,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07042 @ 2018-03-13 13:18:31
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:IJMiKJr+JBV1odQHhd6SZw
+# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-05-23 13:23:28
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:EGnhrWdtAgswaTZTfNE9uA
 
 use List::Util 1.33 qw< any >;
 use Viroverse::Types -types;
@@ -297,7 +293,20 @@ __PACKAGE__->many_to_many("chromats", "sequence_chromats", "chromat");
 __PACKAGE__->belongs_to(
   "latest_revision",
   "ViroDB::Result::NucleicAcidSequenceLatestRevision",
-  { "foreign.na_sequence_id" => "self.na_sequence_id", "foreign.na_sequence_revision" => "self.na_sequence_revision" }
+  { "foreign.na_sequence_id" => "self.na_sequence_id" }
+);
+
+sub possibly_deleted_latest_revision {
+    my $self = shift;
+    return $self->result_source->schema->resultset('NucleicAcidSequence')
+        ->search({ na_sequence_id => $self->na_sequence_id },
+                 { order_by => { -desc => 'na_sequence_revision' }})->first;
+}
+
+__PACKAGE__->has_many(
+  "all_revisions",
+  "ViroDB::Result::NucleicAcidSequence",
+  { "foreign.na_sequence_id" => "self.na_sequence_id" }
 );
 
 # Like latest_revision above, but as a LEFT JOIN so that it can be used more
@@ -372,7 +381,6 @@ sub create_revision {
         sequence
         trimmed
         deleted
-        note
         pcr_product_id
         clone_id
         sample_id
@@ -407,6 +415,13 @@ sub create_revision {
         na_sequence_revision => $self->na_sequence_revision + 1,
     });
     $new_revision->set_chromats($self->chromats) if $self->chromats->count;
+    for my $note ($self->notes) {
+        $new_revision->notes->create({
+            scientist_id => $note->scientist_id,
+            body         => $note->body,
+            time_created => $note->time_created,
+        });
+    }
     return $new_revision;
 }
 
@@ -429,6 +444,43 @@ sub scientist_can_revise {
 sub idrev {
     my $self = shift;
     return join ".", ($self->na_sequence_id, $self->na_sequence_revision);
+}
+
+sub parent_revision {
+    my $self = shift;
+    return if $self->na_sequence_revision == 1;
+    return $self->result_source->schema->resultset("NucleicAcidSequence")
+        ->search(
+            {
+                na_sequence_id       =>       $self->na_sequence_id,
+                na_sequence_revision => {'<', $self->na_sequence_revision}
+            },
+            {
+                order_by      => ['na_sequence_revision desc'],
+                limit         => 1,
+            }
+        )->first;
+}
+
+sub has_revisions {
+    my $self = shift;
+    return $self->result_source->schema->resultset("NucleicAcidSequence")
+                ->search({
+                    na_sequence_id => $self->na_sequence_id,
+                    na_sequence_revision => {'>', 1 }
+                })->has_rows;
+}
+
+=head2 deletion_reason
+
+Finds the note for this sequence giving the deletion reason, if possible.
+
+=cut
+
+sub deletion_reason {
+    my $self = shift;
+    return unless $self->deleted;
+    return $self->notes->search({ body => {-like => "[Delete]%"}})->first;
 }
 
 __PACKAGE__->meta->make_immutable;

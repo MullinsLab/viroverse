@@ -15,64 +15,86 @@
     <div class="col-md-12">
         <h1 class="page-header">
           Sequence
-          [% sequence.idrev %]
+          [% virodb_sequence.idrev %]
           <small><% INCLUDE sequence/partials/labels.tt %></small>
         </h1>
     </div>
     <div class="col-md-8">
-        [% IF sequence.deleted %]
+        [% IF virodb_sequence.deleted %]
         <p class="alert alert-danger">
-            [% IF sequence.deletion_reason %]
-            Deleted by [% sequence.deletion_reason.scientist_id.name %] on [% sequence.deletion_reason.date_added %]: [% sequence.deletion_reason.note.remove('\[Delete\] ') %]
+            [% IF virodb_sequence.deletion_reason %]
+            Deleted by [% virodb_sequence.deletion_reason.scientist.name %]
+            on [% virodb_sequence.deletion_reason.time_created.ymd %]:
+            [% virodb_sequence.deletion_reason.body.remove('\[Delete\] ') %]
             [% ELSE %]
             Deleted by an unknown person on an unknown date for an unknown reason.
             [% END %]
         </p>
         [% END %]
         <p>
-            Sequence <strong>[% sequence.idrev %]</strong>,
-            originally named <strong>[% sequence.name %]</strong>, is
-            [% Inflect.noun(virodb_sequence.type.name || sequence.na_type || 'sequence').indef_article %]
-            <strong>[% virodb_sequence.type.name %] [% sequence.na_type %]</strong> sequence
-            obtained by <strong>[% sequence.scientist_id.name %]</strong>
-            and entered on <strong>[% sequence.entered_date %]</strong>.
+            Sequence <strong>[% virodb_sequence.idrev %]</strong>,
+            originally named <strong>[% virodb_sequence.name %]</strong>, is
+            [% Inflect.noun(virodb_sequence.type.name || virodb_sequence.na_type || 'sequence').indef_article %]
+            <strong>[% virodb_sequence.type.name %] [% virodb_sequence.na_type %]</strong> sequence
+            obtained by <strong>[% virodb_sequence.scientist.name %]</strong>
+            and entered on <strong>[% virodb_sequence.entered_date.ymd %]</strong>.
             Final round amplification primers are <strong>[% sequence.input_product.primer_strings || 'unknown' %]</strong>.
-            [% IF sequence.genbank_acc %]
+            [% IF virodb_sequence.genbank_acc %]
             Sequence released to GenBank as
-            <a href="https://www.ncbi.nlm.nih.gov/nuccore/[% sequence.genbank_acc %]">[%- sequence.genbank_acc -%]</a>.
+            <a href="https://www.ncbi.nlm.nih.gov/nuccore/[% virodb_sequence.genbank_acc %]">[%- virodb_sequence.genbank_acc -%]</a>.
             [% END %]
         </p>
         <p>
-        [% IF @(sequence.revisions).size > 1 %]
-            [% IF sequence.na_sequence_revision == sequence.latest_revision.na_sequence_revision %]
+        [% IF virodb_sequence.has_revisions %]
+            [% IF virodb_sequence.na_sequence_revision == virodb_sequence.possibly_deleted_latest_revision.na_sequence_revision %]
             This is the current version of this sequence. The previous version is
-            <a href="[% c.uri_for_action('/sequence/show', [ sequence.parent_revision.idrev ])%]">[% sequence.parent_revision.idrev %]</a>.
+            <a href="[% c.uri_for_action('/sequence/show',[ virodb_sequence.parent_revision.idrev ])%]">[% virodb_sequence.parent_revision.idrev %]</a>.
             [% ELSE %]
-                [% IF NOT sequence.parent_revision %]
+                [% IF NOT virodb_sequence.parent_revision %]
                 This is the earliest version of this sequence.
                 [% ELSE %]
                 This is an earlier version of this sequence. The previous version is
-                    <a href="[% c.uri_for_action('/sequence/show', [ sequence.parent_revision.idrev ])%]">[% sequence.parent_revision.idrev %]</a>.
+                    <a href="[% c.uri_for_action('/sequence/show', [ virodb_sequence.parent_revision.idrev ])%]">[% virodb_sequence.parent_revision.idrev %]</a>.
                 [% END %]
-                The current version is <a href="[% c.uri_for_action('/sequence/show', [ sequence.latest_revision.idrev ])%]">[% sequence.latest_revision.idrev %]</a>.
+                The current version is <a href="[% c.uri_for_action('/sequence/show', [ virodb_sequence.possibly_deleted_latest_revision.idrev ])%]">[% virodb_sequence.possibly_deleted_latest_revision.idrev %]</a>.
             [% END %]
         [% ELSE %]
             This is the only version of this sequence.
         [% END %]
         </p>
-        [% IF sequence.notes || sequence.note%]
         <h3>Notes</h3>
-        [% FOR note IN sequence.notes %]
-        <p>[% note.note %] —[% note.scientist_id.name %], [% note.date_added %]</p>
+        [% IF $(virodb_sequence.notes).has_rows %]
+            [% FOR note IN $(virodb_sequence.notes).order_by("time_created") %]
+            <p>
+              [% note.body %]
+              <span class="note-byline text-muted">
+                [%- note.scientist.name ? note.scientist.name _ ', ' : '' %]
+                <time
+                    datetime="[% note.time_created.ymd %]"
+                    >[% note.time_created.strftime("%b %e, %Y") %]</time>
+              </span>
+            </p>
+            [% END %]
+        [% ELSE %]
+            <p>No notes.</p>
         [% END %]
-        [% IF sequence.note %]
-        <p>[% sequence.note %]</p>
-        [% END %]
+          [% IF !virodb_sequence.deleted &&
+                virodb_sequence.na_sequence_revision ==
+                virodb_sequence.latest_revision.na_sequence_revision &&
+                scientist.can_edit %]
+            <form role="form" method="POST" action="[% c.uri_for_action('/sequence/create_note', [ virodb_sequence.idrev ] )%]">
+                <div class="input-group">
+                    <input name="body" class="form-control" placeholder="New note…">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default"><span class="glyphicon">+</span></button>
+                    </span>
+                </div>
+            </form>
         [% END %]
         [% IF virodb_sequence.type.name eq 'Genomic' && sequence.hxb2_aln %]
             <h2>HXB2 alignment</h2>
             <p>
-               Sequence [% sequence.idrev %] spans HXB2 bases <strong>[% sequence.hxb2_coverage.join('–') %]</strong>, 
+               Sequence [% virodb_sequence.idrev %] spans HXB2 bases <strong>[% sequence.hxb2_coverage.join('–') %]</strong>, 
                completely covers
                [% IF @(cds.covers).size -%]<strong>[% cds.covers.join(', ') %]</strong>[%- ELSE -%]no defined regions[%- END -%],
                and partially overlaps
@@ -82,10 +104,10 @@
            <p class="small">Showing alignment <a href="[% c.uri_for_action('/summary/alignment/display', [ sequence.hxb2_aln.idrev ]) %]">[% sequence.hxb2_aln.idrev %]</a>.</p>
         [% END %]
         <h2>Chromats</h2>
-        [% IF sequence.chromats %]
+        [% IF virodb_sequence.chromats %]
         <p>
           Click a filename to download an individual chromat or
-          <a href="<% c.uri_for_action('/sequence/chromats', [ sequence.idrev ]) %>">
+          <a href="<% c.uri_for_action('/sequence/chromats', [ virodb_sequence.idrev ]) %>">
             <span class="glyphicon glyphicon-save small"></span> download them all</a>.
         </p>
         <div class="row"><div class="col-md-8">
@@ -94,7 +116,7 @@
                     <tr><th>Filename</th><th>Sequencing primer</th></tr>
                 </thead>
                 <tbody>
-                    [% FOR chromat IN sequence.chromats %]
+                    [% FOR chromat IN virodb_sequence.chromats %]
                     <tr><td><a href="[% c.uri_for_action('/download/chromat', [ chromat.id, sequence.idrev _ "-" _ chromat.name ]) %]">[% chromat.name %]</a></td><td>[% chromat.primer_id.name %]</td></tr>
                     [% END %]
                 </tbody>
@@ -106,7 +128,7 @@
         <h2>
           Sequence contents
           <small>
-            <% sequence.seq.length %>bp
+            <% virodb_sequence.sequence_bases.length %>bp
 
             <button clipboard-target="#seq" clipboard-strip-newlines ng-cloak class="btn btn-xs btn-link">
               <ng-switch on="$copyStatus">
@@ -117,7 +139,7 @@
             </button>
           </small>
         </h2>
-        <pre class="seq" id="seq">[%- sequence.seq.replace("(.{50})", "\$1\n") -%]</pre>
+        <pre class="seq" id="seq">[%- virodb_sequence.sequence_bases.replace("(.{50})", "\$1\n") -%]</pre>
     </div>
     <div class="col-md-4">
         <h3>Sequence origin</h3>
@@ -125,28 +147,29 @@
 
         <div id="sequence-buttons">
         <button class="btn btn-default"
-        onclick="sidebar_add('dna_sequence',[%- sequence.give_id -%],null, new Array)">Add sequence to cart</button>
-        <input form="sequence-downloader-modal" type="hidden" name="seq_ids" value="[% sequence.idrev %]">
+        onclick="sidebar_add('dna_sequence',[%- virodb_sequence.id -%],null, new Array)">Add sequence to cart</button>
+        <input form="sequence-downloader-modal" type="hidden" name="seq_ids" value="[% virodb_sequence.idrev %]">
         <button class="btn btn-primary" modal-on-click="'/static/partials/sequence/download-modal.html'">
             <span class="glyphicon glyphicon-save"></span>
             Download this sequence as FASTA
         </button>
-      [% IF !sequence.deleted %]
+      [% IF !virodb_sequence.deleted %]
         <% IF virodb_sequence.scientist_can_revise(scientist) %>
-          [% IF sequence.na_sequence_revision == sequence.latest_revision.na_sequence_revision %]
-              <p><a class="btn btn-default" href="[% c.uri_for_action('/sequence/revise', [ sequence.idrev ] )%]">Revise this sequence</a></p>
+          [% IF virodb_sequence.na_sequence_revision == virodb_sequence.latest_revision.na_sequence_revision %]
+              <p><a class="btn btn-default" href="[% c.uri_for_action('/sequence/revise', [ virodb_sequence.idrev ] )%]">Revise this sequence</a></p>
           [% ELSE %]
-              <p><a class="btn btn-default" href="[% c.uri_for_action('/sequence/revise', [ sequence.latest_revision.idrev ] )%]">Revise latest revision of this sequence</a></p>
+              <p><a class="btn btn-default" href="[% c.uri_for_action('/sequence/revise', [ virodb_sequence.latest_revision.idrev ] )%]">Revise latest revision of this sequence</a></p>
           [% END %]
         <% END %>
-        <% IF sequence.scientist_can_delete(scientist) %>
+        <% IF scientist.is_admin || scientist.is_supervisor %>
           <!--
             XXX TODO: This component should become an Angular directive instead
             of manually attaching the controller.
               -trs, 6 December 2016
           -->
-          <form ng-controller="DeleteSequence" ng-submit="delete()" name="DeleteForm"
-                ng-init="id = <% sequence.na_sequence_id.json | html %>"
+          <form name="DeleteForm"
+                method="POST"
+                action="[% c.uri_for_action('/sequence/delete', [ virodb_sequence.idrev ])%]"
                 class="form-inline"
                 role="form">
             <div class="form-group" ng-show="!unlocked">
@@ -162,16 +185,12 @@
                        placeholder="Reason for deletion... (required)"
                        ng-model="reason" required=1><br>
               </div>
-              <button class="btn btn-success"
-                      ng-disabled="DeleteForm.$invalid">
-                Delete sequence and all revisions
-              </button>
+              <input type="submit" class="btn btn-success"
+                      ng-disabled="DeleteForm.$invalid"
+                      value="Delete sequence and all revisions">
               <button type="button" class="btn btn-cancel btn-sm" ng-click="unlocked = false">
                 Nevermind
               </button>
-              <div class="form-error bg-danger" ng-show="error != null">
-                Whoops, something went wrong: {{error}}
-              </div>
             </div>
           </form>
         <% END %>
