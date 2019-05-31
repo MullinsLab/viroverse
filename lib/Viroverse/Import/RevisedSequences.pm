@@ -34,7 +34,6 @@ has '+key_map' => (
         sequence       => Optional[SimpleStr],
         na_type        => Optional[SimpleStr],
         scientist_name => Optional[SimpleStr],
-        note           => Optional[SimpleStr],
     ],
 );
 
