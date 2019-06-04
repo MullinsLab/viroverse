@@ -6,27 +6,49 @@
 <div class="row">
     <div class="col-md-12">
         <h1 class="page-header">Projects</h1>
-    </div>
-    <div class="col-md-8">
-        <h2>Active projects</h2>
-        <table class="table table-condensed">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Samples</th>
-                </tr>
-            </thead>
-            <tbody>
-            [% FOR project IN active_projects %]
-                <tr>
-                    <td><a href="[% c.uri_for_action('project/show', [ project.id ] ) %]">[% project.name %]</a></td>
-                    <td>[% $(project.sample_assignments).count %]</td>
-                </tr>
-            [% END %]
-            </tbody>
-        </table>
-    </div>
-    <div class="col-md-4">
+          [% IF active_projects.size > 0 %]
+            <div class="row project-panels">
+                [% FOR active IN active_projects %]
+                    <div class="col-md-2">
+                        <div class="panel panel-info">
+                            <div class="panel-heading panel-title text-center">
+                                <strong>
+                                    <a href="[% c.uri_for_action('/project/show', [ active.project_id ]) %]"
+                                       title="[% active.name %]">
+                                        [%~ active.name ~%]
+                                    </a>
+                                </strong>
+                            </div>
+                            <table class="table table-condensed">
+                                <tbody>
+                                    <tr>
+                                        <td>Samples</td>
+                                        <td class="text-right"><strong>[% $(active.sample_assignments).count | commafy %]</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sequences</td>
+                                        <td class="text-right"><strong>[% $(active.sequences).count | commafy %]</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td>DNA</td>
+                                        <td class="text-right"><strong>[% $(active.extractions.dna).count | commafy %]</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td>RNA</td>
+                                        <td class="text-right"><strong>[% $(active.extractions.rna).count | commafy %]</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <% IF loop.count % 6 == 0 %>
+                      <div class="clearfix visible-md-block visible-lg-block"></div>
+                    <% END %>
+                [% END %]
+            </div>
+          [% ELSE %]
+            <p>There are currently no active projects.</p>
+          [% END %]
         <h2>Finished projects</h2>
         <table class="table table-condensed">
             <thead>
