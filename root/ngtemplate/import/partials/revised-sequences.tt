@@ -10,7 +10,6 @@
             { key: 'name',           label: 'Sequence name',         optional: 1 },
             { key: 'sequence',       label: 'Sequence contents',     optional: 1 },
             { key: 'na_type',        label: 'Nucleic acid type',     optional: 1 },
-            { key: 'note',           label: 'Note',                  optional: 1 },
             { key: 'scientist_name', label: 'Scientist name',        optional: 1 },
           ]
         %]
