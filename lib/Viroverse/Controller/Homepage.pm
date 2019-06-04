@@ -24,8 +24,6 @@ sub index : Chained('base') PathPart('') Args(0) {
         return RedirectToUrl($c, Viroverse::Config->conf->{redirect_root_to});
     }
 
-    my $active     = $c->model("ViroDB::Project")->active;
-
     # The extensive prefetching below bundles a bunch of relationships into a
     # single fairly efficient query without resorting to a database view to
     # power the homepage.
@@ -35,7 +33,7 @@ sub index : Chained('base') PathPart('') Args(0) {
     # joining to SamplePatientDate instead of calling a chain of accessors.
     # I assume that'd be better, but I'm not going to try it out now.
     #   -trs, 2 Feb 2018
-    my @assignments = $active
+    my @assignments = $c->model("ViroDB::Project")->active
         ->related_resultset('sample_assignments')
         ->search({ desig_scientist_id => $c->stash->{scientist}->id })
         ->prefetch(
@@ -53,10 +51,10 @@ sub index : Chained('base') PathPart('') Args(0) {
     my $nag = !Viroverse::Config->conf->{registered};
 
     $c->stash(
-        template        => 'homepage/index.tt',
-        active_projects => [ $active->order_by('name')->all ],
-        my_projects     => $my_projects,
-        nag             => $nag,
+        template    => 'homepage/index.tt',
+        my_projects => $my_projects,
+        cohorts     => [ $c->model("ViroDB::Cohort")->order_by('name')->all ],
+        nag         => $nag,
     );
     $c->detach( $c->view("NG") );
 }
