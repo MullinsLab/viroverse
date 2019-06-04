@@ -62,7 +62,10 @@ sub process_row {
     my ($id, $rev) = split /\./, $row->{na_sequence_id};
 
     my $sequence = $db->resultset("NucleicAcidSequence")->search(
-        { 'me.na_sequence_id' => $id },
+        { 'me.na_sequence_id'       => $id,
+          'me.na_sequence_revision' =>
+              { '=' => \'latest_revision.na_sequence_revision' },
+        },
         { join => "latest_revision" }
     )->single;
 
