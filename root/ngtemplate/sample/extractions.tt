@@ -49,7 +49,7 @@
                     <ul>
                         [% FOREACH copy_number IN primerset.value %]
                         <li><a href="[% c.uri_for_action('summary/copy_number', copy_number.id) %]">
-                        [% copy_number.value %]
+                        [% defined(copy_number.value) ? copy_number.value : "(value missing)" %]
                         </a> <small>[% copy_number.date_created %]</small></li>
                         [% END %]
                     </ul>
