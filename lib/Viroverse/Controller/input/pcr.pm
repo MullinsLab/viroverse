@@ -226,7 +226,8 @@ sub calc_copy_number : Private {
     my $tfh = File::Temp->new(TEMPLATE => 'quality_src.txt-XXXX');
     print $tfh $q_src_txt;
 
-    my $Qresults =  `Viroverse::Config->conf->{quality} $tfh`;
+    my $quality_cmd = Viroverse::Config->conf->{quality};
+    my $Qresults =  `$quality_cmd $tfh`;
 
     my @Qres = split (/Results for/, $Qresults);
     foreach my $res (@Qres){
