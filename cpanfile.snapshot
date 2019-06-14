@@ -1092,11 +1092,11 @@ DISTRIBUTIONS
       Crypt::RC4 2.02
     requirements:
       ExtUtils::MakeMaker 0
-  DBD-Pg-3.5.1
-    pathname: T/TU/TURNSTEP/DBD-Pg-3.5.1.tar.gz
+  DBD-Pg-3.8.0
+    pathname: T/TU/TURNSTEP/DBD-Pg-3.8.0.tar.gz
     provides:
-      Bundle::DBD::Pg v3.5.1
-      DBD::Pg v3.5.1
+      Bundle::DBD::Pg v3.8.0
+      DBD::Pg v3.8.0
     requirements:
       DBI 1.614
       ExtUtils::MakeMaker 6.11
