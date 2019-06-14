@@ -36,6 +36,11 @@
         <div class="col-md-4 col-sm-6">
             [% INCLUDE 'sample/panels/notes.tt' %]
         </div>
+        [% IF features.isla_worksheet %]
+        <div class="col-md-4 col-sm-6">
+            [% INCLUDE 'sample/panels/isla-worksheet.tt' %]
+        </div>
+        [% END %]
     </div>
 </div>
 [% END %]
