@@ -1,0 +1,70 @@
+#!/bin/bash
+# Seatbelts
+set -e -o pipefail
+
+cd ~
+
+TRACE="\033[4m"
+RESET="\033[0m"
+
+function try() {
+    printf "$PS4$TRACE%s$RESET\n" "$*" >&2
+    "$@"
+}
+
+## Install and setup perlbrew
+
+    if [ -z "$(command -v perlbrew)" ]; then
+        try curl -fsS https://raw.githubusercontent.com/gugod/App-perlbrew/master/perlbrew-install | bash
+        source ~/perl5/perlbrew/etc/bashrc
+    fi
+
+## Install Perl 5.18.1
+
+    if [ ! -x ~/perl5/perlbrew/perls/5.18/bin/perl ]; then
+        # Perl's tests for its debugger fail when the default TERM is left as
+        # vt100 in some circumstances that may not be relevant here, but
+        # just in case
+        try env TERM=xterm perlbrew install --as 5.18 5.18.1
+    fi
+
+## Create and switch to a local lib
+
+    if ! (perlbrew list || true) | grep -q "5.18@viroverse"; then
+        try perlbrew lib create 5.18@viroverse
+    fi
+    perlbrew switch 5.18@viroverse
+
+## Install cpanm
+
+    try curl -fsS https://raw.githubusercontent.com/miyagawa/cpanminus/master/cpanm | perl - App::cpanminus
+
+## Install Carton into your new 5.18@viroverse local::lib
+
+    try cpanm Carton
+
+
+# Setup Viroverse application
+
+    pushd ~/viroverse
+
+## install a problematic perl dep
+
+    IM_ENABLE="JPEG PNG TIFF" try cpanm -L local Imager
+
+## Use carton to install deps
+
+    try carton install --deployment
+
+## Make a directory for CAS storage
+
+    [ -d var/storage ] || try mkdir -p var/storage
+
+## Make a directory for server logs
+
+    [ -d var/storage ] || try mkdir -p var/log
+
+## Done with this stuff
+
+    echo "Done installing the Viroverse application's perl dependencies."
+    echo "Your next step is to bootstrap the database, see devel/bootstrap-database"
