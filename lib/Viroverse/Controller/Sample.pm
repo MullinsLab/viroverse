@@ -8,6 +8,9 @@ use Moose;
 use Catalyst::ResponseHelpers qw< :helpers :status >;
 use JSON::MaybeXS;
 use namespace::autoclean;
+use Excel::Writer::XLSX;
+use IO::String;
+use Viroverse::ISLAWorksheet;
 
 BEGIN { extends 'Viroverse::Controller' }
 
@@ -158,6 +161,23 @@ sub ice_cultures : Chained('page_base') PathPart('ice-cultures') Args(0) {
 
     $c->stash(template => 'sample/ice-cultures.tt');
     $c->detach( $c->view("NG") );
+}
+
+sub isla_worksheet : Chained('page_base') PathPart('isla-worksheet') Args(0) {
+    my ($self, $c) = @_;
+
+    unless ($c->stash->{features}->{isla_worksheet}) {
+        return NotFound($c, "Feature disabled: ISLA worksheets");
+    }
+
+
+    my $worksheet = Viroverse::ISLAWorksheet->new(model => $c->model);
+
+    my $id = $c->model->sample_id;
+    my $url = $c->uri_for_action($self->action_for("show"), [ $id ]);
+
+    return FromHandle($c, $worksheet->make_xlsx($url), 'application/vnd.ms-excel',
+        [ 'Content-Disposition' => "attachment; filename=ISLA_$id.xlsx"]);
 }
 
 sub create_note : POST Chained('mutate') PathPart('notes') Args(0) {

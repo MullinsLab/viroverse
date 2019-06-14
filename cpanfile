@@ -84,6 +84,7 @@ requires 'Digest::MD5';
 requires 'English';
 requires 'Exporter';
 requires 'Exporter::Tiny';
+requires 'Excel::Writer::XLSX';
 requires 'File::Basename';
 requires 'File::Copy';
 requires 'File::LibMagic';
@@ -183,6 +184,7 @@ requires 'Types::Standard';
 requires 'Web::Machine';
 requires 'WWW::Mechanize';
 requires 'WWW::Mechanize::Plugin::FollowMetaRedirect';
+requires 'Excel::Writer::XLSX';
 
 # Pragma, mostly core
 requires 'base';

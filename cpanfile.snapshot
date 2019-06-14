@@ -212,8 +212,7 @@ DISTRIBUTIONS
       B::Utils::OP 0.25
     requirements:
       Exporter 0
-      ExtUtils::CBuilder 0
-      ExtUtils::Depends 0.301
+      ExtUtils::Depends 0.302
       ExtUtils::MakeMaker 0
       Scalar::Util 0
       Task::Weaken 0
@@ -402,12 +401,10 @@ DISTRIBUTIONS
     requirements:
       Carp::Clan 0
       Catalyst::Component::InstancePerContext 0
-      Catalyst::Devel 1.0
       Catalyst::Runtime 5.80005
       CatalystX::Component::Traits 0.14
       DBD::SQLite 0
       DBIx::Class 0.08114
-      DBIx::Class::Schema::Loader 0.04005
       ExtUtils::MakeMaker 6.59
       Hash::Merge 0
       List::MoreUtils 0
@@ -1115,7 +1112,7 @@ DISTRIBUTIONS
       DBD::SQLite::dr 1.40
     requirements:
       DBI 1.57
-      ExtUtils::MakeMaker 6.48
+      ExtUtils::MakeMaker 0
       File::Spec 0.82
       Test::Builder 0.86
       Test::More 0.47
@@ -1461,7 +1458,7 @@ DISTRIBUTIONS
       DBIx::Class::IntrospectableM2M 0.001001
     requirements:
       DBIx::Class 0
-      ExtUtils::MakeMaker 6.66
+      ExtUtils::MakeMaker 7.34
       Test::More 0
   DBIx-Class-QueryLog-1.005001
     pathname: F/FR/FREW/DBIx-Class-QueryLog-1.005001.tar.gz
@@ -1788,7 +1785,7 @@ DISTRIBUTIONS
       Any::Moose 0
       Carp 0
       DateTime::Duration 0
-      ExtUtils::MakeMaker 6.66
+      ExtUtils::MakeMaker 7.34
   DateTime-Format-Human-Duration-0.61
     pathname: M/MS/MSTRAT/DateTime-Format-Human-Duration-0.61.tar.gz
     provides:
@@ -2944,6 +2941,46 @@ DISTRIBUTIONS
       overload 0
       strict 0
       warnings 0
+  Excel-Writer-XLSX-1.00
+    pathname: J/JM/JMCNAMARA/Excel-Writer-XLSX-1.00.tar.gz
+    provides:
+      Excel::Writer::XLSX 1.00
+      Excel::Writer::XLSX::Chart 1.00
+      Excel::Writer::XLSX::Chart::Area 1.00
+      Excel::Writer::XLSX::Chart::Bar 1.00
+      Excel::Writer::XLSX::Chart::Column 1.00
+      Excel::Writer::XLSX::Chart::Doughnut 1.00
+      Excel::Writer::XLSX::Chart::Line 1.00
+      Excel::Writer::XLSX::Chart::Pie 1.00
+      Excel::Writer::XLSX::Chart::Radar 1.00
+      Excel::Writer::XLSX::Chart::Scatter 1.00
+      Excel::Writer::XLSX::Chart::Stock 1.00
+      Excel::Writer::XLSX::Chartsheet 1.00
+      Excel::Writer::XLSX::Drawing 1.00
+      Excel::Writer::XLSX::Examples 1.00
+      Excel::Writer::XLSX::Format 1.00
+      Excel::Writer::XLSX::Package::App 1.00
+      Excel::Writer::XLSX::Package::Comments 1.00
+      Excel::Writer::XLSX::Package::ContentTypes 1.00
+      Excel::Writer::XLSX::Package::Core 1.00
+      Excel::Writer::XLSX::Package::Custom 1.00
+      Excel::Writer::XLSX::Package::Packager 1.00
+      Excel::Writer::XLSX::Package::Relationships 1.00
+      Excel::Writer::XLSX::Package::SharedStrings 1.00
+      Excel::Writer::XLSX::Package::Styles 1.00
+      Excel::Writer::XLSX::Package::Table 1.00
+      Excel::Writer::XLSX::Package::Theme 1.00
+      Excel::Writer::XLSX::Package::VML 1.00
+      Excel::Writer::XLSX::Package::XMLwriter 1.00
+      Excel::Writer::XLSX::Shape 1.00
+      Excel::Writer::XLSX::Utility 1.00
+      Excel::Writer::XLSX::Workbook 1.00
+      Excel::Writer::XLSX::Worksheet 1.00
+    requirements:
+      Archive::Zip 1.3
+      ExtUtils::MakeMaker 0
+      File::Temp 0.19
+      IO::File 1.14
   Exception-Class-1.37
     pathname: D/DR/DROLSKY/Exception-Class-1.37.tar.gz
     provides:
@@ -3197,6 +3234,7 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Fcntl 0
       POSIX 0
+      perl 5.004
   File-Temp-0.2301
     pathname: D/DA/DAGOLDEN/File-Temp-0.2301.tar.gz
     provides:
@@ -3740,23 +3778,23 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       IO::Scalar 0
       perl 5.006
-  Imager-1.000
-    pathname: T/TO/TONYC/Imager-1.000.tar.gz
+  Imager-1.010
+    pathname: T/TO/TONYC/Imager-1.010.tar.gz
     provides:
-      Imager 1.000
-      Imager::Color 1.011
+      Imager 1.010
+      Imager::Color 1.012
       Imager::Color::Float 1.005
       Imager::Color::Table 1.003
       Imager::CountColor 0.02
-      Imager::Expr 1.006
+      Imager::Expr 1.007
       Imager::Expr::Assem 1.003
-      Imager::Expr::Infix 1.006
-      Imager::Expr::Postfix 1.006
+      Imager::Expr::Infix 1.007
+      Imager::Expr::Postfix 1.007
       Imager::ExtUtils 1.002
-      Imager::FORMATS 1.000
+      Imager::FORMATS 1.010
       Imager::File::CUR undef
-      Imager::File::ICO 0.03
-      Imager::File::SGI 0.03
+      Imager::File::ICO 0.06
+      Imager::File::SGI 0.04
       Imager::Fill 1.012
       Imager::Filter::DynTest 0.02
       Imager::Filter::Flines 0.03
@@ -3770,34 +3808,18 @@ DISTRIBUTIONS
       Imager::Font::Type1 1.012
       Imager::Font::Wrap 1.004
       Imager::Fountain 1.007
-      Imager::IO 1.000
-      Imager::Matrix2d 1.011
+      Imager::IO 1.010
+      Imager::Matrix2d 1.012
       Imager::Preprocess 1.001
-      Imager::Probe 1.003
+      Imager::Probe 1.006
       Imager::Regops undef
-      Imager::Test 1.003
-      Imager::Test::OverUtf8 1.003
+      Imager::Test 1.004
+      Imager::Test::OverUtf8 1.004
       Imager::Transform 1.006
     requirements:
       ExtUtils::MakeMaker 0
-      Scalar::Util 1
-      Test::More 0.47
-      XSLoader 0
-  Imager-File-JPEG-0.90
-    pathname: T/TO/TONYC/Imager-File-JPEG-0.90.tar.gz
-    provides:
-      Imager::File::JPEG 0.90
-    requirements:
-      ExtUtils::MakeMaker 0
-      Imager 0.86
-      XSLoader 0
-  Imager-File-PNG-0.92
-    pathname: T/TO/TONYC/Imager-File-PNG-0.92.tar.gz
-    provides:
-      Imager::File::PNG 0.92
-    requirements:
-      ExtUtils::MakeMaker 0
-      Imager 0.90
+      Scalar::Util 1.00
+      Test::More 0.99
       XSLoader 0
   Import-Into-1.002004
     pathname: E/ET/ETHER/Import-Into-1.002004.tar.gz
@@ -5477,7 +5499,7 @@ DISTRIBUTIONS
       DBIx::Class::QueryLog 0
       DBIx::Class::QueryLog::Analyzer 0
       Data::Dump 0
-      ExtUtils::MakeMaker 6.66
+      ExtUtils::MakeMaker 7.34
       HTTP::Request::Common 0
       Moo 0.009005
       Plack 0
@@ -6132,7 +6154,7 @@ DISTRIBUTIONS
       Template::Monad::Scalar 1
       Template::Namespace::Constants 1.27
       Template::Parser 2.89
-      Template::Perl 2.2
+      Template::Perl 2.87
       Template::Plugin 2.7
       Template::Plugin::Assert 1
       Template::Plugin::CGI 2.7
@@ -6441,6 +6463,83 @@ DISTRIBUTIONS
       Test::Requires 0
       Time::HiRes 0
       perl 5.008
+  Test-Simple-1.302141
+    pathname: E/EX/EXODIST/Test-Simple-1.302141.tar.gz
+    provides:
+      Test2 1.302141
+      Test2::API 1.302141
+      Test2::API::Breakage 1.302141
+      Test2::API::Context 1.302141
+      Test2::API::Instance 1.302141
+      Test2::API::Stack 1.302141
+      Test2::Event 1.302141
+      Test2::Event::Bail 1.302141
+      Test2::Event::Diag 1.302141
+      Test2::Event::Encoding 1.302141
+      Test2::Event::Exception 1.302141
+      Test2::Event::Fail 1.302141
+      Test2::Event::Generic 1.302141
+      Test2::Event::Note 1.302141
+      Test2::Event::Ok 1.302141
+      Test2::Event::Pass 1.302141
+      Test2::Event::Plan 1.302141
+      Test2::Event::Skip 1.302141
+      Test2::Event::Subtest 1.302141
+      Test2::Event::TAP::Version 1.302141
+      Test2::Event::V2 1.302141
+      Test2::Event::Waiting 1.302141
+      Test2::EventFacet 1.302141
+      Test2::EventFacet::About 1.302141
+      Test2::EventFacet::Amnesty 1.302141
+      Test2::EventFacet::Assert 1.302141
+      Test2::EventFacet::Control 1.302141
+      Test2::EventFacet::Error 1.302141
+      Test2::EventFacet::Hub 1.302141
+      Test2::EventFacet::Info 1.302141
+      Test2::EventFacet::Meta 1.302141
+      Test2::EventFacet::Parent 1.302141
+      Test2::EventFacet::Plan 1.302141
+      Test2::EventFacet::Render 1.302141
+      Test2::EventFacet::Trace 1.302141
+      Test2::Formatter 1.302141
+      Test2::Formatter::TAP 1.302141
+      Test2::Hub 1.302141
+      Test2::Hub::Interceptor 1.302141
+      Test2::Hub::Interceptor::Terminator 1.302141
+      Test2::Hub::Subtest 1.302141
+      Test2::IPC 1.302141
+      Test2::IPC::Driver 1.302141
+      Test2::IPC::Driver::Files 1.302141
+      Test2::Tools::Tiny 1.302141
+      Test2::Util 1.302141
+      Test2::Util::ExternalMeta 1.302141
+      Test2::Util::Facets2Legacy 1.302141
+      Test2::Util::HashBase 1.302141
+      Test2::Util::Trace 1.302141
+      Test::Builder 1.302141
+      Test::Builder::Formatter 1.302141
+      Test::Builder::IO::Scalar 2.114
+      Test::Builder::Module 1.302141
+      Test::Builder::Tester 1.302141
+      Test::Builder::Tester::Color 1.302141
+      Test::Builder::Tester::Tie 1.302141
+      Test::Builder::TodoDiag 1.302141
+      Test::More 1.302141
+      Test::Simple 1.302141
+      Test::Tester 1.302141
+      Test::Tester::Capture 1.302141
+      Test::Tester::CaptureRunner 1.302141
+      Test::Tester::Delegate 1.302141
+      Test::use::ok 1.302141
+      ok 1.302141
+    requirements:
+      ExtUtils::MakeMaker 0
+      File::Spec 0
+      File::Temp 0
+      Scalar::Util 1.13
+      Storable 0
+      perl 5.006002
+      utf8 0
   Test-SubCalls-1.09
     pathname: A/AD/ADAMK/Test-SubCalls-1.09.tar.gz
     provides:
@@ -6640,6 +6739,7 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       Test::More 0
+      perl 5.008001
   Text-Unidecode-1.22
     pathname: S/SB/SBURKE/Text-Unidecode-1.22.tar.gz
     provides:
