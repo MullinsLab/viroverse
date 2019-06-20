@@ -6,41 +6,54 @@ package Viroverse::ISLAWorksheet;
 use Moo;
 use Types::Standard qw< :types >;
 use Viroverse::Logger qw< :log >;
+use Viroverse::Types qw< ViroDBRecord >;
+use Excel::Writer::XLSX;
 
 =head1 NAME
 
-Viroverse::ISLAWorksheet - convert between a Viroverse::Result::Sample and an
-Excel spreadsheet for ISLA data
+Viroverse::ISLAWorksheet - convert between a L<ViroDB::Result::Sample> and an
+Excel spreadsheet for ISLA data.
 
 =head1 ATTRIBUTES
 
 =head2 model
 
-The Viroverse::Model::sample instance that this spreadsheet represents
+The L<ViroDB::Result::Sample> instance that this spreadsheet represents.
 
-=head1 METHODS
+=head2 sample_url
 
-=head2 make_xlsx
+A URL that maps to the Viroverse sample page.
 
-Generates an Excel spreadsheet (in xlsx format) that can be filled out with
-added data for the sample. Returns a FileHandle that has been seeked to the
-beginning.
+=head2 xlsx
+
+An Excel spreadsheet (in xlsx format) that can be filled out with added data
+for the sample. Returned as an IO::File; the seek position is not guaranteed.
 
 =cut
 
 has model => (
     is       => 'ro',
-    isa      => Object,
+    isa      => ViroDBRecord['Sample'],
     required => 1,
 );
 
-sub make_xlsx {
-    my ($self, $url) = @_;
+has sample_url => (
+    is       => 'ro',
+    isa      => Str,
+    required => 0,
+);
+
+has xlsx => (
+    is       => 'lazy',
+    isa      => Object,
+);
+
+sub _build_xlsx {
+    my $self = shift;
 
     my $buffer = IO::String->new;
     my $xls = Excel::Writer::XLSX->new($buffer);
     my $sheet = $xls->add_worksheet();
-
 
     # Hide the metadata control column
     $sheet->set_column(0, 0, undef, undef, 1);
@@ -161,6 +174,7 @@ sub make_xlsx {
     };
 
     # If we were given a sample URL, associate it with the sample_id row
+    my $url = $self->sample_url;
     $sheet->write_url($row, 2, $url) if $url;
     $add_row->('vv_sample_id',
         'Viroverse sample ID',
@@ -168,7 +182,7 @@ sub make_xlsx {
         $url ? $locked_url : $locked);
 
     # Write the read-only data about the sample
-    $add_row->(undef, 'Patient',         $sample->patient->name,     $locked);
+    $add_row->(undef, 'Subject',         $sample->patient->name,     $locked);
     $add_row->(undef, 'Tissue Type',     $sample->tissue_type->name, $locked);
     $add_row->(undef, 'Collection date', $sample->date,              $locked_date)
         if $sample->date;
@@ -253,7 +267,6 @@ sub make_xlsx {
 
     $xls->close() or die "Error saving Excel file: $@";
 
-    $buffer->setpos(0);
     return $buffer;
 }
 

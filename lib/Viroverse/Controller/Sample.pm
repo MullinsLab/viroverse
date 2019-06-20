@@ -8,7 +8,6 @@ use Moose;
 use Catalyst::ResponseHelpers qw< :helpers :status >;
 use JSON::MaybeXS;
 use namespace::autoclean;
-use Excel::Writer::XLSX;
 use IO::String;
 use Viroverse::ISLAWorksheet;
 
@@ -163,20 +162,28 @@ sub ice_cultures : Chained('page_base') PathPart('ice-cultures') Args(0) {
     $c->detach( $c->view("NG") );
 }
 
-sub isla_worksheet : Chained('page_base') PathPart('isla-worksheet') Args(0) {
+sub isla_worksheet : Chained('load') PathPart('isla-worksheet') Args(0) {
     my ($self, $c) = @_;
 
     unless ($c->stash->{features}->{isla_worksheet}) {
         return NotFound($c, "Feature disabled: ISLA worksheets");
     }
 
-
-    my $worksheet = Viroverse::ISLAWorksheet->new(model => $c->model);
-
     my $id = $c->model->sample_id;
-    my $url = $c->uri_for_action($self->action_for("show"), [ $id ]);
 
-    return FromHandle($c, $worksheet->make_xlsx($url), 'application/vnd.ms-excel',
+    # Catalyst URLs are sometimes a blessed function wrapper, so we need to
+    # coerce it to a string
+    my $url = '' . $c->uri_for_action($self->action_for("show"), [ $id ]);
+
+    my $worksheet = Viroverse::ISLAWorksheet->new(
+        model => $c->model,
+        sample_url => $url,
+    );
+
+    my $xlsx = $worksheet->xlsx;
+    $xlsx->setpos(0);
+
+    return FromHandle($c, $fh, 'application/vnd.ms-excel',
         [ 'Content-Disposition' => "attachment; filename=ISLA_$id.xlsx"]);
 }
 

@@ -184,7 +184,6 @@ requires 'Types::Standard';
 requires 'Web::Machine';
 requires 'WWW::Mechanize';
 requires 'WWW::Mechanize::Plugin::FollowMetaRedirect';
-requires 'Excel::Writer::XLSX';
 
 # Pragma, mostly core
 requires 'base';
