@@ -18,7 +18,7 @@ requires 'Catalyst::View::TT', '0.44';
 requires 'Catalyst::View::TT::Alloy', '0.00007';
 requires 'Template::Alloy', '1.020';
 requires 'Catalyst::View::Vega';
-requires 'Catalyst::ResponseHelpers';
+requires 'Catalyst::ResponseHelpers', '1.02';
 requires 'Config::Any';
 requires 'Config::General';
 
@@ -84,6 +84,7 @@ requires 'Digest::MD5';
 requires 'English';
 requires 'Exporter';
 requires 'Exporter::Tiny';
+requires 'Excel::Writer::XLSX';
 requires 'File::Basename';
 requires 'File::Copy';
 requires 'File::LibMagic';

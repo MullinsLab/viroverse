@@ -8,6 +8,7 @@ use Moose;
 use Catalyst::ResponseHelpers qw< :helpers :status >;
 use JSON::MaybeXS;
 use namespace::autoclean;
+use Viroverse::ISLAWorksheet;
 
 BEGIN { extends 'Viroverse::Controller' }
 
@@ -158,6 +159,29 @@ sub ice_cultures : Chained('page_base') PathPart('ice-cultures') Args(0) {
 
     $c->stash(template => 'sample/ice-cultures.tt');
     $c->detach( $c->view("NG") );
+}
+
+sub isla_worksheet : Chained('load') PathPart('isla-worksheet') Args(0) {
+    my ($self, $c) = @_;
+
+    unless ($c->stash->{features}->{isla_worksheet}) {
+        return NotFound($c, "Feature disabled: ISLA worksheets");
+    }
+
+    my $id = $c->model->sample_id;
+
+    # Catalyst URLs are sometimes a blessed function wrapper, so we need to
+    # coerce it to a string
+    my $url = '' . $c->uri_for_action($self->action_for("show"), [ $id ]);
+
+    my $worksheet = Viroverse::ISLAWorksheet->new(
+        model => $c->model,
+        sample_url => $url,
+    );
+
+    my $out_data = $worksheet->xlsx;
+    return FromByteString($c, $out_data, 'application/vnd.ms-excel',
+        [ 'Content-Disposition' => "attachment; filename=ISLA_$id.xlsx"]);
 }
 
 sub create_note : POST Chained('mutate') PathPart('notes') Args(0) {
