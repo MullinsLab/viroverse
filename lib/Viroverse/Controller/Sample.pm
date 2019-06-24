@@ -8,7 +8,6 @@ use Moose;
 use Catalyst::ResponseHelpers qw< :helpers :status >;
 use JSON::MaybeXS;
 use namespace::autoclean;
-use IO::String;
 use Viroverse::ISLAWorksheet;
 
 BEGIN { extends 'Viroverse::Controller' }
@@ -180,10 +179,8 @@ sub isla_worksheet : Chained('load') PathPart('isla-worksheet') Args(0) {
         sample_url => $url,
     );
 
-    my $xlsx = $worksheet->xlsx;
-    $xlsx->setpos(0);
-
-    return FromHandle($c, $fh, 'application/vnd.ms-excel',
+    my $out_data = $worksheet->xlsx;
+    return FromByteString($c, $out_data, 'application/vnd.ms-excel',
         [ 'Content-Disposition' => "attachment; filename=ISLA_$id.xlsx"]);
 }
 

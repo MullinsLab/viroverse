@@ -8,6 +8,7 @@ use Types::Standard qw< :types >;
 use Viroverse::Logger qw< :log >;
 use Viroverse::Types qw< ViroDBRecord >;
 use Excel::Writer::XLSX;
+use IO::String;
 
 =head1 NAME
 
@@ -45,7 +46,7 @@ has sample_url => (
 
 has xlsx => (
     is       => 'lazy',
-    isa      => Object,
+    isa      => Str,
 );
 
 sub _build_xlsx {
@@ -267,7 +268,7 @@ sub _build_xlsx {
 
     $xls->close() or die "Error saving Excel file: $@";
 
-    return $buffer;
+    return ${$buffer->string_ref};
 }
 
 1;

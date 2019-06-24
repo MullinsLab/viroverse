@@ -524,10 +524,10 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 6.30
       Sub::Name 0
       strictures 0
-  Catalyst-ResponseHelpers-1.00
-    pathname: T/TS/TSIBLEY/Catalyst-ResponseHelpers-1.00.tar.gz
+  Catalyst-ResponseHelpers-1.02
+    pathname: T/TS/TSIBLEY/Catalyst-ResponseHelpers-1.02.tar.gz
     provides:
-      Catalyst::ResponseHelpers 1.00
+      Catalyst::ResponseHelpers 1.02
     requirements:
       Catalyst 0
       Encode 0
