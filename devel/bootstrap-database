@@ -1,0 +1,84 @@
+#!/usr/bin/env perl
+
+=head1 NAME
+
+bootstrap-database
+
+=head1 SYNOPSIS
+
+bootstrap-database OPTIONS
+
+Creates and populates a fresh Viroverse database that is empty except for
+static data.
+
+  --no-roles      Skip creation of the three primary database roles/users
+  --no-create     Skip creation of the database itself
+  --db NAME       Create/use the database NAME (default: viroverse)
+  --owner NAME    Create/use NAME as the owning user (default: vverse_admin)
+  --ro-user NAME  Create/use NAME as the read-only user (default: viroverse_r)
+  --rw-user NAME  Create/use NAME as the read-write user (default: viroverse_w)
+  --help -h       Show this usage information
+
+To create roles and the database itself, this must be run as a PostgreSQL
+superuser, often "postgres", either by running under a Unix user of the same
+name or by setting PGUSER. To simply create tables and populate static data in
+an existing databse, run with C<--no-roles> and C<--no-create>.
+
+Connects to localhost by default, but you can change that by setting PGHOST.
+
+=cut
+
+use warnings;
+use strict;
+use Getopt::Long 2.32 qw< :config auto_help >;
+use FindBin qw< $RealBin >;
+
+my $skip_roles = 0;
+my $skip_creation = 0;
+my $db_name = "viroverse";
+my $owner = "vverse_admin";
+my $ro_user = "viroverse_r";
+my $rw_user = "viroverse_w";
+my $vv_home = "$RealBin/..";
+
+chdir $vv_home;
+
+GetOptions(
+    "no-roles"  => \$skip_roles,
+    "no-create" => \$skip_creation,
+    "db=s"      => \$db_name,
+    "owner=s"   => \$owner,
+    "ro-user=s" => \$ro_user,
+    "rw-user=s" => \$rw_user,
+) or die "invalid options\n";
+
+my $psql = "psql --no-psqlrc --set ON_ERROR_STOP=1 ".
+                            "--set \"owner=$owner\" ".
+                            "--set \"db_name=$db_name\" ".
+                            "--set \"ro_user=$ro_user\" ".
+                            "--set \"rw_user=$rw_user\"";
+
+unless ($skip_roles) {
+    unless (system("$psql template1 < $vv_home/sql/bootstrap/01-roles.sql") == 0) {
+        die "Role creation failed\n".
+            "HINT: If the three roles already exist (perhaps from a previous run),\n".
+            "      you can run this script again with the --no-roles option.";
+    }
+}
+
+unless ($skip_creation) {
+    unless (system( "$psql template1 < $vv_home/sql/bootstrap/02-create-db.sql" ) == 0) {
+        die "ERROR: Database creation failed\n".
+        "HINT: If you ran this script previously and want to run it again,".
+        "      first delete the existing database by running the command".
+        "      \"dropdb $db_name\" and then run this script again.";
+    }
+}
+system("$psql -U $owner --single-transaction $db_name < $vv_home/sql/bootstrap/03-schema.sql") == 0
+    or die "ERROR: Failed schema definition";
+system("$psql -U $owner --single-transaction $db_name < $vv_home/sql/bootstrap/04-data.sql") == 0
+    or die "ERROR: Failed loading vocabulary data";
+system("$psql -U $owner --single-transaction $db_name < $vv_home/sql/bootstrap/04-data-hla.sql") == 0
+    or die "ERROR: Failed loading HLA data";
+system("$psql -U $owner --single-transaction $db_name < $vv_home/sql/bootstrap/05-refresh-views.sql") == 0
+    or die "ERROR: Failed loading views";

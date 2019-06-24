@@ -232,7 +232,7 @@ popd
 
 ## Bootstrap a new database
 
-    db_exists viroverse || try ./devel/create-database
+    db_exists viroverse || try ./devel/bootstrap-database
 
 ## Make a directory for CAS storage
 
