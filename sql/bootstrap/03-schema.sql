@@ -65,19 +65,6 @@ CREATE SCHEMA viroserve;
 
 ALTER SCHEMA viroserve OWNER TO vverse_admin;
 
---
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
---
-
-CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
-
-
---
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
-
 
 --
 -- Name: enzyme_type; Type: DOMAIN; Schema: viroserve; Owner: vverse_admin
