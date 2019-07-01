@@ -1,6 +1,9 @@
 [core]
     engine = pg
     top_dir = ./schema
+[core.variables]
+    ro_user = viroverse_r
+    rw_user = viroverse_w
 [engine "pg"]
     target = local
 [deploy]
@@ -11,3 +14,6 @@
 	uri = db:pg://vverse_admin@localhost/viroverse
 [target "vagrant"]
 	uri = db:pg://vverse_admin@192.168.0.2/viroverse
+[deploy.variables]
+    ro_user = viroverse_r
+    rw_user = viroverse_w

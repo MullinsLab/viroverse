@@ -10,13 +10,11 @@ BEGIN;
      * against a database that is in an unexpected state.
      */
 
-CREATE FUNCTION pg_temp.verify_table(table_name text) RETURNS INTEGER LANGUAGE sql AS $$
-    SELECT
-    1/pg_catalog.has_table_privilege(
-        'viroverse_w', table_name, 'INSERT')::int +
-    1/pg_catalog.has_table_privilege(
-        'viroverse_r', table_name, 'SELECT')::int;
-$$;
+
+\set verify_body 'SELECT 1/pg_catalog.has_table_privilege( ' :'rw_user'  ', table_name, ''INSERT'')::int + 1/pg_catalog.has_table_privilege('  :'rw_user'  ', table_name, ''SELECT'')::int;'
+
+CREATE FUNCTION pg_temp.verify_table(table_name text) RETURNS INTEGER
+LANGUAGE sql AS :'verify_body';
 
 CREATE FUNCTION pg_temp.verify_nonexistent_table(a_schema_name text, a_table_name text) RETURNS INTEGER LANGUAGE sql AS $$
 SELECT 1/CASE WHEN count(*) = 0 THEN 1 ELSE 0 END
