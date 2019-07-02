@@ -10,6 +10,8 @@
 <div class="row">
     <div class="col-md-12">
         <h1 class="page-header">Scientists</h1>
+        <p><a href="[% c.uri_for('/admin/scientist/retired') %]">Retired scientists</a>
+        are listed separately.</p>
         <form action="[% c.uri_for('/admin/scientist/add') %]" method="POST" id="add-scientist" role="form" class="form-inline">
             <table class="table table-condensed table-striped">
                 <thead>
@@ -45,22 +47,8 @@
                         <td class="text-right"><button type="submit" class="btn btn-primary">Add</button></td>
                     </tr>
                     [% FOREACH single_scientist IN scientists %]
-                    <tr>
-                        <td>[% single_scientist.scientist_id %]</td>
-                        <td>[% single_scientist.name %]</td>
-                        <td>[% single_scientist.username %]</td>
-                        <td>[% single_scientist.email %]</td>
-                        <td>[% single_scientist.role %]</td>
-                        <td>
-                        [% FOR group_membership IN single_scientist.group_memberships %]
-                            [% IF group_membership.group.name == single_scientist.name %]
-                            [% ELSE %]
-                                [% group_membership.group.name %]<br>
-                            [% END %]
-                        [% END %]
-                        </td>
-                        <td class="text-nowrap"><a href="[% c.uri_for_action('/admin/scientist/edit_scientist', [ single_scientist.scientist_id ]) %]">Edit Scientist</a></td>
-                    </tr>
+                    [% INCLUDE 'admin/scientist/table-row.tt',
+                        scientist = single_scientist %]
                     [% END %]
               </tbody>
             </table>
