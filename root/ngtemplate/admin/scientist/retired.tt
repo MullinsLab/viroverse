@@ -1,0 +1,38 @@
+[%- page = {
+        title  = "Scientist",
+        has_js = 0,
+        breadcrumbs     = [
+          [ 'Admin',  c.uri_for_action('/admin/index') ],
+          [ 'Scientists', c.uri_for_action('/admin/scientist/index') ],
+          [ 'Retired' ]
+        ]
+    }
+-%]
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="page-header">Retired scientists</h1>
+        <p>Scientists with this role cannot access any Viroverse pages even
+        if they are authorized (have a <kbd>REMOTE_USER</kbd> set) by the
+        reverse proxying webserver. They also are not listed when doing
+        data entry.</p>
+        <table class="table table-condensed table-striped">
+            <thead>
+               <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Group</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                [% FOREACH single_scientist IN scientists %]
+                [% INCLUDE 'admin/scientist/table-row.tt',
+                    scientist = single_scientist %]
+                [% END %]
+          </tbody>
+        </table>
+    </div>
+</div>

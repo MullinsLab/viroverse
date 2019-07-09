@@ -17,12 +17,31 @@ sub base : ChainedParent PathPart('scientist') CaptureArgs(0) {
 
 sub index : Chained('base') PathPart('') Args(0) {
     my ($self, $c) = @_;
-    my @scientists = $c->model("ViroDB::Scientist")->search({}, {order_by => [{-desc => "role"}, {-asc => "name"}]})->all;
-    my @groups     = $c->model('ViroDB::ScientistGroup')->search({display => 1}, {order_by => [{-asc => "name"}]})->all;
+    my @scientists = $c->model("ViroDB::Scientist")->search(
+        { role => { '!=' => 'retired' } },
+        { order_by => ['username', 'name'] }
+    )->all;
+    my @groups     = $c->model('ViroDB::ScientistGroup')->search(
+        { display => 1 },
+        { order_by => "name" }
+    )->all;
     $c->stash(
         scientists      => \@scientists,
         groups          => \@groups,
         template        => 'admin/scientist/index.tt'
+    );
+    $c->detach('Viroverse::View::NG');
+}
+
+sub retired : Chained('base') PathPart('retired') Args(0) {
+    my ($self, $c) = @_;
+    my @scientists = $c->model("ViroDB::Scientist")->search(
+        { role => 'retired' },
+        { order_by => ['username', 'name'] }
+    )->all;
+    $c->stash(
+        scientists      => \@scientists,
+        template        => 'admin/scientist/retired.tt'
     );
     $c->detach('Viroverse::View::NG');
 }
@@ -106,7 +125,11 @@ sub confirmed_change : POST Chained('load') PathPart('edit_scientist') Args(0) {
         $message = "No changes were made for $name";
     }
     my $mid = $c->set_status_msg($message);
-    return Redirect($c, $self->action_for('index'), { mid => $mid });
+    if ($params->{role} eq 'retired') {
+        return Redirect($c, $self->action_for('retired'), { mid => $mid });
+    } else {
+        return Redirect($c, $self->action_for('index'), { mid => $mid });
+    }
 }
 
 1;
