@@ -68,7 +68,7 @@ requires 'DBI';
 requires 'DBIx::Class';
 requires 'DBIx::Class::Helper::ResultSet::Shortcut';
 requires 'DBIx::Class::Schema';
-requires 'App::Sqitch', '0.997';
+requires 'App::Sqitch', '>= 0.9998';
 
 # Undeclared Sqitch dependency required by its Build.PL for sane test
 # prerequisite handling
