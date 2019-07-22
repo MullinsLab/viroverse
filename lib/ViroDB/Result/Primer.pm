@@ -251,6 +251,9 @@ sub as_hash {
     my $hash = $self->next::method;
     $hash->{organism} = $self->organism->name
         if $self->organism;
+    $hash->{positions} = [
+        map { $self->orientation eq "F" ? $_->hxb2_end : $_->hxb2_start } $self->positions
+    ] if $self->positions;
     return $hash;
 }
 
