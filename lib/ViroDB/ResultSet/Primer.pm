@@ -11,7 +11,7 @@ extends 'ViroDB::ResultSet';
 
 with 'ViroDB::Helper::ResultSet::SearchFreeform', {
     text_fields => [qw[ name notes sequence ]],
-    id_field    => "sample_id",
+    id_field    => "primer_id",
 };
 
 sub plausible_for {
@@ -38,5 +38,12 @@ sub orientation {
     return $self->search({ "$me.orientation" => \@_ },);
 }
 
+sub position {
+    my $self = shift;
+    my $me   = $self->current_source_alias;
+
+    my $field = $self->orientation eq "F" ? "hxb2_end" : "hxb2_start";
+    return $self->search({ "primer_position.$field" => \@_ }, { join => "primer_position "});
+}
 
 1;
