@@ -105,8 +105,8 @@ div.row { clear:both; padding-top:5px; padding-bottom:10px; padding-left:20px; o
     display: inline-block;
 }
 
-div.row span.nf { float:right; text-align:left; color: #666666;  } 
-  
+div.row span.nf { float:right; text-align:left; color: #666666;  }
+
 div.box { border:1px dotted #1f669b; margin-top: 10px; margin-bottom: 5px; padding-top: 10px; padding-bottom: 10px; }
 
 input, textarea, select, button { font-size: 11pt; }
@@ -121,9 +121,9 @@ input.auto { background-color: #FFFFCC; width:15em }
 .bootstrapped .form-control[typeahead] {
     background-color: #FFC;
 }
-  
+
 span.patientInfo { padding-left: 5px; padding-right: 5px; min-width:500px; }
-  
+
 span.spanName span.spanTissue span.spanDrawDate span.spanRecDate span.patientInfo { padding: 3px; }
 
 #header h1 { padding:5px; margin:0; }
@@ -173,7 +173,7 @@ main {
 }
 
 div.spacer { clear: both; }
- 
+
 div.auto_complete { position:absolute; width:250px; background-color:white; border:1px solid #888; margin:0px; padding:0px; }
 
 .filter { margin:5px; float:left; line-height:1em; }
@@ -199,7 +199,7 @@ legend { font-weight: bold; }
 
 #list { margin:0; margin-top:10px; padding:0; list-style-type: none; width:250px; }
 
-#list li { margin:0; margin-bottom:4px; padding:5px; border:1px solid #888; cursor:move; } 
+#list li { margin:0; margin-bottom:4px; padding:5px; border:1px solid #888; cursor:move; }
 
 #sampleList { border:1px solid black; padding:10px; }
 

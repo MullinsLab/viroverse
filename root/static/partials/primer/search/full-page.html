@@ -49,8 +49,8 @@
           <td>{{ primer.name }}</td>
           <td>{{ primer.orientation }}</td>
           <td>{{ primer.organism }}</td>
-          <td><kbd>{{ primer.sequence }}</kbd></td>
-          <td>{{ primer.sequence.length }} bp</td>
+          <td><code class="sequence">{{ primer.sequence }}</code></td>
+          <td class="text-right">{{ primer.sequence.length }} bp</td>
           <td>{{ primer.positions.join(", ") }}</td>
           <td><a vv-href="/primer/{{ primer.primer_id }}/fasta">FASTA</a></td>
         </tr>
