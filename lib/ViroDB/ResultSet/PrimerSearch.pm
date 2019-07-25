@@ -9,13 +9,13 @@ use MooseX::NonMoose;
 use MooseX::MarkAsMethods autoclean => 1;
 extends 'ViroDB::ResultSet';
 
+with 'ViroDB::Helper::ResultSet::SearchArrayOverlaps';
 with 'ViroDB::Helper::ResultSet::SearchFreeform', {
     text_fields => [qw[
         name
         sequence
         orientation
         notes
-        date_added
         organism
         positions
     ]],
@@ -44,6 +44,11 @@ sub orientation {
     my $self = shift;
     my $me   = $self->current_source_alias;
     return $self->search({ "$me.orientation" => \@_ });
+}
+
+sub position {
+    my $self = shift;
+    return $self->search_array_overlaps( positions => @_ );
 }
 
 

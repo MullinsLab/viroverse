@@ -92,6 +92,13 @@ sub _build_query_fields {
                 label   => "Orientation",
             },
         },
+        position => {
+            method => "position",
+            facet => {
+                column  => \["unnest(positions)"],
+                label   => "Position",
+            }
+        },
     };
 }
 
