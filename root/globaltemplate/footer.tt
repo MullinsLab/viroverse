@@ -8,6 +8,7 @@
           <li><a href="<% c.uri_for_action("/patient/select") %>">Lookup subject</a></li>
           <li><a href="<% c.uri_for_action("/sample/index") %>">Search samples</a></li>
           <li><a href="<% c.uri_for_action("/sequence/index") %>">Search sequences</a></li>
+          <li><a href="<% c.uri_for_action("/primer/index") %>">Search primers</a></li>
           <li><a href="[% c.uri_for_action("/project/index") %]">Browse projects</a></li>
         </ul>
         [% IF features.epitopedb %]

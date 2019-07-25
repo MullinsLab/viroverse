@@ -23,14 +23,14 @@
 
 
   <div class="col-sm-9">
-    <div ng-if="search.result.$resolved" class="search-results">
+    <div ng-if="search.result.$resolved" class="search-results-horizontal">
       <div class="row">
         <div class="col-sm-7">
           <p>
             <result-summary noun="primer" order-message="sorted by name"></result-summary>
           </p>
         </div>
-        <div class="col-sm-5 pager-col">
+        <div class="col-sm-5 pager-col-top">
           <clear-search-button></clear-search-button>
           <result-pager></result-pager>
         </div>
@@ -42,9 +42,9 @@
           <th>Name</th>
           <th>Orientation</th>
           <th>Organism</th>
-          <th>Sequence</th>
-          <th>Sequence length</th>
           <th>Positions</th>
+          <th>Sequence</th>
+          <th>Length</th>
           <th>Download</th>
         </tr>
       </thead>
@@ -53,9 +53,9 @@
           <td>{{ primer.name }}</td>
           <td>{{ primer.orientation }}</td>
           <td>{{ primer.organism }}</td>
+          <td>{{ primer.positions.join(',') }}</td>
           <td><code class="sequence">{{ primer.sequence }}</code></td>
           <td class="text-right">{{ primer.sequence.length }} bp</td>
-          <td>{{ primer.positions.join(',') }}</td>
           <td><a vv-href="/primer/{{ primer.primer_id }}/fasta">FASTA</a></td>
         </tr>
       </tbody>
