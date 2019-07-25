@@ -3,14 +3,22 @@ use warnings;
 use 5.018;
 use utf8;
 
-package ViroDB::ResultSet::Primer;
+package ViroDB::ResultSet::PrimerSearch;
 use Moose;
 use MooseX::NonMoose;
 use MooseX::MarkAsMethods autoclean => 1;
 extends 'ViroDB::ResultSet';
 
 with 'ViroDB::Helper::ResultSet::SearchFreeform', {
-    text_fields => [qw[ name notes sequence ]],
+    text_fields => [qw[
+        name
+        sequence
+        orientation
+        notes
+        date_added
+        organism
+        positions
+    ]],
     id_field    => "primer_id",
 };
 
@@ -29,21 +37,14 @@ sub plausible_for {
 sub organism {
     my $self = shift;
     my $me   = $self->current_source_alias;
-    return $self->search({ "organism.name" => \@_ }, { join => "organism" });
+    return $self->search({ "$me.organism" => \@_ });
 }
 
 sub orientation {
     my $self = shift;
     my $me   = $self->current_source_alias;
-    return $self->search({ "$me.orientation" => \@_ },);
+    return $self->search({ "$me.orientation" => \@_ });
 }
 
-sub position {
-    my $self = shift;
-    my $me   = $self->current_source_alias;
-
-    my $field = $self->orientation eq "F" ? "hxb2_end" : "hxb2_start";
-    return $self->search({ "primer_position.$field" => \@_ }, { join => "primer_position "});
-}
 
 1;

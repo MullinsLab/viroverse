@@ -6,3 +6,4 @@ verify-starting-schema 2019-01-23T18:45:50Z vagrant <vagrant@silby-dev-scratch>#
 add-browser-scientist-role 2019-03-19T23:49:16Z vagrant <vagrant@localverse> # Add a scientist role for browse-only users
 retire-delta-schema 2019-04-30T20:54:11Z vagrant <vagrant@localverse> # Rename objects out of the delta schema
 migrate-sequence-notes 2019-05-23T17:39:32Z vagrant <vagrant@localverse> # Migrate sequence notes away from polymorphic notes table
+primer_search 2019-07-24T21:33:58Z vagrant <vagrant@localverse># Add materialized view for faceted primer search

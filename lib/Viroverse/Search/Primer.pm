@@ -16,9 +16,9 @@ Viroverse::Search::Primer - Search primers by a variety of fields and facet resu
             organism => "HIV-1"
         }
     );
-    
+
     say "Matched ", $search->count, " primers";
-    
+
     # First 10 results, as ViroDB::Result::Primer objects
     my @results = $search->results;
 
@@ -39,11 +39,11 @@ Please read its documentation for usage information and additional details.
 
 with "Viroverse::Search::Faceted";
 
-has '+model',     isa => InstanceOf['ViroDB::ResultSet::Primer'];
-has '+resultset', isa => InstanceOf['ViroDB::ResultSet::Primer'];
+has '+model',     isa => InstanceOf['ViroDB::ResultSet::PrimerSearch'];
+has '+resultset', isa => InstanceOf['ViroDB::ResultSet::PrimerSearch'];
 
 sub _build_model {
-    return ViroDB->instance->resultset("Primer");
+    return ViroDB->instance->resultset("PrimerSearch");
 }
 
 sub _build_id_field { "primer_id" }
@@ -81,9 +81,8 @@ sub _build_query_fields {
         organism => {
             method => "organism",
             facet  => {
-                column  => \["organism.name"],
+                column  => "organism",
                 label   => "Organism",
-                join    => "organism",
             },
         },
         orientation => {
