@@ -15,9 +15,7 @@ with 'ViroDB::Helper::ResultSet::SearchFreeform', {
         name
         sequence
         orientation
-        notes
         organism
-        positions
     ]],
     id_field    => "primer_id",
 };
