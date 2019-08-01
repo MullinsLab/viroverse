@@ -44,11 +44,11 @@ CREATE FUNCTION viroserve.refresh_primer_search() RETURNS void
         REFRESH MATERIALIZED VIEW CONCURRENTLY viroserve.primer_search;
     $$;
 
-GRANT EXECUTE ON FUNCTION viroserve.refresh_primer_search() TO viroverse_w;
+GRANT EXECUTE ON FUNCTION viroserve.refresh_primer_search() TO :rw_user;
 REVOKE EXECUTE ON FUNCTION viroserve.refresh_primer_search() FROM PUBLIC;
 
 
-GRANT SELECT ON primer_search TO viroverse_r;
-GRANT SELECT ON primer_search TO viroverse_w;
+GRANT SELECT ON primer_search TO :ro_user;
+GRANT SELECT ON primer_search TO :rw_user;
 
 COMMIT;
