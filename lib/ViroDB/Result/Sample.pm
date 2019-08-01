@@ -211,21 +211,6 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
-=head2 categorical_lab_results
-
-Type: has_many
-
-Related object: L<ViroDB::Result::CategoricalLabResult>
-
-=cut
-
-__PACKAGE__->has_many(
-  "categorical_lab_results",
-  "ViroDB::Result::CategoricalLabResult",
-  { "foreign.sample_id" => "self.sample_id" },
-  { cascade_copy => 0, cascade_delete => 0 },
-);
-
 =head2 child_derivations
 
 Type: has_many
@@ -301,17 +286,17 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
-=head2 numeric_lab_results
+=head2 numeric_assay_results
 
 Type: has_many
 
-Related object: L<ViroDB::Result::NumericLabResult>
+Related object: L<ViroDB::Result::NumericAssayResult>
 
 =cut
 
 __PACKAGE__->has_many(
-  "numeric_lab_results",
-  "ViroDB::Result::NumericLabResult",
+  "numeric_assay_results",
+  "ViroDB::Result::NumericAssayResult",
   { "foreign.sample_id" => "self.sample_id" },
   { cascade_copy => 0, cascade_delete => 0 },
 );
@@ -427,8 +412,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-04-30 14:38:44
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:JTpLSd42IKspTvaJUD++uQ
+# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-08-01 14:52:45
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:LBf84p6mMl3y+0+0cDZbaQ
 
 with 'Viroverse::SampleTree::Node';
 
