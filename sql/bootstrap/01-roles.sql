@@ -17,8 +17,8 @@
 
 BEGIN;
 
-CREATE USER vverse_admin;
-CREATE USER viroverse_r;
-CREATE USER viroverse_w;
+CREATE USER :owner;
+CREATE USER :ro_user;
+CREATE USER :rw_user;
 
 COMMIT;

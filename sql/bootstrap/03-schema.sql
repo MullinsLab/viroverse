@@ -14,133 +14,120 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
 
 --
--- Name: delta; Type: SCHEMA; Schema: -; Owner: vverse_admin
+-- Name: delta; Type: SCHEMA; Schema: -; Owner: :owner
 --
 
 CREATE SCHEMA delta;
 
 
-ALTER SCHEMA delta OWNER TO vverse_admin;
+ALTER SCHEMA delta OWNER TO :owner;
 
 --
--- Name: epitope; Type: SCHEMA; Schema: -; Owner: vverse_admin
+-- Name: epitope; Type: SCHEMA; Schema: -; Owner: :owner
 --
 
 CREATE SCHEMA epitope;
 
 
-ALTER SCHEMA epitope OWNER TO vverse_admin;
+ALTER SCHEMA epitope OWNER TO :owner;
 
 --
--- Name: freezer; Type: SCHEMA; Schema: -; Owner: vverse_admin
+-- Name: freezer; Type: SCHEMA; Schema: -; Owner: :owner
 --
 
 CREATE SCHEMA freezer;
 
 
-ALTER SCHEMA freezer OWNER TO vverse_admin;
+ALTER SCHEMA freezer OWNER TO :owner;
 
 --
--- Name: sqitch; Type: SCHEMA; Schema: -; Owner: vverse_admin
+-- Name: sqitch; Type: SCHEMA; Schema: -; Owner: :owner
 --
 
 CREATE SCHEMA sqitch;
 
 
-ALTER SCHEMA sqitch OWNER TO vverse_admin;
+ALTER SCHEMA sqitch OWNER TO :owner;
 
 --
--- Name: SCHEMA sqitch; Type: COMMENT; Schema: -; Owner: vverse_admin
+-- Name: SCHEMA sqitch; Type: COMMENT; Schema: -; Owner: :owner
 --
 
 COMMENT ON SCHEMA sqitch IS 'Sqitch database deployment metadata v1.0.';
 
 
 --
--- Name: viroserve; Type: SCHEMA; Schema: -; Owner: vverse_admin
+-- Name: viroserve; Type: SCHEMA; Schema: -; Owner: :owner
 --
 
 CREATE SCHEMA viroserve;
 
 
-ALTER SCHEMA viroserve OWNER TO vverse_admin;
-
---
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
---
-
-CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+ALTER SCHEMA viroserve OWNER TO :owner;
 
 
 --
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
-
-
---
--- Name: enzyme_type; Type: DOMAIN; Schema: viroserve; Owner: vverse_admin
+-- Name: enzyme_type; Type: DOMAIN; Schema: viroserve; Owner: :owner
 --
 
 CREATE DOMAIN viroserve.enzyme_type AS text NOT NULL
 	CONSTRAINT valid_enzyme_type CHECK ((VALUE = ANY (ARRAY['reverse transcriptase'::text, 'polymerase'::text])));
 
 
-ALTER DOMAIN viroserve.enzyme_type OWNER TO vverse_admin;
+ALTER DOMAIN viroserve.enzyme_type OWNER TO :owner;
 
 --
--- Name: gender_code; Type: DOMAIN; Schema: viroserve; Owner: vverse_admin
+-- Name: gender_code; Type: DOMAIN; Schema: viroserve; Owner: :owner
 --
 
 CREATE DOMAIN viroserve.gender_code AS character(1)
 	CONSTRAINT gender_code CHECK ((VALUE = ANY (ARRAY['M'::bpchar, 'F'::bpchar])));
 
 
-ALTER DOMAIN viroserve.gender_code OWNER TO vverse_admin;
+ALTER DOMAIN viroserve.gender_code OWNER TO :owner;
 
 --
--- Name: hla_genotype_ambiguity_code; Type: DOMAIN; Schema: viroserve; Owner: vverse_admin
+-- Name: hla_genotype_ambiguity_code; Type: DOMAIN; Schema: viroserve; Owner: :owner
 --
 
 CREATE DOMAIN viroserve.hla_genotype_ambiguity_code AS character(1)
 	CONSTRAINT valid_hla_genotype_ambiguity_code CHECK ((VALUE = ANY (ARRAY['P'::bpchar, 'G'::bpchar])));
 
 
-ALTER DOMAIN viroserve.hla_genotype_ambiguity_code OWNER TO vverse_admin;
+ALTER DOMAIN viroserve.hla_genotype_ambiguity_code OWNER TO :owner;
 
 --
--- Name: na_type; Type: DOMAIN; Schema: viroserve; Owner: vverse_admin
+-- Name: na_type; Type: DOMAIN; Schema: viroserve; Owner: :owner
 --
 
 CREATE DOMAIN viroserve.na_type AS character varying(10)
 	CONSTRAINT valid_na_type CHECK (((VALUE)::text = ANY (ARRAY[('DNA'::character varying)::text, ('RNA'::character varying)::text])));
 
 
-ALTER DOMAIN viroserve.na_type OWNER TO vverse_admin;
+ALTER DOMAIN viroserve.na_type OWNER TO :owner;
 
 --
--- Name: patient_alias_type; Type: DOMAIN; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_alias_type; Type: DOMAIN; Schema: viroserve; Owner: :owner
 --
 
 CREATE DOMAIN viroserve.patient_alias_type AS text
 	CONSTRAINT patient_alias_type_check CHECK ((VALUE = ANY (ARRAY['primary'::text, 'alias'::text, 'publication'::text])));
 
 
-ALTER DOMAIN viroserve.patient_alias_type OWNER TO vverse_admin;
+ALTER DOMAIN viroserve.patient_alias_type OWNER TO :owner;
 
 --
--- Name: scientist_role; Type: DOMAIN; Schema: viroserve; Owner: vverse_admin
+-- Name: scientist_role; Type: DOMAIN; Schema: viroserve; Owner: :owner
 --
 
 CREATE DOMAIN viroserve.scientist_role AS text NOT NULL DEFAULT 'scientist'::text
 	CONSTRAINT valid_role_name CHECK ((VALUE = ANY (ARRAY['scientist'::text, 'supervisor'::text, 'admin'::text, 'retired'::text])));
 
 
-ALTER DOMAIN viroserve.scientist_role OWNER TO vverse_admin;
+ALTER DOMAIN viroserve.scientist_role OWNER TO :owner;
 
 --
--- Name: pool_response_result(integer, integer); Type: FUNCTION; Schema: epitope; Owner: vverse_admin
+-- Name: pool_response_result(integer, integer); Type: FUNCTION; Schema: epitope; Owner: :owner
 --
 
 CREATE FUNCTION epitope.pool_response_result(id integer, bg_id integer) RETURNS character
@@ -173,10 +160,10 @@ END
 $$;
 
 
-ALTER FUNCTION epitope.pool_response_result(id integer, bg_id integer) OWNER TO vverse_admin;
+ALTER FUNCTION epitope.pool_response_result(id integer, bg_id integer) OWNER TO :owner;
 
 --
--- Name: hla_designation(); Type: FUNCTION; Schema: viroserve; Owner: vverse_admin
+-- Name: hla_designation(); Type: FUNCTION; Schema: viroserve; Owner: :owner
 --
 
 CREATE FUNCTION viroserve.hla_designation() RETURNS text
@@ -203,10 +190,10 @@ END;
 $$;
 
 
-ALTER FUNCTION viroserve.hla_designation() OWNER TO vverse_admin;
+ALTER FUNCTION viroserve.hla_designation() OWNER TO :owner;
 
 --
--- Name: hla_designation(integer); Type: FUNCTION; Schema: viroserve; Owner: vverse_admin
+-- Name: hla_designation(integer); Type: FUNCTION; Schema: viroserve; Owner: :owner
 --
 
 CREATE FUNCTION viroserve.hla_designation(patient_hla_genotype_id integer) RETURNS text
@@ -232,10 +219,10 @@ END;
 $$;
 
 
-ALTER FUNCTION viroserve.hla_designation(patient_hla_genotype_id integer) OWNER TO vverse_admin;
+ALTER FUNCTION viroserve.hla_designation(patient_hla_genotype_id integer) OWNER TO :owner;
 
 --
--- Name: patient_name(integer); Type: FUNCTION; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_name(integer); Type: FUNCTION; Schema: viroserve; Owner: :owner
 --
 
 CREATE FUNCTION viroserve.patient_name(p_patient_id integer) RETURNS text
@@ -250,10 +237,10 @@ CREATE FUNCTION viroserve.patient_name(p_patient_id integer) RETURNS text
 $$;
 
 
-ALTER FUNCTION viroserve.patient_name(p_patient_id integer) OWNER TO vverse_admin;
+ALTER FUNCTION viroserve.patient_name(p_patient_id integer) OWNER TO :owner;
 
 --
--- Name: patient_name_by_cohort(integer, smallint); Type: FUNCTION; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_name_by_cohort(integer, smallint); Type: FUNCTION; Schema: viroserve; Owner: :owner
 --
 
 CREATE FUNCTION viroserve.patient_name_by_cohort(p_patient_id integer, c_cohort_id smallint) RETURNS text
@@ -269,10 +256,10 @@ CREATE FUNCTION viroserve.patient_name_by_cohort(p_patient_id integer, c_cohort_
 $$;
 
 
-ALTER FUNCTION viroserve.patient_name_by_cohort(p_patient_id integer, c_cohort_id smallint) OWNER TO vverse_admin;
+ALTER FUNCTION viroserve.patient_name_by_cohort(p_patient_id integer, c_cohort_id smallint) OWNER TO :owner;
 
 --
--- Name: pcr_descendants_for_sample(numeric); Type: FUNCTION; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_descendants_for_sample(numeric); Type: FUNCTION; Schema: viroserve; Owner: :owner
 --
 
 CREATE FUNCTION viroserve.pcr_descendants_for_sample(sample numeric) RETURNS TABLE(sample_id integer, extraction_id integer, rt_product_id integer, bisulfite_converted_dna_id integer, primogenitor_pcr_template_id integer, primogenitor_pcr_product_id integer, pcr_template_id integer, pcr_product_id integer, round integer)
@@ -323,10 +310,10 @@ CREATE FUNCTION viroserve.pcr_descendants_for_sample(sample numeric) RETURNS TAB
 $_$;
 
 
-ALTER FUNCTION viroserve.pcr_descendants_for_sample(sample numeric) OWNER TO vverse_admin;
+ALTER FUNCTION viroserve.pcr_descendants_for_sample(sample numeric) OWNER TO :owner;
 
 --
--- Name: refresh_distinct_sample_search(); Type: FUNCTION; Schema: viroserve; Owner: vverse_admin
+-- Name: refresh_distinct_sample_search(); Type: FUNCTION; Schema: viroserve; Owner: :owner
 --
 
 CREATE FUNCTION viroserve.refresh_distinct_sample_search() RETURNS void
@@ -336,10 +323,10 @@ CREATE FUNCTION viroserve.refresh_distinct_sample_search() RETURNS void
     $$;
 
 
-ALTER FUNCTION viroserve.refresh_distinct_sample_search() OWNER TO vverse_admin;
+ALTER FUNCTION viroserve.refresh_distinct_sample_search() OWNER TO :owner;
 
 --
--- Name: refresh_project_material_scientist_progress(); Type: FUNCTION; Schema: viroserve; Owner: vverse_admin
+-- Name: refresh_project_material_scientist_progress(); Type: FUNCTION; Schema: viroserve; Owner: :owner
 --
 
 CREATE FUNCTION viroserve.refresh_project_material_scientist_progress() RETURNS void
@@ -349,10 +336,10 @@ CREATE FUNCTION viroserve.refresh_project_material_scientist_progress() RETURNS 
     $$;
 
 
-ALTER FUNCTION viroserve.refresh_project_material_scientist_progress() OWNER TO vverse_admin;
+ALTER FUNCTION viroserve.refresh_project_material_scientist_progress() OWNER TO :owner;
 
 --
--- Name: refresh_sequence_search(); Type: FUNCTION; Schema: viroserve; Owner: vverse_admin
+-- Name: refresh_sequence_search(); Type: FUNCTION; Schema: viroserve; Owner: :owner
 --
 
 CREATE FUNCTION viroserve.refresh_sequence_search() RETURNS void
@@ -362,10 +349,10 @@ CREATE FUNCTION viroserve.refresh_sequence_search() RETURNS void
     $$;
 
 
-ALTER FUNCTION viroserve.refresh_sequence_search() OWNER TO vverse_admin;
+ALTER FUNCTION viroserve.refresh_sequence_search() OWNER TO :owner;
 
 --
--- Name: array_accum(anyelement); Type: AGGREGATE; Schema: public; Owner: vverse_admin
+-- Name: array_accum(anyelement); Type: AGGREGATE; Schema: public; Owner: :owner
 --
 
 CREATE AGGREGATE public.array_accum(anyelement) (
@@ -375,14 +362,14 @@ CREATE AGGREGATE public.array_accum(anyelement) (
 );
 
 
-ALTER AGGREGATE public.array_accum(anyelement) OWNER TO vverse_admin;
+ALTER AGGREGATE public.array_accum(anyelement) OWNER TO :owner;
 
 SET default_tablespace = '';
 
 SET default_with_oids = false;
 
 --
--- Name: derivation; Type: TABLE; Schema: delta; Owner: vverse_admin
+-- Name: derivation; Type: TABLE; Schema: delta; Owner: :owner
 --
 
 CREATE TABLE delta.derivation (
@@ -395,10 +382,10 @@ CREATE TABLE delta.derivation (
 );
 
 
-ALTER TABLE delta.derivation OWNER TO vverse_admin;
+ALTER TABLE delta.derivation OWNER TO :owner;
 
 --
--- Name: derivation_derivation_id_seq; Type: SEQUENCE; Schema: delta; Owner: vverse_admin
+-- Name: derivation_derivation_id_seq; Type: SEQUENCE; Schema: delta; Owner: :owner
 --
 
 CREATE SEQUENCE delta.derivation_derivation_id_seq
@@ -409,17 +396,17 @@ CREATE SEQUENCE delta.derivation_derivation_id_seq
     CACHE 1;
 
 
-ALTER TABLE delta.derivation_derivation_id_seq OWNER TO vverse_admin;
+ALTER TABLE delta.derivation_derivation_id_seq OWNER TO :owner;
 
 --
--- Name: derivation_derivation_id_seq; Type: SEQUENCE OWNED BY; Schema: delta; Owner: vverse_admin
+-- Name: derivation_derivation_id_seq; Type: SEQUENCE OWNED BY; Schema: delta; Owner: :owner
 --
 
 ALTER SEQUENCE delta.derivation_derivation_id_seq OWNED BY delta.derivation.derivation_id;
 
 
 --
--- Name: protocol; Type: TABLE; Schema: delta; Owner: vverse_admin
+-- Name: protocol; Type: TABLE; Schema: delta; Owner: :owner
 --
 
 CREATE TABLE delta.protocol (
@@ -428,10 +415,10 @@ CREATE TABLE delta.protocol (
 );
 
 
-ALTER TABLE delta.protocol OWNER TO vverse_admin;
+ALTER TABLE delta.protocol OWNER TO :owner;
 
 --
--- Name: protocol_output; Type: TABLE; Schema: delta; Owner: vverse_admin
+-- Name: protocol_output; Type: TABLE; Schema: delta; Owner: :owner
 --
 
 CREATE TABLE delta.protocol_output (
@@ -440,10 +427,10 @@ CREATE TABLE delta.protocol_output (
 );
 
 
-ALTER TABLE delta.protocol_output OWNER TO vverse_admin;
+ALTER TABLE delta.protocol_output OWNER TO :owner;
 
 --
--- Name: protocol_protocol_id_seq; Type: SEQUENCE; Schema: delta; Owner: vverse_admin
+-- Name: protocol_protocol_id_seq; Type: SEQUENCE; Schema: delta; Owner: :owner
 --
 
 CREATE SEQUENCE delta.protocol_protocol_id_seq
@@ -454,17 +441,17 @@ CREATE SEQUENCE delta.protocol_protocol_id_seq
     CACHE 1;
 
 
-ALTER TABLE delta.protocol_protocol_id_seq OWNER TO vverse_admin;
+ALTER TABLE delta.protocol_protocol_id_seq OWNER TO :owner;
 
 --
--- Name: protocol_protocol_id_seq; Type: SEQUENCE OWNED BY; Schema: delta; Owner: vverse_admin
+-- Name: protocol_protocol_id_seq; Type: SEQUENCE OWNED BY; Schema: delta; Owner: :owner
 --
 
 ALTER SEQUENCE delta.protocol_protocol_id_seq OWNED BY delta.protocol.protocol_id;
 
 
 --
--- Name: blcl_blcl_id_seq; Type: SEQUENCE; Schema: epitope; Owner: vverse_admin
+-- Name: blcl_blcl_id_seq; Type: SEQUENCE; Schema: epitope; Owner: :owner
 --
 
 CREATE SEQUENCE epitope.blcl_blcl_id_seq
@@ -475,10 +462,10 @@ CREATE SEQUENCE epitope.blcl_blcl_id_seq
     CACHE 1;
 
 
-ALTER TABLE epitope.blcl_blcl_id_seq OWNER TO vverse_admin;
+ALTER TABLE epitope.blcl_blcl_id_seq OWNER TO :owner;
 
 --
--- Name: blcl; Type: TABLE; Schema: epitope; Owner: vverse_admin
+-- Name: blcl; Type: TABLE; Schema: epitope; Owner: :owner
 --
 
 CREATE TABLE epitope.blcl (
@@ -487,10 +474,10 @@ CREATE TABLE epitope.blcl (
 );
 
 
-ALTER TABLE epitope.blcl OWNER TO vverse_admin;
+ALTER TABLE epitope.blcl OWNER TO :owner;
 
 --
--- Name: epitope_epit_id_seq; Type: SEQUENCE; Schema: epitope; Owner: vverse_admin
+-- Name: epitope_epit_id_seq; Type: SEQUENCE; Schema: epitope; Owner: :owner
 --
 
 CREATE SEQUENCE epitope.epitope_epit_id_seq
@@ -501,10 +488,10 @@ CREATE SEQUENCE epitope.epitope_epit_id_seq
     CACHE 1;
 
 
-ALTER TABLE epitope.epitope_epit_id_seq OWNER TO vverse_admin;
+ALTER TABLE epitope.epitope_epit_id_seq OWNER TO :owner;
 
 --
--- Name: epitope; Type: TABLE; Schema: epitope; Owner: vverse_admin
+-- Name: epitope; Type: TABLE; Schema: epitope; Owner: :owner
 --
 
 CREATE TABLE epitope.epitope (
@@ -514,10 +501,10 @@ CREATE TABLE epitope.epitope (
 );
 
 
-ALTER TABLE epitope.epitope OWNER TO vverse_admin;
+ALTER TABLE epitope.epitope OWNER TO :owner;
 
 --
--- Name: epitope_mutant; Type: TABLE; Schema: epitope; Owner: vverse_admin
+-- Name: epitope_mutant; Type: TABLE; Schema: epitope; Owner: :owner
 --
 
 CREATE TABLE epitope.epitope_mutant (
@@ -528,10 +515,10 @@ CREATE TABLE epitope.epitope_mutant (
 );
 
 
-ALTER TABLE epitope.epitope_mutant OWNER TO vverse_admin;
+ALTER TABLE epitope.epitope_mutant OWNER TO :owner;
 
 --
--- Name: epitope_sequence; Type: TABLE; Schema: epitope; Owner: vverse_admin
+-- Name: epitope_sequence; Type: TABLE; Schema: epitope; Owner: :owner
 --
 
 CREATE TABLE epitope.epitope_sequence (
@@ -541,10 +528,10 @@ CREATE TABLE epitope.epitope_sequence (
 );
 
 
-ALTER TABLE epitope.epitope_sequence OWNER TO vverse_admin;
+ALTER TABLE epitope.epitope_sequence OWNER TO :owner;
 
 --
--- Name: epitope_source_source_id_seq; Type: SEQUENCE; Schema: epitope; Owner: vverse_admin
+-- Name: epitope_source_source_id_seq; Type: SEQUENCE; Schema: epitope; Owner: :owner
 --
 
 CREATE SEQUENCE epitope.epitope_source_source_id_seq
@@ -555,10 +542,10 @@ CREATE SEQUENCE epitope.epitope_source_source_id_seq
     CACHE 1;
 
 
-ALTER TABLE epitope.epitope_source_source_id_seq OWNER TO vverse_admin;
+ALTER TABLE epitope.epitope_source_source_id_seq OWNER TO :owner;
 
 --
--- Name: epitope_source; Type: TABLE; Schema: epitope; Owner: vverse_admin
+-- Name: epitope_source; Type: TABLE; Schema: epitope; Owner: :owner
 --
 
 CREATE TABLE epitope.epitope_source (
@@ -567,10 +554,10 @@ CREATE TABLE epitope.epitope_source (
 );
 
 
-ALTER TABLE epitope.epitope_source OWNER TO vverse_admin;
+ALTER TABLE epitope.epitope_source OWNER TO :owner;
 
 --
--- Name: experiment_exp_id_seq; Type: SEQUENCE; Schema: epitope; Owner: vverse_admin
+-- Name: experiment_exp_id_seq; Type: SEQUENCE; Schema: epitope; Owner: :owner
 --
 
 CREATE SEQUENCE epitope.experiment_exp_id_seq
@@ -581,10 +568,10 @@ CREATE SEQUENCE epitope.experiment_exp_id_seq
     CACHE 1;
 
 
-ALTER TABLE epitope.experiment_exp_id_seq OWNER TO vverse_admin;
+ALTER TABLE epitope.experiment_exp_id_seq OWNER TO :owner;
 
 --
--- Name: experiment; Type: TABLE; Schema: epitope; Owner: vverse_admin
+-- Name: experiment; Type: TABLE; Schema: epitope; Owner: :owner
 --
 
 CREATE TABLE epitope.experiment (
@@ -595,10 +582,10 @@ CREATE TABLE epitope.experiment (
 );
 
 
-ALTER TABLE epitope.experiment OWNER TO vverse_admin;
+ALTER TABLE epitope.experiment OWNER TO :owner;
 
 --
--- Name: gene_gene_id_seq; Type: SEQUENCE; Schema: epitope; Owner: vverse_admin
+-- Name: gene_gene_id_seq; Type: SEQUENCE; Schema: epitope; Owner: :owner
 --
 
 CREATE SEQUENCE epitope.gene_gene_id_seq
@@ -609,10 +596,10 @@ CREATE SEQUENCE epitope.gene_gene_id_seq
     CACHE 1;
 
 
-ALTER TABLE epitope.gene_gene_id_seq OWNER TO vverse_admin;
+ALTER TABLE epitope.gene_gene_id_seq OWNER TO :owner;
 
 --
--- Name: gene; Type: TABLE; Schema: epitope; Owner: vverse_admin
+-- Name: gene; Type: TABLE; Schema: epitope; Owner: :owner
 --
 
 CREATE TABLE epitope.gene (
@@ -623,10 +610,10 @@ CREATE TABLE epitope.gene (
 );
 
 
-ALTER TABLE epitope.gene OWNER TO vverse_admin;
+ALTER TABLE epitope.gene OWNER TO :owner;
 
 --
--- Name: hla; Type: TABLE; Schema: epitope; Owner: vverse_admin
+-- Name: hla; Type: TABLE; Schema: epitope; Owner: :owner
 --
 
 CREATE TABLE epitope.hla (
@@ -636,10 +623,10 @@ CREATE TABLE epitope.hla (
 );
 
 
-ALTER TABLE epitope.hla OWNER TO vverse_admin;
+ALTER TABLE epitope.hla OWNER TO :owner;
 
 --
--- Name: hla_pept; Type: TABLE; Schema: epitope; Owner: vverse_admin
+-- Name: hla_pept; Type: TABLE; Schema: epitope; Owner: :owner
 --
 
 CREATE TABLE epitope.hla_pept (
@@ -648,10 +635,10 @@ CREATE TABLE epitope.hla_pept (
 );
 
 
-ALTER TABLE epitope.hla_pept OWNER TO vverse_admin;
+ALTER TABLE epitope.hla_pept OWNER TO :owner;
 
 --
--- Name: measure_id_seq; Type: SEQUENCE; Schema: epitope; Owner: vverse_admin
+-- Name: measure_id_seq; Type: SEQUENCE; Schema: epitope; Owner: :owner
 --
 
 CREATE SEQUENCE epitope.measure_id_seq
@@ -662,10 +649,10 @@ CREATE SEQUENCE epitope.measure_id_seq
     CACHE 1;
 
 
-ALTER TABLE epitope.measure_id_seq OWNER TO vverse_admin;
+ALTER TABLE epitope.measure_id_seq OWNER TO :owner;
 
 --
--- Name: hla_response; Type: TABLE; Schema: epitope; Owner: vverse_admin
+-- Name: hla_response; Type: TABLE; Schema: epitope; Owner: :owner
 --
 
 CREATE TABLE epitope.hla_response (
@@ -679,10 +666,10 @@ CREATE TABLE epitope.hla_response (
 );
 
 
-ALTER TABLE epitope.hla_response OWNER TO vverse_admin;
+ALTER TABLE epitope.hla_response OWNER TO :owner;
 
 --
--- Name: pept_response; Type: TABLE; Schema: epitope; Owner: vverse_admin
+-- Name: pept_response; Type: TABLE; Schema: epitope; Owner: :owner
 --
 
 CREATE TABLE epitope.pept_response (
@@ -695,10 +682,10 @@ CREATE TABLE epitope.pept_response (
 );
 
 
-ALTER TABLE epitope.pept_response OWNER TO vverse_admin;
+ALTER TABLE epitope.pept_response OWNER TO :owner;
 
 --
--- Name: reading_reading_id_seq; Type: SEQUENCE; Schema: epitope; Owner: vverse_admin
+-- Name: reading_reading_id_seq; Type: SEQUENCE; Schema: epitope; Owner: :owner
 --
 
 CREATE SEQUENCE epitope.reading_reading_id_seq
@@ -709,10 +696,10 @@ CREATE SEQUENCE epitope.reading_reading_id_seq
     CACHE 1;
 
 
-ALTER TABLE epitope.reading_reading_id_seq OWNER TO vverse_admin;
+ALTER TABLE epitope.reading_reading_id_seq OWNER TO :owner;
 
 --
--- Name: reading; Type: TABLE; Schema: epitope; Owner: vverse_admin
+-- Name: reading; Type: TABLE; Schema: epitope; Owner: :owner
 --
 
 CREATE TABLE epitope.reading (
@@ -722,10 +709,10 @@ CREATE TABLE epitope.reading (
 );
 
 
-ALTER TABLE epitope.reading OWNER TO vverse_admin;
+ALTER TABLE epitope.reading OWNER TO :owner;
 
 --
--- Name: hla_response_avg; Type: VIEW; Schema: epitope; Owner: vverse_admin
+-- Name: hla_response_avg; Type: VIEW; Schema: epitope; Owner: :owner
 --
 
 CREATE VIEW epitope.hla_response_avg AS
@@ -744,10 +731,10 @@ CREATE VIEW epitope.hla_response_avg AS
   ORDER BY hr.exp_id, hr.measure_id, hr.blcl_id;
 
 
-ALTER TABLE epitope.hla_response_avg OWNER TO vverse_admin;
+ALTER TABLE epitope.hla_response_avg OWNER TO :owner;
 
 --
--- Name: pept_response_avg; Type: VIEW; Schema: epitope; Owner: vverse_admin
+-- Name: pept_response_avg; Type: VIEW; Schema: epitope; Owner: :owner
 --
 
 CREATE VIEW epitope.pept_response_avg AS
@@ -761,10 +748,10 @@ CREATE VIEW epitope.pept_response_avg AS
   GROUP BY pept_response.measure_id, pept_response.pept_id, pept_response.exp_id, pept_response.sample_id;
 
 
-ALTER TABLE epitope.pept_response_avg OWNER TO vverse_admin;
+ALTER TABLE epitope.pept_response_avg OWNER TO :owner;
 
 --
--- Name: vv_uid; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: vv_uid; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.vv_uid
@@ -775,10 +762,10 @@ CREATE SEQUENCE viroserve.vv_uid
     CACHE 1;
 
 
-ALTER TABLE viroserve.vv_uid OWNER TO vverse_admin;
+ALTER TABLE viroserve.vv_uid OWNER TO :owner;
 
 --
--- Name: sample; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: sample; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.sample (
@@ -798,12 +785,12 @@ CREATE TABLE viroserve.sample (
 );
 
 
-ALTER TABLE viroserve.sample OWNER TO vverse_admin;
+ALTER TABLE viroserve.sample OWNER TO :owner;
 
 SET default_with_oids = true;
 
 --
--- Name: tissue_type; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: tissue_type; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.tissue_type (
@@ -812,10 +799,10 @@ CREATE TABLE viroserve.tissue_type (
 );
 
 
-ALTER TABLE viroserve.tissue_type OWNER TO vverse_admin;
+ALTER TABLE viroserve.tissue_type OWNER TO :owner;
 
 --
--- Name: visit; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: visit; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.visit (
@@ -830,10 +817,10 @@ CREATE TABLE viroserve.visit (
 );
 
 
-ALTER TABLE viroserve.visit OWNER TO vverse_admin;
+ALTER TABLE viroserve.visit OWNER TO :owner;
 
 --
--- Name: sample; Type: VIEW; Schema: epitope; Owner: vverse_admin
+-- Name: sample; Type: VIEW; Schema: epitope; Owner: :owner
 --
 
 CREATE VIEW epitope.sample AS
@@ -847,10 +834,10 @@ CREATE VIEW epitope.sample AS
      JOIN viroserve.tissue_type USING (tissue_type_id));
 
 
-ALTER TABLE epitope.sample OWNER TO vverse_admin;
+ALTER TABLE epitope.sample OWNER TO :owner;
 
 --
--- Name: hla_response_corravg; Type: VIEW; Schema: epitope; Owner: vverse_admin
+-- Name: hla_response_corravg; Type: VIEW; Schema: epitope; Owner: :owner
 --
 
 CREATE VIEW epitope.hla_response_corravg AS
@@ -870,12 +857,12 @@ CREATE VIEW epitope.hla_response_corravg AS
   ORDER BY hra.measure_id;
 
 
-ALTER TABLE epitope.hla_response_corravg OWNER TO vverse_admin;
+ALTER TABLE epitope.hla_response_corravg OWNER TO :owner;
 
 SET default_with_oids = false;
 
 --
--- Name: measurement; Type: TABLE; Schema: epitope; Owner: vverse_admin
+-- Name: measurement; Type: TABLE; Schema: epitope; Owner: :owner
 --
 
 CREATE TABLE epitope.measurement (
@@ -883,10 +870,10 @@ CREATE TABLE epitope.measurement (
 );
 
 
-ALTER TABLE epitope.measurement OWNER TO vverse_admin;
+ALTER TABLE epitope.measurement OWNER TO :owner;
 
 --
--- Name: mutant_mutant_id_seq; Type: SEQUENCE; Schema: epitope; Owner: vverse_admin
+-- Name: mutant_mutant_id_seq; Type: SEQUENCE; Schema: epitope; Owner: :owner
 --
 
 CREATE SEQUENCE epitope.mutant_mutant_id_seq
@@ -897,10 +884,10 @@ CREATE SEQUENCE epitope.mutant_mutant_id_seq
     CACHE 1;
 
 
-ALTER TABLE epitope.mutant_mutant_id_seq OWNER TO vverse_admin;
+ALTER TABLE epitope.mutant_mutant_id_seq OWNER TO :owner;
 
 --
--- Name: mutant; Type: TABLE; Schema: epitope; Owner: vverse_admin
+-- Name: mutant; Type: TABLE; Schema: epitope; Owner: :owner
 --
 
 CREATE TABLE epitope.mutant (
@@ -909,10 +896,10 @@ CREATE TABLE epitope.mutant (
 );
 
 
-ALTER TABLE epitope.mutant OWNER TO vverse_admin;
+ALTER TABLE epitope.mutant OWNER TO :owner;
 
 --
--- Name: origin_origin_id_seq; Type: SEQUENCE; Schema: epitope; Owner: vverse_admin
+-- Name: origin_origin_id_seq; Type: SEQUENCE; Schema: epitope; Owner: :owner
 --
 
 CREATE SEQUENCE epitope.origin_origin_id_seq
@@ -923,10 +910,10 @@ CREATE SEQUENCE epitope.origin_origin_id_seq
     CACHE 1;
 
 
-ALTER TABLE epitope.origin_origin_id_seq OWNER TO vverse_admin;
+ALTER TABLE epitope.origin_origin_id_seq OWNER TO :owner;
 
 --
--- Name: origin; Type: TABLE; Schema: epitope; Owner: vverse_admin
+-- Name: origin; Type: TABLE; Schema: epitope; Owner: :owner
 --
 
 CREATE TABLE epitope.origin (
@@ -937,10 +924,10 @@ CREATE TABLE epitope.origin (
 );
 
 
-ALTER TABLE epitope.origin OWNER TO vverse_admin;
+ALTER TABLE epitope.origin OWNER TO :owner;
 
 --
--- Name: origin_peptide; Type: TABLE; Schema: epitope; Owner: vverse_admin
+-- Name: origin_peptide; Type: TABLE; Schema: epitope; Owner: :owner
 --
 
 CREATE TABLE epitope.origin_peptide (
@@ -949,10 +936,10 @@ CREATE TABLE epitope.origin_peptide (
 );
 
 
-ALTER TABLE epitope.origin_peptide OWNER TO vverse_admin;
+ALTER TABLE epitope.origin_peptide OWNER TO :owner;
 
 --
--- Name: pept_response_corravg; Type: VIEW; Schema: epitope; Owner: vverse_admin
+-- Name: pept_response_corravg; Type: VIEW; Schema: epitope; Owner: :owner
 --
 
 CREATE VIEW epitope.pept_response_corravg AS
@@ -973,10 +960,10 @@ CREATE VIEW epitope.pept_response_corravg AS
   ORDER BY va.measure_id;
 
 
-ALTER TABLE epitope.pept_response_corravg OWNER TO vverse_admin;
+ALTER TABLE epitope.pept_response_corravg OWNER TO :owner;
 
 --
--- Name: peptide_pept_id_seq; Type: SEQUENCE; Schema: epitope; Owner: vverse_admin
+-- Name: peptide_pept_id_seq; Type: SEQUENCE; Schema: epitope; Owner: :owner
 --
 
 CREATE SEQUENCE epitope.peptide_pept_id_seq
@@ -987,10 +974,10 @@ CREATE SEQUENCE epitope.peptide_pept_id_seq
     CACHE 1;
 
 
-ALTER TABLE epitope.peptide_pept_id_seq OWNER TO vverse_admin;
+ALTER TABLE epitope.peptide_pept_id_seq OWNER TO :owner;
 
 --
--- Name: peptide; Type: TABLE; Schema: epitope; Owner: vverse_admin
+-- Name: peptide; Type: TABLE; Schema: epitope; Owner: :owner
 --
 
 CREATE TABLE epitope.peptide (
@@ -1008,10 +995,10 @@ CREATE TABLE epitope.peptide (
 );
 
 
-ALTER TABLE epitope.peptide OWNER TO vverse_admin;
+ALTER TABLE epitope.peptide OWNER TO :owner;
 
 --
--- Name: pool_pool_id_seq; Type: SEQUENCE; Schema: epitope; Owner: vverse_admin
+-- Name: pool_pool_id_seq; Type: SEQUENCE; Schema: epitope; Owner: :owner
 --
 
 CREATE SEQUENCE epitope.pool_pool_id_seq
@@ -1022,10 +1009,10 @@ CREATE SEQUENCE epitope.pool_pool_id_seq
     CACHE 1;
 
 
-ALTER TABLE epitope.pool_pool_id_seq OWNER TO vverse_admin;
+ALTER TABLE epitope.pool_pool_id_seq OWNER TO :owner;
 
 --
--- Name: pool; Type: TABLE; Schema: epitope; Owner: vverse_admin
+-- Name: pool; Type: TABLE; Schema: epitope; Owner: :owner
 --
 
 CREATE TABLE epitope.pool (
@@ -1034,10 +1021,10 @@ CREATE TABLE epitope.pool (
 );
 
 
-ALTER TABLE epitope.pool OWNER TO vverse_admin;
+ALTER TABLE epitope.pool OWNER TO :owner;
 
 --
--- Name: pool_pept; Type: TABLE; Schema: epitope; Owner: vverse_admin
+-- Name: pool_pept; Type: TABLE; Schema: epitope; Owner: :owner
 --
 
 CREATE TABLE epitope.pool_pept (
@@ -1046,10 +1033,10 @@ CREATE TABLE epitope.pool_pept (
 );
 
 
-ALTER TABLE epitope.pool_pept OWNER TO vverse_admin;
+ALTER TABLE epitope.pool_pept OWNER TO :owner;
 
 --
--- Name: pool_response; Type: TABLE; Schema: epitope; Owner: vverse_admin
+-- Name: pool_response; Type: TABLE; Schema: epitope; Owner: :owner
 --
 
 CREATE TABLE epitope.pool_response (
@@ -1063,10 +1050,10 @@ CREATE TABLE epitope.pool_response (
 );
 
 
-ALTER TABLE epitope.pool_response OWNER TO vverse_admin;
+ALTER TABLE epitope.pool_response OWNER TO :owner;
 
 --
--- Name: pool_response_avg; Type: VIEW; Schema: epitope; Owner: vverse_admin
+-- Name: pool_response_avg; Type: VIEW; Schema: epitope; Owner: :owner
 --
 
 CREATE VIEW epitope.pool_response_avg AS
@@ -1084,10 +1071,10 @@ CREATE VIEW epitope.pool_response_avg AS
   ORDER BY pool_response.exp_id, pool_response.measure_id;
 
 
-ALTER TABLE epitope.pool_response_avg OWNER TO vverse_admin;
+ALTER TABLE epitope.pool_response_avg OWNER TO :owner;
 
 --
--- Name: pool_response_corravg; Type: VIEW; Schema: epitope; Owner: vverse_admin
+-- Name: pool_response_corravg; Type: VIEW; Schema: epitope; Owner: :owner
 --
 
 CREATE VIEW epitope.pool_response_corravg AS
@@ -1105,10 +1092,10 @@ CREATE VIEW epitope.pool_response_corravg AS
   ORDER BY pool_response_avg.measure_id;
 
 
-ALTER TABLE epitope.pool_response_corravg OWNER TO vverse_admin;
+ALTER TABLE epitope.pool_response_corravg OWNER TO :owner;
 
 --
--- Name: test_patient; Type: VIEW; Schema: epitope; Owner: vverse_admin
+-- Name: test_patient; Type: VIEW; Schema: epitope; Owner: :owner
 --
 
 CREATE VIEW epitope.test_patient AS
@@ -1119,10 +1106,10 @@ CREATE VIEW epitope.test_patient AS
   ORDER BY s.patient_id, s.patient;
 
 
-ALTER TABLE epitope.test_patient OWNER TO vverse_admin;
+ALTER TABLE epitope.test_patient OWNER TO :owner;
 
 --
--- Name: titration; Type: TABLE; Schema: epitope; Owner: vverse_admin
+-- Name: titration; Type: TABLE; Schema: epitope; Owner: :owner
 --
 
 CREATE TABLE epitope.titration (
@@ -1136,10 +1123,10 @@ CREATE TABLE epitope.titration (
 );
 
 
-ALTER TABLE epitope.titration OWNER TO vverse_admin;
+ALTER TABLE epitope.titration OWNER TO :owner;
 
 --
--- Name: titration_avg; Type: VIEW; Schema: epitope; Owner: vverse_admin
+-- Name: titration_avg; Type: VIEW; Schema: epitope; Owner: :owner
 --
 
 CREATE VIEW epitope.titration_avg AS
@@ -1158,10 +1145,10 @@ CREATE VIEW epitope.titration_avg AS
   ORDER BY t.exp_id, t.measure_id, t.conc_id;
 
 
-ALTER TABLE epitope.titration_avg OWNER TO vverse_admin;
+ALTER TABLE epitope.titration_avg OWNER TO :owner;
 
 --
--- Name: titration_conc_conc_id_seq; Type: SEQUENCE; Schema: epitope; Owner: vverse_admin
+-- Name: titration_conc_conc_id_seq; Type: SEQUENCE; Schema: epitope; Owner: :owner
 --
 
 CREATE SEQUENCE epitope.titration_conc_conc_id_seq
@@ -1172,10 +1159,10 @@ CREATE SEQUENCE epitope.titration_conc_conc_id_seq
     CACHE 1;
 
 
-ALTER TABLE epitope.titration_conc_conc_id_seq OWNER TO vverse_admin;
+ALTER TABLE epitope.titration_conc_conc_id_seq OWNER TO :owner;
 
 --
--- Name: titration_conc; Type: TABLE; Schema: epitope; Owner: vverse_admin
+-- Name: titration_conc; Type: TABLE; Schema: epitope; Owner: :owner
 --
 
 CREATE TABLE epitope.titration_conc (
@@ -1184,10 +1171,10 @@ CREATE TABLE epitope.titration_conc (
 );
 
 
-ALTER TABLE epitope.titration_conc OWNER TO vverse_admin;
+ALTER TABLE epitope.titration_conc OWNER TO :owner;
 
 --
--- Name: titration_corravg; Type: VIEW; Schema: epitope; Owner: vverse_admin
+-- Name: titration_corravg; Type: VIEW; Schema: epitope; Owner: :owner
 --
 
 CREATE VIEW epitope.titration_corravg AS
@@ -1209,10 +1196,10 @@ CREATE VIEW epitope.titration_corravg AS
   ORDER BY ta.measure_id;
 
 
-ALTER TABLE epitope.titration_corravg OWNER TO vverse_admin;
+ALTER TABLE epitope.titration_corravg OWNER TO :owner;
 
 --
--- Name: box; Type: TABLE; Schema: freezer; Owner: vverse_admin
+-- Name: box; Type: TABLE; Schema: freezer; Owner: :owner
 --
 
 CREATE TABLE freezer.box (
@@ -1227,10 +1214,10 @@ CREATE TABLE freezer.box (
 );
 
 
-ALTER TABLE freezer.box OWNER TO vverse_admin;
+ALTER TABLE freezer.box OWNER TO :owner;
 
 --
--- Name: box_box_id_seq; Type: SEQUENCE; Schema: freezer; Owner: vverse_admin
+-- Name: box_box_id_seq; Type: SEQUENCE; Schema: freezer; Owner: :owner
 --
 
 CREATE SEQUENCE freezer.box_box_id_seq
@@ -1241,17 +1228,17 @@ CREATE SEQUENCE freezer.box_box_id_seq
     CACHE 1;
 
 
-ALTER TABLE freezer.box_box_id_seq OWNER TO vverse_admin;
+ALTER TABLE freezer.box_box_id_seq OWNER TO :owner;
 
 --
--- Name: box_box_id_seq; Type: SEQUENCE OWNED BY; Schema: freezer; Owner: vverse_admin
+-- Name: box_box_id_seq; Type: SEQUENCE OWNED BY; Schema: freezer; Owner: :owner
 --
 
 ALTER SEQUENCE freezer.box_box_id_seq OWNED BY freezer.box.box_id;
 
 
 --
--- Name: box_pos; Type: TABLE; Schema: freezer; Owner: vverse_admin
+-- Name: box_pos; Type: TABLE; Schema: freezer; Owner: :owner
 --
 
 CREATE TABLE freezer.box_pos (
@@ -1263,10 +1250,10 @@ CREATE TABLE freezer.box_pos (
 );
 
 
-ALTER TABLE freezer.box_pos OWNER TO vverse_admin;
+ALTER TABLE freezer.box_pos OWNER TO :owner;
 
 --
--- Name: box_pos_box_pos_id_seq; Type: SEQUENCE; Schema: freezer; Owner: vverse_admin
+-- Name: box_pos_box_pos_id_seq; Type: SEQUENCE; Schema: freezer; Owner: :owner
 --
 
 CREATE SEQUENCE freezer.box_pos_box_pos_id_seq
@@ -1277,17 +1264,17 @@ CREATE SEQUENCE freezer.box_pos_box_pos_id_seq
     CACHE 1;
 
 
-ALTER TABLE freezer.box_pos_box_pos_id_seq OWNER TO vverse_admin;
+ALTER TABLE freezer.box_pos_box_pos_id_seq OWNER TO :owner;
 
 --
--- Name: box_pos_box_pos_id_seq; Type: SEQUENCE OWNED BY; Schema: freezer; Owner: vverse_admin
+-- Name: box_pos_box_pos_id_seq; Type: SEQUENCE OWNED BY; Schema: freezer; Owner: :owner
 --
 
 ALTER SEQUENCE freezer.box_pos_box_pos_id_seq OWNED BY freezer.box_pos.box_pos_id;
 
 
 --
--- Name: freezer; Type: TABLE; Schema: freezer; Owner: vverse_admin
+-- Name: freezer; Type: TABLE; Schema: freezer; Owner: :owner
 --
 
 CREATE TABLE freezer.freezer (
@@ -1304,10 +1291,10 @@ CREATE TABLE freezer.freezer (
 );
 
 
-ALTER TABLE freezer.freezer OWNER TO vverse_admin;
+ALTER TABLE freezer.freezer OWNER TO :owner;
 
 --
--- Name: freezer_freezer_id_seq; Type: SEQUENCE; Schema: freezer; Owner: vverse_admin
+-- Name: freezer_freezer_id_seq; Type: SEQUENCE; Schema: freezer; Owner: :owner
 --
 
 CREATE SEQUENCE freezer.freezer_freezer_id_seq
@@ -1318,17 +1305,17 @@ CREATE SEQUENCE freezer.freezer_freezer_id_seq
     CACHE 1;
 
 
-ALTER TABLE freezer.freezer_freezer_id_seq OWNER TO vverse_admin;
+ALTER TABLE freezer.freezer_freezer_id_seq OWNER TO :owner;
 
 --
--- Name: freezer_freezer_id_seq; Type: SEQUENCE OWNED BY; Schema: freezer; Owner: vverse_admin
+-- Name: freezer_freezer_id_seq; Type: SEQUENCE OWNED BY; Schema: freezer; Owner: :owner
 --
 
 ALTER SEQUENCE freezer.freezer_freezer_id_seq OWNED BY freezer.freezer.freezer_id;
 
 
 --
--- Name: rack; Type: TABLE; Schema: freezer; Owner: vverse_admin
+-- Name: rack; Type: TABLE; Schema: freezer; Owner: :owner
 --
 
 CREATE TABLE freezer.rack (
@@ -1343,10 +1330,10 @@ CREATE TABLE freezer.rack (
 );
 
 
-ALTER TABLE freezer.rack OWNER TO vverse_admin;
+ALTER TABLE freezer.rack OWNER TO :owner;
 
 --
--- Name: rack_rack_id_seq; Type: SEQUENCE; Schema: freezer; Owner: vverse_admin
+-- Name: rack_rack_id_seq; Type: SEQUENCE; Schema: freezer; Owner: :owner
 --
 
 CREATE SEQUENCE freezer.rack_rack_id_seq
@@ -1357,17 +1344,17 @@ CREATE SEQUENCE freezer.rack_rack_id_seq
     CACHE 1;
 
 
-ALTER TABLE freezer.rack_rack_id_seq OWNER TO vverse_admin;
+ALTER TABLE freezer.rack_rack_id_seq OWNER TO :owner;
 
 --
--- Name: rack_rack_id_seq; Type: SEQUENCE OWNED BY; Schema: freezer; Owner: vverse_admin
+-- Name: rack_rack_id_seq; Type: SEQUENCE OWNED BY; Schema: freezer; Owner: :owner
 --
 
 ALTER SEQUENCE freezer.rack_rack_id_seq OWNED BY freezer.rack.rack_id;
 
 
 --
--- Name: changes; Type: TABLE; Schema: sqitch; Owner: vverse_admin
+-- Name: changes; Type: TABLE; Schema: sqitch; Owner: :owner
 --
 
 CREATE TABLE sqitch.changes (
@@ -1384,87 +1371,87 @@ CREATE TABLE sqitch.changes (
 );
 
 
-ALTER TABLE sqitch.changes OWNER TO vverse_admin;
+ALTER TABLE sqitch.changes OWNER TO :owner;
 
 --
--- Name: TABLE changes; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: TABLE changes; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON TABLE sqitch.changes IS 'Tracks the changes currently deployed to the database.';
 
 
 --
--- Name: COLUMN changes.change_id; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN changes.change_id; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.changes.change_id IS 'Change primary key.';
 
 
 --
--- Name: COLUMN changes.change; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN changes.change; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.changes.change IS 'Name of a deployed change.';
 
 
 --
--- Name: COLUMN changes.project; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN changes.project; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.changes.project IS 'Name of the Sqitch project to which the change belongs.';
 
 
 --
--- Name: COLUMN changes.note; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN changes.note; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.changes.note IS 'Description of the change.';
 
 
 --
--- Name: COLUMN changes.committed_at; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN changes.committed_at; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.changes.committed_at IS 'Date the change was deployed.';
 
 
 --
--- Name: COLUMN changes.committer_name; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN changes.committer_name; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.changes.committer_name IS 'Name of the user who deployed the change.';
 
 
 --
--- Name: COLUMN changes.committer_email; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN changes.committer_email; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.changes.committer_email IS 'Email address of the user who deployed the change.';
 
 
 --
--- Name: COLUMN changes.planned_at; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN changes.planned_at; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.changes.planned_at IS 'Date the change was added to the plan.';
 
 
 --
--- Name: COLUMN changes.planner_name; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN changes.planner_name; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.changes.planner_name IS 'Name of the user who planed the change.';
 
 
 --
--- Name: COLUMN changes.planner_email; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN changes.planner_email; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.changes.planner_email IS 'Email address of the user who planned the change.';
 
 
 --
--- Name: dependencies; Type: TABLE; Schema: sqitch; Owner: vverse_admin
+-- Name: dependencies; Type: TABLE; Schema: sqitch; Owner: :owner
 --
 
 CREATE TABLE sqitch.dependencies (
@@ -1476,45 +1463,45 @@ CREATE TABLE sqitch.dependencies (
 );
 
 
-ALTER TABLE sqitch.dependencies OWNER TO vverse_admin;
+ALTER TABLE sqitch.dependencies OWNER TO :owner;
 
 --
--- Name: TABLE dependencies; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: TABLE dependencies; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON TABLE sqitch.dependencies IS 'Tracks the currently satisfied dependencies.';
 
 
 --
--- Name: COLUMN dependencies.change_id; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN dependencies.change_id; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.dependencies.change_id IS 'ID of the depending change.';
 
 
 --
--- Name: COLUMN dependencies.type; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN dependencies.type; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.dependencies.type IS 'Type of dependency.';
 
 
 --
--- Name: COLUMN dependencies.dependency; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN dependencies.dependency; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.dependencies.dependency IS 'Dependency name.';
 
 
 --
--- Name: COLUMN dependencies.dependency_id; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN dependencies.dependency_id; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.dependencies.dependency_id IS 'Change ID the dependency resolves to.';
 
 
 --
--- Name: events; Type: TABLE; Schema: sqitch; Owner: vverse_admin
+-- Name: events; Type: TABLE; Schema: sqitch; Owner: :owner
 --
 
 CREATE TABLE sqitch.events (
@@ -1536,115 +1523,115 @@ CREATE TABLE sqitch.events (
 );
 
 
-ALTER TABLE sqitch.events OWNER TO vverse_admin;
+ALTER TABLE sqitch.events OWNER TO :owner;
 
 --
--- Name: TABLE events; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: TABLE events; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON TABLE sqitch.events IS 'Contains full history of all deployment events.';
 
 
 --
--- Name: COLUMN events.event; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN events.event; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.events.event IS 'Type of event.';
 
 
 --
--- Name: COLUMN events.change_id; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN events.change_id; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.events.change_id IS 'Change ID.';
 
 
 --
--- Name: COLUMN events.change; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN events.change; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.events.change IS 'Change name.';
 
 
 --
--- Name: COLUMN events.project; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN events.project; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.events.project IS 'Name of the Sqitch project to which the change belongs.';
 
 
 --
--- Name: COLUMN events.note; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN events.note; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.events.note IS 'Description of the change.';
 
 
 --
--- Name: COLUMN events.requires; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN events.requires; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.events.requires IS 'Array of the names of required changes.';
 
 
 --
--- Name: COLUMN events.conflicts; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN events.conflicts; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.events.conflicts IS 'Array of the names of conflicting changes.';
 
 
 --
--- Name: COLUMN events.tags; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN events.tags; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.events.tags IS 'Tags associated with the change.';
 
 
 --
--- Name: COLUMN events.committed_at; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN events.committed_at; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.events.committed_at IS 'Date the event was committed.';
 
 
 --
--- Name: COLUMN events.committer_name; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN events.committer_name; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.events.committer_name IS 'Name of the user who committed the event.';
 
 
 --
--- Name: COLUMN events.committer_email; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN events.committer_email; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.events.committer_email IS 'Email address of the user who committed the event.';
 
 
 --
--- Name: COLUMN events.planned_at; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN events.planned_at; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.events.planned_at IS 'Date the event was added to the plan.';
 
 
 --
--- Name: COLUMN events.planner_name; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN events.planner_name; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.events.planner_name IS 'Name of the user who planed the change.';
 
 
 --
--- Name: COLUMN events.planner_email; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN events.planner_email; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.events.planner_email IS 'Email address of the user who plan planned the change.';
 
 
 --
--- Name: projects; Type: TABLE; Schema: sqitch; Owner: vverse_admin
+-- Name: projects; Type: TABLE; Schema: sqitch; Owner: :owner
 --
 
 CREATE TABLE sqitch.projects (
@@ -1656,52 +1643,52 @@ CREATE TABLE sqitch.projects (
 );
 
 
-ALTER TABLE sqitch.projects OWNER TO vverse_admin;
+ALTER TABLE sqitch.projects OWNER TO :owner;
 
 --
--- Name: TABLE projects; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: TABLE projects; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON TABLE sqitch.projects IS 'Sqitch projects deployed to this database.';
 
 
 --
--- Name: COLUMN projects.project; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN projects.project; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.projects.project IS 'Unique Name of a project.';
 
 
 --
--- Name: COLUMN projects.uri; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN projects.uri; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.projects.uri IS 'Optional project URI';
 
 
 --
--- Name: COLUMN projects.created_at; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN projects.created_at; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.projects.created_at IS 'Date the project was added to the database.';
 
 
 --
--- Name: COLUMN projects.creator_name; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN projects.creator_name; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.projects.creator_name IS 'Name of the user who added the project.';
 
 
 --
--- Name: COLUMN projects.creator_email; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN projects.creator_email; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.projects.creator_email IS 'Email address of the user who added the project.';
 
 
 --
--- Name: tags; Type: TABLE; Schema: sqitch; Owner: vverse_admin
+-- Name: tags; Type: TABLE; Schema: sqitch; Owner: :owner
 --
 
 CREATE TABLE sqitch.tags (
@@ -1719,94 +1706,94 @@ CREATE TABLE sqitch.tags (
 );
 
 
-ALTER TABLE sqitch.tags OWNER TO vverse_admin;
+ALTER TABLE sqitch.tags OWNER TO :owner;
 
 --
--- Name: TABLE tags; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: TABLE tags; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON TABLE sqitch.tags IS 'Tracks the tags currently applied to the database.';
 
 
 --
--- Name: COLUMN tags.tag_id; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN tags.tag_id; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.tags.tag_id IS 'Tag primary key.';
 
 
 --
--- Name: COLUMN tags.tag; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN tags.tag; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.tags.tag IS 'Project-unique tag name.';
 
 
 --
--- Name: COLUMN tags.project; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN tags.project; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.tags.project IS 'Name of the Sqitch project to which the tag belongs.';
 
 
 --
--- Name: COLUMN tags.change_id; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN tags.change_id; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.tags.change_id IS 'ID of last change deployed before the tag was applied.';
 
 
 --
--- Name: COLUMN tags.note; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN tags.note; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.tags.note IS 'Description of the tag.';
 
 
 --
--- Name: COLUMN tags.committed_at; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN tags.committed_at; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.tags.committed_at IS 'Date the tag was applied to the database.';
 
 
 --
--- Name: COLUMN tags.committer_name; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN tags.committer_name; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.tags.committer_name IS 'Name of the user who applied the tag.';
 
 
 --
--- Name: COLUMN tags.committer_email; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN tags.committer_email; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.tags.committer_email IS 'Email address of the user who applied the tag.';
 
 
 --
--- Name: COLUMN tags.planned_at; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN tags.planned_at; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.tags.planned_at IS 'Date the tag was added to the plan.';
 
 
 --
--- Name: COLUMN tags.planner_name; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN tags.planner_name; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.tags.planner_name IS 'Name of the user who planed the tag.';
 
 
 --
--- Name: COLUMN tags.planner_email; Type: COMMENT; Schema: sqitch; Owner: vverse_admin
+-- Name: COLUMN tags.planner_email; Type: COMMENT; Schema: sqitch; Owner: :owner
 --
 
 COMMENT ON COLUMN sqitch.tags.planner_email IS 'Email address of the user who planned the tag.';
 
 
 --
--- Name: hla_genotype; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: hla_genotype; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.hla_genotype (
@@ -1824,10 +1811,10 @@ CREATE TABLE viroserve.hla_genotype (
 );
 
 
-ALTER TABLE viroserve.hla_genotype OWNER TO vverse_admin;
+ALTER TABLE viroserve.hla_genotype OWNER TO :owner;
 
 --
--- Name: patient_hla_genotype; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_hla_genotype; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.patient_hla_genotype (
@@ -1837,10 +1824,10 @@ CREATE TABLE viroserve.patient_hla_genotype (
 );
 
 
-ALTER TABLE viroserve.patient_hla_genotype OWNER TO vverse_admin;
+ALTER TABLE viroserve.patient_hla_genotype OWNER TO :owner;
 
 --
--- Name: _vhla_genotype; Type: VIEW; Schema: viroserve; Owner: vverse_admin
+-- Name: _vhla_genotype; Type: VIEW; Schema: viroserve; Owner: :owner
 --
 
 CREATE VIEW viroserve._vhla_genotype AS
@@ -1869,12 +1856,12 @@ CREATE VIEW viroserve._vhla_genotype AS
      JOIN viroserve.hla_genotype USING (hla_genotype_id));
 
 
-ALTER TABLE viroserve._vhla_genotype OWNER TO vverse_admin;
+ALTER TABLE viroserve._vhla_genotype OWNER TO :owner;
 
 SET default_with_oids = true;
 
 --
--- Name: lab_result_cat; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_cat; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.lab_result_cat (
@@ -1891,10 +1878,10 @@ CREATE TABLE viroserve.lab_result_cat (
 );
 
 
-ALTER TABLE viroserve.lab_result_cat OWNER TO vverse_admin;
+ALTER TABLE viroserve.lab_result_cat OWNER TO :owner;
 
 --
--- Name: lab_result_cat_type; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_cat_type; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.lab_result_cat_type (
@@ -1906,10 +1893,10 @@ CREATE TABLE viroserve.lab_result_cat_type (
 );
 
 
-ALTER TABLE viroserve.lab_result_cat_type OWNER TO vverse_admin;
+ALTER TABLE viroserve.lab_result_cat_type OWNER TO :owner;
 
 --
--- Name: lab_result_cat_value; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_cat_value; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.lab_result_cat_value (
@@ -1919,10 +1906,10 @@ CREATE TABLE viroserve.lab_result_cat_value (
 );
 
 
-ALTER TABLE viroserve.lab_result_cat_value OWNER TO vverse_admin;
+ALTER TABLE viroserve.lab_result_cat_value OWNER TO :owner;
 
 --
--- Name: _vlab_result_cat; Type: VIEW; Schema: viroserve; Owner: vverse_admin
+-- Name: _vlab_result_cat; Type: VIEW; Schema: viroserve; Owner: :owner
 --
 
 CREATE VIEW viroserve._vlab_result_cat AS
@@ -1939,12 +1926,12 @@ CREATE VIEW viroserve._vlab_result_cat AS
      JOIN viroserve.visit USING (visit_id));
 
 
-ALTER TABLE viroserve._vlab_result_cat OWNER TO vverse_admin;
+ALTER TABLE viroserve._vlab_result_cat OWNER TO :owner;
 
 SET default_with_oids = false;
 
 --
--- Name: lab_result_num; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_num; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.lab_result_num (
@@ -1961,12 +1948,12 @@ CREATE TABLE viroserve.lab_result_num (
 );
 
 
-ALTER TABLE viroserve.lab_result_num OWNER TO vverse_admin;
+ALTER TABLE viroserve.lab_result_num OWNER TO :owner;
 
 SET default_with_oids = true;
 
 --
--- Name: lab_result_num_type; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_num_type; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.lab_result_num_type (
@@ -1980,12 +1967,12 @@ CREATE TABLE viroserve.lab_result_num_type (
 );
 
 
-ALTER TABLE viroserve.lab_result_num_type OWNER TO vverse_admin;
+ALTER TABLE viroserve.lab_result_num_type OWNER TO :owner;
 
 SET default_with_oids = false;
 
 --
--- Name: unit; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: unit; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.unit (
@@ -1994,10 +1981,10 @@ CREATE TABLE viroserve.unit (
 );
 
 
-ALTER TABLE viroserve.unit OWNER TO vverse_admin;
+ALTER TABLE viroserve.unit OWNER TO :owner;
 
 --
--- Name: _vlab_result_num; Type: VIEW; Schema: viroserve; Owner: vverse_admin
+-- Name: _vlab_result_num; Type: VIEW; Schema: viroserve; Owner: :owner
 --
 
 CREATE VIEW viroserve._vlab_result_num AS
@@ -2014,10 +2001,10 @@ CREATE VIEW viroserve._vlab_result_num AS
      JOIN viroserve.visit USING (visit_id));
 
 
-ALTER TABLE viroserve._vlab_result_num OWNER TO vverse_admin;
+ALTER TABLE viroserve._vlab_result_num OWNER TO :owner;
 
 --
--- Name: bisulfite_converted_dna; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: bisulfite_converted_dna; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.bisulfite_converted_dna (
@@ -2034,10 +2021,10 @@ CREATE TABLE viroserve.bisulfite_converted_dna (
 );
 
 
-ALTER TABLE viroserve.bisulfite_converted_dna OWNER TO vverse_admin;
+ALTER TABLE viroserve.bisulfite_converted_dna OWNER TO :owner;
 
 --
--- Name: extraction; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: extraction; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.extraction (
@@ -2066,10 +2053,10 @@ END)
 );
 
 
-ALTER TABLE viroserve.extraction OWNER TO vverse_admin;
+ALTER TABLE viroserve.extraction OWNER TO :owner;
 
 --
--- Name: pcr_product; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_product; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.pcr_product (
@@ -2095,10 +2082,10 @@ CREATE TABLE viroserve.pcr_product (
 );
 
 
-ALTER TABLE viroserve.pcr_product OWNER TO vverse_admin;
+ALTER TABLE viroserve.pcr_product OWNER TO :owner;
 
 --
--- Name: pcr_template; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_template; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.pcr_template (
@@ -2119,10 +2106,10 @@ CREATE TABLE viroserve.pcr_template (
 );
 
 
-ALTER TABLE viroserve.pcr_template OWNER TO vverse_admin;
+ALTER TABLE viroserve.pcr_template OWNER TO :owner;
 
 --
--- Name: rt_product; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: rt_product; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.rt_product (
@@ -2140,10 +2127,10 @@ CREATE TABLE viroserve.rt_product (
 );
 
 
-ALTER TABLE viroserve.rt_product OWNER TO vverse_admin;
+ALTER TABLE viroserve.rt_product OWNER TO :owner;
 
 --
--- Name: _vpatient_visit_sample_pcr; Type: VIEW; Schema: viroserve; Owner: vverse_admin
+-- Name: _vpatient_visit_sample_pcr; Type: VIEW; Schema: viroserve; Owner: :owner
 --
 
 CREATE VIEW viroserve._vpatient_visit_sample_pcr AS
@@ -2202,10 +2189,10 @@ CREATE VIEW viroserve._vpatient_visit_sample_pcr AS
    FROM patient_to_pcr;
 
 
-ALTER TABLE viroserve._vpatient_visit_sample_pcr OWNER TO vverse_admin;
+ALTER TABLE viroserve._vpatient_visit_sample_pcr OWNER TO :owner;
 
 --
--- Name: additive; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: additive; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.additive (
@@ -2215,10 +2202,10 @@ CREATE TABLE viroserve.additive (
 );
 
 
-ALTER TABLE viroserve.additive OWNER TO vverse_admin;
+ALTER TABLE viroserve.additive OWNER TO :owner;
 
 --
--- Name: additive_additive_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: additive_additive_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.additive_additive_id_seq
@@ -2229,17 +2216,17 @@ CREATE SEQUENCE viroserve.additive_additive_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.additive_additive_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.additive_additive_id_seq OWNER TO :owner;
 
 --
--- Name: additive_additive_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: additive_additive_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.additive_additive_id_seq OWNED BY viroserve.additive.additive_id;
 
 
 --
--- Name: alignment; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: alignment; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.alignment (
@@ -2256,10 +2243,10 @@ CREATE TABLE viroserve.alignment (
 );
 
 
-ALTER TABLE viroserve.alignment OWNER TO vverse_admin;
+ALTER TABLE viroserve.alignment OWNER TO :owner;
 
 --
--- Name: alignment_alignment_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: alignment_alignment_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.alignment_alignment_id_seq
@@ -2270,17 +2257,17 @@ CREATE SEQUENCE viroserve.alignment_alignment_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.alignment_alignment_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.alignment_alignment_id_seq OWNER TO :owner;
 
 --
--- Name: alignment_alignment_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: alignment_alignment_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.alignment_alignment_id_seq OWNED BY viroserve.alignment.alignment_id;
 
 
 --
--- Name: alignment_latest_revision; Type: VIEW; Schema: viroserve; Owner: vverse_admin
+-- Name: alignment_latest_revision; Type: VIEW; Schema: viroserve; Owner: :owner
 --
 
 CREATE VIEW viroserve.alignment_latest_revision AS
@@ -2295,10 +2282,10 @@ CREATE VIEW viroserve.alignment_latest_revision AS
   GROUP BY latest_revision.alignment_id, latest_revision.alignment_revision;
 
 
-ALTER TABLE viroserve.alignment_latest_revision OWNER TO vverse_admin;
+ALTER TABLE viroserve.alignment_latest_revision OWNER TO :owner;
 
 --
--- Name: alignment_method; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: alignment_method; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.alignment_method (
@@ -2307,10 +2294,10 @@ CREATE TABLE viroserve.alignment_method (
 );
 
 
-ALTER TABLE viroserve.alignment_method OWNER TO vverse_admin;
+ALTER TABLE viroserve.alignment_method OWNER TO :owner;
 
 --
--- Name: alignment_method_alignment_method_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: alignment_method_alignment_method_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.alignment_method_alignment_method_id_seq
@@ -2321,17 +2308,17 @@ CREATE SEQUENCE viroserve.alignment_method_alignment_method_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.alignment_method_alignment_method_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.alignment_method_alignment_method_id_seq OWNER TO :owner;
 
 --
--- Name: alignment_method_alignment_method_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: alignment_method_alignment_method_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.alignment_method_alignment_method_id_seq OWNED BY viroserve.alignment_method.alignment_method_id;
 
 
 --
--- Name: aliquot; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: aliquot; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.aliquot (
@@ -2352,10 +2339,10 @@ CREATE TABLE viroserve.aliquot (
 );
 
 
-ALTER TABLE viroserve.aliquot OWNER TO vverse_admin;
+ALTER TABLE viroserve.aliquot OWNER TO :owner;
 
 --
--- Name: aliquot_aliquot_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: aliquot_aliquot_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.aliquot_aliquot_id_seq
@@ -2366,17 +2353,17 @@ CREATE SEQUENCE viroserve.aliquot_aliquot_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.aliquot_aliquot_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.aliquot_aliquot_id_seq OWNER TO :owner;
 
 --
--- Name: aliquot_aliquot_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: aliquot_aliquot_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.aliquot_aliquot_id_seq OWNED BY viroserve.aliquot.aliquot_id;
 
 
 --
--- Name: arv_class; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: arv_class; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.arv_class (
@@ -2386,10 +2373,10 @@ CREATE TABLE viroserve.arv_class (
 );
 
 
-ALTER TABLE viroserve.arv_class OWNER TO vverse_admin;
+ALTER TABLE viroserve.arv_class OWNER TO :owner;
 
 --
--- Name: arv_class_arv_class_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: arv_class_arv_class_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.arv_class_arv_class_id_seq
@@ -2400,17 +2387,17 @@ CREATE SEQUENCE viroserve.arv_class_arv_class_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.arv_class_arv_class_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.arv_class_arv_class_id_seq OWNER TO :owner;
 
 --
--- Name: arv_class_arv_class_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: arv_class_arv_class_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.arv_class_arv_class_id_seq OWNED BY viroserve.arv_class.arv_class_id;
 
 
 --
--- Name: bisulfite_converted_dna_bisulfite_converted_dna_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: bisulfite_converted_dna_bisulfite_converted_dna_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.bisulfite_converted_dna_bisulfite_converted_dna_id_seq
@@ -2421,17 +2408,17 @@ CREATE SEQUENCE viroserve.bisulfite_converted_dna_bisulfite_converted_dna_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.bisulfite_converted_dna_bisulfite_converted_dna_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.bisulfite_converted_dna_bisulfite_converted_dna_id_seq OWNER TO :owner;
 
 --
--- Name: bisulfite_converted_dna_bisulfite_converted_dna_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: bisulfite_converted_dna_bisulfite_converted_dna_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.bisulfite_converted_dna_bisulfite_converted_dna_id_seq OWNED BY viroserve.bisulfite_converted_dna.bisulfite_converted_dna_id;
 
 
 --
--- Name: cell_count; Type: VIEW; Schema: viroserve; Owner: vverse_admin
+-- Name: cell_count; Type: VIEW; Schema: viroserve; Owner: :owner
 --
 
 CREATE VIEW viroserve.cell_count AS
@@ -2470,10 +2457,10 @@ CREATE VIEW viroserve.cell_count AS
   ORDER BY cell_counts.patient_id, cell_counts.visit_date, cell_counts.cell_type;
 
 
-ALTER TABLE viroserve.cell_count OWNER TO vverse_admin;
+ALTER TABLE viroserve.cell_count OWNER TO :owner;
 
 --
--- Name: chromat; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: chromat; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.chromat (
@@ -2488,10 +2475,10 @@ CREATE TABLE viroserve.chromat (
 );
 
 
-ALTER TABLE viroserve.chromat OWNER TO vverse_admin;
+ALTER TABLE viroserve.chromat OWNER TO :owner;
 
 --
--- Name: chromat_chromat_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: chromat_chromat_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.chromat_chromat_id_seq
@@ -2502,17 +2489,17 @@ CREATE SEQUENCE viroserve.chromat_chromat_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.chromat_chromat_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.chromat_chromat_id_seq OWNER TO :owner;
 
 --
--- Name: chromat_chromat_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: chromat_chromat_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.chromat_chromat_id_seq OWNED BY viroserve.chromat.chromat_id;
 
 
 --
--- Name: chromat_na_sequence; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: chromat_na_sequence; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.chromat_na_sequence (
@@ -2522,10 +2509,10 @@ CREATE TABLE viroserve.chromat_na_sequence (
 );
 
 
-ALTER TABLE viroserve.chromat_na_sequence OWNER TO vverse_admin;
+ALTER TABLE viroserve.chromat_na_sequence OWNER TO :owner;
 
 --
--- Name: chromat_type; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: chromat_type; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.chromat_type (
@@ -2536,10 +2523,10 @@ CREATE TABLE viroserve.chromat_type (
 );
 
 
-ALTER TABLE viroserve.chromat_type OWNER TO vverse_admin;
+ALTER TABLE viroserve.chromat_type OWNER TO :owner;
 
 --
--- Name: chromat_type_chromat_type_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: chromat_type_chromat_type_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.chromat_type_chromat_type_id_seq
@@ -2550,17 +2537,17 @@ CREATE SEQUENCE viroserve.chromat_type_chromat_type_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.chromat_type_chromat_type_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.chromat_type_chromat_type_id_seq OWNER TO :owner;
 
 --
--- Name: chromat_type_chromat_type_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: chromat_type_chromat_type_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.chromat_type_chromat_type_id_seq OWNED BY viroserve.chromat_type.chromat_type_id;
 
 
 --
--- Name: clone; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: clone; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.clone (
@@ -2574,10 +2561,10 @@ CREATE TABLE viroserve.clone (
 );
 
 
-ALTER TABLE viroserve.clone OWNER TO vverse_admin;
+ALTER TABLE viroserve.clone OWNER TO :owner;
 
 --
--- Name: clone_clone_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: clone_clone_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.clone_clone_id_seq
@@ -2588,17 +2575,17 @@ CREATE SEQUENCE viroserve.clone_clone_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.clone_clone_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.clone_clone_id_seq OWNER TO :owner;
 
 --
--- Name: clone_clone_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: clone_clone_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.clone_clone_id_seq OWNED BY viroserve.clone.clone_id;
 
 
 --
--- Name: cohort_cohort_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: cohort_cohort_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.cohort_cohort_id_seq
@@ -2609,12 +2596,12 @@ CREATE SEQUENCE viroserve.cohort_cohort_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.cohort_cohort_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.cohort_cohort_id_seq OWNER TO :owner;
 
 SET default_with_oids = true;
 
 --
--- Name: cohort; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: cohort; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.cohort (
@@ -2625,12 +2612,12 @@ CREATE TABLE viroserve.cohort (
 );
 
 
-ALTER TABLE viroserve.cohort OWNER TO vverse_admin;
+ALTER TABLE viroserve.cohort OWNER TO :owner;
 
 SET default_with_oids = false;
 
 --
--- Name: infection; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: infection; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.infection (
@@ -2648,17 +2635,17 @@ CREATE TABLE viroserve.infection (
 );
 
 
-ALTER TABLE viroserve.infection OWNER TO vverse_admin;
+ALTER TABLE viroserve.infection OWNER TO :owner;
 
 --
--- Name: COLUMN infection.estimated_date; Type: COMMENT; Schema: viroserve; Owner: vverse_admin
+-- Name: COLUMN infection.estimated_date; Type: COMMENT; Schema: viroserve; Owner: :owner
 --
 
 COMMENT ON COLUMN viroserve.infection.estimated_date IS 'Best estimated or calculated infection date, to be preferentially used in queries';
 
 
 --
--- Name: medication; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: medication; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.medication (
@@ -2669,12 +2656,12 @@ CREATE TABLE viroserve.medication (
 );
 
 
-ALTER TABLE viroserve.medication OWNER TO vverse_admin;
+ALTER TABLE viroserve.medication OWNER TO :owner;
 
 SET default_with_oids = true;
 
 --
--- Name: patient; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: patient; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.patient (
@@ -2690,10 +2677,10 @@ CREATE TABLE viroserve.patient (
 );
 
 
-ALTER TABLE viroserve.patient OWNER TO vverse_admin;
+ALTER TABLE viroserve.patient OWNER TO :owner;
 
 --
--- Name: patient_alias; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_alias; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.patient_alias (
@@ -2705,12 +2692,12 @@ CREATE TABLE viroserve.patient_alias (
 );
 
 
-ALTER TABLE viroserve.patient_alias OWNER TO vverse_admin;
+ALTER TABLE viroserve.patient_alias OWNER TO :owner;
 
 SET default_with_oids = false;
 
 --
--- Name: patient_medication; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_medication; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.patient_medication (
@@ -2723,24 +2710,24 @@ CREATE TABLE viroserve.patient_medication (
 );
 
 
-ALTER TABLE viroserve.patient_medication OWNER TO vverse_admin;
+ALTER TABLE viroserve.patient_medication OWNER TO :owner;
 
 --
--- Name: COLUMN patient_medication.start_date; Type: COMMENT; Schema: viroserve; Owner: vverse_admin
+-- Name: COLUMN patient_medication.start_date; Type: COMMENT; Schema: viroserve; Owner: :owner
 --
 
 COMMENT ON COLUMN viroserve.patient_medication.start_date IS 'when null: start date unknown, i.e. patient was on this medication prior to first contact';
 
 
 --
--- Name: COLUMN patient_medication.end_date; Type: COMMENT; Schema: viroserve; Owner: vverse_admin
+-- Name: COLUMN patient_medication.end_date; Type: COMMENT; Schema: viroserve; Owner: :owner
 --
 
 COMMENT ON COLUMN viroserve.patient_medication.end_date IS 'when null: this medication was ongoing at last point of contact';
 
 
 --
--- Name: viral_load; Type: VIEW; Schema: viroserve; Owner: vverse_admin
+-- Name: viral_load; Type: VIEW; Schema: viroserve; Owner: :owner
 --
 
 CREATE VIEW viroserve.viral_load AS
@@ -2782,10 +2769,10 @@ CREATE VIEW viroserve.viral_load AS
   ORDER BY vls.patient_id, vls.visit_date;
 
 
-ALTER TABLE viroserve.viral_load OWNER TO vverse_admin;
+ALTER TABLE viroserve.viral_load OWNER TO :owner;
 
 --
--- Name: cohort_patient_summary; Type: VIEW; Schema: viroserve; Owner: vverse_admin
+-- Name: cohort_patient_summary; Type: VIEW; Schema: viroserve; Owner: :owner
 --
 
 CREATE VIEW viroserve.cohort_patient_summary AS
@@ -2852,10 +2839,10 @@ CREATE VIEW viroserve.cohort_patient_summary AS
   WHERE ((alias.type)::text = 'primary'::text);
 
 
-ALTER TABLE viroserve.cohort_patient_summary OWNER TO vverse_admin;
+ALTER TABLE viroserve.cohort_patient_summary OWNER TO :owner;
 
 --
--- Name: competent_cells_competent_cells_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: competent_cells_competent_cells_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.competent_cells_competent_cells_id_seq
@@ -2866,10 +2853,10 @@ CREATE SEQUENCE viroserve.competent_cells_competent_cells_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.competent_cells_competent_cells_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.competent_cells_competent_cells_id_seq OWNER TO :owner;
 
 --
--- Name: copy_number; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: copy_number; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.copy_number (
@@ -2890,10 +2877,10 @@ CREATE TABLE viroserve.copy_number (
 );
 
 
-ALTER TABLE viroserve.copy_number OWNER TO vverse_admin;
+ALTER TABLE viroserve.copy_number OWNER TO :owner;
 
 --
--- Name: copy_number_copy_number_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: copy_number_copy_number_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.copy_number_copy_number_id_seq
@@ -2904,17 +2891,17 @@ CREATE SEQUENCE viroserve.copy_number_copy_number_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.copy_number_copy_number_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.copy_number_copy_number_id_seq OWNER TO :owner;
 
 --
--- Name: copy_number_copy_number_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: copy_number_copy_number_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.copy_number_copy_number_id_seq OWNED BY viroserve.copy_number.copy_number_id;
 
 
 --
--- Name: copy_number_gel_lane; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: copy_number_gel_lane; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.copy_number_gel_lane (
@@ -2923,10 +2910,10 @@ CREATE TABLE viroserve.copy_number_gel_lane (
 );
 
 
-ALTER TABLE viroserve.copy_number_gel_lane OWNER TO vverse_admin;
+ALTER TABLE viroserve.copy_number_gel_lane OWNER TO :owner;
 
 --
--- Name: enzyme; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: enzyme; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.enzyme (
@@ -2937,10 +2924,10 @@ CREATE TABLE viroserve.enzyme (
 );
 
 
-ALTER TABLE viroserve.enzyme OWNER TO vverse_admin;
+ALTER TABLE viroserve.enzyme OWNER TO :owner;
 
 --
--- Name: enzyme_enzyme_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: enzyme_enzyme_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.enzyme_enzyme_id_seq
@@ -2951,17 +2938,17 @@ CREATE SEQUENCE viroserve.enzyme_enzyme_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.enzyme_enzyme_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.enzyme_enzyme_id_seq OWNER TO :owner;
 
 --
--- Name: enzyme_enzyme_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: enzyme_enzyme_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.enzyme_enzyme_id_seq OWNED BY viroserve.enzyme.enzyme_id;
 
 
 --
--- Name: extract_type; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: extract_type; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.extract_type (
@@ -2970,10 +2957,10 @@ CREATE TABLE viroserve.extract_type (
 );
 
 
-ALTER TABLE viroserve.extract_type OWNER TO vverse_admin;
+ALTER TABLE viroserve.extract_type OWNER TO :owner;
 
 --
--- Name: extract_type_extract_type_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: extract_type_extract_type_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.extract_type_extract_type_id_seq
@@ -2984,17 +2971,17 @@ CREATE SEQUENCE viroserve.extract_type_extract_type_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.extract_type_extract_type_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.extract_type_extract_type_id_seq OWNER TO :owner;
 
 --
--- Name: extract_type_extract_type_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: extract_type_extract_type_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.extract_type_extract_type_id_seq OWNED BY viroserve.extract_type.extract_type_id;
 
 
 --
--- Name: extraction_extraction_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: extraction_extraction_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.extraction_extraction_id_seq
@@ -3005,17 +2992,17 @@ CREATE SEQUENCE viroserve.extraction_extraction_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.extraction_extraction_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.extraction_extraction_id_seq OWNER TO :owner;
 
 --
--- Name: extraction_extraction_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: extraction_extraction_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.extraction_extraction_id_seq OWNED BY viroserve.extraction.extraction_id;
 
 
 --
--- Name: gel; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: gel; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.gel (
@@ -3033,10 +3020,10 @@ CREATE TABLE viroserve.gel (
 );
 
 
-ALTER TABLE viroserve.gel OWNER TO vverse_admin;
+ALTER TABLE viroserve.gel OWNER TO :owner;
 
 --
--- Name: gel_gel_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: gel_gel_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.gel_gel_id_seq
@@ -3047,17 +3034,17 @@ CREATE SEQUENCE viroserve.gel_gel_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.gel_gel_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.gel_gel_id_seq OWNER TO :owner;
 
 --
--- Name: gel_gel_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: gel_gel_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.gel_gel_id_seq OWNED BY viroserve.gel.gel_id;
 
 
 --
--- Name: gel_lane; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: gel_lane; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.gel_lane (
@@ -3073,10 +3060,10 @@ CREATE TABLE viroserve.gel_lane (
 );
 
 
-ALTER TABLE viroserve.gel_lane OWNER TO vverse_admin;
+ALTER TABLE viroserve.gel_lane OWNER TO :owner;
 
 --
--- Name: gel_lane_gel_lane_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: gel_lane_gel_lane_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.gel_lane_gel_lane_id_seq
@@ -3087,17 +3074,17 @@ CREATE SEQUENCE viroserve.gel_lane_gel_lane_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.gel_lane_gel_lane_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.gel_lane_gel_lane_id_seq OWNER TO :owner;
 
 --
--- Name: gel_lane_gel_lane_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: gel_lane_gel_lane_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.gel_lane_gel_lane_id_seq OWNED BY viroserve.gel_lane.gel_lane_id;
 
 
 --
--- Name: genome_region; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: genome_region; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.genome_region (
@@ -3110,10 +3097,10 @@ CREATE TABLE viroserve.genome_region (
 );
 
 
-ALTER TABLE viroserve.genome_region OWNER TO vverse_admin;
+ALTER TABLE viroserve.genome_region OWNER TO :owner;
 
 --
--- Name: hla_genotype_hla_genotype_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: hla_genotype_hla_genotype_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.hla_genotype_hla_genotype_id_seq
@@ -3124,10 +3111,10 @@ CREATE SEQUENCE viroserve.hla_genotype_hla_genotype_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.hla_genotype_hla_genotype_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.hla_genotype_hla_genotype_id_seq OWNER TO :owner;
 
 --
--- Name: hla_genotype_hla_genotype_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: hla_genotype_hla_genotype_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.hla_genotype_hla_genotype_id_seq OWNED BY viroserve.hla_genotype.hla_genotype_id;
@@ -3136,7 +3123,7 @@ ALTER SEQUENCE viroserve.hla_genotype_hla_genotype_id_seq OWNED BY viroserve.hla
 SET default_with_oids = true;
 
 --
--- Name: na_sequence; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: na_sequence; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.na_sequence (
@@ -3160,12 +3147,12 @@ CREATE TABLE viroserve.na_sequence (
 );
 
 
-ALTER TABLE viroserve.na_sequence OWNER TO vverse_admin;
+ALTER TABLE viroserve.na_sequence OWNER TO :owner;
 
 SET default_with_oids = false;
 
 --
--- Name: na_sequence_alignment; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: na_sequence_alignment; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.na_sequence_alignment (
@@ -3178,10 +3165,10 @@ CREATE TABLE viroserve.na_sequence_alignment (
 );
 
 
-ALTER TABLE viroserve.na_sequence_alignment OWNER TO vverse_admin;
+ALTER TABLE viroserve.na_sequence_alignment OWNER TO :owner;
 
 --
--- Name: na_sequence_alignment_pairwise; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: na_sequence_alignment_pairwise; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.na_sequence_alignment_pairwise (
@@ -3195,10 +3182,10 @@ CREATE TABLE viroserve.na_sequence_alignment_pairwise (
 );
 
 
-ALTER TABLE viroserve.na_sequence_alignment_pairwise OWNER TO vverse_admin;
+ALTER TABLE viroserve.na_sequence_alignment_pairwise OWNER TO :owner;
 
 --
--- Name: na_sequence_latest_revision; Type: VIEW; Schema: viroserve; Owner: vverse_admin
+-- Name: na_sequence_latest_revision; Type: VIEW; Schema: viroserve; Owner: :owner
 --
 
 CREATE VIEW viroserve.na_sequence_latest_revision AS
@@ -3209,10 +3196,10 @@ CREATE VIEW viroserve.na_sequence_latest_revision AS
   GROUP BY na_sequence.na_sequence_id;
 
 
-ALTER TABLE viroserve.na_sequence_latest_revision OWNER TO vverse_admin;
+ALTER TABLE viroserve.na_sequence_latest_revision OWNER TO :owner;
 
 --
--- Name: sequence_reference_alignment; Type: VIEW; Schema: viroserve; Owner: vverse_admin
+-- Name: sequence_reference_alignment; Type: VIEW; Schema: viroserve; Owner: :owner
 --
 
 CREATE VIEW viroserve.sequence_reference_alignment AS
@@ -3231,10 +3218,10 @@ CREATE VIEW viroserve.sequence_reference_alignment AS
   WINDOW alignments AS (PARTITION BY query.na_sequence_id, query.na_sequence_revision ORDER BY alignment.date_entered DESC, query.alignment_id DESC);
 
 
-ALTER TABLE viroserve.sequence_reference_alignment OWNER TO vverse_admin;
+ALTER TABLE viroserve.sequence_reference_alignment OWNER TO :owner;
 
 --
--- Name: sequence_reference_alignment_pairwise; Type: VIEW; Schema: viroserve; Owner: vverse_admin
+-- Name: sequence_reference_alignment_pairwise; Type: VIEW; Schema: viroserve; Owner: :owner
 --
 
 CREATE VIEW viroserve.sequence_reference_alignment_pairwise AS
@@ -3251,10 +3238,10 @@ CREATE VIEW viroserve.sequence_reference_alignment_pairwise AS
      JOIN viroserve.na_sequence_alignment_pairwise USING (alignment_id, alignment_revision, alignment_taxa_revision));
 
 
-ALTER TABLE viroserve.sequence_reference_alignment_pairwise OWNER TO vverse_admin;
+ALTER TABLE viroserve.sequence_reference_alignment_pairwise OWNER TO :owner;
 
 --
--- Name: hxb2_stats; Type: VIEW; Schema: viroserve; Owner: vverse_admin
+-- Name: hxb2_stats; Type: VIEW; Schema: viroserve; Owner: :owner
 --
 
 CREATE VIEW viroserve.hxb2_stats AS
@@ -3272,10 +3259,10 @@ CREATE VIEW viroserve.hxb2_stats AS
   GROUP BY genome_region.name;
 
 
-ALTER TABLE viroserve.hxb2_stats OWNER TO vverse_admin;
+ALTER TABLE viroserve.hxb2_stats OWNER TO :owner;
 
 --
--- Name: import_job; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: import_job; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.import_job (
@@ -3292,10 +3279,10 @@ CREATE TABLE viroserve.import_job (
 );
 
 
-ALTER TABLE viroserve.import_job OWNER TO vverse_admin;
+ALTER TABLE viroserve.import_job OWNER TO :owner;
 
 --
--- Name: import_job_import_job_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: import_job_import_job_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.import_job_import_job_id_seq
@@ -3306,17 +3293,17 @@ CREATE SEQUENCE viroserve.import_job_import_job_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.import_job_import_job_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.import_job_import_job_id_seq OWNER TO :owner;
 
 --
--- Name: import_job_import_job_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: import_job_import_job_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.import_job_import_job_id_seq OWNED BY viroserve.import_job.import_job_id;
 
 
 --
--- Name: infection_infection_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: infection_infection_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.infection_infection_id_seq
@@ -3327,17 +3314,17 @@ CREATE SEQUENCE viroserve.infection_infection_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.infection_infection_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.infection_infection_id_seq OWNER TO :owner;
 
 --
--- Name: infection_infection_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: infection_infection_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.infection_infection_id_seq OWNED BY viroserve.infection.infection_id;
 
 
 --
--- Name: lab_result_cat_lab_result_cat_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_cat_lab_result_cat_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.lab_result_cat_lab_result_cat_id_seq
@@ -3348,17 +3335,17 @@ CREATE SEQUENCE viroserve.lab_result_cat_lab_result_cat_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.lab_result_cat_lab_result_cat_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.lab_result_cat_lab_result_cat_id_seq OWNER TO :owner;
 
 --
--- Name: lab_result_cat_lab_result_cat_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_cat_lab_result_cat_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.lab_result_cat_lab_result_cat_id_seq OWNED BY viroserve.lab_result_cat.lab_result_cat_id;
 
 
 --
--- Name: lab_result_cat_type_group; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_cat_type_group; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.lab_result_cat_type_group (
@@ -3367,10 +3354,10 @@ CREATE TABLE viroserve.lab_result_cat_type_group (
 );
 
 
-ALTER TABLE viroserve.lab_result_cat_type_group OWNER TO vverse_admin;
+ALTER TABLE viroserve.lab_result_cat_type_group OWNER TO :owner;
 
 --
--- Name: lab_result_cat_type_lab_result_cat_type_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_cat_type_lab_result_cat_type_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.lab_result_cat_type_lab_result_cat_type_id_seq
@@ -3381,17 +3368,17 @@ CREATE SEQUENCE viroserve.lab_result_cat_type_lab_result_cat_type_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.lab_result_cat_type_lab_result_cat_type_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.lab_result_cat_type_lab_result_cat_type_id_seq OWNER TO :owner;
 
 --
--- Name: lab_result_cat_type_lab_result_cat_type_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_cat_type_lab_result_cat_type_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.lab_result_cat_type_lab_result_cat_type_id_seq OWNED BY viroserve.lab_result_cat_type.lab_result_cat_type_id;
 
 
 --
--- Name: lab_result_cat_value_lab_result_cat_value_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_cat_value_lab_result_cat_value_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.lab_result_cat_value_lab_result_cat_value_id_seq
@@ -3402,10 +3389,10 @@ CREATE SEQUENCE viroserve.lab_result_cat_value_lab_result_cat_value_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.lab_result_cat_value_lab_result_cat_value_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.lab_result_cat_value_lab_result_cat_value_id_seq OWNER TO :owner;
 
 --
--- Name: lab_result_cat_value_lab_result_cat_value_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_cat_value_lab_result_cat_value_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.lab_result_cat_value_lab_result_cat_value_id_seq OWNED BY viroserve.lab_result_cat_value.lab_result_cat_value_id;
@@ -3414,7 +3401,7 @@ ALTER SEQUENCE viroserve.lab_result_cat_value_lab_result_cat_value_id_seq OWNED 
 SET default_with_oids = true;
 
 --
--- Name: lab_result_group; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_group; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.lab_result_group (
@@ -3424,10 +3411,10 @@ CREATE TABLE viroserve.lab_result_group (
 );
 
 
-ALTER TABLE viroserve.lab_result_group OWNER TO vverse_admin;
+ALTER TABLE viroserve.lab_result_group OWNER TO :owner;
 
 --
--- Name: lab_result_group_lab_result_group_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_group_lab_result_group_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.lab_result_group_lab_result_group_id_seq
@@ -3438,17 +3425,17 @@ CREATE SEQUENCE viroserve.lab_result_group_lab_result_group_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.lab_result_group_lab_result_group_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.lab_result_group_lab_result_group_id_seq OWNER TO :owner;
 
 --
--- Name: lab_result_group_lab_result_group_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_group_lab_result_group_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.lab_result_group_lab_result_group_id_seq OWNED BY viroserve.lab_result_group.lab_result_group_id;
 
 
 --
--- Name: lab_result_num_lab_result_num_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_num_lab_result_num_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.lab_result_num_lab_result_num_id_seq
@@ -3459,10 +3446,10 @@ CREATE SEQUENCE viroserve.lab_result_num_lab_result_num_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.lab_result_num_lab_result_num_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.lab_result_num_lab_result_num_id_seq OWNER TO :owner;
 
 --
--- Name: lab_result_num_lab_result_num_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_num_lab_result_num_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.lab_result_num_lab_result_num_id_seq OWNED BY viroserve.lab_result_num.lab_result_num_id;
@@ -3471,7 +3458,7 @@ ALTER SEQUENCE viroserve.lab_result_num_lab_result_num_id_seq OWNED BY viroserve
 SET default_with_oids = false;
 
 --
--- Name: lab_result_num_type_group; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_num_type_group; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.lab_result_num_type_group (
@@ -3480,10 +3467,10 @@ CREATE TABLE viroserve.lab_result_num_type_group (
 );
 
 
-ALTER TABLE viroserve.lab_result_num_type_group OWNER TO vverse_admin;
+ALTER TABLE viroserve.lab_result_num_type_group OWNER TO :owner;
 
 --
--- Name: lab_result_num_type_lab_result_num_type_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_num_type_lab_result_num_type_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.lab_result_num_type_lab_result_num_type_id_seq
@@ -3494,17 +3481,17 @@ CREATE SEQUENCE viroserve.lab_result_num_type_lab_result_num_type_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.lab_result_num_type_lab_result_num_type_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.lab_result_num_type_lab_result_num_type_id_seq OWNER TO :owner;
 
 --
--- Name: lab_result_num_type_lab_result_num_type_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_num_type_lab_result_num_type_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.lab_result_num_type_lab_result_num_type_id_seq OWNED BY viroserve.lab_result_num_type.lab_result_num_type_id;
 
 
 --
--- Name: location; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: location; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.location (
@@ -3515,10 +3502,10 @@ CREATE TABLE viroserve.location (
 );
 
 
-ALTER TABLE viroserve.location OWNER TO vverse_admin;
+ALTER TABLE viroserve.location OWNER TO :owner;
 
 --
--- Name: location_location_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: location_location_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.location_location_id_seq
@@ -3529,17 +3516,17 @@ CREATE SEQUENCE viroserve.location_location_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.location_location_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.location_location_id_seq OWNER TO :owner;
 
 --
--- Name: location_location_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: location_location_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.location_location_id_seq OWNED BY viroserve.location.location_id;
 
 
 --
--- Name: medication_medication_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: medication_medication_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.medication_medication_id_seq
@@ -3550,17 +3537,17 @@ CREATE SEQUENCE viroserve.medication_medication_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.medication_medication_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.medication_medication_id_seq OWNER TO :owner;
 
 --
--- Name: medication_medication_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: medication_medication_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.medication_medication_id_seq OWNED BY viroserve.medication.medication_id;
 
 
 --
--- Name: na_sequence_na_sequence_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: na_sequence_na_sequence_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.na_sequence_na_sequence_id_seq
@@ -3571,17 +3558,17 @@ CREATE SEQUENCE viroserve.na_sequence_na_sequence_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.na_sequence_na_sequence_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.na_sequence_na_sequence_id_seq OWNER TO :owner;
 
 --
--- Name: na_sequence_na_sequence_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: na_sequence_na_sequence_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.na_sequence_na_sequence_id_seq OWNED BY viroserve.na_sequence.na_sequence_id;
 
 
 --
--- Name: sample_note; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: sample_note; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.sample_note (
@@ -3594,10 +3581,10 @@ CREATE TABLE viroserve.sample_note (
 );
 
 
-ALTER TABLE viroserve.sample_note OWNER TO vverse_admin;
+ALTER TABLE viroserve.sample_note OWNER TO :owner;
 
 --
--- Name: note_note_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: note_note_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.note_note_id_seq
@@ -3608,17 +3595,17 @@ CREATE SEQUENCE viroserve.note_note_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.note_note_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.note_note_id_seq OWNER TO :owner;
 
 --
--- Name: note_note_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: note_note_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.note_note_id_seq OWNED BY viroserve.sample_note.note_id;
 
 
 --
--- Name: notes; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: notes; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.notes (
@@ -3631,10 +3618,10 @@ CREATE TABLE viroserve.notes (
 );
 
 
-ALTER TABLE viroserve.notes OWNER TO vverse_admin;
+ALTER TABLE viroserve.notes OWNER TO :owner;
 
 --
--- Name: notes_note_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: notes_note_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.notes_note_id_seq
@@ -3645,17 +3632,17 @@ CREATE SEQUENCE viroserve.notes_note_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.notes_note_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.notes_note_id_seq OWNER TO :owner;
 
 --
--- Name: notes_note_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: notes_note_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.notes_note_id_seq OWNED BY viroserve.notes.note_id;
 
 
 --
--- Name: organism; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: organism; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.organism (
@@ -3664,10 +3651,10 @@ CREATE TABLE viroserve.organism (
 );
 
 
-ALTER TABLE viroserve.organism OWNER TO vverse_admin;
+ALTER TABLE viroserve.organism OWNER TO :owner;
 
 --
--- Name: organism_organism_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: organism_organism_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.organism_organism_id_seq
@@ -3678,10 +3665,10 @@ CREATE SEQUENCE viroserve.organism_organism_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.organism_organism_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.organism_organism_id_seq OWNER TO :owner;
 
 --
--- Name: organism_organism_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: organism_organism_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.organism_organism_id_seq OWNED BY viroserve.organism.organism_id;
@@ -3690,7 +3677,7 @@ ALTER SEQUENCE viroserve.organism_organism_id_seq OWNED BY viroserve.organism.or
 SET default_with_oids = true;
 
 --
--- Name: patient_cohort; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_cohort; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.patient_cohort (
@@ -3699,12 +3686,12 @@ CREATE TABLE viroserve.patient_cohort (
 );
 
 
-ALTER TABLE viroserve.patient_cohort OWNER TO vverse_admin;
+ALTER TABLE viroserve.patient_cohort OWNER TO :owner;
 
 SET default_with_oids = false;
 
 --
--- Name: patient_group; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_group; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.patient_group (
@@ -3715,10 +3702,10 @@ CREATE TABLE viroserve.patient_group (
 );
 
 
-ALTER TABLE viroserve.patient_group OWNER TO vverse_admin;
+ALTER TABLE viroserve.patient_group OWNER TO :owner;
 
 --
--- Name: patient_group_patient_group_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_group_patient_group_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.patient_group_patient_group_id_seq
@@ -3729,17 +3716,17 @@ CREATE SEQUENCE viroserve.patient_group_patient_group_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.patient_group_patient_group_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.patient_group_patient_group_id_seq OWNER TO :owner;
 
 --
--- Name: patient_group_patient_group_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_group_patient_group_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.patient_group_patient_group_id_seq OWNED BY viroserve.patient_group.patient_group_id;
 
 
 --
--- Name: patient_medication_patient_medication_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_medication_patient_medication_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.patient_medication_patient_medication_id_seq
@@ -3750,17 +3737,17 @@ CREATE SEQUENCE viroserve.patient_medication_patient_medication_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.patient_medication_patient_medication_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.patient_medication_patient_medication_id_seq OWNER TO :owner;
 
 --
--- Name: patient_medication_patient_medication_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_medication_patient_medication_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.patient_medication_patient_medication_id_seq OWNED BY viroserve.patient_medication.patient_medication_id;
 
 
 --
--- Name: patient_patient_group; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_patient_group; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.patient_patient_group (
@@ -3770,10 +3757,10 @@ CREATE TABLE viroserve.patient_patient_group (
 );
 
 
-ALTER TABLE viroserve.patient_patient_group OWNER TO vverse_admin;
+ALTER TABLE viroserve.patient_patient_group OWNER TO :owner;
 
 --
--- Name: patient_patient_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_patient_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.patient_patient_id_seq
@@ -3784,17 +3771,17 @@ CREATE SEQUENCE viroserve.patient_patient_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.patient_patient_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.patient_patient_id_seq OWNER TO :owner;
 
 --
--- Name: patient_patient_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_patient_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.patient_patient_id_seq OWNED BY viroserve.patient.patient_id;
 
 
 --
--- Name: pcr_cleanup; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_cleanup; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.pcr_cleanup (
@@ -3811,10 +3798,10 @@ CREATE TABLE viroserve.pcr_cleanup (
 );
 
 
-ALTER TABLE viroserve.pcr_cleanup OWNER TO vverse_admin;
+ALTER TABLE viroserve.pcr_cleanup OWNER TO :owner;
 
 --
--- Name: pcr_cleanup_pcr_cleanup_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_cleanup_pcr_cleanup_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.pcr_cleanup_pcr_cleanup_id_seq
@@ -3825,17 +3812,17 @@ CREATE SEQUENCE viroserve.pcr_cleanup_pcr_cleanup_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.pcr_cleanup_pcr_cleanup_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.pcr_cleanup_pcr_cleanup_id_seq OWNER TO :owner;
 
 --
--- Name: pcr_cleanup_pcr_cleanup_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_cleanup_pcr_cleanup_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.pcr_cleanup_pcr_cleanup_id_seq OWNED BY viroserve.pcr_cleanup.pcr_cleanup_id;
 
 
 --
--- Name: pcr_pool; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_pool; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.pcr_pool (
@@ -3848,10 +3835,10 @@ CREATE TABLE viroserve.pcr_pool (
 );
 
 
-ALTER TABLE viroserve.pcr_pool OWNER TO vverse_admin;
+ALTER TABLE viroserve.pcr_pool OWNER TO :owner;
 
 --
--- Name: pcr_pool_pcr_pool_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_pool_pcr_pool_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.pcr_pool_pcr_pool_id_seq
@@ -3862,17 +3849,17 @@ CREATE SEQUENCE viroserve.pcr_pool_pcr_pool_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.pcr_pool_pcr_pool_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.pcr_pool_pcr_pool_id_seq OWNER TO :owner;
 
 --
--- Name: pcr_pool_pcr_pool_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_pool_pcr_pool_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.pcr_pool_pcr_pool_id_seq OWNED BY viroserve.pcr_pool.pcr_pool_id;
 
 
 --
--- Name: pcr_pool_pcr_product; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_pool_pcr_product; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.pcr_pool_pcr_product (
@@ -3881,10 +3868,10 @@ CREATE TABLE viroserve.pcr_pool_pcr_product (
 );
 
 
-ALTER TABLE viroserve.pcr_pool_pcr_product OWNER TO vverse_admin;
+ALTER TABLE viroserve.pcr_pool_pcr_product OWNER TO :owner;
 
 --
--- Name: pcr_product_pcr_product_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_product_pcr_product_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.pcr_product_pcr_product_id_seq
@@ -3895,17 +3882,17 @@ CREATE SEQUENCE viroserve.pcr_product_pcr_product_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.pcr_product_pcr_product_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.pcr_product_pcr_product_id_seq OWNER TO :owner;
 
 --
--- Name: pcr_product_pcr_product_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_product_pcr_product_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.pcr_product_pcr_product_id_seq OWNED BY viroserve.pcr_product.pcr_product_id;
 
 
 --
--- Name: pcr_product_primer; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_product_primer; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.pcr_product_primer (
@@ -3914,10 +3901,10 @@ CREATE TABLE viroserve.pcr_product_primer (
 );
 
 
-ALTER TABLE viroserve.pcr_product_primer OWNER TO vverse_admin;
+ALTER TABLE viroserve.pcr_product_primer OWNER TO :owner;
 
 --
--- Name: pcr_template_pcr_template_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_template_pcr_template_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.pcr_template_pcr_template_id_seq
@@ -3928,17 +3915,17 @@ CREATE SEQUENCE viroserve.pcr_template_pcr_template_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.pcr_template_pcr_template_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.pcr_template_pcr_template_id_seq OWNER TO :owner;
 
 --
--- Name: pcr_template_pcr_template_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_template_pcr_template_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.pcr_template_pcr_template_id_seq OWNED BY viroserve.pcr_template.pcr_template_id;
 
 
 --
--- Name: primer_primer_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: primer_primer_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.primer_primer_id_seq
@@ -3949,10 +3936,10 @@ CREATE SEQUENCE viroserve.primer_primer_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.primer_primer_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.primer_primer_id_seq OWNER TO :owner;
 
 --
--- Name: primer; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: primer; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.primer (
@@ -3969,10 +3956,10 @@ CREATE TABLE viroserve.primer (
 );
 
 
-ALTER TABLE viroserve.primer OWNER TO vverse_admin;
+ALTER TABLE viroserve.primer OWNER TO :owner;
 
 --
--- Name: primer_position; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: primer_position; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.primer_position (
@@ -3982,10 +3969,10 @@ CREATE TABLE viroserve.primer_position (
 );
 
 
-ALTER TABLE viroserve.primer_position OWNER TO vverse_admin;
+ALTER TABLE viroserve.primer_position OWNER TO :owner;
 
 --
--- Name: project; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: project; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.project (
@@ -3997,10 +3984,10 @@ CREATE TABLE viroserve.project (
 );
 
 
-ALTER TABLE viroserve.project OWNER TO vverse_admin;
+ALTER TABLE viroserve.project OWNER TO :owner;
 
 --
--- Name: project_materials; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: project_materials; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.project_materials (
@@ -4011,10 +3998,10 @@ CREATE TABLE viroserve.project_materials (
 );
 
 
-ALTER TABLE viroserve.project_materials OWNER TO vverse_admin;
+ALTER TABLE viroserve.project_materials OWNER TO :owner;
 
 --
--- Name: sample_first_pcr_template_path; Type: VIEW; Schema: viroserve; Owner: vverse_admin
+-- Name: sample_first_pcr_template_path; Type: VIEW; Schema: viroserve; Owner: :owner
 --
 
 CREATE VIEW viroserve.sample_first_pcr_template_path AS
@@ -4076,10 +4063,10 @@ UNION
      JOIN viroserve.pcr_template USING (bisulfite_converted_dna_id));
 
 
-ALTER TABLE viroserve.sample_first_pcr_template_path OWNER TO vverse_admin;
+ALTER TABLE viroserve.sample_first_pcr_template_path OWNER TO :owner;
 
 --
--- Name: project_material_scientist_progress; Type: MATERIALIZED VIEW; Schema: viroserve; Owner: vverse_admin
+-- Name: project_material_scientist_progress; Type: MATERIALIZED VIEW; Schema: viroserve; Owner: :owner
 --
 
 CREATE MATERIALIZED VIEW viroserve.project_material_scientist_progress AS
@@ -4123,10 +4110,10 @@ CREATE MATERIALIZED VIEW viroserve.project_material_scientist_progress AS
   WITH NO DATA;
 
 
-ALTER TABLE viroserve.project_material_scientist_progress OWNER TO vverse_admin;
+ALTER TABLE viroserve.project_material_scientist_progress OWNER TO :owner;
 
 --
--- Name: project_project_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: project_project_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.project_project_id_seq
@@ -4137,17 +4124,17 @@ CREATE SEQUENCE viroserve.project_project_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.project_project_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.project_project_id_seq OWNER TO :owner;
 
 --
--- Name: project_project_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: project_project_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.project_project_id_seq OWNED BY viroserve.project.project_id;
 
 
 --
--- Name: protocol; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: protocol; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.protocol (
@@ -4159,10 +4146,10 @@ CREATE TABLE viroserve.protocol (
 );
 
 
-ALTER TABLE viroserve.protocol OWNER TO vverse_admin;
+ALTER TABLE viroserve.protocol OWNER TO :owner;
 
 --
--- Name: protocol_protocol_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: protocol_protocol_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.protocol_protocol_id_seq
@@ -4173,17 +4160,17 @@ CREATE SEQUENCE viroserve.protocol_protocol_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.protocol_protocol_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.protocol_protocol_id_seq OWNER TO :owner;
 
 --
--- Name: protocol_protocol_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: protocol_protocol_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.protocol_protocol_id_seq OWNED BY viroserve.protocol.protocol_id;
 
 
 --
--- Name: protocol_type; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: protocol_type; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.protocol_type (
@@ -4192,10 +4179,10 @@ CREATE TABLE viroserve.protocol_type (
 );
 
 
-ALTER TABLE viroserve.protocol_type OWNER TO vverse_admin;
+ALTER TABLE viroserve.protocol_type OWNER TO :owner;
 
 --
--- Name: protocol_type_protocol_type_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: protocol_type_protocol_type_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.protocol_type_protocol_type_id_seq
@@ -4206,17 +4193,17 @@ CREATE SEQUENCE viroserve.protocol_type_protocol_type_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.protocol_type_protocol_type_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.protocol_type_protocol_type_id_seq OWNER TO :owner;
 
 --
--- Name: protocol_type_protocol_type_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: protocol_type_protocol_type_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.protocol_type_protocol_type_id_seq OWNED BY viroserve.protocol_type.protocol_type_id;
 
 
 --
--- Name: restriction_enzyme_restriction_enzyme_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: restriction_enzyme_restriction_enzyme_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.restriction_enzyme_restriction_enzyme_id_seq
@@ -4227,10 +4214,10 @@ CREATE SEQUENCE viroserve.restriction_enzyme_restriction_enzyme_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.restriction_enzyme_restriction_enzyme_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.restriction_enzyme_restriction_enzyme_id_seq OWNER TO :owner;
 
 --
--- Name: rt_primer; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: rt_primer; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.rt_primer (
@@ -4239,10 +4226,10 @@ CREATE TABLE viroserve.rt_primer (
 );
 
 
-ALTER TABLE viroserve.rt_primer OWNER TO vverse_admin;
+ALTER TABLE viroserve.rt_primer OWNER TO :owner;
 
 --
--- Name: rt_product_rt_product_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: rt_product_rt_product_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.rt_product_rt_product_id_seq
@@ -4253,17 +4240,17 @@ CREATE SEQUENCE viroserve.rt_product_rt_product_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.rt_product_rt_product_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.rt_product_rt_product_id_seq OWNER TO :owner;
 
 --
--- Name: rt_product_rt_product_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: rt_product_rt_product_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.rt_product_rt_product_id_seq OWNED BY viroserve.rt_product.rt_product_id;
 
 
 --
--- Name: sample_patient_date; Type: VIEW; Schema: viroserve; Owner: vverse_admin
+-- Name: sample_patient_date; Type: VIEW; Schema: viroserve; Owner: :owner
 --
 
 CREATE VIEW viroserve.sample_patient_date AS
@@ -4288,10 +4275,10 @@ CREATE VIEW viroserve.sample_patient_date AS
    FROM sample_patient_recurrence;
 
 
-ALTER TABLE viroserve.sample_patient_date OWNER TO vverse_admin;
+ALTER TABLE viroserve.sample_patient_date OWNER TO :owner;
 
 --
--- Name: sample_sample_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: sample_sample_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.sample_sample_id_seq
@@ -4302,10 +4289,10 @@ CREATE SEQUENCE viroserve.sample_sample_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.sample_sample_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.sample_sample_id_seq OWNER TO :owner;
 
 --
--- Name: sample_sample_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: sample_sample_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.sample_sample_id_seq OWNED BY viroserve.sample.sample_id;
@@ -4314,7 +4301,7 @@ ALTER SEQUENCE viroserve.sample_sample_id_seq OWNED BY viroserve.sample.sample_i
 SET default_with_oids = true;
 
 --
--- Name: sample_type; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: sample_type; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.sample_type (
@@ -4323,10 +4310,10 @@ CREATE TABLE viroserve.sample_type (
 );
 
 
-ALTER TABLE viroserve.sample_type OWNER TO vverse_admin;
+ALTER TABLE viroserve.sample_type OWNER TO :owner;
 
 --
--- Name: scientist; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: scientist; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.scientist (
@@ -4341,10 +4328,10 @@ CREATE TABLE viroserve.scientist (
 );
 
 
-ALTER TABLE viroserve.scientist OWNER TO vverse_admin;
+ALTER TABLE viroserve.scientist OWNER TO :owner;
 
 --
--- Name: sample_search; Type: VIEW; Schema: viroserve; Owner: vverse_admin
+-- Name: sample_search; Type: VIEW; Schema: viroserve; Owner: :owner
 --
 
 CREATE VIEW viroserve.sample_search AS
@@ -4374,10 +4361,10 @@ CREATE VIEW viroserve.sample_search AS
      LEFT JOIN viroserve.scientist ON ((m.desig_scientist_id = scientist.scientist_id)));
 
 
-ALTER TABLE viroserve.sample_search OWNER TO vverse_admin;
+ALTER TABLE viroserve.sample_search OWNER TO :owner;
 
 --
--- Name: sample_type_sample_type_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: sample_type_sample_type_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.sample_type_sample_type_id_seq
@@ -4388,10 +4375,10 @@ CREATE SEQUENCE viroserve.sample_type_sample_type_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.sample_type_sample_type_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.sample_type_sample_type_id_seq OWNER TO :owner;
 
 --
--- Name: sample_type_sample_type_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: sample_type_sample_type_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.sample_type_sample_type_id_seq OWNED BY viroserve.sample_type.sample_type_id;
@@ -4400,7 +4387,7 @@ ALTER SEQUENCE viroserve.sample_type_sample_type_id_seq OWNED BY viroserve.sampl
 SET default_with_oids = false;
 
 --
--- Name: scientist_group; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: scientist_group; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.scientist_group (
@@ -4413,10 +4400,10 @@ CREATE TABLE viroserve.scientist_group (
 );
 
 
-ALTER TABLE viroserve.scientist_group OWNER TO vverse_admin;
+ALTER TABLE viroserve.scientist_group OWNER TO :owner;
 
 --
--- Name: scientist_group_scientist_group_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: scientist_group_scientist_group_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.scientist_group_scientist_group_id_seq
@@ -4427,17 +4414,17 @@ CREATE SEQUENCE viroserve.scientist_group_scientist_group_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.scientist_group_scientist_group_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.scientist_group_scientist_group_id_seq OWNER TO :owner;
 
 --
--- Name: scientist_group_scientist_group_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: scientist_group_scientist_group_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.scientist_group_scientist_group_id_seq OWNED BY viroserve.scientist_group.scientist_group_id;
 
 
 --
--- Name: scientist_scientist_group; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: scientist_scientist_group; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.scientist_scientist_group (
@@ -4448,10 +4435,10 @@ CREATE TABLE viroserve.scientist_scientist_group (
 );
 
 
-ALTER TABLE viroserve.scientist_scientist_group OWNER TO vverse_admin;
+ALTER TABLE viroserve.scientist_scientist_group OWNER TO :owner;
 
 --
--- Name: scientist_scientist_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: scientist_scientist_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.scientist_scientist_id_seq
@@ -4462,17 +4449,17 @@ CREATE SEQUENCE viroserve.scientist_scientist_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.scientist_scientist_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.scientist_scientist_id_seq OWNER TO :owner;
 
 --
--- Name: scientist_scientist_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: scientist_scientist_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.scientist_scientist_id_seq OWNED BY viroserve.scientist.scientist_id;
 
 
 --
--- Name: sequence_genome_region; Type: VIEW; Schema: viroserve; Owner: vverse_admin
+-- Name: sequence_genome_region; Type: VIEW; Schema: viroserve; Owner: :owner
 --
 
 CREATE VIEW viroserve.sequence_genome_region AS
@@ -4504,10 +4491,10 @@ UNION
      JOIN large_amplicon region ON ((sequence.reference_range @> region.base_range)));
 
 
-ALTER TABLE viroserve.sequence_genome_region OWNER TO vverse_admin;
+ALTER TABLE viroserve.sequence_genome_region OWNER TO :owner;
 
 --
--- Name: sequence_type; Type: TABLE; Schema: viroserve; Owner: vverse_admin
+-- Name: sequence_type; Type: TABLE; Schema: viroserve; Owner: :owner
 --
 
 CREATE TABLE viroserve.sequence_type (
@@ -4516,10 +4503,10 @@ CREATE TABLE viroserve.sequence_type (
 );
 
 
-ALTER TABLE viroserve.sequence_type OWNER TO vverse_admin;
+ALTER TABLE viroserve.sequence_type OWNER TO :owner;
 
 --
--- Name: sequence_search; Type: MATERIALIZED VIEW; Schema: viroserve; Owner: vverse_admin
+-- Name: sequence_search; Type: MATERIALIZED VIEW; Schema: viroserve; Owner: :owner
 --
 
 CREATE MATERIALIZED VIEW viroserve.sequence_search AS
@@ -4555,10 +4542,10 @@ CREATE MATERIALIZED VIEW viroserve.sequence_search AS
   WITH NO DATA;
 
 
-ALTER TABLE viroserve.sequence_search OWNER TO vverse_admin;
+ALTER TABLE viroserve.sequence_search OWNER TO :owner;
 
 --
--- Name: sequence_type_sequence_type_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: sequence_type_sequence_type_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.sequence_type_sequence_type_id_seq
@@ -4569,17 +4556,17 @@ CREATE SEQUENCE viroserve.sequence_type_sequence_type_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.sequence_type_sequence_type_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.sequence_type_sequence_type_id_seq OWNER TO :owner;
 
 --
--- Name: sequence_type_sequence_type_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: sequence_type_sequence_type_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.sequence_type_sequence_type_id_seq OWNED BY viroserve.sequence_type.sequence_type_id;
 
 
 --
--- Name: tissue_type_tissue_type_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: tissue_type_tissue_type_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.tissue_type_tissue_type_id_seq
@@ -4590,17 +4577,17 @@ CREATE SEQUENCE viroserve.tissue_type_tissue_type_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.tissue_type_tissue_type_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.tissue_type_tissue_type_id_seq OWNER TO :owner;
 
 --
--- Name: tissue_type_tissue_type_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: tissue_type_tissue_type_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.tissue_type_tissue_type_id_seq OWNED BY viroserve.tissue_type.tissue_type_id;
 
 
 --
--- Name: unit_unit_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: unit_unit_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.unit_unit_id_seq
@@ -4611,17 +4598,17 @@ CREATE SEQUENCE viroserve.unit_unit_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.unit_unit_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.unit_unit_id_seq OWNER TO :owner;
 
 --
--- Name: unit_unit_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: unit_unit_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.unit_unit_id_seq OWNED BY viroserve.unit.unit_id;
 
 
 --
--- Name: visit_visit_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: vverse_admin
+-- Name: visit_visit_id_seq; Type: SEQUENCE; Schema: viroserve; Owner: :owner
 --
 
 CREATE SEQUENCE viroserve.visit_visit_id_seq
@@ -4632,402 +4619,402 @@ CREATE SEQUENCE viroserve.visit_visit_id_seq
     CACHE 1;
 
 
-ALTER TABLE viroserve.visit_visit_id_seq OWNER TO vverse_admin;
+ALTER TABLE viroserve.visit_visit_id_seq OWNER TO :owner;
 
 --
--- Name: visit_visit_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: vverse_admin
+-- Name: visit_visit_id_seq; Type: SEQUENCE OWNED BY; Schema: viroserve; Owner: :owner
 --
 
 ALTER SEQUENCE viroserve.visit_visit_id_seq OWNED BY viroserve.visit.visit_id;
 
 
 --
--- Name: derivation derivation_id; Type: DEFAULT; Schema: delta; Owner: vverse_admin
+-- Name: derivation derivation_id; Type: DEFAULT; Schema: delta; Owner: :owner
 --
 
 ALTER TABLE ONLY delta.derivation ALTER COLUMN derivation_id SET DEFAULT nextval('delta.derivation_derivation_id_seq'::regclass);
 
 
 --
--- Name: protocol protocol_id; Type: DEFAULT; Schema: delta; Owner: vverse_admin
+-- Name: protocol protocol_id; Type: DEFAULT; Schema: delta; Owner: :owner
 --
 
 ALTER TABLE ONLY delta.protocol ALTER COLUMN protocol_id SET DEFAULT nextval('delta.protocol_protocol_id_seq'::regclass);
 
 
 --
--- Name: box box_id; Type: DEFAULT; Schema: freezer; Owner: vverse_admin
+-- Name: box box_id; Type: DEFAULT; Schema: freezer; Owner: :owner
 --
 
 ALTER TABLE ONLY freezer.box ALTER COLUMN box_id SET DEFAULT nextval('freezer.box_box_id_seq'::regclass);
 
 
 --
--- Name: box_pos box_pos_id; Type: DEFAULT; Schema: freezer; Owner: vverse_admin
+-- Name: box_pos box_pos_id; Type: DEFAULT; Schema: freezer; Owner: :owner
 --
 
 ALTER TABLE ONLY freezer.box_pos ALTER COLUMN box_pos_id SET DEFAULT nextval('freezer.box_pos_box_pos_id_seq'::regclass);
 
 
 --
--- Name: freezer freezer_id; Type: DEFAULT; Schema: freezer; Owner: vverse_admin
+-- Name: freezer freezer_id; Type: DEFAULT; Schema: freezer; Owner: :owner
 --
 
 ALTER TABLE ONLY freezer.freezer ALTER COLUMN freezer_id SET DEFAULT nextval('freezer.freezer_freezer_id_seq'::regclass);
 
 
 --
--- Name: rack rack_id; Type: DEFAULT; Schema: freezer; Owner: vverse_admin
+-- Name: rack rack_id; Type: DEFAULT; Schema: freezer; Owner: :owner
 --
 
 ALTER TABLE ONLY freezer.rack ALTER COLUMN rack_id SET DEFAULT nextval('freezer.rack_rack_id_seq'::regclass);
 
 
 --
--- Name: additive additive_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: additive additive_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.additive ALTER COLUMN additive_id SET DEFAULT nextval('viroserve.additive_additive_id_seq'::regclass);
 
 
 --
--- Name: alignment alignment_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: alignment alignment_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.alignment ALTER COLUMN alignment_id SET DEFAULT nextval('viroserve.alignment_alignment_id_seq'::regclass);
 
 
 --
--- Name: alignment_method alignment_method_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: alignment_method alignment_method_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.alignment_method ALTER COLUMN alignment_method_id SET DEFAULT nextval('viroserve.alignment_method_alignment_method_id_seq'::regclass);
 
 
 --
--- Name: aliquot aliquot_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: aliquot aliquot_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.aliquot ALTER COLUMN aliquot_id SET DEFAULT nextval('viroserve.aliquot_aliquot_id_seq'::regclass);
 
 
 --
--- Name: arv_class arv_class_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: arv_class arv_class_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.arv_class ALTER COLUMN arv_class_id SET DEFAULT nextval('viroserve.arv_class_arv_class_id_seq'::regclass);
 
 
 --
--- Name: bisulfite_converted_dna bisulfite_converted_dna_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: bisulfite_converted_dna bisulfite_converted_dna_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.bisulfite_converted_dna ALTER COLUMN bisulfite_converted_dna_id SET DEFAULT nextval('viroserve.bisulfite_converted_dna_bisulfite_converted_dna_id_seq'::regclass);
 
 
 --
--- Name: chromat chromat_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: chromat chromat_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.chromat ALTER COLUMN chromat_id SET DEFAULT nextval('viroserve.chromat_chromat_id_seq'::regclass);
 
 
 --
--- Name: chromat_type chromat_type_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: chromat_type chromat_type_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.chromat_type ALTER COLUMN chromat_type_id SET DEFAULT nextval('viroserve.chromat_type_chromat_type_id_seq'::regclass);
 
 
 --
--- Name: clone clone_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: clone clone_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.clone ALTER COLUMN clone_id SET DEFAULT nextval('viroserve.clone_clone_id_seq'::regclass);
 
 
 --
--- Name: copy_number copy_number_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: copy_number copy_number_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.copy_number ALTER COLUMN copy_number_id SET DEFAULT nextval('viroserve.copy_number_copy_number_id_seq'::regclass);
 
 
 --
--- Name: enzyme enzyme_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: enzyme enzyme_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.enzyme ALTER COLUMN enzyme_id SET DEFAULT nextval('viroserve.enzyme_enzyme_id_seq'::regclass);
 
 
 --
--- Name: extract_type extract_type_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: extract_type extract_type_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.extract_type ALTER COLUMN extract_type_id SET DEFAULT nextval('viroserve.extract_type_extract_type_id_seq'::regclass);
 
 
 --
--- Name: extraction extraction_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: extraction extraction_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.extraction ALTER COLUMN extraction_id SET DEFAULT nextval('viroserve.extraction_extraction_id_seq'::regclass);
 
 
 --
--- Name: gel gel_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: gel gel_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.gel ALTER COLUMN gel_id SET DEFAULT nextval('viroserve.gel_gel_id_seq'::regclass);
 
 
 --
--- Name: gel_lane gel_lane_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: gel_lane gel_lane_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.gel_lane ALTER COLUMN gel_lane_id SET DEFAULT nextval('viroserve.gel_lane_gel_lane_id_seq'::regclass);
 
 
 --
--- Name: hla_genotype hla_genotype_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: hla_genotype hla_genotype_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.hla_genotype ALTER COLUMN hla_genotype_id SET DEFAULT nextval('viroserve.hla_genotype_hla_genotype_id_seq'::regclass);
 
 
 --
--- Name: import_job import_job_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: import_job import_job_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.import_job ALTER COLUMN import_job_id SET DEFAULT nextval('viroserve.import_job_import_job_id_seq'::regclass);
 
 
 --
--- Name: infection infection_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: infection infection_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.infection ALTER COLUMN infection_id SET DEFAULT nextval('viroserve.infection_infection_id_seq'::regclass);
 
 
 --
--- Name: lab_result_cat lab_result_cat_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_cat lab_result_cat_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.lab_result_cat ALTER COLUMN lab_result_cat_id SET DEFAULT nextval('viroserve.lab_result_cat_lab_result_cat_id_seq'::regclass);
 
 
 --
--- Name: lab_result_cat_type lab_result_cat_type_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_cat_type lab_result_cat_type_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.lab_result_cat_type ALTER COLUMN lab_result_cat_type_id SET DEFAULT nextval('viroserve.lab_result_cat_type_lab_result_cat_type_id_seq'::regclass);
 
 
 --
--- Name: lab_result_cat_value lab_result_cat_value_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_cat_value lab_result_cat_value_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.lab_result_cat_value ALTER COLUMN lab_result_cat_value_id SET DEFAULT nextval('viroserve.lab_result_cat_value_lab_result_cat_value_id_seq'::regclass);
 
 
 --
--- Name: lab_result_group lab_result_group_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_group lab_result_group_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.lab_result_group ALTER COLUMN lab_result_group_id SET DEFAULT nextval('viroserve.lab_result_group_lab_result_group_id_seq'::regclass);
 
 
 --
--- Name: lab_result_num lab_result_num_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_num lab_result_num_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.lab_result_num ALTER COLUMN lab_result_num_id SET DEFAULT nextval('viroserve.lab_result_num_lab_result_num_id_seq'::regclass);
 
 
 --
--- Name: lab_result_num_type lab_result_num_type_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_num_type lab_result_num_type_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.lab_result_num_type ALTER COLUMN lab_result_num_type_id SET DEFAULT nextval('viroserve.lab_result_num_type_lab_result_num_type_id_seq'::regclass);
 
 
 --
--- Name: location location_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: location location_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.location ALTER COLUMN location_id SET DEFAULT nextval('viroserve.location_location_id_seq'::regclass);
 
 
 --
--- Name: medication medication_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: medication medication_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.medication ALTER COLUMN medication_id SET DEFAULT nextval('viroserve.medication_medication_id_seq'::regclass);
 
 
 --
--- Name: na_sequence na_sequence_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: na_sequence na_sequence_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.na_sequence ALTER COLUMN na_sequence_id SET DEFAULT nextval('viroserve.na_sequence_na_sequence_id_seq'::regclass);
 
 
 --
--- Name: notes note_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: notes note_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.notes ALTER COLUMN note_id SET DEFAULT nextval('viroserve.notes_note_id_seq'::regclass);
 
 
 --
--- Name: organism organism_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: organism organism_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.organism ALTER COLUMN organism_id SET DEFAULT nextval('viroserve.organism_organism_id_seq'::regclass);
 
 
 --
--- Name: patient patient_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: patient patient_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.patient ALTER COLUMN patient_id SET DEFAULT nextval('viroserve.patient_patient_id_seq'::regclass);
 
 
 --
--- Name: patient_group patient_group_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_group patient_group_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.patient_group ALTER COLUMN patient_group_id SET DEFAULT nextval('viroserve.patient_group_patient_group_id_seq'::regclass);
 
 
 --
--- Name: patient_medication patient_medication_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_medication patient_medication_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.patient_medication ALTER COLUMN patient_medication_id SET DEFAULT nextval('viroserve.patient_medication_patient_medication_id_seq'::regclass);
 
 
 --
--- Name: pcr_cleanup pcr_cleanup_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_cleanup pcr_cleanup_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.pcr_cleanup ALTER COLUMN pcr_cleanup_id SET DEFAULT nextval('viroserve.pcr_cleanup_pcr_cleanup_id_seq'::regclass);
 
 
 --
--- Name: pcr_pool pcr_pool_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_pool pcr_pool_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.pcr_pool ALTER COLUMN pcr_pool_id SET DEFAULT nextval('viroserve.pcr_pool_pcr_pool_id_seq'::regclass);
 
 
 --
--- Name: pcr_product pcr_product_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_product pcr_product_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.pcr_product ALTER COLUMN pcr_product_id SET DEFAULT nextval('viroserve.pcr_product_pcr_product_id_seq'::regclass);
 
 
 --
--- Name: pcr_template pcr_template_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_template pcr_template_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.pcr_template ALTER COLUMN pcr_template_id SET DEFAULT nextval('viroserve.pcr_template_pcr_template_id_seq'::regclass);
 
 
 --
--- Name: project project_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: project project_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.project ALTER COLUMN project_id SET DEFAULT nextval('viroserve.project_project_id_seq'::regclass);
 
 
 --
--- Name: protocol protocol_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: protocol protocol_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.protocol ALTER COLUMN protocol_id SET DEFAULT nextval('viroserve.protocol_protocol_id_seq'::regclass);
 
 
 --
--- Name: protocol_type protocol_type_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: protocol_type protocol_type_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.protocol_type ALTER COLUMN protocol_type_id SET DEFAULT nextval('viroserve.protocol_type_protocol_type_id_seq'::regclass);
 
 
 --
--- Name: rt_product rt_product_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: rt_product rt_product_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.rt_product ALTER COLUMN rt_product_id SET DEFAULT nextval('viroserve.rt_product_rt_product_id_seq'::regclass);
 
 
 --
--- Name: sample sample_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: sample sample_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.sample ALTER COLUMN sample_id SET DEFAULT nextval('viroserve.sample_sample_id_seq'::regclass);
 
 
 --
--- Name: sample_note note_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: sample_note note_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.sample_note ALTER COLUMN note_id SET DEFAULT nextval('viroserve.note_note_id_seq'::regclass);
 
 
 --
--- Name: sample_type sample_type_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: sample_type sample_type_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.sample_type ALTER COLUMN sample_type_id SET DEFAULT nextval('viroserve.sample_type_sample_type_id_seq'::regclass);
 
 
 --
--- Name: scientist scientist_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: scientist scientist_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.scientist ALTER COLUMN scientist_id SET DEFAULT nextval('viroserve.scientist_scientist_id_seq'::regclass);
 
 
 --
--- Name: scientist_group scientist_group_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: scientist_group scientist_group_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.scientist_group ALTER COLUMN scientist_group_id SET DEFAULT nextval('viroserve.scientist_group_scientist_group_id_seq'::regclass);
 
 
 --
--- Name: sequence_type sequence_type_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: sequence_type sequence_type_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.sequence_type ALTER COLUMN sequence_type_id SET DEFAULT nextval('viroserve.sequence_type_sequence_type_id_seq'::regclass);
 
 
 --
--- Name: tissue_type tissue_type_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: tissue_type tissue_type_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.tissue_type ALTER COLUMN tissue_type_id SET DEFAULT nextval('viroserve.tissue_type_tissue_type_id_seq'::regclass);
 
 
 --
--- Name: unit unit_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: unit unit_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.unit ALTER COLUMN unit_id SET DEFAULT nextval('viroserve.unit_unit_id_seq'::regclass);
 
 
 --
--- Name: visit visit_id; Type: DEFAULT; Schema: viroserve; Owner: vverse_admin
+-- Name: visit visit_id; Type: DEFAULT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.visit ALTER COLUMN visit_id SET DEFAULT nextval('viroserve.visit_visit_id_seq'::regclass);
 
 
 --
--- Name: tissue_type tissue_type_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: tissue_type tissue_type_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.tissue_type
@@ -5035,7 +5022,7 @@ ALTER TABLE ONLY viroserve.tissue_type
 
 
 --
--- Name: distinct_sample_search; Type: MATERIALIZED VIEW; Schema: viroserve; Owner: vverse_admin
+-- Name: distinct_sample_search; Type: MATERIALIZED VIEW; Schema: viroserve; Owner: :owner
 --
 
 CREATE MATERIALIZED VIEW viroserve.distinct_sample_search AS
@@ -5083,10 +5070,10 @@ CREATE MATERIALIZED VIEW viroserve.distinct_sample_search AS
   WITH NO DATA;
 
 
-ALTER TABLE viroserve.distinct_sample_search OWNER TO vverse_admin;
+ALTER TABLE viroserve.distinct_sample_search OWNER TO :owner;
 
 --
--- Name: derivation derivation_pkey; Type: CONSTRAINT; Schema: delta; Owner: vverse_admin
+-- Name: derivation derivation_pkey; Type: CONSTRAINT; Schema: delta; Owner: :owner
 --
 
 ALTER TABLE ONLY delta.derivation
@@ -5094,7 +5081,7 @@ ALTER TABLE ONLY delta.derivation
 
 
 --
--- Name: protocol protocol_name_key; Type: CONSTRAINT; Schema: delta; Owner: vverse_admin
+-- Name: protocol protocol_name_key; Type: CONSTRAINT; Schema: delta; Owner: :owner
 --
 
 ALTER TABLE ONLY delta.protocol
@@ -5102,7 +5089,7 @@ ALTER TABLE ONLY delta.protocol
 
 
 --
--- Name: protocol_output protocol_output_protocol_id_tissue_type_id_key; Type: CONSTRAINT; Schema: delta; Owner: vverse_admin
+-- Name: protocol_output protocol_output_protocol_id_tissue_type_id_key; Type: CONSTRAINT; Schema: delta; Owner: :owner
 --
 
 ALTER TABLE ONLY delta.protocol_output
@@ -5110,7 +5097,7 @@ ALTER TABLE ONLY delta.protocol_output
 
 
 --
--- Name: protocol protocol_pkey; Type: CONSTRAINT; Schema: delta; Owner: vverse_admin
+-- Name: protocol protocol_pkey; Type: CONSTRAINT; Schema: delta; Owner: :owner
 --
 
 ALTER TABLE ONLY delta.protocol
@@ -5118,7 +5105,7 @@ ALTER TABLE ONLY delta.protocol
 
 
 --
--- Name: blcl blcl_pkey; Type: CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: blcl blcl_pkey; Type: CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.blcl
@@ -5126,7 +5113,7 @@ ALTER TABLE ONLY epitope.blcl
 
 
 --
--- Name: epitope_mutant epitope_mutant_pkey; Type: CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: epitope_mutant epitope_mutant_pkey; Type: CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.epitope_mutant
@@ -5134,7 +5121,7 @@ ALTER TABLE ONLY epitope.epitope_mutant
 
 
 --
--- Name: epitope epitope_pkey; Type: CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: epitope epitope_pkey; Type: CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.epitope
@@ -5142,7 +5129,7 @@ ALTER TABLE ONLY epitope.epitope
 
 
 --
--- Name: epitope_source epitope_source_pkey; Type: CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: epitope_source epitope_source_pkey; Type: CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.epitope_source
@@ -5150,7 +5137,7 @@ ALTER TABLE ONLY epitope.epitope_source
 
 
 --
--- Name: titration epitope_titration_unique; Type: CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: titration epitope_titration_unique; Type: CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.titration
@@ -5158,7 +5145,7 @@ ALTER TABLE ONLY epitope.titration
 
 
 --
--- Name: experiment experiment_pkey; Type: CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: experiment experiment_pkey; Type: CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.experiment
@@ -5166,7 +5153,7 @@ ALTER TABLE ONLY epitope.experiment
 
 
 --
--- Name: gene gene_gene_name_key; Type: CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: gene gene_gene_name_key; Type: CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.gene
@@ -5174,7 +5161,7 @@ ALTER TABLE ONLY epitope.gene
 
 
 --
--- Name: gene gene_pkey; Type: CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: gene gene_pkey; Type: CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.gene
@@ -5182,7 +5169,7 @@ ALTER TABLE ONLY epitope.gene
 
 
 --
--- Name: hla_pept hla_pept_pkey; Type: CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: hla_pept hla_pept_pkey; Type: CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.hla_pept
@@ -5190,7 +5177,7 @@ ALTER TABLE ONLY epitope.hla_pept
 
 
 --
--- Name: hla hla_pkey; Type: CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: hla hla_pkey; Type: CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.hla
@@ -5198,7 +5185,7 @@ ALTER TABLE ONLY epitope.hla
 
 
 --
--- Name: hla_response hla_response_pkey; Type: CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: hla_response hla_response_pkey; Type: CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.hla_response
@@ -5206,7 +5193,7 @@ ALTER TABLE ONLY epitope.hla_response
 
 
 --
--- Name: hla_response hla_response_unique; Type: CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: hla_response hla_response_unique; Type: CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.hla_response
@@ -5214,7 +5201,7 @@ ALTER TABLE ONLY epitope.hla_response
 
 
 --
--- Name: measurement measurement_pkey; Type: CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: measurement measurement_pkey; Type: CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.measurement
@@ -5222,7 +5209,7 @@ ALTER TABLE ONLY epitope.measurement
 
 
 --
--- Name: mutant mutant_pkey; Type: CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: mutant mutant_pkey; Type: CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.mutant
@@ -5230,7 +5217,7 @@ ALTER TABLE ONLY epitope.mutant
 
 
 --
--- Name: origin_peptide origin_peptide_pkey; Type: CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: origin_peptide origin_peptide_pkey; Type: CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.origin_peptide
@@ -5238,7 +5225,7 @@ ALTER TABLE ONLY epitope.origin_peptide
 
 
 --
--- Name: origin origin_pkey; Type: CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: origin origin_pkey; Type: CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.origin
@@ -5246,7 +5233,7 @@ ALTER TABLE ONLY epitope.origin
 
 
 --
--- Name: pept_response pept_response_pkey; Type: CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: pept_response pept_response_pkey; Type: CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.pept_response
@@ -5254,7 +5241,7 @@ ALTER TABLE ONLY epitope.pept_response
 
 
 --
--- Name: pept_response pept_response_unique; Type: CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: pept_response pept_response_unique; Type: CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.pept_response
@@ -5262,7 +5249,7 @@ ALTER TABLE ONLY epitope.pept_response
 
 
 --
--- Name: peptide peptide_name_key; Type: CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: peptide peptide_name_key; Type: CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.peptide
@@ -5270,7 +5257,7 @@ ALTER TABLE ONLY epitope.peptide
 
 
 --
--- Name: peptide peptide_pkey; Type: CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: peptide peptide_pkey; Type: CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.peptide
@@ -5278,7 +5265,7 @@ ALTER TABLE ONLY epitope.peptide
 
 
 --
--- Name: peptide peptide_seq_key; Type: CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: peptide peptide_seq_key; Type: CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.peptide
@@ -5286,7 +5273,7 @@ ALTER TABLE ONLY epitope.peptide
 
 
 --
--- Name: pool_pept pool_pept_pkey; Type: CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: pool_pept pool_pept_pkey; Type: CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.pool_pept
@@ -5294,7 +5281,7 @@ ALTER TABLE ONLY epitope.pool_pept
 
 
 --
--- Name: pool pool_pkey; Type: CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: pool pool_pkey; Type: CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.pool
@@ -5302,7 +5289,7 @@ ALTER TABLE ONLY epitope.pool
 
 
 --
--- Name: pool_response pool_response_pkey; Type: CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: pool_response pool_response_pkey; Type: CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.pool_response
@@ -5310,7 +5297,7 @@ ALTER TABLE ONLY epitope.pool_response
 
 
 --
--- Name: pool_response pool_response_unique; Type: CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: pool_response pool_response_unique; Type: CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.pool_response
@@ -5318,7 +5305,7 @@ ALTER TABLE ONLY epitope.pool_response
 
 
 --
--- Name: reading reading_pkey; Type: CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: reading reading_pkey; Type: CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.reading
@@ -5326,7 +5313,7 @@ ALTER TABLE ONLY epitope.reading
 
 
 --
--- Name: titration_conc titration_conc_pkey; Type: CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: titration_conc titration_conc_pkey; Type: CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.titration_conc
@@ -5334,7 +5321,7 @@ ALTER TABLE ONLY epitope.titration_conc
 
 
 --
--- Name: titration titration_pkey; Type: CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: titration titration_pkey; Type: CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.titration
@@ -5342,7 +5329,7 @@ ALTER TABLE ONLY epitope.titration
 
 
 --
--- Name: box_pos box_pos_pk; Type: CONSTRAINT; Schema: freezer; Owner: vverse_admin
+-- Name: box_pos box_pos_pk; Type: CONSTRAINT; Schema: freezer; Owner: :owner
 --
 
 ALTER TABLE ONLY freezer.box_pos
@@ -5350,7 +5337,7 @@ ALTER TABLE ONLY freezer.box_pos
 
 
 --
--- Name: box freezer_box_pk; Type: CONSTRAINT; Schema: freezer; Owner: vverse_admin
+-- Name: box freezer_box_pk; Type: CONSTRAINT; Schema: freezer; Owner: :owner
 --
 
 ALTER TABLE ONLY freezer.box
@@ -5358,7 +5345,7 @@ ALTER TABLE ONLY freezer.box
 
 
 --
--- Name: rack freezer_rack_name_unique; Type: CONSTRAINT; Schema: freezer; Owner: vverse_admin
+-- Name: rack freezer_rack_name_unique; Type: CONSTRAINT; Schema: freezer; Owner: :owner
 --
 
 ALTER TABLE ONLY freezer.rack
@@ -5366,7 +5353,7 @@ ALTER TABLE ONLY freezer.rack
 
 
 --
--- Name: rack freezer_rack_pk; Type: CONSTRAINT; Schema: freezer; Owner: vverse_admin
+-- Name: rack freezer_rack_pk; Type: CONSTRAINT; Schema: freezer; Owner: :owner
 --
 
 ALTER TABLE ONLY freezer.rack
@@ -5374,7 +5361,7 @@ ALTER TABLE ONLY freezer.rack
 
 
 --
--- Name: freezer frezer_name_unique; Type: CONSTRAINT; Schema: freezer; Owner: vverse_admin
+-- Name: freezer frezer_name_unique; Type: CONSTRAINT; Schema: freezer; Owner: :owner
 --
 
 ALTER TABLE ONLY freezer.freezer
@@ -5382,7 +5369,7 @@ ALTER TABLE ONLY freezer.freezer
 
 
 --
--- Name: freezer frezer_pk; Type: CONSTRAINT; Schema: freezer; Owner: vverse_admin
+-- Name: freezer frezer_pk; Type: CONSTRAINT; Schema: freezer; Owner: :owner
 --
 
 ALTER TABLE ONLY freezer.freezer
@@ -5390,7 +5377,7 @@ ALTER TABLE ONLY freezer.freezer
 
 
 --
--- Name: changes changes_pkey; Type: CONSTRAINT; Schema: sqitch; Owner: vverse_admin
+-- Name: changes changes_pkey; Type: CONSTRAINT; Schema: sqitch; Owner: :owner
 --
 
 ALTER TABLE ONLY sqitch.changes
@@ -5398,7 +5385,7 @@ ALTER TABLE ONLY sqitch.changes
 
 
 --
--- Name: dependencies dependencies_pkey; Type: CONSTRAINT; Schema: sqitch; Owner: vverse_admin
+-- Name: dependencies dependencies_pkey; Type: CONSTRAINT; Schema: sqitch; Owner: :owner
 --
 
 ALTER TABLE ONLY sqitch.dependencies
@@ -5406,7 +5393,7 @@ ALTER TABLE ONLY sqitch.dependencies
 
 
 --
--- Name: events events_pkey; Type: CONSTRAINT; Schema: sqitch; Owner: vverse_admin
+-- Name: events events_pkey; Type: CONSTRAINT; Schema: sqitch; Owner: :owner
 --
 
 ALTER TABLE ONLY sqitch.events
@@ -5414,7 +5401,7 @@ ALTER TABLE ONLY sqitch.events
 
 
 --
--- Name: projects projects_pkey; Type: CONSTRAINT; Schema: sqitch; Owner: vverse_admin
+-- Name: projects projects_pkey; Type: CONSTRAINT; Schema: sqitch; Owner: :owner
 --
 
 ALTER TABLE ONLY sqitch.projects
@@ -5422,7 +5409,7 @@ ALTER TABLE ONLY sqitch.projects
 
 
 --
--- Name: projects projects_uri_key; Type: CONSTRAINT; Schema: sqitch; Owner: vverse_admin
+-- Name: projects projects_uri_key; Type: CONSTRAINT; Schema: sqitch; Owner: :owner
 --
 
 ALTER TABLE ONLY sqitch.projects
@@ -5430,7 +5417,7 @@ ALTER TABLE ONLY sqitch.projects
 
 
 --
--- Name: tags tags_pkey; Type: CONSTRAINT; Schema: sqitch; Owner: vverse_admin
+-- Name: tags tags_pkey; Type: CONSTRAINT; Schema: sqitch; Owner: :owner
 --
 
 ALTER TABLE ONLY sqitch.tags
@@ -5438,7 +5425,7 @@ ALTER TABLE ONLY sqitch.tags
 
 
 --
--- Name: tags tags_project_key; Type: CONSTRAINT; Schema: sqitch; Owner: vverse_admin
+-- Name: tags tags_project_key; Type: CONSTRAINT; Schema: sqitch; Owner: :owner
 --
 
 ALTER TABLE ONLY sqitch.tags
@@ -5446,7 +5433,7 @@ ALTER TABLE ONLY sqitch.tags
 
 
 --
--- Name: additive additive_name_unique; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: additive additive_name_unique; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.additive
@@ -5454,7 +5441,7 @@ ALTER TABLE ONLY viroserve.additive
 
 
 --
--- Name: additive additive_pk; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: additive additive_pk; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.additive
@@ -5462,7 +5449,7 @@ ALTER TABLE ONLY viroserve.additive
 
 
 --
--- Name: alignment_method alignment_method_name_key; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: alignment_method alignment_method_name_key; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.alignment_method
@@ -5470,7 +5457,7 @@ ALTER TABLE ONLY viroserve.alignment_method
 
 
 --
--- Name: alignment_method alignment_method_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: alignment_method alignment_method_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.alignment_method
@@ -5478,7 +5465,7 @@ ALTER TABLE ONLY viroserve.alignment_method
 
 
 --
--- Name: alignment alignment_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: alignment alignment_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.alignment
@@ -5486,7 +5473,7 @@ ALTER TABLE ONLY viroserve.alignment
 
 
 --
--- Name: arv_class arv_class_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: arv_class arv_class_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.arv_class
@@ -5494,7 +5481,7 @@ ALTER TABLE ONLY viroserve.arv_class
 
 
 --
--- Name: bisulfite_converted_dna bisulfite_converted_dna_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: bisulfite_converted_dna bisulfite_converted_dna_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.bisulfite_converted_dna
@@ -5502,7 +5489,7 @@ ALTER TABLE ONLY viroserve.bisulfite_converted_dna
 
 
 --
--- Name: chromat_na_sequence chromat_na_sequence_unique_join_keys; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: chromat_na_sequence chromat_na_sequence_unique_join_keys; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.chromat_na_sequence
@@ -5510,7 +5497,7 @@ ALTER TABLE ONLY viroserve.chromat_na_sequence
 
 
 --
--- Name: chromat chromat_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: chromat chromat_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.chromat
@@ -5518,7 +5505,7 @@ ALTER TABLE ONLY viroserve.chromat
 
 
 --
--- Name: chromat_type chromat_type_ident_string_key; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: chromat_type chromat_type_ident_string_key; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.chromat_type
@@ -5526,7 +5513,7 @@ ALTER TABLE ONLY viroserve.chromat_type
 
 
 --
--- Name: chromat_type chromat_type_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: chromat_type chromat_type_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.chromat_type
@@ -5534,7 +5521,7 @@ ALTER TABLE ONLY viroserve.chromat_type
 
 
 --
--- Name: clone clone_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: clone clone_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.clone
@@ -5542,7 +5529,7 @@ ALTER TABLE ONLY viroserve.clone
 
 
 --
--- Name: cohort cohort_name_key; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: cohort cohort_name_key; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.cohort
@@ -5550,7 +5537,7 @@ ALTER TABLE ONLY viroserve.cohort
 
 
 --
--- Name: cohort cohort_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: cohort cohort_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.cohort
@@ -5558,7 +5545,7 @@ ALTER TABLE ONLY viroserve.cohort
 
 
 --
--- Name: copy_number_gel_lane copy_number_gel_lane_pk; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: copy_number_gel_lane copy_number_gel_lane_pk; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.copy_number_gel_lane
@@ -5566,7 +5553,7 @@ ALTER TABLE ONLY viroserve.copy_number_gel_lane
 
 
 --
--- Name: copy_number copy_number_pk; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: copy_number copy_number_pk; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.copy_number
@@ -5574,7 +5561,7 @@ ALTER TABLE ONLY viroserve.copy_number
 
 
 --
--- Name: enzyme enzyme_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: enzyme enzyme_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.enzyme
@@ -5582,7 +5569,7 @@ ALTER TABLE ONLY viroserve.enzyme
 
 
 --
--- Name: extract_type extract_type_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: extract_type extract_type_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.extract_type
@@ -5590,7 +5577,7 @@ ALTER TABLE ONLY viroserve.extract_type
 
 
 --
--- Name: extraction extraction_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: extraction extraction_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.extraction
@@ -5598,7 +5585,7 @@ ALTER TABLE ONLY viroserve.extraction
 
 
 --
--- Name: aliquot freezer_aliquot_pk; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: aliquot freezer_aliquot_pk; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.aliquot
@@ -5606,7 +5593,7 @@ ALTER TABLE ONLY viroserve.aliquot
 
 
 --
--- Name: gel_lane gel_lane_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: gel_lane gel_lane_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.gel_lane
@@ -5614,7 +5601,7 @@ ALTER TABLE ONLY viroserve.gel_lane
 
 
 --
--- Name: gel gel_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: gel gel_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.gel
@@ -5622,7 +5609,7 @@ ALTER TABLE ONLY viroserve.gel
 
 
 --
--- Name: genome_region genome_region_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: genome_region genome_region_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.genome_region
@@ -5630,7 +5617,7 @@ ALTER TABLE ONLY viroserve.genome_region
 
 
 --
--- Name: hla_genotype hla_genotype_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: hla_genotype hla_genotype_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.hla_genotype
@@ -5638,7 +5625,7 @@ ALTER TABLE ONLY viroserve.hla_genotype
 
 
 --
--- Name: import_job import_job_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: import_job import_job_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.import_job
@@ -5646,7 +5633,7 @@ ALTER TABLE ONLY viroserve.import_job
 
 
 --
--- Name: infection infection_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: infection infection_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.infection
@@ -5654,7 +5641,7 @@ ALTER TABLE ONLY viroserve.infection
 
 
 --
--- Name: lab_result_cat lab_result_cat_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_cat lab_result_cat_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.lab_result_cat
@@ -5662,7 +5649,7 @@ ALTER TABLE ONLY viroserve.lab_result_cat
 
 
 --
--- Name: lab_result_cat_type lab_result_cat_type_name_unique; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_cat_type lab_result_cat_type_name_unique; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.lab_result_cat_type
@@ -5670,7 +5657,7 @@ ALTER TABLE ONLY viroserve.lab_result_cat_type
 
 
 --
--- Name: lab_result_cat_type lab_result_cat_type_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_cat_type lab_result_cat_type_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.lab_result_cat_type
@@ -5678,7 +5665,7 @@ ALTER TABLE ONLY viroserve.lab_result_cat_type
 
 
 --
--- Name: lab_result_cat_value lab_result_cat_value_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_cat_value lab_result_cat_value_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.lab_result_cat_value
@@ -5686,7 +5673,7 @@ ALTER TABLE ONLY viroserve.lab_result_cat_value
 
 
 --
--- Name: lab_result_cat_value lab_result_cat_value_unique_by_type; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_cat_value lab_result_cat_value_unique_by_type; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.lab_result_cat_value
@@ -5694,7 +5681,7 @@ ALTER TABLE ONLY viroserve.lab_result_cat_value
 
 
 --
--- Name: lab_result_group lab_result_group_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_group lab_result_group_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.lab_result_group
@@ -5702,7 +5689,7 @@ ALTER TABLE ONLY viroserve.lab_result_group
 
 
 --
--- Name: lab_result_num lab_result_num_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_num lab_result_num_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.lab_result_num
@@ -5710,7 +5697,7 @@ ALTER TABLE ONLY viroserve.lab_result_num
 
 
 --
--- Name: lab_result_num_type lab_result_num_type_name_unique; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_num_type lab_result_num_type_name_unique; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.lab_result_num_type
@@ -5718,7 +5705,7 @@ ALTER TABLE ONLY viroserve.lab_result_num_type
 
 
 --
--- Name: lab_result_num_type lab_result_num_type_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_num_type lab_result_num_type_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.lab_result_num_type
@@ -5726,7 +5713,7 @@ ALTER TABLE ONLY viroserve.lab_result_num_type
 
 
 --
--- Name: location location_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: location location_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.location
@@ -5734,7 +5721,7 @@ ALTER TABLE ONLY viroserve.location
 
 
 --
--- Name: medication medication_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: medication medication_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.medication
@@ -5742,7 +5729,7 @@ ALTER TABLE ONLY viroserve.medication
 
 
 --
--- Name: na_sequence_alignment_pairwise na_sequence_alignment_pairwise_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: na_sequence_alignment_pairwise na_sequence_alignment_pairwise_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.na_sequence_alignment_pairwise
@@ -5750,7 +5737,7 @@ ALTER TABLE ONLY viroserve.na_sequence_alignment_pairwise
 
 
 --
--- Name: na_sequence_alignment na_sequence_alignment_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: na_sequence_alignment na_sequence_alignment_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.na_sequence_alignment
@@ -5758,7 +5745,7 @@ ALTER TABLE ONLY viroserve.na_sequence_alignment
 
 
 --
--- Name: na_sequence na_sequence_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: na_sequence na_sequence_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.na_sequence
@@ -5766,7 +5753,7 @@ ALTER TABLE ONLY viroserve.na_sequence
 
 
 --
--- Name: notes note_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: notes note_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.notes
@@ -5774,7 +5761,7 @@ ALTER TABLE ONLY viroserve.notes
 
 
 --
--- Name: organism organism_name_key; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: organism organism_name_key; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.organism
@@ -5782,7 +5769,7 @@ ALTER TABLE ONLY viroserve.organism
 
 
 --
--- Name: organism organism_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: organism organism_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.organism
@@ -5790,7 +5777,7 @@ ALTER TABLE ONLY viroserve.organism
 
 
 --
--- Name: patient_alias patient_alias_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_alias patient_alias_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.patient_alias
@@ -5798,7 +5785,7 @@ ALTER TABLE ONLY viroserve.patient_alias
 
 
 --
--- Name: patient_cohort patient_cohort_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_cohort patient_cohort_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.patient_cohort
@@ -5806,7 +5793,7 @@ ALTER TABLE ONLY viroserve.patient_cohort
 
 
 --
--- Name: patient_group patient_group_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_group patient_group_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.patient_group
@@ -5814,7 +5801,7 @@ ALTER TABLE ONLY viroserve.patient_group
 
 
 --
--- Name: patient_medication patient_medication_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_medication patient_medication_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.patient_medication
@@ -5822,7 +5809,7 @@ ALTER TABLE ONLY viroserve.patient_medication
 
 
 --
--- Name: patient_patient_group patient_patient_group_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_patient_group patient_patient_group_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.patient_patient_group
@@ -5830,7 +5817,7 @@ ALTER TABLE ONLY viroserve.patient_patient_group
 
 
 --
--- Name: patient patient_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: patient patient_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.patient
@@ -5838,7 +5825,7 @@ ALTER TABLE ONLY viroserve.patient
 
 
 --
--- Name: pcr_cleanup pcr_cleanup_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_cleanup pcr_cleanup_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.pcr_cleanup
@@ -5846,7 +5833,7 @@ ALTER TABLE ONLY viroserve.pcr_cleanup
 
 
 --
--- Name: pcr_pool_pcr_product pcr_pool_pcr_product_pcr_product_id_key; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_pool_pcr_product pcr_pool_pcr_product_pcr_product_id_key; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.pcr_pool_pcr_product
@@ -5854,7 +5841,7 @@ ALTER TABLE ONLY viroserve.pcr_pool_pcr_product
 
 
 --
--- Name: pcr_pool_pcr_product pcr_pool_pcr_product_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_pool_pcr_product pcr_pool_pcr_product_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.pcr_pool_pcr_product
@@ -5862,7 +5849,7 @@ ALTER TABLE ONLY viroserve.pcr_pool_pcr_product
 
 
 --
--- Name: pcr_pool pcr_pool_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_pool pcr_pool_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.pcr_pool
@@ -5870,7 +5857,7 @@ ALTER TABLE ONLY viroserve.pcr_pool
 
 
 --
--- Name: pcr_product pcr_product_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_product pcr_product_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.pcr_product
@@ -5878,7 +5865,7 @@ ALTER TABLE ONLY viroserve.pcr_product
 
 
 --
--- Name: pcr_product_primer pcr_product_primer_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_product_primer pcr_product_primer_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.pcr_product_primer
@@ -5886,7 +5873,7 @@ ALTER TABLE ONLY viroserve.pcr_product_primer
 
 
 --
--- Name: pcr_template pcr_template_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_template pcr_template_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.pcr_template
@@ -5894,7 +5881,7 @@ ALTER TABLE ONLY viroserve.pcr_template
 
 
 --
--- Name: primer primer_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: primer primer_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.primer
@@ -5902,7 +5889,7 @@ ALTER TABLE ONLY viroserve.primer
 
 
 --
--- Name: primer_position primer_position_primer_id_hxb2_start_hxb2_end_key; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: primer_position primer_position_primer_id_hxb2_start_hxb2_end_key; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.primer_position
@@ -5910,7 +5897,7 @@ ALTER TABLE ONLY viroserve.primer_position
 
 
 --
--- Name: project_materials project_materials_project_sample_idx; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: project_materials project_materials_project_sample_idx; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.project_materials
@@ -5918,7 +5905,7 @@ ALTER TABLE ONLY viroserve.project_materials
 
 
 --
--- Name: project project_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: project project_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.project
@@ -5926,7 +5913,7 @@ ALTER TABLE ONLY viroserve.project
 
 
 --
--- Name: protocol protocol_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: protocol protocol_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.protocol
@@ -5934,7 +5921,7 @@ ALTER TABLE ONLY viroserve.protocol
 
 
 --
--- Name: protocol_type protocol_type_name_key; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: protocol_type protocol_type_name_key; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.protocol_type
@@ -5942,7 +5929,7 @@ ALTER TABLE ONLY viroserve.protocol_type
 
 
 --
--- Name: protocol_type protocol_type_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: protocol_type protocol_type_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.protocol_type
@@ -5950,7 +5937,7 @@ ALTER TABLE ONLY viroserve.protocol_type
 
 
 --
--- Name: rt_primer rt_primer_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: rt_primer rt_primer_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.rt_primer
@@ -5958,7 +5945,7 @@ ALTER TABLE ONLY viroserve.rt_primer
 
 
 --
--- Name: rt_product rt_product_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: rt_product rt_product_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.rt_product
@@ -5966,7 +5953,7 @@ ALTER TABLE ONLY viroserve.rt_product
 
 
 --
--- Name: sample_note sample_note_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: sample_note sample_note_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.sample_note
@@ -5974,7 +5961,7 @@ ALTER TABLE ONLY viroserve.sample_note
 
 
 --
--- Name: sample sample_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: sample sample_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.sample
@@ -5982,7 +5969,7 @@ ALTER TABLE ONLY viroserve.sample
 
 
 --
--- Name: sample_type sample_type_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: sample_type sample_type_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.sample_type
@@ -5990,7 +5977,7 @@ ALTER TABLE ONLY viroserve.sample_type
 
 
 --
--- Name: scientist_group scientist_group_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: scientist_group scientist_group_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.scientist_group
@@ -5998,7 +5985,7 @@ ALTER TABLE ONLY viroserve.scientist_group
 
 
 --
--- Name: scientist_group scientist_group_unique_name; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: scientist_group scientist_group_unique_name; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.scientist_group
@@ -6006,7 +5993,7 @@ ALTER TABLE ONLY viroserve.scientist_group
 
 
 --
--- Name: scientist scientist_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: scientist scientist_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.scientist
@@ -6014,7 +6001,7 @@ ALTER TABLE ONLY viroserve.scientist
 
 
 --
--- Name: scientist scientist_username_key; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: scientist scientist_username_key; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.scientist
@@ -6022,7 +6009,7 @@ ALTER TABLE ONLY viroserve.scientist
 
 
 --
--- Name: sequence_type sequence_type_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: sequence_type sequence_type_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.sequence_type
@@ -6030,7 +6017,7 @@ ALTER TABLE ONLY viroserve.sequence_type
 
 
 --
--- Name: unit unit_name_key; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: unit unit_name_key; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.unit
@@ -6038,7 +6025,7 @@ ALTER TABLE ONLY viroserve.unit
 
 
 --
--- Name: unit unit_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: unit unit_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.unit
@@ -6046,7 +6033,7 @@ ALTER TABLE ONLY viroserve.unit
 
 
 --
--- Name: visit visit_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: visit visit_pkey; Type: CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.visit
@@ -6054,546 +6041,546 @@ ALTER TABLE ONLY viroserve.visit
 
 
 --
--- Name: epitope_pept_id_index; Type: INDEX; Schema: epitope; Owner: vverse_admin
+-- Name: epitope_pept_id_index; Type: INDEX; Schema: epitope; Owner: :owner
 --
 
 CREATE INDEX epitope_pept_id_index ON epitope.epitope USING btree (pept_id);
 
 
 --
--- Name: epitope_source_id_index; Type: INDEX; Schema: epitope; Owner: vverse_admin
+-- Name: epitope_source_id_index; Type: INDEX; Schema: epitope; Owner: :owner
 --
 
 CREATE INDEX epitope_source_id_index ON epitope.epitope USING btree (source_id);
 
 
 --
--- Name: pept_exp; Type: INDEX; Schema: epitope; Owner: vverse_admin
+-- Name: pept_exp; Type: INDEX; Schema: epitope; Owner: :owner
 --
 
 CREATE INDEX pept_exp ON epitope.pept_response USING btree (exp_id);
 
 
 --
--- Name: pept_response_pept_id_idx; Type: INDEX; Schema: epitope; Owner: vverse_admin
+-- Name: pept_response_pept_id_idx; Type: INDEX; Schema: epitope; Owner: :owner
 --
 
 CREATE INDEX pept_response_pept_id_idx ON epitope.pept_response USING btree (pept_id);
 
 
 --
--- Name: pept_sample; Type: INDEX; Schema: epitope; Owner: vverse_admin
+-- Name: pept_sample; Type: INDEX; Schema: epitope; Owner: :owner
 --
 
 CREATE INDEX pept_sample ON epitope.pept_response USING btree (sample_id);
 
 
 --
--- Name: peptide_gene_id_idx; Type: INDEX; Schema: epitope; Owner: vverse_admin
+-- Name: peptide_gene_id_idx; Type: INDEX; Schema: epitope; Owner: :owner
 --
 
 CREATE INDEX peptide_gene_id_idx ON epitope.peptide USING btree (gene_id);
 
 
 --
--- Name: reading_measure_id_idx; Type: INDEX; Schema: epitope; Owner: vverse_admin
+-- Name: reading_measure_id_idx; Type: INDEX; Schema: epitope; Owner: :owner
 --
 
 CREATE INDEX reading_measure_id_idx ON epitope.reading USING btree (measure_id);
 
 
 --
--- Name: titration_pept_id_index; Type: INDEX; Schema: epitope; Owner: vverse_admin
+-- Name: titration_pept_id_index; Type: INDEX; Schema: epitope; Owner: :owner
 --
 
 CREATE INDEX titration_pept_id_index ON epitope.titration USING btree (pept_id);
 
 
 --
--- Name: box_pos_aliquot_id_idx; Type: INDEX; Schema: freezer; Owner: vverse_admin
+-- Name: box_pos_aliquot_id_idx; Type: INDEX; Schema: freezer; Owner: :owner
 --
 
 CREATE UNIQUE INDEX box_pos_aliquot_id_idx ON freezer.box_pos USING btree (aliquot_id);
 
 
 --
--- Name: aliquot_sample_id; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: aliquot_sample_id; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX aliquot_sample_id ON viroserve.aliquot USING btree (sample_id);
 
 
 --
--- Name: distinct_sample_search_assignments_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: distinct_sample_search_assignments_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX distinct_sample_search_assignments_idx ON viroserve.distinct_sample_search USING gin (assignments jsonb_path_ops);
 
 
 --
--- Name: distinct_sample_search_available_aliquots_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: distinct_sample_search_available_aliquots_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX distinct_sample_search_available_aliquots_idx ON viroserve.distinct_sample_search USING btree (available_aliquots);
 
 
 --
--- Name: distinct_sample_search_cohorts_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: distinct_sample_search_cohorts_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX distinct_sample_search_cohorts_idx ON viroserve.distinct_sample_search USING gin (cohorts);
 
 
 --
--- Name: distinct_sample_search_derivation_id_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: distinct_sample_search_derivation_id_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX distinct_sample_search_derivation_id_idx ON viroserve.distinct_sample_search USING btree (derivation_id);
 
 
 --
--- Name: distinct_sample_search_derivation_protocol_id_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: distinct_sample_search_derivation_protocol_id_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX distinct_sample_search_derivation_protocol_id_idx ON viroserve.distinct_sample_search USING btree (derivation_protocol_id);
 
 
 --
--- Name: distinct_sample_search_derivation_protocol_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: distinct_sample_search_derivation_protocol_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX distinct_sample_search_derivation_protocol_idx ON viroserve.distinct_sample_search USING btree (derivation_protocol);
 
 
 --
--- Name: distinct_sample_search_has_sequences_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: distinct_sample_search_has_sequences_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX distinct_sample_search_has_sequences_idx ON viroserve.distinct_sample_search USING btree (has_sequences) WHERE has_sequences;
 
 
 --
--- Name: distinct_sample_search_na_type_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: distinct_sample_search_na_type_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX distinct_sample_search_na_type_idx ON viroserve.distinct_sample_search USING btree (na_type);
 
 
 --
--- Name: distinct_sample_search_name_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: distinct_sample_search_name_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX distinct_sample_search_name_idx ON viroserve.distinct_sample_search USING btree (name);
 
 
 --
--- Name: distinct_sample_search_patient_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: distinct_sample_search_patient_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX distinct_sample_search_patient_idx ON viroserve.distinct_sample_search USING btree (patient);
 
 
 --
--- Name: distinct_sample_search_sample_date_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: distinct_sample_search_sample_date_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX distinct_sample_search_sample_date_idx ON viroserve.distinct_sample_search USING btree (sample_date);
 
 
 --
--- Name: distinct_sample_search_sample_id_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: distinct_sample_search_sample_id_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE UNIQUE INDEX distinct_sample_search_sample_id_idx ON viroserve.distinct_sample_search USING btree (sample_id);
 
 
 --
--- Name: distinct_sample_search_tissue_type_id_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: distinct_sample_search_tissue_type_id_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX distinct_sample_search_tissue_type_id_idx ON viroserve.distinct_sample_search USING btree (tissue_type_id);
 
 
 --
--- Name: distinct_sample_search_tissue_type_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: distinct_sample_search_tissue_type_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX distinct_sample_search_tissue_type_idx ON viroserve.distinct_sample_search USING btree (tissue_type);
 
 
 --
--- Name: distinct_sample_search_viral_load_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: distinct_sample_search_viral_load_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX distinct_sample_search_viral_load_idx ON viroserve.distinct_sample_search USING btree (viral_load);
 
 
 --
--- Name: enzyme_type_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: enzyme_type_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX enzyme_type_idx ON viroserve.enzyme USING btree (type);
 
 
 --
--- Name: genome_region_base_end_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: genome_region_base_end_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX genome_region_base_end_idx ON viroserve.genome_region USING btree (base_end);
 
 
 --
--- Name: genome_region_base_range_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: genome_region_base_range_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX genome_region_base_range_idx ON viroserve.genome_region USING gist (base_range);
 
 
 --
--- Name: genome_region_base_start_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: genome_region_base_start_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX genome_region_base_start_idx ON viroserve.genome_region USING btree (base_start);
 
 
 --
--- Name: genome_region_name_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: genome_region_name_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX genome_region_name_idx ON viroserve.genome_region USING btree (name);
 
 
 --
--- Name: hla_genotype_key; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: hla_genotype_key; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE UNIQUE INDEX hla_genotype_key ON viroserve.hla_genotype USING btree ((COALESCE(locus, ''::character varying)), (COALESCE(workshop, ''::bpchar)), (COALESCE((type)::integer, 0)), (COALESCE((subtype)::integer, 0)), (COALESCE((synonymous_polymorphism)::integer, 0)), (COALESCE((utr_polymorphism)::integer, 0)), (COALESCE(expression_level, ''::bpchar)), (COALESCE((ambiguity_group)::bpchar, ''::bpchar)));
 
 
 --
--- Name: lab_num_type; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_num_type; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX lab_num_type ON viroserve.lab_result_num_type USING btree (lab_result_num_type_id);
 
 
 --
--- Name: lab_result_cat_type_index; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_cat_type_index; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX lab_result_cat_type_index ON viroserve.lab_result_cat_value USING btree (lab_result_cat_type_id);
 
 
 --
--- Name: lab_result_cat_value_and_type; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_cat_value_and_type; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX lab_result_cat_value_and_type ON viroserve.lab_result_cat USING btree (lab_result_cat_value_id, lab_result_cat_type_id);
 
 
 --
--- Name: lab_result_cat_visit_type_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_cat_visit_type_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE UNIQUE INDEX lab_result_cat_visit_type_idx ON viroserve.lab_result_cat USING btree (visit_id, lab_result_cat_type_id);
 
 
 --
--- Name: lab_result_num_lab_result_num_type_id; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_num_lab_result_num_type_id; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX lab_result_num_lab_result_num_type_id ON viroserve.lab_result_num USING btree (lab_result_num_type_id);
 
 
 --
--- Name: lab_result_num_sample; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_num_sample; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX lab_result_num_sample ON viroserve.lab_result_num USING btree (sample_id);
 
 
 --
--- Name: lab_result_num_type_to_group; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_num_type_to_group; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE UNIQUE INDEX lab_result_num_type_to_group ON viroserve.lab_result_num_type_group USING btree (lab_result_num_type_id, lab_result_group_id);
 
 
 --
--- Name: lab_result_num_type_vv_uid; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_num_type_vv_uid; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX lab_result_num_type_vv_uid ON viroserve.lab_result_num_type USING btree (vv_uid);
 
 
 --
--- Name: lab_result_num_visit_type_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_num_visit_type_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE UNIQUE INDEX lab_result_num_visit_type_idx ON viroserve.lab_result_num USING btree (visit_id, lab_result_num_type_id);
 
 
 --
--- Name: medication_abbreviation_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: medication_abbreviation_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE UNIQUE INDEX medication_abbreviation_idx ON viroserve.medication USING btree (upper(abbreviation));
 
 
 --
--- Name: na_samp_id; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: na_samp_id; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX na_samp_id ON viroserve.na_sequence USING btree (sample_id);
 
 
 --
--- Name: na_seq_alignment_id; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: na_seq_alignment_id; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX na_seq_alignment_id ON viroserve.na_sequence_alignment USING btree (alignment_id);
 
 
 --
--- Name: na_sequence_align_seq; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: na_sequence_align_seq; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX na_sequence_align_seq ON viroserve.na_sequence_alignment USING btree (na_sequence_id, na_sequence_revision);
 
 
 --
--- Name: only_one_primary_alias; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: only_one_primary_alias; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE UNIQUE INDEX only_one_primary_alias ON viroserve.patient_alias USING btree (patient_id, cohort_id) WHERE ((type)::text = 'primary'::text);
 
 
 --
--- Name: organism_name_lowercase_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: organism_name_lowercase_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE UNIQUE INDEX organism_name_lowercase_idx ON viroserve.organism USING btree (lower(name));
 
 
 --
--- Name: patient_medication_patient_id_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_medication_patient_id_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX patient_medication_patient_id_idx ON viroserve.patient_medication USING btree (patient_id);
 
 
 --
--- Name: pcr_product_pcr_template_id_fk; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_product_pcr_template_id_fk; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX pcr_product_pcr_template_id_fk ON viroserve.pcr_product USING btree (pcr_template_id);
 
 
 --
--- Name: pcr_template_extraction_id_fk; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_template_extraction_id_fk; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX pcr_template_extraction_id_fk ON viroserve.pcr_template USING btree (extraction_id);
 
 
 --
--- Name: pcr_template_pcr_product_id_fk; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_template_pcr_product_id_fk; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX pcr_template_pcr_product_id_fk ON viroserve.pcr_template USING btree (pcr_product_id);
 
 
 --
--- Name: pcr_template_rt_product_id_fk; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_template_rt_product_id_fk; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX pcr_template_rt_product_id_fk ON viroserve.pcr_template USING btree (rt_product_id);
 
 
 --
--- Name: pcr_template_sample_id_fk; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_template_sample_id_fk; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX pcr_template_sample_id_fk ON viroserve.pcr_template USING btree (sample_id);
 
 
 --
--- Name: primer_name; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: primer_name; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX primer_name ON viroserve.primer USING btree (name);
 
 
 --
--- Name: primer_unique_name_sequence; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: primer_unique_name_sequence; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE UNIQUE INDEX primer_unique_name_sequence ON viroserve.primer USING btree (name, sequence);
 
 
 --
--- Name: project_material_scientist_progress_fk_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: project_material_scientist_progress_fk_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE UNIQUE INDEX project_material_scientist_progress_fk_idx ON viroserve.project_material_scientist_progress USING btree (project_id, sample_id, scientist_id);
 
 
 --
--- Name: project_material_scientist_progress_project_id_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: project_material_scientist_progress_project_id_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX project_material_scientist_progress_project_id_idx ON viroserve.project_material_scientist_progress USING btree (project_id);
 
 
 --
--- Name: project_material_scientist_progress_sample_id_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: project_material_scientist_progress_sample_id_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX project_material_scientist_progress_sample_id_idx ON viroserve.project_material_scientist_progress USING btree (sample_id);
 
 
 --
--- Name: project_material_scientist_progress_scientist_id_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: project_material_scientist_progress_scientist_id_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX project_material_scientist_progress_scientist_id_idx ON viroserve.project_material_scientist_progress USING btree (scientist_id);
 
 
 --
--- Name: project_materials_sample_id_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: project_materials_sample_id_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX project_materials_sample_id_idx ON viroserve.project_materials USING btree (sample_id);
 
 
 --
--- Name: project_name_key; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: project_name_key; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE UNIQUE INDEX project_name_key ON viroserve.project USING btree (lower(name));
 
 
 --
--- Name: sample_visit; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: sample_visit; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX sample_visit ON viroserve.sample USING btree (visit_id);
 
 
 --
--- Name: sequence_search_cohorts_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: sequence_search_cohorts_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX sequence_search_cohorts_idx ON viroserve.sequence_search USING gin (cohorts);
 
 
 --
--- Name: sequence_search_na_sequence_id_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: sequence_search_na_sequence_id_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE UNIQUE INDEX sequence_search_na_sequence_id_idx ON viroserve.sequence_search USING btree (na_sequence_id);
 
 
 --
--- Name: sequence_search_na_type_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: sequence_search_na_type_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX sequence_search_na_type_idx ON viroserve.sequence_search USING btree (na_type);
 
 
 --
--- Name: sequence_search_name_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: sequence_search_name_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX sequence_search_name_idx ON viroserve.sequence_search USING btree (name);
 
 
 --
--- Name: sequence_search_patient_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: sequence_search_patient_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX sequence_search_patient_idx ON viroserve.sequence_search USING btree (patient);
 
 
 --
--- Name: sequence_search_pcr_name_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: sequence_search_pcr_name_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX sequence_search_pcr_name_idx ON viroserve.sequence_search USING btree (pcr_name);
 
 
 --
--- Name: sequence_search_sample_name_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: sequence_search_sample_name_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX sequence_search_sample_name_idx ON viroserve.sequence_search USING btree (sample_name);
 
 
 --
--- Name: sequence_search_scientist_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: sequence_search_scientist_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX sequence_search_scientist_idx ON viroserve.sequence_search USING btree (scientist);
 
 
 --
--- Name: sequence_search_tissue_type_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: sequence_search_tissue_type_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX sequence_search_tissue_type_idx ON viroserve.sequence_search USING btree (tissue_type);
 
 
 --
--- Name: sequence_search_type_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: sequence_search_type_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX sequence_search_type_idx ON viroserve.sequence_search USING btree (type);
 
 
 --
--- Name: tissue_type_name_key; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: tissue_type_name_key; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE UNIQUE INDEX tissue_type_name_key ON viroserve.tissue_type USING btree (name);
 
 
 --
--- Name: tissue_type_name_lc_key; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: tissue_type_name_lc_key; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE UNIQUE INDEX tissue_type_name_lc_key ON viroserve.tissue_type USING btree (lower((name)::text));
 
 
 --
--- Name: unique_alias_within_cohort; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: unique_alias_within_cohort; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE UNIQUE INDEX unique_alias_within_cohort ON viroserve.patient_alias USING btree (external_patient_id, cohort_id);
 
 
 --
--- Name: visit_date; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: visit_date; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX visit_date ON viroserve.visit USING btree (visit_date);
 
 
 --
--- Name: visit_patient; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: visit_patient; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE INDEX visit_patient ON viroserve.visit USING btree (patient_id);
 
 
 --
--- Name: visit_patient_visit_date_idx; Type: INDEX; Schema: viroserve; Owner: vverse_admin
+-- Name: visit_patient_visit_date_idx; Type: INDEX; Schema: viroserve; Owner: :owner
 --
 
 CREATE UNIQUE INDEX visit_patient_visit_date_idx ON viroserve.visit USING btree (patient_id, visit_date) WHERE (visit_date IS NOT NULL);
 
 
 --
--- Name: derivation derivation_input_sample_id_fkey; Type: FK CONSTRAINT; Schema: delta; Owner: vverse_admin
+-- Name: derivation derivation_input_sample_id_fkey; Type: FK CONSTRAINT; Schema: delta; Owner: :owner
 --
 
 ALTER TABLE ONLY delta.derivation
@@ -6601,7 +6588,7 @@ ALTER TABLE ONLY delta.derivation
 
 
 --
--- Name: derivation derivation_protocol_id_fkey; Type: FK CONSTRAINT; Schema: delta; Owner: vverse_admin
+-- Name: derivation derivation_protocol_id_fkey; Type: FK CONSTRAINT; Schema: delta; Owner: :owner
 --
 
 ALTER TABLE ONLY delta.derivation
@@ -6609,7 +6596,7 @@ ALTER TABLE ONLY delta.derivation
 
 
 --
--- Name: derivation derivation_scientist_id_fkey; Type: FK CONSTRAINT; Schema: delta; Owner: vverse_admin
+-- Name: derivation derivation_scientist_id_fkey; Type: FK CONSTRAINT; Schema: delta; Owner: :owner
 --
 
 ALTER TABLE ONLY delta.derivation
@@ -6617,7 +6604,7 @@ ALTER TABLE ONLY delta.derivation
 
 
 --
--- Name: protocol_output protocol_output_protocol_id_fkey; Type: FK CONSTRAINT; Schema: delta; Owner: vverse_admin
+-- Name: protocol_output protocol_output_protocol_id_fkey; Type: FK CONSTRAINT; Schema: delta; Owner: :owner
 --
 
 ALTER TABLE ONLY delta.protocol_output
@@ -6625,7 +6612,7 @@ ALTER TABLE ONLY delta.protocol_output
 
 
 --
--- Name: protocol_output protocol_output_tissue_type_id_fkey; Type: FK CONSTRAINT; Schema: delta; Owner: vverse_admin
+-- Name: protocol_output protocol_output_tissue_type_id_fkey; Type: FK CONSTRAINT; Schema: delta; Owner: :owner
 --
 
 ALTER TABLE ONLY delta.protocol_output
@@ -6633,7 +6620,7 @@ ALTER TABLE ONLY delta.protocol_output
 
 
 --
--- Name: epitope_mutant epitope_mutant_epit_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: epitope_mutant epitope_mutant_epit_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.epitope_mutant
@@ -6641,7 +6628,7 @@ ALTER TABLE ONLY epitope.epitope_mutant
 
 
 --
--- Name: epitope_mutant epitope_mutant_mutant_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: epitope_mutant epitope_mutant_mutant_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.epitope_mutant
@@ -6649,7 +6636,7 @@ ALTER TABLE ONLY epitope.epitope_mutant
 
 
 --
--- Name: epitope epitope_pept_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: epitope epitope_pept_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.epitope
@@ -6657,7 +6644,7 @@ ALTER TABLE ONLY epitope.epitope
 
 
 --
--- Name: epitope_sequence epitope_sequence_na_sequence_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: epitope_sequence epitope_sequence_na_sequence_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.epitope_sequence
@@ -6665,7 +6652,7 @@ ALTER TABLE ONLY epitope.epitope_sequence
 
 
 --
--- Name: epitope_sequence epitope_sequence_pept_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: epitope_sequence epitope_sequence_pept_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.epitope_sequence
@@ -6673,7 +6660,7 @@ ALTER TABLE ONLY epitope.epitope_sequence
 
 
 --
--- Name: epitope epitope_source_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: epitope epitope_source_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.epitope
@@ -6681,7 +6668,7 @@ ALTER TABLE ONLY epitope.epitope
 
 
 --
--- Name: hla hla_hla_genotype_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: hla hla_hla_genotype_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.hla
@@ -6689,7 +6676,7 @@ ALTER TABLE ONLY epitope.hla
 
 
 --
--- Name: hla_pept hla_pept_hla_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: hla_pept hla_pept_hla_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.hla_pept
@@ -6697,7 +6684,7 @@ ALTER TABLE ONLY epitope.hla_pept
 
 
 --
--- Name: hla_pept hla_pept_pept_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: hla_pept hla_pept_pept_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.hla_pept
@@ -6705,7 +6692,7 @@ ALTER TABLE ONLY epitope.hla_pept
 
 
 --
--- Name: hla_response hla_response_blcl_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: hla_response hla_response_blcl_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.hla_response
@@ -6713,7 +6700,7 @@ ALTER TABLE ONLY epitope.hla_response
 
 
 --
--- Name: hla_response hla_response_exp_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: hla_response hla_response_exp_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.hla_response
@@ -6721,7 +6708,7 @@ ALTER TABLE ONLY epitope.hla_response
 
 
 --
--- Name: hla_response hla_response_pept_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: hla_response hla_response_pept_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.hla_response
@@ -6729,7 +6716,7 @@ ALTER TABLE ONLY epitope.hla_response
 
 
 --
--- Name: hla_response hla_response_sample_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: hla_response hla_response_sample_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.hla_response
@@ -6737,7 +6724,7 @@ ALTER TABLE ONLY epitope.hla_response
 
 
 --
--- Name: mutant mutant_pept_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: mutant mutant_pept_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.mutant
@@ -6745,7 +6732,7 @@ ALTER TABLE ONLY epitope.mutant
 
 
 --
--- Name: origin origin_na_sequence_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: origin origin_na_sequence_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.origin
@@ -6753,7 +6740,7 @@ ALTER TABLE ONLY epitope.origin
 
 
 --
--- Name: origin_peptide origin_peptide_origin_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: origin_peptide origin_peptide_origin_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.origin_peptide
@@ -6761,7 +6748,7 @@ ALTER TABLE ONLY epitope.origin_peptide
 
 
 --
--- Name: origin_peptide origin_peptide_pept_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: origin_peptide origin_peptide_pept_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.origin_peptide
@@ -6769,7 +6756,7 @@ ALTER TABLE ONLY epitope.origin_peptide
 
 
 --
--- Name: pept_response pept_response_exp_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: pept_response pept_response_exp_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.pept_response
@@ -6777,7 +6764,7 @@ ALTER TABLE ONLY epitope.pept_response
 
 
 --
--- Name: pept_response pept_response_pept_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: pept_response pept_response_pept_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.pept_response
@@ -6785,7 +6772,7 @@ ALTER TABLE ONLY epitope.pept_response
 
 
 --
--- Name: pept_response pept_response_sample_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: pept_response pept_response_sample_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.pept_response
@@ -6793,7 +6780,7 @@ ALTER TABLE ONLY epitope.pept_response
 
 
 --
--- Name: peptide peptide_gene_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: peptide peptide_gene_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.peptide
@@ -6801,7 +6788,7 @@ ALTER TABLE ONLY epitope.peptide
 
 
 --
--- Name: peptide peptide_origin_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: peptide peptide_origin_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.peptide
@@ -6809,7 +6796,7 @@ ALTER TABLE ONLY epitope.peptide
 
 
 --
--- Name: pool_pept pool_pept_pept_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: pool_pept pool_pept_pept_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.pool_pept
@@ -6817,7 +6804,7 @@ ALTER TABLE ONLY epitope.pool_pept
 
 
 --
--- Name: pool_pept pool_pept_pool_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: pool_pept pool_pept_pool_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.pool_pept
@@ -6825,7 +6812,7 @@ ALTER TABLE ONLY epitope.pool_pept
 
 
 --
--- Name: pool_response pool_response_exp_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: pool_response pool_response_exp_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.pool_response
@@ -6833,7 +6820,7 @@ ALTER TABLE ONLY epitope.pool_response
 
 
 --
--- Name: pool_response pool_response_pool_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: pool_response pool_response_pool_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.pool_response
@@ -6841,7 +6828,7 @@ ALTER TABLE ONLY epitope.pool_response
 
 
 --
--- Name: pool_response pool_response_sample_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: pool_response pool_response_sample_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.pool_response
@@ -6849,7 +6836,7 @@ ALTER TABLE ONLY epitope.pool_response
 
 
 --
--- Name: reading reading_measure_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: reading reading_measure_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.reading
@@ -6857,7 +6844,7 @@ ALTER TABLE ONLY epitope.reading
 
 
 --
--- Name: titration titration_conc_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: titration titration_conc_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.titration
@@ -6865,7 +6852,7 @@ ALTER TABLE ONLY epitope.titration
 
 
 --
--- Name: titration titration_exp_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: titration titration_exp_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.titration
@@ -6873,7 +6860,7 @@ ALTER TABLE ONLY epitope.titration
 
 
 --
--- Name: titration titration_pept_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: titration titration_pept_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.titration
@@ -6881,7 +6868,7 @@ ALTER TABLE ONLY epitope.titration
 
 
 --
--- Name: titration titration_sample_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: vverse_admin
+-- Name: titration titration_sample_id_fkey; Type: FK CONSTRAINT; Schema: epitope; Owner: :owner
 --
 
 ALTER TABLE ONLY epitope.titration
@@ -6889,7 +6876,7 @@ ALTER TABLE ONLY epitope.titration
 
 
 --
--- Name: box_pos box_bos_box_fk; Type: FK CONSTRAINT; Schema: freezer; Owner: vverse_admin
+-- Name: box_pos box_bos_box_fk; Type: FK CONSTRAINT; Schema: freezer; Owner: :owner
 --
 
 ALTER TABLE ONLY freezer.box_pos
@@ -6897,7 +6884,7 @@ ALTER TABLE ONLY freezer.box_pos
 
 
 --
--- Name: box_pos box_pos_aliquot_fk; Type: FK CONSTRAINT; Schema: freezer; Owner: vverse_admin
+-- Name: box_pos box_pos_aliquot_fk; Type: FK CONSTRAINT; Schema: freezer; Owner: :owner
 --
 
 ALTER TABLE ONLY freezer.box_pos
@@ -6905,7 +6892,7 @@ ALTER TABLE ONLY freezer.box_pos
 
 
 --
--- Name: freezer creating_scientist_fk; Type: FK CONSTRAINT; Schema: freezer; Owner: vverse_admin
+-- Name: freezer creating_scientist_fk; Type: FK CONSTRAINT; Schema: freezer; Owner: :owner
 --
 
 ALTER TABLE ONLY freezer.freezer
@@ -6913,7 +6900,7 @@ ALTER TABLE ONLY freezer.freezer
 
 
 --
--- Name: box freezer_box_creating_scientist_fk; Type: FK CONSTRAINT; Schema: freezer; Owner: vverse_admin
+-- Name: box freezer_box_creating_scientist_fk; Type: FK CONSTRAINT; Schema: freezer; Owner: :owner
 --
 
 ALTER TABLE ONLY freezer.box
@@ -6921,7 +6908,7 @@ ALTER TABLE ONLY freezer.box
 
 
 --
--- Name: box freezer_box_owning_scientist_fk; Type: FK CONSTRAINT; Schema: freezer; Owner: vverse_admin
+-- Name: box freezer_box_owning_scientist_fk; Type: FK CONSTRAINT; Schema: freezer; Owner: :owner
 --
 
 ALTER TABLE ONLY freezer.box
@@ -6929,7 +6916,7 @@ ALTER TABLE ONLY freezer.box
 
 
 --
--- Name: box freezer_box_rack_fk; Type: FK CONSTRAINT; Schema: freezer; Owner: vverse_admin
+-- Name: box freezer_box_rack_fk; Type: FK CONSTRAINT; Schema: freezer; Owner: :owner
 --
 
 ALTER TABLE ONLY freezer.box
@@ -6937,7 +6924,7 @@ ALTER TABLE ONLY freezer.box
 
 
 --
--- Name: rack freezer_rack_ owning_scientist_fk; Type: FK CONSTRAINT; Schema: freezer; Owner: vverse_admin
+-- Name: rack freezer_rack_ owning_scientist_fk; Type: FK CONSTRAINT; Schema: freezer; Owner: :owner
 --
 
 ALTER TABLE ONLY freezer.rack
@@ -6945,7 +6932,7 @@ ALTER TABLE ONLY freezer.rack
 
 
 --
--- Name: rack freezer_rack_creating_scientist_id; Type: FK CONSTRAINT; Schema: freezer; Owner: vverse_admin
+-- Name: rack freezer_rack_creating_scientist_id; Type: FK CONSTRAINT; Schema: freezer; Owner: :owner
 --
 
 ALTER TABLE ONLY freezer.rack
@@ -6953,7 +6940,7 @@ ALTER TABLE ONLY freezer.rack
 
 
 --
--- Name: rack freezer_rack_freezer_fk; Type: FK CONSTRAINT; Schema: freezer; Owner: vverse_admin
+-- Name: rack freezer_rack_freezer_fk; Type: FK CONSTRAINT; Schema: freezer; Owner: :owner
 --
 
 ALTER TABLE ONLY freezer.rack
@@ -6961,7 +6948,7 @@ ALTER TABLE ONLY freezer.rack
 
 
 --
--- Name: freezer owning_scientist_fk; Type: FK CONSTRAINT; Schema: freezer; Owner: vverse_admin
+-- Name: freezer owning_scientist_fk; Type: FK CONSTRAINT; Schema: freezer; Owner: :owner
 --
 
 ALTER TABLE ONLY freezer.freezer
@@ -6969,7 +6956,7 @@ ALTER TABLE ONLY freezer.freezer
 
 
 --
--- Name: changes changes_project_fkey; Type: FK CONSTRAINT; Schema: sqitch; Owner: vverse_admin
+-- Name: changes changes_project_fkey; Type: FK CONSTRAINT; Schema: sqitch; Owner: :owner
 --
 
 ALTER TABLE ONLY sqitch.changes
@@ -6977,7 +6964,7 @@ ALTER TABLE ONLY sqitch.changes
 
 
 --
--- Name: dependencies dependencies_change_id_fkey; Type: FK CONSTRAINT; Schema: sqitch; Owner: vverse_admin
+-- Name: dependencies dependencies_change_id_fkey; Type: FK CONSTRAINT; Schema: sqitch; Owner: :owner
 --
 
 ALTER TABLE ONLY sqitch.dependencies
@@ -6985,7 +6972,7 @@ ALTER TABLE ONLY sqitch.dependencies
 
 
 --
--- Name: dependencies dependencies_dependency_id_fkey; Type: FK CONSTRAINT; Schema: sqitch; Owner: vverse_admin
+-- Name: dependencies dependencies_dependency_id_fkey; Type: FK CONSTRAINT; Schema: sqitch; Owner: :owner
 --
 
 ALTER TABLE ONLY sqitch.dependencies
@@ -6993,7 +6980,7 @@ ALTER TABLE ONLY sqitch.dependencies
 
 
 --
--- Name: events events_project_fkey; Type: FK CONSTRAINT; Schema: sqitch; Owner: vverse_admin
+-- Name: events events_project_fkey; Type: FK CONSTRAINT; Schema: sqitch; Owner: :owner
 --
 
 ALTER TABLE ONLY sqitch.events
@@ -7001,7 +6988,7 @@ ALTER TABLE ONLY sqitch.events
 
 
 --
--- Name: tags tags_change_id_fkey; Type: FK CONSTRAINT; Schema: sqitch; Owner: vverse_admin
+-- Name: tags tags_change_id_fkey; Type: FK CONSTRAINT; Schema: sqitch; Owner: :owner
 --
 
 ALTER TABLE ONLY sqitch.tags
@@ -7009,7 +6996,7 @@ ALTER TABLE ONLY sqitch.tags
 
 
 --
--- Name: tags tags_project_fkey; Type: FK CONSTRAINT; Schema: sqitch; Owner: vverse_admin
+-- Name: tags tags_project_fkey; Type: FK CONSTRAINT; Schema: sqitch; Owner: :owner
 --
 
 ALTER TABLE ONLY sqitch.tags
@@ -7017,7 +7004,7 @@ ALTER TABLE ONLY sqitch.tags
 
 
 --
--- Name: sample additive_fk; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: sample additive_fk; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.sample
@@ -7025,7 +7012,7 @@ ALTER TABLE ONLY viroserve.sample
 
 
 --
--- Name: alignment alignment_alignment_method_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: alignment alignment_alignment_method_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.alignment
@@ -7033,7 +7020,7 @@ ALTER TABLE ONLY viroserve.alignment
 
 
 --
--- Name: alignment alignment_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: alignment alignment_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.alignment
@@ -7041,7 +7028,7 @@ ALTER TABLE ONLY viroserve.alignment
 
 
 --
--- Name: aliquot aliquot_creating_scientist_fk; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: aliquot aliquot_creating_scientist_fk; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.aliquot
@@ -7049,7 +7036,7 @@ ALTER TABLE ONLY viroserve.aliquot
 
 
 --
--- Name: aliquot aliquot_possessing_scientist_fk; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: aliquot aliquot_possessing_scientist_fk; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.aliquot
@@ -7057,7 +7044,7 @@ ALTER TABLE ONLY viroserve.aliquot
 
 
 --
--- Name: aliquot aliquot_sample_fk; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: aliquot aliquot_sample_fk; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.aliquot
@@ -7065,7 +7052,7 @@ ALTER TABLE ONLY viroserve.aliquot
 
 
 --
--- Name: aliquot aliquot_unit_fk; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: aliquot aliquot_unit_fk; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.aliquot
@@ -7073,7 +7060,7 @@ ALTER TABLE ONLY viroserve.aliquot
 
 
 --
--- Name: bisulfite_converted_dna bisulfite_converted_dna_extraction_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: bisulfite_converted_dna bisulfite_converted_dna_extraction_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.bisulfite_converted_dna
@@ -7081,7 +7068,7 @@ ALTER TABLE ONLY viroserve.bisulfite_converted_dna
 
 
 --
--- Name: bisulfite_converted_dna bisulfite_converted_dna_protocol_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: bisulfite_converted_dna bisulfite_converted_dna_protocol_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.bisulfite_converted_dna
@@ -7089,7 +7076,7 @@ ALTER TABLE ONLY viroserve.bisulfite_converted_dna
 
 
 --
--- Name: bisulfite_converted_dna bisulfite_converted_dna_rt_product_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: bisulfite_converted_dna bisulfite_converted_dna_rt_product_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.bisulfite_converted_dna
@@ -7097,7 +7084,7 @@ ALTER TABLE ONLY viroserve.bisulfite_converted_dna
 
 
 --
--- Name: bisulfite_converted_dna bisulfite_converted_dna_sample_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: bisulfite_converted_dna bisulfite_converted_dna_sample_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.bisulfite_converted_dna
@@ -7105,7 +7092,7 @@ ALTER TABLE ONLY viroserve.bisulfite_converted_dna
 
 
 --
--- Name: bisulfite_converted_dna bisulfite_converted_dna_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: bisulfite_converted_dna bisulfite_converted_dna_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.bisulfite_converted_dna
@@ -7113,7 +7100,7 @@ ALTER TABLE ONLY viroserve.bisulfite_converted_dna
 
 
 --
--- Name: chromat chromat_chromat_type_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: chromat chromat_chromat_type_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.chromat
@@ -7121,7 +7108,7 @@ ALTER TABLE ONLY viroserve.chromat
 
 
 --
--- Name: chromat_na_sequence chromat_na_sequence_chromat_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: chromat_na_sequence chromat_na_sequence_chromat_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.chromat_na_sequence
@@ -7129,7 +7116,7 @@ ALTER TABLE ONLY viroserve.chromat_na_sequence
 
 
 --
--- Name: chromat_na_sequence chromat_na_sequence_id_fk; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: chromat_na_sequence chromat_na_sequence_id_fk; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.chromat_na_sequence
@@ -7137,7 +7124,7 @@ ALTER TABLE ONLY viroserve.chromat_na_sequence
 
 
 --
--- Name: chromat chromat_primer_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: chromat chromat_primer_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.chromat
@@ -7145,7 +7132,7 @@ ALTER TABLE ONLY viroserve.chromat
 
 
 --
--- Name: chromat chromat_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: chromat chromat_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.chromat
@@ -7153,7 +7140,7 @@ ALTER TABLE ONLY viroserve.chromat
 
 
 --
--- Name: clone clone_pcr_product_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: clone clone_pcr_product_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.clone
@@ -7161,7 +7148,7 @@ ALTER TABLE ONLY viroserve.clone
 
 
 --
--- Name: clone clone_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: clone clone_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.clone
@@ -7169,7 +7156,7 @@ ALTER TABLE ONLY viroserve.clone
 
 
 --
--- Name: copy_number copy_number_bisulfite_converted_dna_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: copy_number copy_number_bisulfite_converted_dna_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.copy_number
@@ -7177,7 +7164,7 @@ ALTER TABLE ONLY viroserve.copy_number
 
 
 --
--- Name: copy_number_gel_lane copy_number_fk; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: copy_number_gel_lane copy_number_fk; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.copy_number_gel_lane
@@ -7185,7 +7172,7 @@ ALTER TABLE ONLY viroserve.copy_number_gel_lane
 
 
 --
--- Name: copy_number copy_number_sample_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: copy_number copy_number_sample_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.copy_number
@@ -7193,7 +7180,7 @@ ALTER TABLE ONLY viroserve.copy_number
 
 
 --
--- Name: extraction extraction_concentration_unit_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: extraction extraction_concentration_unit_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.extraction
@@ -7201,7 +7188,7 @@ ALTER TABLE ONLY viroserve.extraction
 
 
 --
--- Name: extraction extraction_eluted_vol_unit_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: extraction extraction_eluted_vol_unit_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.extraction
@@ -7209,7 +7196,7 @@ ALTER TABLE ONLY viroserve.extraction
 
 
 --
--- Name: extraction extraction_extract_type_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: extraction extraction_extract_type_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.extraction
@@ -7217,7 +7204,7 @@ ALTER TABLE ONLY viroserve.extraction
 
 
 --
--- Name: copy_number extraction_fk; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: copy_number extraction_fk; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.copy_number
@@ -7225,7 +7212,7 @@ ALTER TABLE ONLY viroserve.copy_number
 
 
 --
--- Name: extraction extraction_protocol_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: extraction extraction_protocol_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.extraction
@@ -7233,7 +7220,7 @@ ALTER TABLE ONLY viroserve.extraction
 
 
 --
--- Name: extraction extraction_sample_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: extraction extraction_sample_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.extraction
@@ -7241,7 +7228,7 @@ ALTER TABLE ONLY viroserve.extraction
 
 
 --
--- Name: extraction extraction_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: extraction extraction_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.extraction
@@ -7249,7 +7236,7 @@ ALTER TABLE ONLY viroserve.extraction
 
 
 --
--- Name: extraction extraction_unit_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: extraction extraction_unit_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.extraction
@@ -7257,7 +7244,7 @@ ALTER TABLE ONLY viroserve.extraction
 
 
 --
--- Name: copy_number_gel_lane gel_lane_fk; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: copy_number_gel_lane gel_lane_fk; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.copy_number_gel_lane
@@ -7265,7 +7252,7 @@ ALTER TABLE ONLY viroserve.copy_number_gel_lane
 
 
 --
--- Name: gel_lane gel_lane_gel_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: gel_lane gel_lane_gel_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.gel_lane
@@ -7273,7 +7260,7 @@ ALTER TABLE ONLY viroserve.gel_lane
 
 
 --
--- Name: gel_lane gel_lane_pcr_product_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: gel_lane gel_lane_pcr_product_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.gel_lane
@@ -7281,7 +7268,7 @@ ALTER TABLE ONLY viroserve.gel_lane
 
 
 --
--- Name: gel gel_protocol_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: gel gel_protocol_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.gel
@@ -7289,7 +7276,7 @@ ALTER TABLE ONLY viroserve.gel
 
 
 --
--- Name: gel gel_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: gel gel_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.gel
@@ -7297,7 +7284,7 @@ ALTER TABLE ONLY viroserve.gel
 
 
 --
--- Name: import_job import_job_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: import_job import_job_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.import_job
@@ -7305,7 +7292,7 @@ ALTER TABLE ONLY viroserve.import_job
 
 
 --
--- Name: infection infection_location_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: infection infection_location_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.infection
@@ -7313,7 +7300,7 @@ ALTER TABLE ONLY viroserve.infection
 
 
 --
--- Name: infection infection_patient_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: infection infection_patient_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.infection
@@ -7321,7 +7308,7 @@ ALTER TABLE ONLY viroserve.infection
 
 
 --
--- Name: lab_result_cat lab_result_cat_lab_result_cat_type_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_cat lab_result_cat_lab_result_cat_type_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.lab_result_cat
@@ -7329,7 +7316,7 @@ ALTER TABLE ONLY viroserve.lab_result_cat
 
 
 --
--- Name: lab_result_cat lab_result_cat_lab_result_cat_value_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_cat lab_result_cat_lab_result_cat_value_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.lab_result_cat
@@ -7337,7 +7324,7 @@ ALTER TABLE ONLY viroserve.lab_result_cat
 
 
 --
--- Name: lab_result_cat lab_result_cat_sample_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_cat lab_result_cat_sample_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.lab_result_cat
@@ -7345,7 +7332,7 @@ ALTER TABLE ONLY viroserve.lab_result_cat
 
 
 --
--- Name: lab_result_cat lab_result_cat_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_cat lab_result_cat_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.lab_result_cat
@@ -7353,7 +7340,7 @@ ALTER TABLE ONLY viroserve.lab_result_cat
 
 
 --
--- Name: lab_result_cat_type_group lab_result_cat_type_group_lab_result_cat_type_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_cat_type_group lab_result_cat_type_group_lab_result_cat_type_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.lab_result_cat_type_group
@@ -7361,7 +7348,7 @@ ALTER TABLE ONLY viroserve.lab_result_cat_type_group
 
 
 --
--- Name: lab_result_cat_type_group lab_result_cat_type_group_lab_result_group_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_cat_type_group lab_result_cat_type_group_lab_result_group_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.lab_result_cat_type_group
@@ -7369,7 +7356,7 @@ ALTER TABLE ONLY viroserve.lab_result_cat_type_group
 
 
 --
--- Name: lab_result_cat_type lab_result_cat_type_normal_lab_result_cat_value_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_cat_type lab_result_cat_type_normal_lab_result_cat_value_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.lab_result_cat_type
@@ -7377,7 +7364,7 @@ ALTER TABLE ONLY viroserve.lab_result_cat_type
 
 
 --
--- Name: lab_result_cat_value lab_result_cat_value_lab_result_cat_type_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_cat_value lab_result_cat_value_lab_result_cat_type_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.lab_result_cat_value
@@ -7385,7 +7372,7 @@ ALTER TABLE ONLY viroserve.lab_result_cat_value
 
 
 --
--- Name: lab_result_cat lab_result_cat_visit_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_cat lab_result_cat_visit_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.lab_result_cat
@@ -7393,7 +7380,7 @@ ALTER TABLE ONLY viroserve.lab_result_cat
 
 
 --
--- Name: lab_result_group lab_result_group_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_group lab_result_group_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.lab_result_group
@@ -7401,7 +7388,7 @@ ALTER TABLE ONLY viroserve.lab_result_group
 
 
 --
--- Name: lab_result_num lab_result_num_lab_result_num_type_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_num lab_result_num_lab_result_num_type_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.lab_result_num
@@ -7409,7 +7396,7 @@ ALTER TABLE ONLY viroserve.lab_result_num
 
 
 --
--- Name: lab_result_num lab_result_num_sample_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_num lab_result_num_sample_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.lab_result_num
@@ -7417,7 +7404,7 @@ ALTER TABLE ONLY viroserve.lab_result_num
 
 
 --
--- Name: lab_result_num lab_result_num_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_num lab_result_num_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.lab_result_num
@@ -7425,7 +7412,7 @@ ALTER TABLE ONLY viroserve.lab_result_num
 
 
 --
--- Name: lab_result_num_type_group lab_result_num_type_group_lab_result_group_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_num_type_group lab_result_num_type_group_lab_result_group_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.lab_result_num_type_group
@@ -7433,7 +7420,7 @@ ALTER TABLE ONLY viroserve.lab_result_num_type_group
 
 
 --
--- Name: lab_result_num_type_group lab_result_num_type_group_lab_result_num_type_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_num_type_group lab_result_num_type_group_lab_result_num_type_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.lab_result_num_type_group
@@ -7441,7 +7428,7 @@ ALTER TABLE ONLY viroserve.lab_result_num_type_group
 
 
 --
--- Name: lab_result_num_type lab_result_num_type_unit_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_num_type lab_result_num_type_unit_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.lab_result_num_type
@@ -7449,7 +7436,7 @@ ALTER TABLE ONLY viroserve.lab_result_num_type
 
 
 --
--- Name: lab_result_num lab_result_num_visit_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: lab_result_num lab_result_num_visit_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.lab_result_num
@@ -7457,7 +7444,7 @@ ALTER TABLE ONLY viroserve.lab_result_num
 
 
 --
--- Name: medication medication_arv_class_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: medication medication_arv_class_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.medication
@@ -7465,7 +7452,7 @@ ALTER TABLE ONLY viroserve.medication
 
 
 --
--- Name: na_sequence_alignment na_sequence_alignment_alignment_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: na_sequence_alignment na_sequence_alignment_alignment_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.na_sequence_alignment
@@ -7473,7 +7460,7 @@ ALTER TABLE ONLY viroserve.na_sequence_alignment
 
 
 --
--- Name: na_sequence_alignment na_sequence_alignment_na_sequence_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: na_sequence_alignment na_sequence_alignment_na_sequence_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.na_sequence_alignment
@@ -7481,7 +7468,7 @@ ALTER TABLE ONLY viroserve.na_sequence_alignment
 
 
 --
--- Name: na_sequence_alignment_pairwise na_sequence_alignment_pairwise_alignment_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: na_sequence_alignment_pairwise na_sequence_alignment_pairwise_alignment_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.na_sequence_alignment_pairwise
@@ -7489,7 +7476,7 @@ ALTER TABLE ONLY viroserve.na_sequence_alignment_pairwise
 
 
 --
--- Name: na_sequence na_sequence_clone_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: na_sequence na_sequence_clone_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.na_sequence
@@ -7497,7 +7484,7 @@ ALTER TABLE ONLY viroserve.na_sequence
 
 
 --
--- Name: na_sequence na_sequence_pcr_product_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: na_sequence na_sequence_pcr_product_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.na_sequence
@@ -7505,7 +7492,7 @@ ALTER TABLE ONLY viroserve.na_sequence
 
 
 --
--- Name: na_sequence na_sequence_sample_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: na_sequence na_sequence_sample_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.na_sequence
@@ -7513,7 +7500,7 @@ ALTER TABLE ONLY viroserve.na_sequence
 
 
 --
--- Name: na_sequence na_sequence_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: na_sequence na_sequence_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.na_sequence
@@ -7521,7 +7508,7 @@ ALTER TABLE ONLY viroserve.na_sequence
 
 
 --
--- Name: na_sequence na_sequence_sequence_type_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: na_sequence na_sequence_sequence_type_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.na_sequence
@@ -7529,7 +7516,7 @@ ALTER TABLE ONLY viroserve.na_sequence
 
 
 --
--- Name: sample_note note_sample_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: sample_note note_sample_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.sample_note
@@ -7537,7 +7524,7 @@ ALTER TABLE ONLY viroserve.sample_note
 
 
 --
--- Name: notes note_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: notes note_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.notes
@@ -7545,7 +7532,7 @@ ALTER TABLE ONLY viroserve.notes
 
 
 --
--- Name: sample_note note_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: sample_note note_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.sample_note
@@ -7553,7 +7540,7 @@ ALTER TABLE ONLY viroserve.sample_note
 
 
 --
--- Name: patient_alias patient_alias_cohort_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_alias patient_alias_cohort_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.patient_alias
@@ -7561,7 +7548,7 @@ ALTER TABLE ONLY viroserve.patient_alias
 
 
 --
--- Name: patient_alias patient_alias_patient_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_alias patient_alias_patient_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.patient_alias
@@ -7569,7 +7556,7 @@ ALTER TABLE ONLY viroserve.patient_alias
 
 
 --
--- Name: patient_cohort patient_cohort_cohort_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_cohort patient_cohort_cohort_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.patient_cohort
@@ -7577,7 +7564,7 @@ ALTER TABLE ONLY viroserve.patient_cohort
 
 
 --
--- Name: patient_cohort patient_cohort_patient_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_cohort patient_cohort_patient_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.patient_cohort
@@ -7585,7 +7572,7 @@ ALTER TABLE ONLY viroserve.patient_cohort
 
 
 --
--- Name: patient_group patient_group_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_group patient_group_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.patient_group
@@ -7593,7 +7580,7 @@ ALTER TABLE ONLY viroserve.patient_group
 
 
 --
--- Name: patient_hla_genotype patient_hla_genotype_hla_genotype_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_hla_genotype patient_hla_genotype_hla_genotype_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.patient_hla_genotype
@@ -7601,7 +7588,7 @@ ALTER TABLE ONLY viroserve.patient_hla_genotype
 
 
 --
--- Name: patient_hla_genotype patient_hla_genotype_patient_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_hla_genotype patient_hla_genotype_patient_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.patient_hla_genotype
@@ -7609,7 +7596,7 @@ ALTER TABLE ONLY viroserve.patient_hla_genotype
 
 
 --
--- Name: patient patient_location_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: patient patient_location_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.patient
@@ -7617,7 +7604,7 @@ ALTER TABLE ONLY viroserve.patient
 
 
 --
--- Name: patient_medication patient_medication_medication_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_medication patient_medication_medication_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.patient_medication
@@ -7625,7 +7612,7 @@ ALTER TABLE ONLY viroserve.patient_medication
 
 
 --
--- Name: patient_medication patient_medication_patient_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_medication patient_medication_patient_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.patient_medication
@@ -7633,7 +7620,7 @@ ALTER TABLE ONLY viroserve.patient_medication
 
 
 --
--- Name: patient_patient_group patient_patient_group_patient_group_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_patient_group patient_patient_group_patient_group_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.patient_patient_group
@@ -7641,7 +7628,7 @@ ALTER TABLE ONLY viroserve.patient_patient_group
 
 
 --
--- Name: patient_patient_group patient_patient_group_patient_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: patient_patient_group patient_patient_group_patient_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.patient_patient_group
@@ -7649,7 +7636,7 @@ ALTER TABLE ONLY viroserve.patient_patient_group
 
 
 --
--- Name: pcr_cleanup pcr_cleanup_final_conc_unit_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_cleanup pcr_cleanup_final_conc_unit_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.pcr_cleanup
@@ -7657,7 +7644,7 @@ ALTER TABLE ONLY viroserve.pcr_cleanup
 
 
 --
--- Name: pcr_cleanup pcr_cleanup_pcr_product_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_cleanup pcr_cleanup_pcr_product_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.pcr_cleanup
@@ -7665,7 +7652,7 @@ ALTER TABLE ONLY viroserve.pcr_cleanup
 
 
 --
--- Name: pcr_cleanup pcr_cleanup_protocol_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_cleanup pcr_cleanup_protocol_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.pcr_cleanup
@@ -7673,7 +7660,7 @@ ALTER TABLE ONLY viroserve.pcr_cleanup
 
 
 --
--- Name: pcr_cleanup pcr_cleanup_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_cleanup pcr_cleanup_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.pcr_cleanup
@@ -7681,7 +7668,7 @@ ALTER TABLE ONLY viroserve.pcr_cleanup
 
 
 --
--- Name: pcr_pool_pcr_product pcr_pool_pcr_product_pcr_pool_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_pool_pcr_product pcr_pool_pcr_product_pcr_pool_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.pcr_pool_pcr_product
@@ -7689,7 +7676,7 @@ ALTER TABLE ONLY viroserve.pcr_pool_pcr_product
 
 
 --
--- Name: pcr_pool_pcr_product pcr_pool_pcr_product_pcr_product_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_pool_pcr_product pcr_pool_pcr_product_pcr_product_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.pcr_pool_pcr_product
@@ -7697,7 +7684,7 @@ ALTER TABLE ONLY viroserve.pcr_pool_pcr_product
 
 
 --
--- Name: pcr_pool pcr_pool_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_pool pcr_pool_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.pcr_pool
@@ -7705,7 +7692,7 @@ ALTER TABLE ONLY viroserve.pcr_pool
 
 
 --
--- Name: pcr_product pcr_product_enzyme_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_product pcr_product_enzyme_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.pcr_product
@@ -7713,7 +7700,7 @@ ALTER TABLE ONLY viroserve.pcr_product
 
 
 --
--- Name: pcr_product pcr_product_pcr_pool_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_product pcr_product_pcr_pool_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.pcr_product
@@ -7721,7 +7708,7 @@ ALTER TABLE ONLY viroserve.pcr_product
 
 
 --
--- Name: pcr_product pcr_product_pcr_template_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_product pcr_product_pcr_template_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.pcr_product
@@ -7729,7 +7716,7 @@ ALTER TABLE ONLY viroserve.pcr_product
 
 
 --
--- Name: pcr_product_primer pcr_product_primer_pcr_product_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_product_primer pcr_product_primer_pcr_product_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.pcr_product_primer
@@ -7737,7 +7724,7 @@ ALTER TABLE ONLY viroserve.pcr_product_primer
 
 
 --
--- Name: pcr_product_primer pcr_product_primer_primer_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_product_primer pcr_product_primer_primer_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.pcr_product_primer
@@ -7745,7 +7732,7 @@ ALTER TABLE ONLY viroserve.pcr_product_primer
 
 
 --
--- Name: pcr_product pcr_product_protocol_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_product pcr_product_protocol_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.pcr_product
@@ -7753,7 +7740,7 @@ ALTER TABLE ONLY viroserve.pcr_product
 
 
 --
--- Name: pcr_product pcr_product_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_product pcr_product_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.pcr_product
@@ -7761,7 +7748,7 @@ ALTER TABLE ONLY viroserve.pcr_product
 
 
 --
--- Name: pcr_template pcr_template_bisulfite_converted_dna_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_template pcr_template_bisulfite_converted_dna_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.pcr_template
@@ -7769,7 +7756,7 @@ ALTER TABLE ONLY viroserve.pcr_template
 
 
 --
--- Name: pcr_template pcr_template_extraction_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_template pcr_template_extraction_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.pcr_template
@@ -7777,7 +7764,7 @@ ALTER TABLE ONLY viroserve.pcr_template
 
 
 --
--- Name: pcr_template pcr_template_pcr_product_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_template pcr_template_pcr_product_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.pcr_template
@@ -7785,7 +7772,7 @@ ALTER TABLE ONLY viroserve.pcr_template
 
 
 --
--- Name: pcr_template pcr_template_rt_product_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_template pcr_template_rt_product_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.pcr_template
@@ -7793,7 +7780,7 @@ ALTER TABLE ONLY viroserve.pcr_template
 
 
 --
--- Name: pcr_template pcr_template_sample_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_template pcr_template_sample_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.pcr_template
@@ -7801,7 +7788,7 @@ ALTER TABLE ONLY viroserve.pcr_template
 
 
 --
--- Name: pcr_template pcr_template_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_template pcr_template_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.pcr_template
@@ -7809,7 +7796,7 @@ ALTER TABLE ONLY viroserve.pcr_template
 
 
 --
--- Name: pcr_template pcr_template_unit_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: pcr_template pcr_template_unit_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.pcr_template
@@ -7817,7 +7804,7 @@ ALTER TABLE ONLY viroserve.pcr_template
 
 
 --
--- Name: primer primer_organism_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: primer primer_organism_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.primer
@@ -7825,7 +7812,7 @@ ALTER TABLE ONLY viroserve.primer
 
 
 --
--- Name: primer_position primer_position_primer_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: primer_position primer_position_primer_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.primer_position
@@ -7833,7 +7820,7 @@ ALTER TABLE ONLY viroserve.primer_position
 
 
 --
--- Name: project_materials project_materials_desig_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: project_materials project_materials_desig_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.project_materials
@@ -7841,7 +7828,7 @@ ALTER TABLE ONLY viroserve.project_materials
 
 
 --
--- Name: project_materials project_materials_project_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: project_materials project_materials_project_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.project_materials
@@ -7849,7 +7836,7 @@ ALTER TABLE ONLY viroserve.project_materials
 
 
 --
--- Name: project_materials project_materials_sample_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: project_materials project_materials_sample_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.project_materials
@@ -7857,7 +7844,7 @@ ALTER TABLE ONLY viroserve.project_materials
 
 
 --
--- Name: project project_orig_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: project project_orig_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.project
@@ -7865,7 +7852,7 @@ ALTER TABLE ONLY viroserve.project
 
 
 --
--- Name: protocol protocol_protocol_type_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: protocol protocol_protocol_type_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.protocol
@@ -7873,7 +7860,7 @@ ALTER TABLE ONLY viroserve.protocol
 
 
 --
--- Name: rt_primer rt_primer_primer_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: rt_primer rt_primer_primer_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.rt_primer
@@ -7881,7 +7868,7 @@ ALTER TABLE ONLY viroserve.rt_primer
 
 
 --
--- Name: rt_primer rt_primer_rt_product_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: rt_primer rt_primer_rt_product_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.rt_primer
@@ -7889,7 +7876,7 @@ ALTER TABLE ONLY viroserve.rt_primer
 
 
 --
--- Name: rt_product rt_product_enzyme_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: rt_product rt_product_enzyme_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.rt_product
@@ -7897,7 +7884,7 @@ ALTER TABLE ONLY viroserve.rt_product
 
 
 --
--- Name: rt_product rt_product_extraction_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: rt_product rt_product_extraction_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.rt_product
@@ -7905,7 +7892,7 @@ ALTER TABLE ONLY viroserve.rt_product
 
 
 --
--- Name: copy_number rt_product_fk; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: copy_number rt_product_fk; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.copy_number
@@ -7913,7 +7900,7 @@ ALTER TABLE ONLY viroserve.copy_number
 
 
 --
--- Name: rt_product rt_product_protocol_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: rt_product rt_product_protocol_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.rt_product
@@ -7921,7 +7908,7 @@ ALTER TABLE ONLY viroserve.rt_product
 
 
 --
--- Name: rt_product rt_product_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: rt_product rt_product_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.rt_product
@@ -7929,7 +7916,7 @@ ALTER TABLE ONLY viroserve.rt_product
 
 
 --
--- Name: sample sample_derivation_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: sample sample_derivation_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.sample
@@ -7937,7 +7924,7 @@ ALTER TABLE ONLY viroserve.sample
 
 
 --
--- Name: sample sample_sample_type_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: sample sample_sample_type_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.sample
@@ -7945,7 +7932,7 @@ ALTER TABLE ONLY viroserve.sample
 
 
 --
--- Name: sample sample_tissue_type_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: sample sample_tissue_type_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.sample
@@ -7953,7 +7940,7 @@ ALTER TABLE ONLY viroserve.sample
 
 
 --
--- Name: sample sample_visit_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: sample sample_visit_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.sample
@@ -7961,7 +7948,7 @@ ALTER TABLE ONLY viroserve.sample
 
 
 --
--- Name: copy_number scientist_fk; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: copy_number scientist_fk; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.copy_number
@@ -7969,7 +7956,7 @@ ALTER TABLE ONLY viroserve.copy_number
 
 
 --
--- Name: scientist_group scientist_group_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: scientist_group scientist_group_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.scientist_group
@@ -7977,7 +7964,7 @@ ALTER TABLE ONLY viroserve.scientist_group
 
 
 --
--- Name: scientist_scientist_group scientist_scientist_group_add_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: scientist_scientist_group scientist_scientist_group_add_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.scientist_scientist_group
@@ -7985,7 +7972,7 @@ ALTER TABLE ONLY viroserve.scientist_scientist_group
 
 
 --
--- Name: scientist_scientist_group scientist_scientist_group_scientist_group_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: scientist_scientist_group scientist_scientist_group_scientist_group_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.scientist_scientist_group
@@ -7993,7 +7980,7 @@ ALTER TABLE ONLY viroserve.scientist_scientist_group
 
 
 --
--- Name: scientist_scientist_group scientist_scientist_group_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: scientist_scientist_group scientist_scientist_group_scientist_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.scientist_scientist_group
@@ -8001,7 +7988,7 @@ ALTER TABLE ONLY viroserve.scientist_scientist_group
 
 
 --
--- Name: visit visit_patient_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: vverse_admin
+-- Name: visit visit_patient_id_fkey; Type: FK CONSTRAINT; Schema: viroserve; Owner: :owner
 --
 
 ALTER TABLE ONLY viroserve.visit
@@ -8009,36 +7996,36 @@ ALTER TABLE ONLY viroserve.visit
 
 
 --
--- Name: SCHEMA delta; Type: ACL; Schema: -; Owner: vverse_admin
+-- Name: SCHEMA delta; Type: ACL; Schema: -; Owner: :owner
 --
 
 REVOKE ALL ON SCHEMA delta FROM PUBLIC;
-REVOKE ALL ON SCHEMA delta FROM vverse_admin;
-GRANT ALL ON SCHEMA delta TO vverse_admin;
-GRANT USAGE ON SCHEMA delta TO viroverse_r;
-GRANT USAGE ON SCHEMA delta TO viroverse_w;
+REVOKE ALL ON SCHEMA delta FROM :owner;
+GRANT ALL ON SCHEMA delta TO :owner;
+GRANT USAGE ON SCHEMA delta TO :ro_user;
+GRANT USAGE ON SCHEMA delta TO :rw_user;
 
 
 --
--- Name: SCHEMA epitope; Type: ACL; Schema: -; Owner: vverse_admin
+-- Name: SCHEMA epitope; Type: ACL; Schema: -; Owner: :owner
 --
 
 REVOKE ALL ON SCHEMA epitope FROM PUBLIC;
-REVOKE ALL ON SCHEMA epitope FROM vverse_admin;
-GRANT ALL ON SCHEMA epitope TO vverse_admin;
-GRANT USAGE ON SCHEMA epitope TO viroverse_r;
-GRANT USAGE ON SCHEMA epitope TO viroverse_w;
+REVOKE ALL ON SCHEMA epitope FROM :owner;
+GRANT ALL ON SCHEMA epitope TO :owner;
+GRANT USAGE ON SCHEMA epitope TO :ro_user;
+GRANT USAGE ON SCHEMA epitope TO :rw_user;
 
 
 --
--- Name: SCHEMA freezer; Type: ACL; Schema: -; Owner: vverse_admin
+-- Name: SCHEMA freezer; Type: ACL; Schema: -; Owner: :owner
 --
 
 REVOKE ALL ON SCHEMA freezer FROM PUBLIC;
-REVOKE ALL ON SCHEMA freezer FROM vverse_admin;
-GRANT ALL ON SCHEMA freezer TO vverse_admin;
-GRANT USAGE ON SCHEMA freezer TO viroverse_r;
-GRANT USAGE ON SCHEMA freezer TO viroverse_w;
+REVOKE ALL ON SCHEMA freezer FROM :owner;
+GRANT ALL ON SCHEMA freezer TO :owner;
+GRANT USAGE ON SCHEMA freezer TO :ro_user;
+GRANT USAGE ON SCHEMA freezer TO :rw_user;
 
 
 --
@@ -8048,2191 +8035,2191 @@ GRANT USAGE ON SCHEMA freezer TO viroverse_w;
 REVOKE ALL ON SCHEMA public FROM PUBLIC;
 REVOKE ALL ON SCHEMA public FROM postgres;
 GRANT ALL ON SCHEMA public TO postgres;
-GRANT ALL ON SCHEMA public TO vverse_admin;
+GRANT ALL ON SCHEMA public TO :owner;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
 --
--- Name: SCHEMA viroserve; Type: ACL; Schema: -; Owner: vverse_admin
+-- Name: SCHEMA viroserve; Type: ACL; Schema: -; Owner: :owner
 --
 
 REVOKE ALL ON SCHEMA viroserve FROM PUBLIC;
-REVOKE ALL ON SCHEMA viroserve FROM vverse_admin;
-GRANT ALL ON SCHEMA viroserve TO vverse_admin;
-GRANT USAGE ON SCHEMA viroserve TO viroverse_r;
-GRANT USAGE ON SCHEMA viroserve TO viroverse_w;
+REVOKE ALL ON SCHEMA viroserve FROM :owner;
+GRANT ALL ON SCHEMA viroserve TO :owner;
+GRANT USAGE ON SCHEMA viroserve TO :ro_user;
+GRANT USAGE ON SCHEMA viroserve TO :rw_user;
 GRANT USAGE ON SCHEMA viroserve TO postgres;
 
 
 --
--- Name: TYPE hla_genotype_ambiguity_code; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TYPE hla_genotype_ambiguity_code; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TYPE viroserve.hla_genotype_ambiguity_code FROM PUBLIC;
-REVOKE ALL ON TYPE viroserve.hla_genotype_ambiguity_code FROM vverse_admin;
+REVOKE ALL ON TYPE viroserve.hla_genotype_ambiguity_code FROM :owner;
 GRANT ALL ON TYPE viroserve.hla_genotype_ambiguity_code TO PUBLIC;
 
 
 --
--- Name: TYPE na_type; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TYPE na_type; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TYPE viroserve.na_type FROM PUBLIC;
-REVOKE ALL ON TYPE viroserve.na_type FROM vverse_admin;
+REVOKE ALL ON TYPE viroserve.na_type FROM :owner;
 GRANT ALL ON TYPE viroserve.na_type TO PUBLIC;
 
 
 --
--- Name: TYPE patient_alias_type; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TYPE patient_alias_type; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TYPE viroserve.patient_alias_type FROM PUBLIC;
-REVOKE ALL ON TYPE viroserve.patient_alias_type FROM vverse_admin;
-GRANT ALL ON TYPE viroserve.patient_alias_type TO vverse_admin;
+REVOKE ALL ON TYPE viroserve.patient_alias_type FROM :owner;
+GRANT ALL ON TYPE viroserve.patient_alias_type TO :owner;
 GRANT ALL ON TYPE viroserve.patient_alias_type TO PUBLIC;
-GRANT ALL ON TYPE viroserve.patient_alias_type TO viroverse_w;
+GRANT ALL ON TYPE viroserve.patient_alias_type TO :rw_user;
 
 
 --
--- Name: TYPE scientist_role; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TYPE scientist_role; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TYPE viroserve.scientist_role FROM PUBLIC;
-REVOKE ALL ON TYPE viroserve.scientist_role FROM vverse_admin;
+REVOKE ALL ON TYPE viroserve.scientist_role FROM :owner;
 GRANT ALL ON TYPE viroserve.scientist_role TO PUBLIC;
 
 
 --
--- Name: FUNCTION refresh_distinct_sample_search(); Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: FUNCTION refresh_distinct_sample_search(); Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON FUNCTION viroserve.refresh_distinct_sample_search() FROM PUBLIC;
-REVOKE ALL ON FUNCTION viroserve.refresh_distinct_sample_search() FROM vverse_admin;
-GRANT ALL ON FUNCTION viroserve.refresh_distinct_sample_search() TO vverse_admin;
-GRANT ALL ON FUNCTION viroserve.refresh_distinct_sample_search() TO viroverse_w;
+REVOKE ALL ON FUNCTION viroserve.refresh_distinct_sample_search() FROM :owner;
+GRANT ALL ON FUNCTION viroserve.refresh_distinct_sample_search() TO :owner;
+GRANT ALL ON FUNCTION viroserve.refresh_distinct_sample_search() TO :rw_user;
 
 
 --
--- Name: FUNCTION refresh_project_material_scientist_progress(); Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: FUNCTION refresh_project_material_scientist_progress(); Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON FUNCTION viroserve.refresh_project_material_scientist_progress() FROM PUBLIC;
-REVOKE ALL ON FUNCTION viroserve.refresh_project_material_scientist_progress() FROM vverse_admin;
-GRANT ALL ON FUNCTION viroserve.refresh_project_material_scientist_progress() TO vverse_admin;
-GRANT ALL ON FUNCTION viroserve.refresh_project_material_scientist_progress() TO viroverse_w;
+REVOKE ALL ON FUNCTION viroserve.refresh_project_material_scientist_progress() FROM :owner;
+GRANT ALL ON FUNCTION viroserve.refresh_project_material_scientist_progress() TO :owner;
+GRANT ALL ON FUNCTION viroserve.refresh_project_material_scientist_progress() TO :rw_user;
 
 
 --
--- Name: FUNCTION refresh_sequence_search(); Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: FUNCTION refresh_sequence_search(); Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON FUNCTION viroserve.refresh_sequence_search() FROM PUBLIC;
-REVOKE ALL ON FUNCTION viroserve.refresh_sequence_search() FROM vverse_admin;
-GRANT ALL ON FUNCTION viroserve.refresh_sequence_search() TO vverse_admin;
-GRANT ALL ON FUNCTION viroserve.refresh_sequence_search() TO viroverse_w;
+REVOKE ALL ON FUNCTION viroserve.refresh_sequence_search() FROM :owner;
+GRANT ALL ON FUNCTION viroserve.refresh_sequence_search() TO :owner;
+GRANT ALL ON FUNCTION viroserve.refresh_sequence_search() TO :rw_user;
 
 
 --
--- Name: TABLE derivation; Type: ACL; Schema: delta; Owner: vverse_admin
+-- Name: TABLE derivation; Type: ACL; Schema: delta; Owner: :owner
 --
 
 REVOKE ALL ON TABLE delta.derivation FROM PUBLIC;
-REVOKE ALL ON TABLE delta.derivation FROM vverse_admin;
-GRANT ALL ON TABLE delta.derivation TO vverse_admin;
-GRANT SELECT ON TABLE delta.derivation TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE delta.derivation TO viroverse_w;
+REVOKE ALL ON TABLE delta.derivation FROM :owner;
+GRANT ALL ON TABLE delta.derivation TO :owner;
+GRANT SELECT ON TABLE delta.derivation TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE delta.derivation TO :rw_user;
 
 
 --
--- Name: SEQUENCE derivation_derivation_id_seq; Type: ACL; Schema: delta; Owner: vverse_admin
+-- Name: SEQUENCE derivation_derivation_id_seq; Type: ACL; Schema: delta; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE delta.derivation_derivation_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE delta.derivation_derivation_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE delta.derivation_derivation_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE delta.derivation_derivation_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE delta.derivation_derivation_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE delta.derivation_derivation_id_seq TO :owner;
+GRANT ALL ON SEQUENCE delta.derivation_derivation_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE protocol; Type: ACL; Schema: delta; Owner: vverse_admin
+-- Name: TABLE protocol; Type: ACL; Schema: delta; Owner: :owner
 --
 
 REVOKE ALL ON TABLE delta.protocol FROM PUBLIC;
-REVOKE ALL ON TABLE delta.protocol FROM vverse_admin;
-GRANT ALL ON TABLE delta.protocol TO vverse_admin;
-GRANT SELECT ON TABLE delta.protocol TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE delta.protocol TO viroverse_w;
+REVOKE ALL ON TABLE delta.protocol FROM :owner;
+GRANT ALL ON TABLE delta.protocol TO :owner;
+GRANT SELECT ON TABLE delta.protocol TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE delta.protocol TO :rw_user;
 
 
 --
--- Name: TABLE protocol_output; Type: ACL; Schema: delta; Owner: vverse_admin
+-- Name: TABLE protocol_output; Type: ACL; Schema: delta; Owner: :owner
 --
 
 REVOKE ALL ON TABLE delta.protocol_output FROM PUBLIC;
-REVOKE ALL ON TABLE delta.protocol_output FROM vverse_admin;
-GRANT ALL ON TABLE delta.protocol_output TO vverse_admin;
-GRANT SELECT ON TABLE delta.protocol_output TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE delta.protocol_output TO viroverse_w;
+REVOKE ALL ON TABLE delta.protocol_output FROM :owner;
+GRANT ALL ON TABLE delta.protocol_output TO :owner;
+GRANT SELECT ON TABLE delta.protocol_output TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE delta.protocol_output TO :rw_user;
 
 
 --
--- Name: SEQUENCE protocol_protocol_id_seq; Type: ACL; Schema: delta; Owner: vverse_admin
+-- Name: SEQUENCE protocol_protocol_id_seq; Type: ACL; Schema: delta; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE delta.protocol_protocol_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE delta.protocol_protocol_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE delta.protocol_protocol_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE delta.protocol_protocol_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE delta.protocol_protocol_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE delta.protocol_protocol_id_seq TO :owner;
+GRANT ALL ON SEQUENCE delta.protocol_protocol_id_seq TO :rw_user;
 
 
 --
--- Name: SEQUENCE blcl_blcl_id_seq; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: SEQUENCE blcl_blcl_id_seq; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE epitope.blcl_blcl_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE epitope.blcl_blcl_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE epitope.blcl_blcl_id_seq TO vverse_admin;
-GRANT SELECT ON SEQUENCE epitope.blcl_blcl_id_seq TO viroverse_r;
-GRANT ALL ON SEQUENCE epitope.blcl_blcl_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE epitope.blcl_blcl_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE epitope.blcl_blcl_id_seq TO :owner;
+GRANT SELECT ON SEQUENCE epitope.blcl_blcl_id_seq TO :ro_user;
+GRANT ALL ON SEQUENCE epitope.blcl_blcl_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE blcl; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: TABLE blcl; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON TABLE epitope.blcl FROM PUBLIC;
-REVOKE ALL ON TABLE epitope.blcl FROM vverse_admin;
-GRANT ALL ON TABLE epitope.blcl TO vverse_admin;
-GRANT SELECT ON TABLE epitope.blcl TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.blcl TO viroverse_w;
+REVOKE ALL ON TABLE epitope.blcl FROM :owner;
+GRANT ALL ON TABLE epitope.blcl TO :owner;
+GRANT SELECT ON TABLE epitope.blcl TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.blcl TO :rw_user;
 
 
 --
--- Name: SEQUENCE epitope_epit_id_seq; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: SEQUENCE epitope_epit_id_seq; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE epitope.epitope_epit_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE epitope.epitope_epit_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE epitope.epitope_epit_id_seq TO vverse_admin;
-GRANT SELECT ON SEQUENCE epitope.epitope_epit_id_seq TO viroverse_r;
-GRANT ALL ON SEQUENCE epitope.epitope_epit_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE epitope.epitope_epit_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE epitope.epitope_epit_id_seq TO :owner;
+GRANT SELECT ON SEQUENCE epitope.epitope_epit_id_seq TO :ro_user;
+GRANT ALL ON SEQUENCE epitope.epitope_epit_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE epitope; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: TABLE epitope; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON TABLE epitope.epitope FROM PUBLIC;
-REVOKE ALL ON TABLE epitope.epitope FROM vverse_admin;
-GRANT ALL ON TABLE epitope.epitope TO vverse_admin;
-GRANT SELECT ON TABLE epitope.epitope TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.epitope TO viroverse_w;
+REVOKE ALL ON TABLE epitope.epitope FROM :owner;
+GRANT ALL ON TABLE epitope.epitope TO :owner;
+GRANT SELECT ON TABLE epitope.epitope TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.epitope TO :rw_user;
 
 
 --
--- Name: TABLE epitope_mutant; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: TABLE epitope_mutant; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON TABLE epitope.epitope_mutant FROM PUBLIC;
-REVOKE ALL ON TABLE epitope.epitope_mutant FROM vverse_admin;
-GRANT ALL ON TABLE epitope.epitope_mutant TO vverse_admin;
-GRANT SELECT ON TABLE epitope.epitope_mutant TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.epitope_mutant TO viroverse_w;
+REVOKE ALL ON TABLE epitope.epitope_mutant FROM :owner;
+GRANT ALL ON TABLE epitope.epitope_mutant TO :owner;
+GRANT SELECT ON TABLE epitope.epitope_mutant TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.epitope_mutant TO :rw_user;
 
 
 --
--- Name: TABLE epitope_sequence; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: TABLE epitope_sequence; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON TABLE epitope.epitope_sequence FROM PUBLIC;
-REVOKE ALL ON TABLE epitope.epitope_sequence FROM vverse_admin;
-GRANT ALL ON TABLE epitope.epitope_sequence TO vverse_admin;
-GRANT SELECT ON TABLE epitope.epitope_sequence TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.epitope_sequence TO viroverse_w;
+REVOKE ALL ON TABLE epitope.epitope_sequence FROM :owner;
+GRANT ALL ON TABLE epitope.epitope_sequence TO :owner;
+GRANT SELECT ON TABLE epitope.epitope_sequence TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.epitope_sequence TO :rw_user;
 
 
 --
--- Name: SEQUENCE epitope_source_source_id_seq; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: SEQUENCE epitope_source_source_id_seq; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE epitope.epitope_source_source_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE epitope.epitope_source_source_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE epitope.epitope_source_source_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE epitope.epitope_source_source_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE epitope.epitope_source_source_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE epitope.epitope_source_source_id_seq TO :owner;
+GRANT ALL ON SEQUENCE epitope.epitope_source_source_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE epitope_source; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: TABLE epitope_source; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON TABLE epitope.epitope_source FROM PUBLIC;
-REVOKE ALL ON TABLE epitope.epitope_source FROM vverse_admin;
-GRANT ALL ON TABLE epitope.epitope_source TO vverse_admin;
-GRANT SELECT ON TABLE epitope.epitope_source TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.epitope_source TO viroverse_w;
+REVOKE ALL ON TABLE epitope.epitope_source FROM :owner;
+GRANT ALL ON TABLE epitope.epitope_source TO :owner;
+GRANT SELECT ON TABLE epitope.epitope_source TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.epitope_source TO :rw_user;
 
 
 --
--- Name: SEQUENCE experiment_exp_id_seq; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: SEQUENCE experiment_exp_id_seq; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE epitope.experiment_exp_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE epitope.experiment_exp_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE epitope.experiment_exp_id_seq TO vverse_admin;
-GRANT SELECT ON SEQUENCE epitope.experiment_exp_id_seq TO viroverse_r;
-GRANT ALL ON SEQUENCE epitope.experiment_exp_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE epitope.experiment_exp_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE epitope.experiment_exp_id_seq TO :owner;
+GRANT SELECT ON SEQUENCE epitope.experiment_exp_id_seq TO :ro_user;
+GRANT ALL ON SEQUENCE epitope.experiment_exp_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE experiment; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: TABLE experiment; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON TABLE epitope.experiment FROM PUBLIC;
-REVOKE ALL ON TABLE epitope.experiment FROM vverse_admin;
-GRANT ALL ON TABLE epitope.experiment TO vverse_admin;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.experiment TO viroverse_w;
-GRANT SELECT ON TABLE epitope.experiment TO viroverse_r;
+REVOKE ALL ON TABLE epitope.experiment FROM :owner;
+GRANT ALL ON TABLE epitope.experiment TO :owner;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.experiment TO :rw_user;
+GRANT SELECT ON TABLE epitope.experiment TO :ro_user;
 
 
 --
--- Name: SEQUENCE gene_gene_id_seq; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: SEQUENCE gene_gene_id_seq; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE epitope.gene_gene_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE epitope.gene_gene_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE epitope.gene_gene_id_seq TO vverse_admin;
-GRANT SELECT ON SEQUENCE epitope.gene_gene_id_seq TO viroverse_r;
-GRANT ALL ON SEQUENCE epitope.gene_gene_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE epitope.gene_gene_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE epitope.gene_gene_id_seq TO :owner;
+GRANT SELECT ON SEQUENCE epitope.gene_gene_id_seq TO :ro_user;
+GRANT ALL ON SEQUENCE epitope.gene_gene_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE gene; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: TABLE gene; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON TABLE epitope.gene FROM PUBLIC;
-REVOKE ALL ON TABLE epitope.gene FROM vverse_admin;
-GRANT ALL ON TABLE epitope.gene TO vverse_admin;
-GRANT SELECT ON TABLE epitope.gene TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.gene TO viroverse_w;
+REVOKE ALL ON TABLE epitope.gene FROM :owner;
+GRANT ALL ON TABLE epitope.gene TO :owner;
+GRANT SELECT ON TABLE epitope.gene TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.gene TO :rw_user;
 
 
 --
--- Name: TABLE hla; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: TABLE hla; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON TABLE epitope.hla FROM PUBLIC;
-REVOKE ALL ON TABLE epitope.hla FROM vverse_admin;
-GRANT ALL ON TABLE epitope.hla TO vverse_admin;
-GRANT SELECT ON TABLE epitope.hla TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.hla TO viroverse_w;
+REVOKE ALL ON TABLE epitope.hla FROM :owner;
+GRANT ALL ON TABLE epitope.hla TO :owner;
+GRANT SELECT ON TABLE epitope.hla TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.hla TO :rw_user;
 
 
 --
--- Name: TABLE hla_pept; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: TABLE hla_pept; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON TABLE epitope.hla_pept FROM PUBLIC;
-REVOKE ALL ON TABLE epitope.hla_pept FROM vverse_admin;
-GRANT ALL ON TABLE epitope.hla_pept TO vverse_admin;
-GRANT SELECT ON TABLE epitope.hla_pept TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.hla_pept TO viroverse_w;
+REVOKE ALL ON TABLE epitope.hla_pept FROM :owner;
+GRANT ALL ON TABLE epitope.hla_pept TO :owner;
+GRANT SELECT ON TABLE epitope.hla_pept TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.hla_pept TO :rw_user;
 
 
 --
--- Name: SEQUENCE measure_id_seq; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: SEQUENCE measure_id_seq; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE epitope.measure_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE epitope.measure_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE epitope.measure_id_seq TO vverse_admin;
-GRANT SELECT ON SEQUENCE epitope.measure_id_seq TO viroverse_r;
-GRANT ALL ON SEQUENCE epitope.measure_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE epitope.measure_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE epitope.measure_id_seq TO :owner;
+GRANT SELECT ON SEQUENCE epitope.measure_id_seq TO :ro_user;
+GRANT ALL ON SEQUENCE epitope.measure_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE hla_response; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: TABLE hla_response; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON TABLE epitope.hla_response FROM PUBLIC;
-REVOKE ALL ON TABLE epitope.hla_response FROM vverse_admin;
-GRANT ALL ON TABLE epitope.hla_response TO vverse_admin;
-GRANT SELECT ON TABLE epitope.hla_response TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.hla_response TO viroverse_w;
+REVOKE ALL ON TABLE epitope.hla_response FROM :owner;
+GRANT ALL ON TABLE epitope.hla_response TO :owner;
+GRANT SELECT ON TABLE epitope.hla_response TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.hla_response TO :rw_user;
 
 
 --
--- Name: TABLE pept_response; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: TABLE pept_response; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON TABLE epitope.pept_response FROM PUBLIC;
-REVOKE ALL ON TABLE epitope.pept_response FROM vverse_admin;
-GRANT ALL ON TABLE epitope.pept_response TO vverse_admin;
-GRANT SELECT ON TABLE epitope.pept_response TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.pept_response TO viroverse_w;
+REVOKE ALL ON TABLE epitope.pept_response FROM :owner;
+GRANT ALL ON TABLE epitope.pept_response TO :owner;
+GRANT SELECT ON TABLE epitope.pept_response TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.pept_response TO :rw_user;
 
 
 --
--- Name: SEQUENCE reading_reading_id_seq; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: SEQUENCE reading_reading_id_seq; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE epitope.reading_reading_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE epitope.reading_reading_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE epitope.reading_reading_id_seq TO vverse_admin;
-GRANT SELECT ON SEQUENCE epitope.reading_reading_id_seq TO viroverse_r;
-GRANT ALL ON SEQUENCE epitope.reading_reading_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE epitope.reading_reading_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE epitope.reading_reading_id_seq TO :owner;
+GRANT SELECT ON SEQUENCE epitope.reading_reading_id_seq TO :ro_user;
+GRANT ALL ON SEQUENCE epitope.reading_reading_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE reading; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: TABLE reading; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON TABLE epitope.reading FROM PUBLIC;
-REVOKE ALL ON TABLE epitope.reading FROM vverse_admin;
-GRANT ALL ON TABLE epitope.reading TO vverse_admin;
-GRANT SELECT ON TABLE epitope.reading TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.reading TO viroverse_w;
+REVOKE ALL ON TABLE epitope.reading FROM :owner;
+GRANT ALL ON TABLE epitope.reading TO :owner;
+GRANT SELECT ON TABLE epitope.reading TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.reading TO :rw_user;
 
 
 --
--- Name: TABLE hla_response_avg; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: TABLE hla_response_avg; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON TABLE epitope.hla_response_avg FROM PUBLIC;
-REVOKE ALL ON TABLE epitope.hla_response_avg FROM vverse_admin;
-GRANT ALL ON TABLE epitope.hla_response_avg TO vverse_admin;
-GRANT SELECT ON TABLE epitope.hla_response_avg TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.hla_response_avg TO viroverse_w;
+REVOKE ALL ON TABLE epitope.hla_response_avg FROM :owner;
+GRANT ALL ON TABLE epitope.hla_response_avg TO :owner;
+GRANT SELECT ON TABLE epitope.hla_response_avg TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.hla_response_avg TO :rw_user;
 
 
 --
--- Name: TABLE pept_response_avg; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: TABLE pept_response_avg; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON TABLE epitope.pept_response_avg FROM PUBLIC;
-REVOKE ALL ON TABLE epitope.pept_response_avg FROM vverse_admin;
-GRANT ALL ON TABLE epitope.pept_response_avg TO vverse_admin;
-GRANT SELECT ON TABLE epitope.pept_response_avg TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.pept_response_avg TO viroverse_w;
+REVOKE ALL ON TABLE epitope.pept_response_avg FROM :owner;
+GRANT ALL ON TABLE epitope.pept_response_avg TO :owner;
+GRANT SELECT ON TABLE epitope.pept_response_avg TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.pept_response_avg TO :rw_user;
 
 
 --
--- Name: SEQUENCE vv_uid; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE vv_uid; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.vv_uid FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.vv_uid FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.vv_uid TO vverse_admin;
-GRANT SELECT,UPDATE ON SEQUENCE viroserve.vv_uid TO viroverse_r;
-GRANT ALL ON SEQUENCE viroserve.vv_uid TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.vv_uid FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.vv_uid TO :owner;
+GRANT SELECT,UPDATE ON SEQUENCE viroserve.vv_uid TO :ro_user;
+GRANT ALL ON SEQUENCE viroserve.vv_uid TO :rw_user;
 
 
 --
--- Name: TABLE sample; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE sample; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.sample FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.sample FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.sample TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.sample TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.sample TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.sample FROM :owner;
+GRANT ALL ON TABLE viroserve.sample TO :owner;
+GRANT SELECT ON TABLE viroserve.sample TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.sample TO :rw_user;
 
 
 --
--- Name: TABLE tissue_type; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE tissue_type; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.tissue_type FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.tissue_type FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.tissue_type TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.tissue_type TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.tissue_type TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.tissue_type FROM :owner;
+GRANT ALL ON TABLE viroserve.tissue_type TO :owner;
+GRANT SELECT ON TABLE viroserve.tissue_type TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.tissue_type TO :rw_user;
 
 
 --
--- Name: TABLE visit; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE visit; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.visit FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.visit FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.visit TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.visit TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.visit TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.visit FROM :owner;
+GRANT ALL ON TABLE viroserve.visit TO :owner;
+GRANT SELECT ON TABLE viroserve.visit TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.visit TO :rw_user;
 
 
 --
--- Name: TABLE sample; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: TABLE sample; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON TABLE epitope.sample FROM PUBLIC;
-REVOKE ALL ON TABLE epitope.sample FROM vverse_admin;
-GRANT ALL ON TABLE epitope.sample TO vverse_admin;
-GRANT SELECT ON TABLE epitope.sample TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.sample TO viroverse_w;
+REVOKE ALL ON TABLE epitope.sample FROM :owner;
+GRANT ALL ON TABLE epitope.sample TO :owner;
+GRANT SELECT ON TABLE epitope.sample TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.sample TO :rw_user;
 
 
 --
--- Name: TABLE hla_response_corravg; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: TABLE hla_response_corravg; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON TABLE epitope.hla_response_corravg FROM PUBLIC;
-REVOKE ALL ON TABLE epitope.hla_response_corravg FROM vverse_admin;
-GRANT ALL ON TABLE epitope.hla_response_corravg TO vverse_admin;
-GRANT SELECT ON TABLE epitope.hla_response_corravg TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.hla_response_corravg TO viroverse_w;
+REVOKE ALL ON TABLE epitope.hla_response_corravg FROM :owner;
+GRANT ALL ON TABLE epitope.hla_response_corravg TO :owner;
+GRANT SELECT ON TABLE epitope.hla_response_corravg TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.hla_response_corravg TO :rw_user;
 
 
 --
--- Name: TABLE measurement; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: TABLE measurement; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON TABLE epitope.measurement FROM PUBLIC;
-REVOKE ALL ON TABLE epitope.measurement FROM vverse_admin;
-GRANT ALL ON TABLE epitope.measurement TO vverse_admin;
-GRANT SELECT ON TABLE epitope.measurement TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.measurement TO viroverse_w;
+REVOKE ALL ON TABLE epitope.measurement FROM :owner;
+GRANT ALL ON TABLE epitope.measurement TO :owner;
+GRANT SELECT ON TABLE epitope.measurement TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.measurement TO :rw_user;
 
 
 --
--- Name: SEQUENCE mutant_mutant_id_seq; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: SEQUENCE mutant_mutant_id_seq; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE epitope.mutant_mutant_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE epitope.mutant_mutant_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE epitope.mutant_mutant_id_seq TO vverse_admin;
-GRANT SELECT ON SEQUENCE epitope.mutant_mutant_id_seq TO viroverse_r;
-GRANT ALL ON SEQUENCE epitope.mutant_mutant_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE epitope.mutant_mutant_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE epitope.mutant_mutant_id_seq TO :owner;
+GRANT SELECT ON SEQUENCE epitope.mutant_mutant_id_seq TO :ro_user;
+GRANT ALL ON SEQUENCE epitope.mutant_mutant_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE mutant; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: TABLE mutant; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON TABLE epitope.mutant FROM PUBLIC;
-REVOKE ALL ON TABLE epitope.mutant FROM vverse_admin;
-GRANT ALL ON TABLE epitope.mutant TO vverse_admin;
-GRANT SELECT ON TABLE epitope.mutant TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.mutant TO viroverse_w;
+REVOKE ALL ON TABLE epitope.mutant FROM :owner;
+GRANT ALL ON TABLE epitope.mutant TO :owner;
+GRANT SELECT ON TABLE epitope.mutant TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.mutant TO :rw_user;
 
 
 --
--- Name: SEQUENCE origin_origin_id_seq; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: SEQUENCE origin_origin_id_seq; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE epitope.origin_origin_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE epitope.origin_origin_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE epitope.origin_origin_id_seq TO vverse_admin;
-GRANT SELECT ON SEQUENCE epitope.origin_origin_id_seq TO viroverse_r;
-GRANT ALL ON SEQUENCE epitope.origin_origin_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE epitope.origin_origin_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE epitope.origin_origin_id_seq TO :owner;
+GRANT SELECT ON SEQUENCE epitope.origin_origin_id_seq TO :ro_user;
+GRANT ALL ON SEQUENCE epitope.origin_origin_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE origin; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: TABLE origin; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON TABLE epitope.origin FROM PUBLIC;
-REVOKE ALL ON TABLE epitope.origin FROM vverse_admin;
-GRANT ALL ON TABLE epitope.origin TO vverse_admin;
-GRANT SELECT ON TABLE epitope.origin TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.origin TO viroverse_w;
+REVOKE ALL ON TABLE epitope.origin FROM :owner;
+GRANT ALL ON TABLE epitope.origin TO :owner;
+GRANT SELECT ON TABLE epitope.origin TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.origin TO :rw_user;
 
 
 --
--- Name: TABLE origin_peptide; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: TABLE origin_peptide; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON TABLE epitope.origin_peptide FROM PUBLIC;
-REVOKE ALL ON TABLE epitope.origin_peptide FROM vverse_admin;
-GRANT ALL ON TABLE epitope.origin_peptide TO vverse_admin;
-GRANT SELECT ON TABLE epitope.origin_peptide TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.origin_peptide TO viroverse_w;
+REVOKE ALL ON TABLE epitope.origin_peptide FROM :owner;
+GRANT ALL ON TABLE epitope.origin_peptide TO :owner;
+GRANT SELECT ON TABLE epitope.origin_peptide TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.origin_peptide TO :rw_user;
 
 
 --
--- Name: TABLE pept_response_corravg; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: TABLE pept_response_corravg; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON TABLE epitope.pept_response_corravg FROM PUBLIC;
-REVOKE ALL ON TABLE epitope.pept_response_corravg FROM vverse_admin;
-GRANT ALL ON TABLE epitope.pept_response_corravg TO vverse_admin;
-GRANT SELECT ON TABLE epitope.pept_response_corravg TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.pept_response_corravg TO viroverse_w;
+REVOKE ALL ON TABLE epitope.pept_response_corravg FROM :owner;
+GRANT ALL ON TABLE epitope.pept_response_corravg TO :owner;
+GRANT SELECT ON TABLE epitope.pept_response_corravg TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.pept_response_corravg TO :rw_user;
 
 
 --
--- Name: SEQUENCE peptide_pept_id_seq; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: SEQUENCE peptide_pept_id_seq; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE epitope.peptide_pept_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE epitope.peptide_pept_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE epitope.peptide_pept_id_seq TO vverse_admin;
-GRANT SELECT ON SEQUENCE epitope.peptide_pept_id_seq TO viroverse_r;
-GRANT ALL ON SEQUENCE epitope.peptide_pept_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE epitope.peptide_pept_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE epitope.peptide_pept_id_seq TO :owner;
+GRANT SELECT ON SEQUENCE epitope.peptide_pept_id_seq TO :ro_user;
+GRANT ALL ON SEQUENCE epitope.peptide_pept_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE peptide; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: TABLE peptide; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON TABLE epitope.peptide FROM PUBLIC;
-REVOKE ALL ON TABLE epitope.peptide FROM vverse_admin;
-GRANT ALL ON TABLE epitope.peptide TO vverse_admin;
-GRANT SELECT ON TABLE epitope.peptide TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.peptide TO viroverse_w;
+REVOKE ALL ON TABLE epitope.peptide FROM :owner;
+GRANT ALL ON TABLE epitope.peptide TO :owner;
+GRANT SELECT ON TABLE epitope.peptide TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.peptide TO :rw_user;
 
 
 --
--- Name: SEQUENCE pool_pool_id_seq; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: SEQUENCE pool_pool_id_seq; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE epitope.pool_pool_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE epitope.pool_pool_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE epitope.pool_pool_id_seq TO vverse_admin;
-GRANT SELECT ON SEQUENCE epitope.pool_pool_id_seq TO viroverse_r;
-GRANT ALL ON SEQUENCE epitope.pool_pool_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE epitope.pool_pool_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE epitope.pool_pool_id_seq TO :owner;
+GRANT SELECT ON SEQUENCE epitope.pool_pool_id_seq TO :ro_user;
+GRANT ALL ON SEQUENCE epitope.pool_pool_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE pool; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: TABLE pool; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON TABLE epitope.pool FROM PUBLIC;
-REVOKE ALL ON TABLE epitope.pool FROM vverse_admin;
-GRANT ALL ON TABLE epitope.pool TO vverse_admin;
-GRANT SELECT ON TABLE epitope.pool TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.pool TO viroverse_w;
+REVOKE ALL ON TABLE epitope.pool FROM :owner;
+GRANT ALL ON TABLE epitope.pool TO :owner;
+GRANT SELECT ON TABLE epitope.pool TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.pool TO :rw_user;
 
 
 --
--- Name: TABLE pool_pept; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: TABLE pool_pept; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON TABLE epitope.pool_pept FROM PUBLIC;
-REVOKE ALL ON TABLE epitope.pool_pept FROM vverse_admin;
-GRANT ALL ON TABLE epitope.pool_pept TO vverse_admin;
-GRANT SELECT ON TABLE epitope.pool_pept TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.pool_pept TO viroverse_w;
+REVOKE ALL ON TABLE epitope.pool_pept FROM :owner;
+GRANT ALL ON TABLE epitope.pool_pept TO :owner;
+GRANT SELECT ON TABLE epitope.pool_pept TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.pool_pept TO :rw_user;
 
 
 --
--- Name: TABLE pool_response; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: TABLE pool_response; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON TABLE epitope.pool_response FROM PUBLIC;
-REVOKE ALL ON TABLE epitope.pool_response FROM vverse_admin;
-GRANT ALL ON TABLE epitope.pool_response TO vverse_admin;
-GRANT SELECT ON TABLE epitope.pool_response TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.pool_response TO viroverse_w;
+REVOKE ALL ON TABLE epitope.pool_response FROM :owner;
+GRANT ALL ON TABLE epitope.pool_response TO :owner;
+GRANT SELECT ON TABLE epitope.pool_response TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.pool_response TO :rw_user;
 
 
 --
--- Name: TABLE pool_response_avg; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: TABLE pool_response_avg; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON TABLE epitope.pool_response_avg FROM PUBLIC;
-REVOKE ALL ON TABLE epitope.pool_response_avg FROM vverse_admin;
-GRANT ALL ON TABLE epitope.pool_response_avg TO vverse_admin;
-GRANT SELECT ON TABLE epitope.pool_response_avg TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.pool_response_avg TO viroverse_w;
+REVOKE ALL ON TABLE epitope.pool_response_avg FROM :owner;
+GRANT ALL ON TABLE epitope.pool_response_avg TO :owner;
+GRANT SELECT ON TABLE epitope.pool_response_avg TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.pool_response_avg TO :rw_user;
 
 
 --
--- Name: TABLE pool_response_corravg; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: TABLE pool_response_corravg; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON TABLE epitope.pool_response_corravg FROM PUBLIC;
-REVOKE ALL ON TABLE epitope.pool_response_corravg FROM vverse_admin;
-GRANT ALL ON TABLE epitope.pool_response_corravg TO vverse_admin;
-GRANT SELECT ON TABLE epitope.pool_response_corravg TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.pool_response_corravg TO viroverse_w;
+REVOKE ALL ON TABLE epitope.pool_response_corravg FROM :owner;
+GRANT ALL ON TABLE epitope.pool_response_corravg TO :owner;
+GRANT SELECT ON TABLE epitope.pool_response_corravg TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.pool_response_corravg TO :rw_user;
 
 
 --
--- Name: TABLE test_patient; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: TABLE test_patient; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON TABLE epitope.test_patient FROM PUBLIC;
-REVOKE ALL ON TABLE epitope.test_patient FROM vverse_admin;
-GRANT ALL ON TABLE epitope.test_patient TO vverse_admin;
-GRANT SELECT ON TABLE epitope.test_patient TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.test_patient TO viroverse_w;
+REVOKE ALL ON TABLE epitope.test_patient FROM :owner;
+GRANT ALL ON TABLE epitope.test_patient TO :owner;
+GRANT SELECT ON TABLE epitope.test_patient TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.test_patient TO :rw_user;
 
 
 --
--- Name: TABLE titration; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: TABLE titration; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON TABLE epitope.titration FROM PUBLIC;
-REVOKE ALL ON TABLE epitope.titration FROM vverse_admin;
-GRANT ALL ON TABLE epitope.titration TO vverse_admin;
-GRANT SELECT ON TABLE epitope.titration TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.titration TO viroverse_w;
+REVOKE ALL ON TABLE epitope.titration FROM :owner;
+GRANT ALL ON TABLE epitope.titration TO :owner;
+GRANT SELECT ON TABLE epitope.titration TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.titration TO :rw_user;
 
 
 --
--- Name: TABLE titration_avg; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: TABLE titration_avg; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON TABLE epitope.titration_avg FROM PUBLIC;
-REVOKE ALL ON TABLE epitope.titration_avg FROM vverse_admin;
-GRANT ALL ON TABLE epitope.titration_avg TO vverse_admin;
-GRANT SELECT ON TABLE epitope.titration_avg TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.titration_avg TO viroverse_w;
+REVOKE ALL ON TABLE epitope.titration_avg FROM :owner;
+GRANT ALL ON TABLE epitope.titration_avg TO :owner;
+GRANT SELECT ON TABLE epitope.titration_avg TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.titration_avg TO :rw_user;
 
 
 --
--- Name: SEQUENCE titration_conc_conc_id_seq; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: SEQUENCE titration_conc_conc_id_seq; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE epitope.titration_conc_conc_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE epitope.titration_conc_conc_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE epitope.titration_conc_conc_id_seq TO vverse_admin;
-GRANT SELECT ON SEQUENCE epitope.titration_conc_conc_id_seq TO viroverse_r;
-GRANT ALL ON SEQUENCE epitope.titration_conc_conc_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE epitope.titration_conc_conc_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE epitope.titration_conc_conc_id_seq TO :owner;
+GRANT SELECT ON SEQUENCE epitope.titration_conc_conc_id_seq TO :ro_user;
+GRANT ALL ON SEQUENCE epitope.titration_conc_conc_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE titration_conc; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: TABLE titration_conc; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON TABLE epitope.titration_conc FROM PUBLIC;
-REVOKE ALL ON TABLE epitope.titration_conc FROM vverse_admin;
-GRANT ALL ON TABLE epitope.titration_conc TO vverse_admin;
-GRANT SELECT ON TABLE epitope.titration_conc TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.titration_conc TO viroverse_w;
+REVOKE ALL ON TABLE epitope.titration_conc FROM :owner;
+GRANT ALL ON TABLE epitope.titration_conc TO :owner;
+GRANT SELECT ON TABLE epitope.titration_conc TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.titration_conc TO :rw_user;
 
 
 --
--- Name: TABLE titration_corravg; Type: ACL; Schema: epitope; Owner: vverse_admin
+-- Name: TABLE titration_corravg; Type: ACL; Schema: epitope; Owner: :owner
 --
 
 REVOKE ALL ON TABLE epitope.titration_corravg FROM PUBLIC;
-REVOKE ALL ON TABLE epitope.titration_corravg FROM vverse_admin;
-GRANT ALL ON TABLE epitope.titration_corravg TO vverse_admin;
-GRANT SELECT ON TABLE epitope.titration_corravg TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.titration_corravg TO viroverse_w;
+REVOKE ALL ON TABLE epitope.titration_corravg FROM :owner;
+GRANT ALL ON TABLE epitope.titration_corravg TO :owner;
+GRANT SELECT ON TABLE epitope.titration_corravg TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE epitope.titration_corravg TO :rw_user;
 
 
 --
--- Name: TABLE box; Type: ACL; Schema: freezer; Owner: vverse_admin
+-- Name: TABLE box; Type: ACL; Schema: freezer; Owner: :owner
 --
 
 REVOKE ALL ON TABLE freezer.box FROM PUBLIC;
-REVOKE ALL ON TABLE freezer.box FROM vverse_admin;
-GRANT ALL ON TABLE freezer.box TO vverse_admin;
-GRANT SELECT ON TABLE freezer.box TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE freezer.box TO viroverse_w;
+REVOKE ALL ON TABLE freezer.box FROM :owner;
+GRANT ALL ON TABLE freezer.box TO :owner;
+GRANT SELECT ON TABLE freezer.box TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE freezer.box TO :rw_user;
 
 
 --
--- Name: SEQUENCE box_box_id_seq; Type: ACL; Schema: freezer; Owner: vverse_admin
+-- Name: SEQUENCE box_box_id_seq; Type: ACL; Schema: freezer; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE freezer.box_box_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE freezer.box_box_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE freezer.box_box_id_seq TO vverse_admin;
-GRANT SELECT ON SEQUENCE freezer.box_box_id_seq TO viroverse_r;
-GRANT ALL ON SEQUENCE freezer.box_box_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE freezer.box_box_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE freezer.box_box_id_seq TO :owner;
+GRANT SELECT ON SEQUENCE freezer.box_box_id_seq TO :ro_user;
+GRANT ALL ON SEQUENCE freezer.box_box_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE box_pos; Type: ACL; Schema: freezer; Owner: vverse_admin
+-- Name: TABLE box_pos; Type: ACL; Schema: freezer; Owner: :owner
 --
 
 REVOKE ALL ON TABLE freezer.box_pos FROM PUBLIC;
-REVOKE ALL ON TABLE freezer.box_pos FROM vverse_admin;
-GRANT ALL ON TABLE freezer.box_pos TO vverse_admin;
-GRANT SELECT ON TABLE freezer.box_pos TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE freezer.box_pos TO viroverse_w;
+REVOKE ALL ON TABLE freezer.box_pos FROM :owner;
+GRANT ALL ON TABLE freezer.box_pos TO :owner;
+GRANT SELECT ON TABLE freezer.box_pos TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE freezer.box_pos TO :rw_user;
 
 
 --
--- Name: SEQUENCE box_pos_box_pos_id_seq; Type: ACL; Schema: freezer; Owner: vverse_admin
+-- Name: SEQUENCE box_pos_box_pos_id_seq; Type: ACL; Schema: freezer; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE freezer.box_pos_box_pos_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE freezer.box_pos_box_pos_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE freezer.box_pos_box_pos_id_seq TO vverse_admin;
-GRANT SELECT ON SEQUENCE freezer.box_pos_box_pos_id_seq TO viroverse_r;
-GRANT ALL ON SEQUENCE freezer.box_pos_box_pos_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE freezer.box_pos_box_pos_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE freezer.box_pos_box_pos_id_seq TO :owner;
+GRANT SELECT ON SEQUENCE freezer.box_pos_box_pos_id_seq TO :ro_user;
+GRANT ALL ON SEQUENCE freezer.box_pos_box_pos_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE freezer; Type: ACL; Schema: freezer; Owner: vverse_admin
+-- Name: TABLE freezer; Type: ACL; Schema: freezer; Owner: :owner
 --
 
 REVOKE ALL ON TABLE freezer.freezer FROM PUBLIC;
-REVOKE ALL ON TABLE freezer.freezer FROM vverse_admin;
-GRANT ALL ON TABLE freezer.freezer TO vverse_admin;
-GRANT SELECT ON TABLE freezer.freezer TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE freezer.freezer TO viroverse_w;
+REVOKE ALL ON TABLE freezer.freezer FROM :owner;
+GRANT ALL ON TABLE freezer.freezer TO :owner;
+GRANT SELECT ON TABLE freezer.freezer TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE freezer.freezer TO :rw_user;
 
 
 --
--- Name: SEQUENCE freezer_freezer_id_seq; Type: ACL; Schema: freezer; Owner: vverse_admin
+-- Name: SEQUENCE freezer_freezer_id_seq; Type: ACL; Schema: freezer; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE freezer.freezer_freezer_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE freezer.freezer_freezer_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE freezer.freezer_freezer_id_seq TO vverse_admin;
-GRANT SELECT ON SEQUENCE freezer.freezer_freezer_id_seq TO viroverse_r;
-GRANT ALL ON SEQUENCE freezer.freezer_freezer_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE freezer.freezer_freezer_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE freezer.freezer_freezer_id_seq TO :owner;
+GRANT SELECT ON SEQUENCE freezer.freezer_freezer_id_seq TO :ro_user;
+GRANT ALL ON SEQUENCE freezer.freezer_freezer_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE rack; Type: ACL; Schema: freezer; Owner: vverse_admin
+-- Name: TABLE rack; Type: ACL; Schema: freezer; Owner: :owner
 --
 
 REVOKE ALL ON TABLE freezer.rack FROM PUBLIC;
-REVOKE ALL ON TABLE freezer.rack FROM vverse_admin;
-GRANT ALL ON TABLE freezer.rack TO vverse_admin;
-GRANT SELECT ON TABLE freezer.rack TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE freezer.rack TO viroverse_w;
+REVOKE ALL ON TABLE freezer.rack FROM :owner;
+GRANT ALL ON TABLE freezer.rack TO :owner;
+GRANT SELECT ON TABLE freezer.rack TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE freezer.rack TO :rw_user;
 
 
 --
--- Name: SEQUENCE rack_rack_id_seq; Type: ACL; Schema: freezer; Owner: vverse_admin
+-- Name: SEQUENCE rack_rack_id_seq; Type: ACL; Schema: freezer; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE freezer.rack_rack_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE freezer.rack_rack_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE freezer.rack_rack_id_seq TO vverse_admin;
-GRANT SELECT ON SEQUENCE freezer.rack_rack_id_seq TO viroverse_r;
-GRANT ALL ON SEQUENCE freezer.rack_rack_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE freezer.rack_rack_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE freezer.rack_rack_id_seq TO :owner;
+GRANT SELECT ON SEQUENCE freezer.rack_rack_id_seq TO :ro_user;
+GRANT ALL ON SEQUENCE freezer.rack_rack_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE hla_genotype; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE hla_genotype; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.hla_genotype FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.hla_genotype FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.hla_genotype TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.hla_genotype TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.hla_genotype TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.hla_genotype FROM :owner;
+GRANT ALL ON TABLE viroserve.hla_genotype TO :owner;
+GRANT SELECT ON TABLE viroserve.hla_genotype TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.hla_genotype TO :rw_user;
 
 
 --
--- Name: TABLE patient_hla_genotype; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE patient_hla_genotype; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.patient_hla_genotype FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.patient_hla_genotype FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.patient_hla_genotype TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.patient_hla_genotype TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.patient_hla_genotype TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.patient_hla_genotype FROM :owner;
+GRANT ALL ON TABLE viroserve.patient_hla_genotype TO :owner;
+GRANT SELECT ON TABLE viroserve.patient_hla_genotype TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.patient_hla_genotype TO :rw_user;
 
 
 --
--- Name: TABLE _vhla_genotype; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE _vhla_genotype; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve._vhla_genotype FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve._vhla_genotype FROM vverse_admin;
-GRANT ALL ON TABLE viroserve._vhla_genotype TO vverse_admin;
-GRANT SELECT ON TABLE viroserve._vhla_genotype TO viroverse_r;
-GRANT SELECT ON TABLE viroserve._vhla_genotype TO viroverse_w;
+REVOKE ALL ON TABLE viroserve._vhla_genotype FROM :owner;
+GRANT ALL ON TABLE viroserve._vhla_genotype TO :owner;
+GRANT SELECT ON TABLE viroserve._vhla_genotype TO :ro_user;
+GRANT SELECT ON TABLE viroserve._vhla_genotype TO :rw_user;
 
 
 --
--- Name: TABLE lab_result_cat; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE lab_result_cat; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.lab_result_cat FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.lab_result_cat FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.lab_result_cat TO vverse_admin;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.lab_result_cat TO viroverse_w;
-GRANT SELECT ON TABLE viroserve.lab_result_cat TO viroverse_r;
+REVOKE ALL ON TABLE viroserve.lab_result_cat FROM :owner;
+GRANT ALL ON TABLE viroserve.lab_result_cat TO :owner;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.lab_result_cat TO :rw_user;
+GRANT SELECT ON TABLE viroserve.lab_result_cat TO :ro_user;
 
 
 --
--- Name: TABLE lab_result_cat_type; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE lab_result_cat_type; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.lab_result_cat_type FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.lab_result_cat_type FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.lab_result_cat_type TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.lab_result_cat_type TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.lab_result_cat_type TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.lab_result_cat_type FROM :owner;
+GRANT ALL ON TABLE viroserve.lab_result_cat_type TO :owner;
+GRANT SELECT ON TABLE viroserve.lab_result_cat_type TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.lab_result_cat_type TO :rw_user;
 
 
 --
--- Name: TABLE lab_result_cat_value; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE lab_result_cat_value; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.lab_result_cat_value FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.lab_result_cat_value FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.lab_result_cat_value TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.lab_result_cat_value TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.lab_result_cat_value TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.lab_result_cat_value FROM :owner;
+GRANT ALL ON TABLE viroserve.lab_result_cat_value TO :owner;
+GRANT SELECT ON TABLE viroserve.lab_result_cat_value TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.lab_result_cat_value TO :rw_user;
 
 
 --
--- Name: TABLE _vlab_result_cat; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE _vlab_result_cat; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve._vlab_result_cat FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve._vlab_result_cat FROM vverse_admin;
-GRANT ALL ON TABLE viroserve._vlab_result_cat TO vverse_admin;
-GRANT SELECT ON TABLE viroserve._vlab_result_cat TO viroverse_r;
-GRANT SELECT ON TABLE viroserve._vlab_result_cat TO viroverse_w;
+REVOKE ALL ON TABLE viroserve._vlab_result_cat FROM :owner;
+GRANT ALL ON TABLE viroserve._vlab_result_cat TO :owner;
+GRANT SELECT ON TABLE viroserve._vlab_result_cat TO :ro_user;
+GRANT SELECT ON TABLE viroserve._vlab_result_cat TO :rw_user;
 
 
 --
--- Name: TABLE lab_result_num; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE lab_result_num; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.lab_result_num FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.lab_result_num FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.lab_result_num TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.lab_result_num TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.lab_result_num TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.lab_result_num FROM :owner;
+GRANT ALL ON TABLE viroserve.lab_result_num TO :owner;
+GRANT SELECT ON TABLE viroserve.lab_result_num TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.lab_result_num TO :rw_user;
 
 
 --
--- Name: TABLE lab_result_num_type; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE lab_result_num_type; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.lab_result_num_type FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.lab_result_num_type FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.lab_result_num_type TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.lab_result_num_type TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.lab_result_num_type TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.lab_result_num_type FROM :owner;
+GRANT ALL ON TABLE viroserve.lab_result_num_type TO :owner;
+GRANT SELECT ON TABLE viroserve.lab_result_num_type TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.lab_result_num_type TO :rw_user;
 
 
 --
--- Name: TABLE unit; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE unit; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.unit FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.unit FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.unit TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.unit TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.unit TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.unit FROM :owner;
+GRANT ALL ON TABLE viroserve.unit TO :owner;
+GRANT SELECT ON TABLE viroserve.unit TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.unit TO :rw_user;
 
 
 --
--- Name: TABLE _vlab_result_num; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE _vlab_result_num; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve._vlab_result_num FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve._vlab_result_num FROM vverse_admin;
-GRANT ALL ON TABLE viroserve._vlab_result_num TO vverse_admin;
-GRANT SELECT ON TABLE viroserve._vlab_result_num TO viroverse_r;
-GRANT SELECT ON TABLE viroserve._vlab_result_num TO viroverse_w;
+REVOKE ALL ON TABLE viroserve._vlab_result_num FROM :owner;
+GRANT ALL ON TABLE viroserve._vlab_result_num TO :owner;
+GRANT SELECT ON TABLE viroserve._vlab_result_num TO :ro_user;
+GRANT SELECT ON TABLE viroserve._vlab_result_num TO :rw_user;
 
 
 --
--- Name: TABLE bisulfite_converted_dna; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE bisulfite_converted_dna; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.bisulfite_converted_dna FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.bisulfite_converted_dna FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.bisulfite_converted_dna TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.bisulfite_converted_dna TO viroverse_r;
-GRANT ALL ON TABLE viroserve.bisulfite_converted_dna TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.bisulfite_converted_dna FROM :owner;
+GRANT ALL ON TABLE viroserve.bisulfite_converted_dna TO :owner;
+GRANT SELECT ON TABLE viroserve.bisulfite_converted_dna TO :ro_user;
+GRANT ALL ON TABLE viroserve.bisulfite_converted_dna TO :rw_user;
 
 
 --
--- Name: TABLE extraction; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE extraction; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.extraction FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.extraction FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.extraction TO vverse_admin;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.extraction TO viroverse_w;
-GRANT SELECT ON TABLE viroserve.extraction TO viroverse_r;
+REVOKE ALL ON TABLE viroserve.extraction FROM :owner;
+GRANT ALL ON TABLE viroserve.extraction TO :owner;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.extraction TO :rw_user;
+GRANT SELECT ON TABLE viroserve.extraction TO :ro_user;
 
 
 --
--- Name: TABLE pcr_product; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE pcr_product; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.pcr_product FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.pcr_product FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.pcr_product TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.pcr_product TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.pcr_product TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.pcr_product FROM :owner;
+GRANT ALL ON TABLE viroserve.pcr_product TO :owner;
+GRANT SELECT ON TABLE viroserve.pcr_product TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.pcr_product TO :rw_user;
 
 
 --
--- Name: TABLE pcr_template; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE pcr_template; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.pcr_template FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.pcr_template FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.pcr_template TO vverse_admin;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.pcr_template TO viroverse_w;
-GRANT SELECT ON TABLE viroserve.pcr_template TO viroverse_r;
+REVOKE ALL ON TABLE viroserve.pcr_template FROM :owner;
+GRANT ALL ON TABLE viroserve.pcr_template TO :owner;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.pcr_template TO :rw_user;
+GRANT SELECT ON TABLE viroserve.pcr_template TO :ro_user;
 
 
 --
--- Name: TABLE rt_product; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE rt_product; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.rt_product FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.rt_product FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.rt_product TO vverse_admin;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.rt_product TO viroverse_w;
-GRANT SELECT ON TABLE viroserve.rt_product TO viroverse_r;
+REVOKE ALL ON TABLE viroserve.rt_product FROM :owner;
+GRANT ALL ON TABLE viroserve.rt_product TO :owner;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.rt_product TO :rw_user;
+GRANT SELECT ON TABLE viroserve.rt_product TO :ro_user;
 
 
 --
--- Name: TABLE _vpatient_visit_sample_pcr; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE _vpatient_visit_sample_pcr; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve._vpatient_visit_sample_pcr FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve._vpatient_visit_sample_pcr FROM vverse_admin;
-GRANT ALL ON TABLE viroserve._vpatient_visit_sample_pcr TO vverse_admin;
-GRANT SELECT ON TABLE viroserve._vpatient_visit_sample_pcr TO viroverse_r;
-GRANT SELECT ON TABLE viroserve._vpatient_visit_sample_pcr TO viroverse_w;
+REVOKE ALL ON TABLE viroserve._vpatient_visit_sample_pcr FROM :owner;
+GRANT ALL ON TABLE viroserve._vpatient_visit_sample_pcr TO :owner;
+GRANT SELECT ON TABLE viroserve._vpatient_visit_sample_pcr TO :ro_user;
+GRANT SELECT ON TABLE viroserve._vpatient_visit_sample_pcr TO :rw_user;
 
 
 --
--- Name: TABLE additive; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE additive; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.additive FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.additive FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.additive TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.additive TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.additive TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.additive FROM :owner;
+GRANT ALL ON TABLE viroserve.additive TO :owner;
+GRANT SELECT ON TABLE viroserve.additive TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.additive TO :rw_user;
 
 
 --
--- Name: SEQUENCE additive_additive_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE additive_additive_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.additive_additive_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.additive_additive_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.additive_additive_id_seq TO vverse_admin;
-GRANT SELECT ON SEQUENCE viroserve.additive_additive_id_seq TO viroverse_r;
-GRANT ALL ON SEQUENCE viroserve.additive_additive_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.additive_additive_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.additive_additive_id_seq TO :owner;
+GRANT SELECT ON SEQUENCE viroserve.additive_additive_id_seq TO :ro_user;
+GRANT ALL ON SEQUENCE viroserve.additive_additive_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE alignment; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE alignment; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.alignment FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.alignment FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.alignment TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.alignment TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.alignment TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.alignment FROM :owner;
+GRANT ALL ON TABLE viroserve.alignment TO :owner;
+GRANT SELECT ON TABLE viroserve.alignment TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.alignment TO :rw_user;
 
 
 --
--- Name: SEQUENCE alignment_alignment_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE alignment_alignment_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.alignment_alignment_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.alignment_alignment_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.alignment_alignment_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.alignment_alignment_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.alignment_alignment_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.alignment_alignment_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.alignment_alignment_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE alignment_latest_revision; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE alignment_latest_revision; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.alignment_latest_revision FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.alignment_latest_revision FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.alignment_latest_revision TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.alignment_latest_revision TO viroverse_r;
-GRANT SELECT ON TABLE viroserve.alignment_latest_revision TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.alignment_latest_revision FROM :owner;
+GRANT ALL ON TABLE viroserve.alignment_latest_revision TO :owner;
+GRANT SELECT ON TABLE viroserve.alignment_latest_revision TO :ro_user;
+GRANT SELECT ON TABLE viroserve.alignment_latest_revision TO :rw_user;
 
 
 --
--- Name: TABLE alignment_method; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE alignment_method; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.alignment_method FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.alignment_method FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.alignment_method TO vverse_admin;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.alignment_method TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.alignment_method FROM :owner;
+GRANT ALL ON TABLE viroserve.alignment_method TO :owner;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.alignment_method TO :rw_user;
 
 
 --
--- Name: SEQUENCE alignment_method_alignment_method_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE alignment_method_alignment_method_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.alignment_method_alignment_method_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.alignment_method_alignment_method_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.alignment_method_alignment_method_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.alignment_method_alignment_method_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.alignment_method_alignment_method_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.alignment_method_alignment_method_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.alignment_method_alignment_method_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE aliquot; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE aliquot; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.aliquot FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.aliquot FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.aliquot TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.aliquot TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.aliquot TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.aliquot FROM :owner;
+GRANT ALL ON TABLE viroserve.aliquot TO :owner;
+GRANT SELECT ON TABLE viroserve.aliquot TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.aliquot TO :rw_user;
 
 
 --
--- Name: SEQUENCE aliquot_aliquot_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE aliquot_aliquot_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.aliquot_aliquot_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.aliquot_aliquot_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.aliquot_aliquot_id_seq TO vverse_admin;
-GRANT SELECT ON SEQUENCE viroserve.aliquot_aliquot_id_seq TO viroverse_r;
-GRANT ALL ON SEQUENCE viroserve.aliquot_aliquot_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.aliquot_aliquot_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.aliquot_aliquot_id_seq TO :owner;
+GRANT SELECT ON SEQUENCE viroserve.aliquot_aliquot_id_seq TO :ro_user;
+GRANT ALL ON SEQUENCE viroserve.aliquot_aliquot_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE arv_class; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE arv_class; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.arv_class FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.arv_class FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.arv_class TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.arv_class TO viroverse_r;
-GRANT ALL ON TABLE viroserve.arv_class TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.arv_class FROM :owner;
+GRANT ALL ON TABLE viroserve.arv_class TO :owner;
+GRANT SELECT ON TABLE viroserve.arv_class TO :ro_user;
+GRANT ALL ON TABLE viroserve.arv_class TO :rw_user;
 
 
 --
--- Name: SEQUENCE arv_class_arv_class_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE arv_class_arv_class_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.arv_class_arv_class_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.arv_class_arv_class_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.arv_class_arv_class_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.arv_class_arv_class_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.arv_class_arv_class_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.arv_class_arv_class_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.arv_class_arv_class_id_seq TO :rw_user;
 
 
 --
--- Name: SEQUENCE bisulfite_converted_dna_bisulfite_converted_dna_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE bisulfite_converted_dna_bisulfite_converted_dna_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.bisulfite_converted_dna_bisulfite_converted_dna_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.bisulfite_converted_dna_bisulfite_converted_dna_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.bisulfite_converted_dna_bisulfite_converted_dna_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.bisulfite_converted_dna_bisulfite_converted_dna_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.bisulfite_converted_dna_bisulfite_converted_dna_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.bisulfite_converted_dna_bisulfite_converted_dna_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.bisulfite_converted_dna_bisulfite_converted_dna_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE cell_count; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE cell_count; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.cell_count FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.cell_count FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.cell_count TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.cell_count TO viroverse_r;
-GRANT SELECT ON TABLE viroserve.cell_count TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.cell_count FROM :owner;
+GRANT ALL ON TABLE viroserve.cell_count TO :owner;
+GRANT SELECT ON TABLE viroserve.cell_count TO :ro_user;
+GRANT SELECT ON TABLE viroserve.cell_count TO :rw_user;
 
 
 --
--- Name: TABLE chromat; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE chromat; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.chromat FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.chromat FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.chromat TO vverse_admin;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.chromat TO viroverse_w;
-GRANT SELECT ON TABLE viroserve.chromat TO viroverse_r;
+REVOKE ALL ON TABLE viroserve.chromat FROM :owner;
+GRANT ALL ON TABLE viroserve.chromat TO :owner;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.chromat TO :rw_user;
+GRANT SELECT ON TABLE viroserve.chromat TO :ro_user;
 
 
 --
--- Name: SEQUENCE chromat_chromat_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE chromat_chromat_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.chromat_chromat_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.chromat_chromat_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.chromat_chromat_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.chromat_chromat_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.chromat_chromat_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.chromat_chromat_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.chromat_chromat_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE chromat_na_sequence; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE chromat_na_sequence; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.chromat_na_sequence FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.chromat_na_sequence FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.chromat_na_sequence TO vverse_admin;
-GRANT ALL ON TABLE viroserve.chromat_na_sequence TO viroverse_w;
-GRANT SELECT ON TABLE viroserve.chromat_na_sequence TO viroverse_r;
+REVOKE ALL ON TABLE viroserve.chromat_na_sequence FROM :owner;
+GRANT ALL ON TABLE viroserve.chromat_na_sequence TO :owner;
+GRANT ALL ON TABLE viroserve.chromat_na_sequence TO :rw_user;
+GRANT SELECT ON TABLE viroserve.chromat_na_sequence TO :ro_user;
 
 
 --
--- Name: TABLE chromat_type; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE chromat_type; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.chromat_type FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.chromat_type FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.chromat_type TO vverse_admin;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.chromat_type TO viroverse_w;
-GRANT SELECT ON TABLE viroserve.chromat_type TO viroverse_r;
+REVOKE ALL ON TABLE viroserve.chromat_type FROM :owner;
+GRANT ALL ON TABLE viroserve.chromat_type TO :owner;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.chromat_type TO :rw_user;
+GRANT SELECT ON TABLE viroserve.chromat_type TO :ro_user;
 
 
 --
--- Name: SEQUENCE chromat_type_chromat_type_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE chromat_type_chromat_type_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.chromat_type_chromat_type_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.chromat_type_chromat_type_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.chromat_type_chromat_type_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.chromat_type_chromat_type_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.chromat_type_chromat_type_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.chromat_type_chromat_type_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.chromat_type_chromat_type_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE clone; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE clone; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.clone FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.clone FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.clone TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.clone TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.clone TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.clone FROM :owner;
+GRANT ALL ON TABLE viroserve.clone TO :owner;
+GRANT SELECT ON TABLE viroserve.clone TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.clone TO :rw_user;
 
 
 --
--- Name: SEQUENCE clone_clone_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE clone_clone_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.clone_clone_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.clone_clone_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.clone_clone_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.clone_clone_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.clone_clone_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.clone_clone_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.clone_clone_id_seq TO :rw_user;
 
 
 --
--- Name: SEQUENCE cohort_cohort_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE cohort_cohort_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.cohort_cohort_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.cohort_cohort_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.cohort_cohort_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.cohort_cohort_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.cohort_cohort_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.cohort_cohort_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.cohort_cohort_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE cohort; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE cohort; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.cohort FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.cohort FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.cohort TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.cohort TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.cohort TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.cohort FROM :owner;
+GRANT ALL ON TABLE viroserve.cohort TO :owner;
+GRANT SELECT ON TABLE viroserve.cohort TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.cohort TO :rw_user;
 
 
 --
--- Name: TABLE infection; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE infection; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.infection FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.infection FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.infection TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.infection TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.infection TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.infection FROM :owner;
+GRANT ALL ON TABLE viroserve.infection TO :owner;
+GRANT SELECT ON TABLE viroserve.infection TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.infection TO :rw_user;
 
 
 --
--- Name: TABLE medication; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE medication; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.medication FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.medication FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.medication TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.medication TO viroverse_r;
-GRANT ALL ON TABLE viroserve.medication TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.medication FROM :owner;
+GRANT ALL ON TABLE viroserve.medication TO :owner;
+GRANT SELECT ON TABLE viroserve.medication TO :ro_user;
+GRANT ALL ON TABLE viroserve.medication TO :rw_user;
 
 
 --
--- Name: TABLE patient; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE patient; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.patient FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.patient FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.patient TO vverse_admin;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.patient TO viroverse_w;
-GRANT SELECT ON TABLE viroserve.patient TO viroverse_r;
+REVOKE ALL ON TABLE viroserve.patient FROM :owner;
+GRANT ALL ON TABLE viroserve.patient TO :owner;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.patient TO :rw_user;
+GRANT SELECT ON TABLE viroserve.patient TO :ro_user;
 
 
 --
--- Name: TABLE patient_alias; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE patient_alias; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.patient_alias FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.patient_alias FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.patient_alias TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.patient_alias TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.patient_alias TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.patient_alias FROM :owner;
+GRANT ALL ON TABLE viroserve.patient_alias TO :owner;
+GRANT SELECT ON TABLE viroserve.patient_alias TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.patient_alias TO :rw_user;
 
 
 --
--- Name: TABLE patient_medication; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE patient_medication; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.patient_medication FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.patient_medication FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.patient_medication TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.patient_medication TO viroverse_r;
-GRANT ALL ON TABLE viroserve.patient_medication TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.patient_medication FROM :owner;
+GRANT ALL ON TABLE viroserve.patient_medication TO :owner;
+GRANT SELECT ON TABLE viroserve.patient_medication TO :ro_user;
+GRANT ALL ON TABLE viroserve.patient_medication TO :rw_user;
 
 
 --
--- Name: TABLE viral_load; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE viral_load; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.viral_load FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.viral_load FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.viral_load TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.viral_load TO viroverse_r;
-GRANT SELECT ON TABLE viroserve.viral_load TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.viral_load FROM :owner;
+GRANT ALL ON TABLE viroserve.viral_load TO :owner;
+GRANT SELECT ON TABLE viroserve.viral_load TO :ro_user;
+GRANT SELECT ON TABLE viroserve.viral_load TO :rw_user;
 
 
 --
--- Name: TABLE cohort_patient_summary; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE cohort_patient_summary; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.cohort_patient_summary FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.cohort_patient_summary FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.cohort_patient_summary TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.cohort_patient_summary TO viroverse_r;
-GRANT SELECT ON TABLE viroserve.cohort_patient_summary TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.cohort_patient_summary FROM :owner;
+GRANT ALL ON TABLE viroserve.cohort_patient_summary TO :owner;
+GRANT SELECT ON TABLE viroserve.cohort_patient_summary TO :ro_user;
+GRANT SELECT ON TABLE viroserve.cohort_patient_summary TO :rw_user;
 
 
 --
--- Name: SEQUENCE competent_cells_competent_cells_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE competent_cells_competent_cells_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.competent_cells_competent_cells_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.competent_cells_competent_cells_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.competent_cells_competent_cells_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.competent_cells_competent_cells_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.competent_cells_competent_cells_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.competent_cells_competent_cells_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.competent_cells_competent_cells_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE copy_number; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE copy_number; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.copy_number FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.copy_number FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.copy_number TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.copy_number TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.copy_number TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.copy_number FROM :owner;
+GRANT ALL ON TABLE viroserve.copy_number TO :owner;
+GRANT SELECT ON TABLE viroserve.copy_number TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.copy_number TO :rw_user;
 
 
 --
--- Name: SEQUENCE copy_number_copy_number_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE copy_number_copy_number_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.copy_number_copy_number_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.copy_number_copy_number_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.copy_number_copy_number_id_seq TO vverse_admin;
-GRANT SELECT ON SEQUENCE viroserve.copy_number_copy_number_id_seq TO viroverse_r;
-GRANT ALL ON SEQUENCE viroserve.copy_number_copy_number_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.copy_number_copy_number_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.copy_number_copy_number_id_seq TO :owner;
+GRANT SELECT ON SEQUENCE viroserve.copy_number_copy_number_id_seq TO :ro_user;
+GRANT ALL ON SEQUENCE viroserve.copy_number_copy_number_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE copy_number_gel_lane; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE copy_number_gel_lane; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.copy_number_gel_lane FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.copy_number_gel_lane FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.copy_number_gel_lane TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.copy_number_gel_lane TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.copy_number_gel_lane TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.copy_number_gel_lane FROM :owner;
+GRANT ALL ON TABLE viroserve.copy_number_gel_lane TO :owner;
+GRANT SELECT ON TABLE viroserve.copy_number_gel_lane TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.copy_number_gel_lane TO :rw_user;
 
 
 --
--- Name: TABLE enzyme; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE enzyme; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.enzyme FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.enzyme FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.enzyme TO vverse_admin;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.enzyme TO viroverse_w;
-GRANT SELECT ON TABLE viroserve.enzyme TO viroverse_r;
+REVOKE ALL ON TABLE viroserve.enzyme FROM :owner;
+GRANT ALL ON TABLE viroserve.enzyme TO :owner;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.enzyme TO :rw_user;
+GRANT SELECT ON TABLE viroserve.enzyme TO :ro_user;
 
 
 --
--- Name: SEQUENCE enzyme_enzyme_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE enzyme_enzyme_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.enzyme_enzyme_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.enzyme_enzyme_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.enzyme_enzyme_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.enzyme_enzyme_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.enzyme_enzyme_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.enzyme_enzyme_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.enzyme_enzyme_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE extract_type; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE extract_type; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.extract_type FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.extract_type FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.extract_type TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.extract_type TO viroverse_r;
-GRANT ALL ON TABLE viroserve.extract_type TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.extract_type FROM :owner;
+GRANT ALL ON TABLE viroserve.extract_type TO :owner;
+GRANT SELECT ON TABLE viroserve.extract_type TO :ro_user;
+GRANT ALL ON TABLE viroserve.extract_type TO :rw_user;
 
 
 --
--- Name: SEQUENCE extraction_extraction_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE extraction_extraction_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.extraction_extraction_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.extraction_extraction_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.extraction_extraction_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.extraction_extraction_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.extraction_extraction_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.extraction_extraction_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.extraction_extraction_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE gel; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE gel; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.gel FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.gel FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.gel TO vverse_admin;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.gel TO viroverse_w;
-GRANT SELECT ON TABLE viroserve.gel TO viroverse_r;
+REVOKE ALL ON TABLE viroserve.gel FROM :owner;
+GRANT ALL ON TABLE viroserve.gel TO :owner;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.gel TO :rw_user;
+GRANT SELECT ON TABLE viroserve.gel TO :ro_user;
 
 
 --
--- Name: SEQUENCE gel_gel_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE gel_gel_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.gel_gel_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.gel_gel_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.gel_gel_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.gel_gel_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.gel_gel_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.gel_gel_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.gel_gel_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE gel_lane; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE gel_lane; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.gel_lane FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.gel_lane FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.gel_lane TO vverse_admin;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.gel_lane TO viroverse_w;
-GRANT SELECT ON TABLE viroserve.gel_lane TO viroverse_r;
+REVOKE ALL ON TABLE viroserve.gel_lane FROM :owner;
+GRANT ALL ON TABLE viroserve.gel_lane TO :owner;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.gel_lane TO :rw_user;
+GRANT SELECT ON TABLE viroserve.gel_lane TO :ro_user;
 
 
 --
--- Name: SEQUENCE gel_lane_gel_lane_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE gel_lane_gel_lane_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.gel_lane_gel_lane_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.gel_lane_gel_lane_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.gel_lane_gel_lane_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.gel_lane_gel_lane_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.gel_lane_gel_lane_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.gel_lane_gel_lane_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.gel_lane_gel_lane_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE genome_region; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE genome_region; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.genome_region FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.genome_region FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.genome_region TO vverse_admin;
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE viroserve.genome_region TO viroverse_w;
-GRANT SELECT ON TABLE viroserve.genome_region TO viroverse_r;
+REVOKE ALL ON TABLE viroserve.genome_region FROM :owner;
+GRANT ALL ON TABLE viroserve.genome_region TO :owner;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE viroserve.genome_region TO :rw_user;
+GRANT SELECT ON TABLE viroserve.genome_region TO :ro_user;
 
 
 --
--- Name: SEQUENCE hla_genotype_hla_genotype_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE hla_genotype_hla_genotype_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.hla_genotype_hla_genotype_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.hla_genotype_hla_genotype_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.hla_genotype_hla_genotype_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.hla_genotype_hla_genotype_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.hla_genotype_hla_genotype_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.hla_genotype_hla_genotype_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.hla_genotype_hla_genotype_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE na_sequence; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE na_sequence; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.na_sequence FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.na_sequence FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.na_sequence TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.na_sequence TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.na_sequence TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.na_sequence FROM :owner;
+GRANT ALL ON TABLE viroserve.na_sequence TO :owner;
+GRANT SELECT ON TABLE viroserve.na_sequence TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.na_sequence TO :rw_user;
 
 
 --
--- Name: TABLE na_sequence_alignment; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE na_sequence_alignment; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.na_sequence_alignment FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.na_sequence_alignment FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.na_sequence_alignment TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.na_sequence_alignment TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.na_sequence_alignment TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.na_sequence_alignment FROM :owner;
+GRANT ALL ON TABLE viroserve.na_sequence_alignment TO :owner;
+GRANT SELECT ON TABLE viroserve.na_sequence_alignment TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.na_sequence_alignment TO :rw_user;
 
 
 --
--- Name: TABLE na_sequence_alignment_pairwise; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE na_sequence_alignment_pairwise; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.na_sequence_alignment_pairwise FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.na_sequence_alignment_pairwise FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.na_sequence_alignment_pairwise TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.na_sequence_alignment_pairwise TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.na_sequence_alignment_pairwise TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.na_sequence_alignment_pairwise FROM :owner;
+GRANT ALL ON TABLE viroserve.na_sequence_alignment_pairwise TO :owner;
+GRANT SELECT ON TABLE viroserve.na_sequence_alignment_pairwise TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.na_sequence_alignment_pairwise TO :rw_user;
 
 
 --
--- Name: TABLE na_sequence_latest_revision; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE na_sequence_latest_revision; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.na_sequence_latest_revision FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.na_sequence_latest_revision FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.na_sequence_latest_revision TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.na_sequence_latest_revision TO viroverse_r;
-GRANT SELECT ON TABLE viroserve.na_sequence_latest_revision TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.na_sequence_latest_revision FROM :owner;
+GRANT ALL ON TABLE viroserve.na_sequence_latest_revision TO :owner;
+GRANT SELECT ON TABLE viroserve.na_sequence_latest_revision TO :ro_user;
+GRANT SELECT ON TABLE viroserve.na_sequence_latest_revision TO :rw_user;
 
 
 --
--- Name: TABLE sequence_reference_alignment; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE sequence_reference_alignment; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.sequence_reference_alignment FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.sequence_reference_alignment FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.sequence_reference_alignment TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.sequence_reference_alignment TO viroverse_r;
-GRANT SELECT ON TABLE viroserve.sequence_reference_alignment TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.sequence_reference_alignment FROM :owner;
+GRANT ALL ON TABLE viroserve.sequence_reference_alignment TO :owner;
+GRANT SELECT ON TABLE viroserve.sequence_reference_alignment TO :ro_user;
+GRANT SELECT ON TABLE viroserve.sequence_reference_alignment TO :rw_user;
 
 
 --
--- Name: TABLE sequence_reference_alignment_pairwise; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE sequence_reference_alignment_pairwise; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.sequence_reference_alignment_pairwise FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.sequence_reference_alignment_pairwise FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.sequence_reference_alignment_pairwise TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.sequence_reference_alignment_pairwise TO viroverse_r;
-GRANT SELECT ON TABLE viroserve.sequence_reference_alignment_pairwise TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.sequence_reference_alignment_pairwise FROM :owner;
+GRANT ALL ON TABLE viroserve.sequence_reference_alignment_pairwise TO :owner;
+GRANT SELECT ON TABLE viroserve.sequence_reference_alignment_pairwise TO :ro_user;
+GRANT SELECT ON TABLE viroserve.sequence_reference_alignment_pairwise TO :rw_user;
 
 
 --
--- Name: TABLE hxb2_stats; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE hxb2_stats; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.hxb2_stats FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.hxb2_stats FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.hxb2_stats TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.hxb2_stats TO viroverse_r;
-GRANT SELECT ON TABLE viroserve.hxb2_stats TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.hxb2_stats FROM :owner;
+GRANT ALL ON TABLE viroserve.hxb2_stats TO :owner;
+GRANT SELECT ON TABLE viroserve.hxb2_stats TO :ro_user;
+GRANT SELECT ON TABLE viroserve.hxb2_stats TO :rw_user;
 
 
 --
--- Name: TABLE import_job; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE import_job; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.import_job FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.import_job FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.import_job TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.import_job TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.import_job TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.import_job FROM :owner;
+GRANT ALL ON TABLE viroserve.import_job TO :owner;
+GRANT SELECT ON TABLE viroserve.import_job TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.import_job TO :rw_user;
 
 
 --
--- Name: SEQUENCE import_job_import_job_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE import_job_import_job_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.import_job_import_job_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.import_job_import_job_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.import_job_import_job_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.import_job_import_job_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.import_job_import_job_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.import_job_import_job_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.import_job_import_job_id_seq TO :rw_user;
 
 
 --
--- Name: SEQUENCE infection_infection_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE infection_infection_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.infection_infection_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.infection_infection_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.infection_infection_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.infection_infection_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.infection_infection_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.infection_infection_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.infection_infection_id_seq TO :rw_user;
 
 
 --
--- Name: SEQUENCE lab_result_cat_lab_result_cat_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE lab_result_cat_lab_result_cat_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.lab_result_cat_lab_result_cat_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.lab_result_cat_lab_result_cat_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.lab_result_cat_lab_result_cat_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.lab_result_cat_lab_result_cat_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.lab_result_cat_lab_result_cat_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.lab_result_cat_lab_result_cat_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.lab_result_cat_lab_result_cat_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE lab_result_cat_type_group; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE lab_result_cat_type_group; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.lab_result_cat_type_group FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.lab_result_cat_type_group FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.lab_result_cat_type_group TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.lab_result_cat_type_group TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.lab_result_cat_type_group TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.lab_result_cat_type_group FROM :owner;
+GRANT ALL ON TABLE viroserve.lab_result_cat_type_group TO :owner;
+GRANT SELECT ON TABLE viroserve.lab_result_cat_type_group TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.lab_result_cat_type_group TO :rw_user;
 
 
 --
--- Name: SEQUENCE lab_result_cat_type_lab_result_cat_type_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE lab_result_cat_type_lab_result_cat_type_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.lab_result_cat_type_lab_result_cat_type_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.lab_result_cat_type_lab_result_cat_type_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.lab_result_cat_type_lab_result_cat_type_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.lab_result_cat_type_lab_result_cat_type_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.lab_result_cat_type_lab_result_cat_type_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.lab_result_cat_type_lab_result_cat_type_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.lab_result_cat_type_lab_result_cat_type_id_seq TO :rw_user;
 
 
 --
--- Name: SEQUENCE lab_result_cat_value_lab_result_cat_value_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE lab_result_cat_value_lab_result_cat_value_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.lab_result_cat_value_lab_result_cat_value_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.lab_result_cat_value_lab_result_cat_value_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.lab_result_cat_value_lab_result_cat_value_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.lab_result_cat_value_lab_result_cat_value_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.lab_result_cat_value_lab_result_cat_value_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.lab_result_cat_value_lab_result_cat_value_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.lab_result_cat_value_lab_result_cat_value_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE lab_result_group; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE lab_result_group; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.lab_result_group FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.lab_result_group FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.lab_result_group TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.lab_result_group TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.lab_result_group TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.lab_result_group FROM :owner;
+GRANT ALL ON TABLE viroserve.lab_result_group TO :owner;
+GRANT SELECT ON TABLE viroserve.lab_result_group TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.lab_result_group TO :rw_user;
 
 
 --
--- Name: SEQUENCE lab_result_group_lab_result_group_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE lab_result_group_lab_result_group_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.lab_result_group_lab_result_group_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.lab_result_group_lab_result_group_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.lab_result_group_lab_result_group_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.lab_result_group_lab_result_group_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.lab_result_group_lab_result_group_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.lab_result_group_lab_result_group_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.lab_result_group_lab_result_group_id_seq TO :rw_user;
 
 
 --
--- Name: SEQUENCE lab_result_num_lab_result_num_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE lab_result_num_lab_result_num_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.lab_result_num_lab_result_num_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.lab_result_num_lab_result_num_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.lab_result_num_lab_result_num_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.lab_result_num_lab_result_num_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.lab_result_num_lab_result_num_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.lab_result_num_lab_result_num_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.lab_result_num_lab_result_num_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE lab_result_num_type_group; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE lab_result_num_type_group; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.lab_result_num_type_group FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.lab_result_num_type_group FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.lab_result_num_type_group TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.lab_result_num_type_group TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.lab_result_num_type_group TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.lab_result_num_type_group FROM :owner;
+GRANT ALL ON TABLE viroserve.lab_result_num_type_group TO :owner;
+GRANT SELECT ON TABLE viroserve.lab_result_num_type_group TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.lab_result_num_type_group TO :rw_user;
 
 
 --
--- Name: SEQUENCE lab_result_num_type_lab_result_num_type_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE lab_result_num_type_lab_result_num_type_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.lab_result_num_type_lab_result_num_type_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.lab_result_num_type_lab_result_num_type_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.lab_result_num_type_lab_result_num_type_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.lab_result_num_type_lab_result_num_type_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.lab_result_num_type_lab_result_num_type_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.lab_result_num_type_lab_result_num_type_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.lab_result_num_type_lab_result_num_type_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE location; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE location; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.location FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.location FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.location TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.location TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.location TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.location FROM :owner;
+GRANT ALL ON TABLE viroserve.location TO :owner;
+GRANT SELECT ON TABLE viroserve.location TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.location TO :rw_user;
 
 
 --
--- Name: SEQUENCE location_location_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE location_location_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.location_location_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.location_location_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.location_location_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.location_location_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.location_location_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.location_location_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.location_location_id_seq TO :rw_user;
 
 
 --
--- Name: SEQUENCE medication_medication_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE medication_medication_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.medication_medication_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.medication_medication_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.medication_medication_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.medication_medication_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.medication_medication_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.medication_medication_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.medication_medication_id_seq TO :rw_user;
 
 
 --
--- Name: SEQUENCE na_sequence_na_sequence_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE na_sequence_na_sequence_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.na_sequence_na_sequence_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.na_sequence_na_sequence_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.na_sequence_na_sequence_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.na_sequence_na_sequence_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.na_sequence_na_sequence_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.na_sequence_na_sequence_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.na_sequence_na_sequence_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE sample_note; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE sample_note; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.sample_note FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.sample_note FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.sample_note TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.sample_note TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.sample_note TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.sample_note FROM :owner;
+GRANT ALL ON TABLE viroserve.sample_note TO :owner;
+GRANT SELECT ON TABLE viroserve.sample_note TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.sample_note TO :rw_user;
 
 
 --
--- Name: SEQUENCE note_note_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE note_note_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.note_note_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.note_note_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.note_note_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.note_note_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.note_note_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.note_note_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.note_note_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE notes; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE notes; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.notes FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.notes FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.notes TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.notes TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.notes TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.notes FROM :owner;
+GRANT ALL ON TABLE viroserve.notes TO :owner;
+GRANT SELECT ON TABLE viroserve.notes TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.notes TO :rw_user;
 
 
 --
--- Name: SEQUENCE notes_note_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE notes_note_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.notes_note_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.notes_note_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.notes_note_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.notes_note_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.notes_note_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.notes_note_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.notes_note_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE organism; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE organism; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.organism FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.organism FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.organism TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.organism TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.organism TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.organism FROM :owner;
+GRANT ALL ON TABLE viroserve.organism TO :owner;
+GRANT SELECT ON TABLE viroserve.organism TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.organism TO :rw_user;
 
 
 --
--- Name: SEQUENCE organism_organism_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE organism_organism_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.organism_organism_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.organism_organism_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.organism_organism_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.organism_organism_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.organism_organism_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.organism_organism_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.organism_organism_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE patient_cohort; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE patient_cohort; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.patient_cohort FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.patient_cohort FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.patient_cohort TO vverse_admin;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.patient_cohort TO viroverse_w;
-GRANT SELECT ON TABLE viroserve.patient_cohort TO viroverse_r;
+REVOKE ALL ON TABLE viroserve.patient_cohort FROM :owner;
+GRANT ALL ON TABLE viroserve.patient_cohort TO :owner;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.patient_cohort TO :rw_user;
+GRANT SELECT ON TABLE viroserve.patient_cohort TO :ro_user;
 
 
 --
--- Name: TABLE patient_group; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE patient_group; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.patient_group FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.patient_group FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.patient_group TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.patient_group TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.patient_group TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.patient_group FROM :owner;
+GRANT ALL ON TABLE viroserve.patient_group TO :owner;
+GRANT SELECT ON TABLE viroserve.patient_group TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.patient_group TO :rw_user;
 
 
 --
--- Name: SEQUENCE patient_group_patient_group_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE patient_group_patient_group_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.patient_group_patient_group_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.patient_group_patient_group_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.patient_group_patient_group_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.patient_group_patient_group_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.patient_group_patient_group_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.patient_group_patient_group_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.patient_group_patient_group_id_seq TO :rw_user;
 
 
 --
--- Name: SEQUENCE patient_medication_patient_medication_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE patient_medication_patient_medication_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.patient_medication_patient_medication_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.patient_medication_patient_medication_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.patient_medication_patient_medication_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.patient_medication_patient_medication_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.patient_medication_patient_medication_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.patient_medication_patient_medication_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.patient_medication_patient_medication_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE patient_patient_group; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE patient_patient_group; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.patient_patient_group FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.patient_patient_group FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.patient_patient_group TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.patient_patient_group TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.patient_patient_group TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.patient_patient_group FROM :owner;
+GRANT ALL ON TABLE viroserve.patient_patient_group TO :owner;
+GRANT SELECT ON TABLE viroserve.patient_patient_group TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.patient_patient_group TO :rw_user;
 
 
 --
--- Name: SEQUENCE patient_patient_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE patient_patient_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.patient_patient_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.patient_patient_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.patient_patient_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.patient_patient_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.patient_patient_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.patient_patient_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.patient_patient_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE pcr_cleanup; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE pcr_cleanup; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.pcr_cleanup FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.pcr_cleanup FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.pcr_cleanup TO vverse_admin;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.pcr_cleanup TO viroverse_w;
-GRANT SELECT ON TABLE viroserve.pcr_cleanup TO viroverse_r;
+REVOKE ALL ON TABLE viroserve.pcr_cleanup FROM :owner;
+GRANT ALL ON TABLE viroserve.pcr_cleanup TO :owner;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.pcr_cleanup TO :rw_user;
+GRANT SELECT ON TABLE viroserve.pcr_cleanup TO :ro_user;
 
 
 --
--- Name: SEQUENCE pcr_cleanup_pcr_cleanup_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE pcr_cleanup_pcr_cleanup_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.pcr_cleanup_pcr_cleanup_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.pcr_cleanup_pcr_cleanup_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.pcr_cleanup_pcr_cleanup_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.pcr_cleanup_pcr_cleanup_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.pcr_cleanup_pcr_cleanup_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.pcr_cleanup_pcr_cleanup_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.pcr_cleanup_pcr_cleanup_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE pcr_pool; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE pcr_pool; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.pcr_pool FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.pcr_pool FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.pcr_pool TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.pcr_pool TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.pcr_pool TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.pcr_pool FROM :owner;
+GRANT ALL ON TABLE viroserve.pcr_pool TO :owner;
+GRANT SELECT ON TABLE viroserve.pcr_pool TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.pcr_pool TO :rw_user;
 
 
 --
--- Name: SEQUENCE pcr_pool_pcr_pool_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE pcr_pool_pcr_pool_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.pcr_pool_pcr_pool_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.pcr_pool_pcr_pool_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.pcr_pool_pcr_pool_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.pcr_pool_pcr_pool_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.pcr_pool_pcr_pool_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.pcr_pool_pcr_pool_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.pcr_pool_pcr_pool_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE pcr_pool_pcr_product; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE pcr_pool_pcr_product; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.pcr_pool_pcr_product FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.pcr_pool_pcr_product FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.pcr_pool_pcr_product TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.pcr_pool_pcr_product TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.pcr_pool_pcr_product TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.pcr_pool_pcr_product FROM :owner;
+GRANT ALL ON TABLE viroserve.pcr_pool_pcr_product TO :owner;
+GRANT SELECT ON TABLE viroserve.pcr_pool_pcr_product TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.pcr_pool_pcr_product TO :rw_user;
 
 
 --
--- Name: SEQUENCE pcr_product_pcr_product_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE pcr_product_pcr_product_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.pcr_product_pcr_product_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.pcr_product_pcr_product_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.pcr_product_pcr_product_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.pcr_product_pcr_product_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.pcr_product_pcr_product_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.pcr_product_pcr_product_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.pcr_product_pcr_product_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE pcr_product_primer; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE pcr_product_primer; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.pcr_product_primer FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.pcr_product_primer FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.pcr_product_primer TO vverse_admin;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.pcr_product_primer TO viroverse_w;
-GRANT SELECT ON TABLE viroserve.pcr_product_primer TO viroverse_r;
+REVOKE ALL ON TABLE viroserve.pcr_product_primer FROM :owner;
+GRANT ALL ON TABLE viroserve.pcr_product_primer TO :owner;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.pcr_product_primer TO :rw_user;
+GRANT SELECT ON TABLE viroserve.pcr_product_primer TO :ro_user;
 
 
 --
--- Name: SEQUENCE pcr_template_pcr_template_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE pcr_template_pcr_template_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.pcr_template_pcr_template_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.pcr_template_pcr_template_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.pcr_template_pcr_template_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.pcr_template_pcr_template_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.pcr_template_pcr_template_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.pcr_template_pcr_template_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.pcr_template_pcr_template_id_seq TO :rw_user;
 
 
 --
--- Name: SEQUENCE primer_primer_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE primer_primer_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.primer_primer_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.primer_primer_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.primer_primer_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.primer_primer_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.primer_primer_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.primer_primer_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.primer_primer_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE primer; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE primer; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.primer FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.primer FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.primer TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.primer TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.primer TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.primer FROM :owner;
+GRANT ALL ON TABLE viroserve.primer TO :owner;
+GRANT SELECT ON TABLE viroserve.primer TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.primer TO :rw_user;
 
 
 --
--- Name: TABLE primer_position; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE primer_position; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.primer_position FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.primer_position FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.primer_position TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.primer_position TO viroverse_r;
-GRANT ALL ON TABLE viroserve.primer_position TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.primer_position FROM :owner;
+GRANT ALL ON TABLE viroserve.primer_position TO :owner;
+GRANT SELECT ON TABLE viroserve.primer_position TO :ro_user;
+GRANT ALL ON TABLE viroserve.primer_position TO :rw_user;
 
 
 --
--- Name: TABLE project; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE project; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.project FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.project FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.project TO vverse_admin;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.project TO viroverse_w;
-GRANT SELECT ON TABLE viroserve.project TO viroverse_r;
+REVOKE ALL ON TABLE viroserve.project FROM :owner;
+GRANT ALL ON TABLE viroserve.project TO :owner;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.project TO :rw_user;
+GRANT SELECT ON TABLE viroserve.project TO :ro_user;
 
 
 --
--- Name: TABLE project_materials; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE project_materials; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.project_materials FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.project_materials FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.project_materials TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.project_materials TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.project_materials TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.project_materials FROM :owner;
+GRANT ALL ON TABLE viroserve.project_materials TO :owner;
+GRANT SELECT ON TABLE viroserve.project_materials TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.project_materials TO :rw_user;
 
 
 --
--- Name: TABLE sample_first_pcr_template_path; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE sample_first_pcr_template_path; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.sample_first_pcr_template_path FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.sample_first_pcr_template_path FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.sample_first_pcr_template_path TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.sample_first_pcr_template_path TO viroverse_w;
-GRANT SELECT ON TABLE viroserve.sample_first_pcr_template_path TO viroverse_r;
+REVOKE ALL ON TABLE viroserve.sample_first_pcr_template_path FROM :owner;
+GRANT ALL ON TABLE viroserve.sample_first_pcr_template_path TO :owner;
+GRANT SELECT ON TABLE viroserve.sample_first_pcr_template_path TO :rw_user;
+GRANT SELECT ON TABLE viroserve.sample_first_pcr_template_path TO :ro_user;
 
 
 --
--- Name: TABLE project_material_scientist_progress; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE project_material_scientist_progress; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.project_material_scientist_progress FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.project_material_scientist_progress FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.project_material_scientist_progress TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.project_material_scientist_progress TO viroverse_r;
-GRANT SELECT ON TABLE viroserve.project_material_scientist_progress TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.project_material_scientist_progress FROM :owner;
+GRANT ALL ON TABLE viroserve.project_material_scientist_progress TO :owner;
+GRANT SELECT ON TABLE viroserve.project_material_scientist_progress TO :ro_user;
+GRANT SELECT ON TABLE viroserve.project_material_scientist_progress TO :rw_user;
 
 
 --
--- Name: SEQUENCE project_project_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE project_project_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.project_project_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.project_project_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.project_project_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.project_project_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.project_project_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.project_project_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.project_project_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE protocol; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE protocol; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.protocol FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.protocol FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.protocol TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.protocol TO viroverse_r;
-GRANT ALL ON TABLE viroserve.protocol TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.protocol FROM :owner;
+GRANT ALL ON TABLE viroserve.protocol TO :owner;
+GRANT SELECT ON TABLE viroserve.protocol TO :ro_user;
+GRANT ALL ON TABLE viroserve.protocol TO :rw_user;
 
 
 --
--- Name: SEQUENCE protocol_protocol_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE protocol_protocol_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.protocol_protocol_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.protocol_protocol_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.protocol_protocol_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.protocol_protocol_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.protocol_protocol_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.protocol_protocol_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.protocol_protocol_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE protocol_type; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE protocol_type; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.protocol_type FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.protocol_type FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.protocol_type TO vverse_admin;
-GRANT ALL ON TABLE viroserve.protocol_type TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.protocol_type FROM :owner;
+GRANT ALL ON TABLE viroserve.protocol_type TO :owner;
+GRANT ALL ON TABLE viroserve.protocol_type TO :rw_user;
 
 
 --
--- Name: SEQUENCE protocol_type_protocol_type_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE protocol_type_protocol_type_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.protocol_type_protocol_type_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.protocol_type_protocol_type_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.protocol_type_protocol_type_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.protocol_type_protocol_type_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.protocol_type_protocol_type_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.protocol_type_protocol_type_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.protocol_type_protocol_type_id_seq TO :rw_user;
 
 
 --
--- Name: SEQUENCE restriction_enzyme_restriction_enzyme_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE restriction_enzyme_restriction_enzyme_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.restriction_enzyme_restriction_enzyme_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.restriction_enzyme_restriction_enzyme_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.restriction_enzyme_restriction_enzyme_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.restriction_enzyme_restriction_enzyme_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.restriction_enzyme_restriction_enzyme_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.restriction_enzyme_restriction_enzyme_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.restriction_enzyme_restriction_enzyme_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE rt_primer; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE rt_primer; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.rt_primer FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.rt_primer FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.rt_primer TO vverse_admin;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.rt_primer TO viroverse_w;
-GRANT SELECT ON TABLE viroserve.rt_primer TO viroverse_r;
+REVOKE ALL ON TABLE viroserve.rt_primer FROM :owner;
+GRANT ALL ON TABLE viroserve.rt_primer TO :owner;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.rt_primer TO :rw_user;
+GRANT SELECT ON TABLE viroserve.rt_primer TO :ro_user;
 
 
 --
--- Name: SEQUENCE rt_product_rt_product_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE rt_product_rt_product_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.rt_product_rt_product_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.rt_product_rt_product_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.rt_product_rt_product_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.rt_product_rt_product_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.rt_product_rt_product_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.rt_product_rt_product_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.rt_product_rt_product_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE sample_patient_date; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE sample_patient_date; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.sample_patient_date FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.sample_patient_date FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.sample_patient_date TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.sample_patient_date TO viroverse_r;
-GRANT SELECT ON TABLE viroserve.sample_patient_date TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.sample_patient_date FROM :owner;
+GRANT ALL ON TABLE viroserve.sample_patient_date TO :owner;
+GRANT SELECT ON TABLE viroserve.sample_patient_date TO :ro_user;
+GRANT SELECT ON TABLE viroserve.sample_patient_date TO :rw_user;
 
 
 --
--- Name: SEQUENCE sample_sample_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE sample_sample_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.sample_sample_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.sample_sample_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.sample_sample_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.sample_sample_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.sample_sample_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.sample_sample_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.sample_sample_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE sample_type; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE sample_type; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.sample_type FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.sample_type FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.sample_type TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.sample_type TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.sample_type TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.sample_type FROM :owner;
+GRANT ALL ON TABLE viroserve.sample_type TO :owner;
+GRANT SELECT ON TABLE viroserve.sample_type TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.sample_type TO :rw_user;
 
 
 --
--- Name: TABLE scientist; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE scientist; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.scientist FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.scientist FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.scientist TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.scientist TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.scientist TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.scientist FROM :owner;
+GRANT ALL ON TABLE viroserve.scientist TO :owner;
+GRANT SELECT ON TABLE viroserve.scientist TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.scientist TO :rw_user;
 
 
 --
--- Name: TABLE sample_search; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE sample_search; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.sample_search FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.sample_search FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.sample_search TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.sample_search TO viroverse_r;
-GRANT SELECT ON TABLE viroserve.sample_search TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.sample_search FROM :owner;
+GRANT ALL ON TABLE viroserve.sample_search TO :owner;
+GRANT SELECT ON TABLE viroserve.sample_search TO :ro_user;
+GRANT SELECT ON TABLE viroserve.sample_search TO :rw_user;
 
 
 --
--- Name: SEQUENCE sample_type_sample_type_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE sample_type_sample_type_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.sample_type_sample_type_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.sample_type_sample_type_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.sample_type_sample_type_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.sample_type_sample_type_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.sample_type_sample_type_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.sample_type_sample_type_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.sample_type_sample_type_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE scientist_group; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE scientist_group; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.scientist_group FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.scientist_group FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.scientist_group TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.scientist_group TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.scientist_group TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.scientist_group FROM :owner;
+GRANT ALL ON TABLE viroserve.scientist_group TO :owner;
+GRANT SELECT ON TABLE viroserve.scientist_group TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.scientist_group TO :rw_user;
 
 
 --
--- Name: SEQUENCE scientist_group_scientist_group_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE scientist_group_scientist_group_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.scientist_group_scientist_group_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.scientist_group_scientist_group_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.scientist_group_scientist_group_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.scientist_group_scientist_group_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.scientist_group_scientist_group_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.scientist_group_scientist_group_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.scientist_group_scientist_group_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE scientist_scientist_group; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE scientist_scientist_group; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.scientist_scientist_group FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.scientist_scientist_group FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.scientist_scientist_group TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.scientist_scientist_group TO viroverse_r;
-GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.scientist_scientist_group TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.scientist_scientist_group FROM :owner;
+GRANT ALL ON TABLE viroserve.scientist_scientist_group TO :owner;
+GRANT SELECT ON TABLE viroserve.scientist_scientist_group TO :ro_user;
+GRANT SELECT,INSERT,REFERENCES,DELETE,UPDATE ON TABLE viroserve.scientist_scientist_group TO :rw_user;
 
 
 --
--- Name: SEQUENCE scientist_scientist_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE scientist_scientist_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.scientist_scientist_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.scientist_scientist_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.scientist_scientist_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.scientist_scientist_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.scientist_scientist_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.scientist_scientist_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.scientist_scientist_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE sequence_genome_region; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE sequence_genome_region; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.sequence_genome_region FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.sequence_genome_region FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.sequence_genome_region TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.sequence_genome_region TO viroverse_r;
-GRANT SELECT ON TABLE viroserve.sequence_genome_region TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.sequence_genome_region FROM :owner;
+GRANT ALL ON TABLE viroserve.sequence_genome_region TO :owner;
+GRANT SELECT ON TABLE viroserve.sequence_genome_region TO :ro_user;
+GRANT SELECT ON TABLE viroserve.sequence_genome_region TO :rw_user;
 
 
 --
--- Name: TABLE sequence_type; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE sequence_type; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.sequence_type FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.sequence_type FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.sequence_type TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.sequence_type TO viroverse_r;
-GRANT ALL ON TABLE viroserve.sequence_type TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.sequence_type FROM :owner;
+GRANT ALL ON TABLE viroserve.sequence_type TO :owner;
+GRANT SELECT ON TABLE viroserve.sequence_type TO :ro_user;
+GRANT ALL ON TABLE viroserve.sequence_type TO :rw_user;
 
 
 --
--- Name: TABLE sequence_search; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE sequence_search; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.sequence_search FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.sequence_search FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.sequence_search TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.sequence_search TO viroverse_r;
-GRANT SELECT ON TABLE viroserve.sequence_search TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.sequence_search FROM :owner;
+GRANT ALL ON TABLE viroserve.sequence_search TO :owner;
+GRANT SELECT ON TABLE viroserve.sequence_search TO :ro_user;
+GRANT SELECT ON TABLE viroserve.sequence_search TO :rw_user;
 
 
 --
--- Name: SEQUENCE tissue_type_tissue_type_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE tissue_type_tissue_type_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.tissue_type_tissue_type_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.tissue_type_tissue_type_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.tissue_type_tissue_type_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.tissue_type_tissue_type_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.tissue_type_tissue_type_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.tissue_type_tissue_type_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.tissue_type_tissue_type_id_seq TO :rw_user;
 
 
 --
--- Name: SEQUENCE unit_unit_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE unit_unit_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.unit_unit_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.unit_unit_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.unit_unit_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.unit_unit_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.unit_unit_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.unit_unit_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.unit_unit_id_seq TO :rw_user;
 
 
 --
--- Name: SEQUENCE visit_visit_id_seq; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: SEQUENCE visit_visit_id_seq; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON SEQUENCE viroserve.visit_visit_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE viroserve.visit_visit_id_seq FROM vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.visit_visit_id_seq TO vverse_admin;
-GRANT ALL ON SEQUENCE viroserve.visit_visit_id_seq TO viroverse_w;
+REVOKE ALL ON SEQUENCE viroserve.visit_visit_id_seq FROM :owner;
+GRANT ALL ON SEQUENCE viroserve.visit_visit_id_seq TO :owner;
+GRANT ALL ON SEQUENCE viroserve.visit_visit_id_seq TO :rw_user;
 
 
 --
--- Name: TABLE distinct_sample_search; Type: ACL; Schema: viroserve; Owner: vverse_admin
+-- Name: TABLE distinct_sample_search; Type: ACL; Schema: viroserve; Owner: :owner
 --
 
 REVOKE ALL ON TABLE viroserve.distinct_sample_search FROM PUBLIC;
-REVOKE ALL ON TABLE viroserve.distinct_sample_search FROM vverse_admin;
-GRANT ALL ON TABLE viroserve.distinct_sample_search TO vverse_admin;
-GRANT SELECT ON TABLE viroserve.distinct_sample_search TO viroverse_r;
-GRANT SELECT ON TABLE viroserve.distinct_sample_search TO viroverse_w;
+REVOKE ALL ON TABLE viroserve.distinct_sample_search FROM :owner;
+GRANT ALL ON TABLE viroserve.distinct_sample_search TO :owner;
+GRANT SELECT ON TABLE viroserve.distinct_sample_search TO :ro_user;
+GRANT SELECT ON TABLE viroserve.distinct_sample_search TO :rw_user;
 
 
 --

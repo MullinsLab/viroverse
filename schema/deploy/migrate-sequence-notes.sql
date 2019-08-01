@@ -42,8 +42,8 @@ ALTER TABLE na_sequence
     DROP COLUMN note,
     DROP COLUMN vv_uid;
 
-GRANT SELECT ON na_sequence_note TO viroverse_r;
-GRANT ALL    ON na_sequence_note TO viroverse_w;
-GRANT ALL    ON na_sequence_note_na_sequence_note_id_seq TO viroverse_w;
+GRANT SELECT ON na_sequence_note TO :ro_user;
+GRANT ALL    ON na_sequence_note TO :rw_user;
+GRANT ALL    ON viroserve.na_sequence_note_na_sequence_note_id_seq TO :rw_user;
 
 COMMIT;

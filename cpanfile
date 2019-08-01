@@ -63,12 +63,12 @@ requires 'Clone';
 
 requires 'Cpanel::JSON::XS', '3.0225';	# Numeric serialization fixes for dual-type variables
 
-requires 'DBD::Pg', '3.5.1';
+requires 'DBD::Pg', '3.8.0';
 requires 'DBI';
 requires 'DBIx::Class';
 requires 'DBIx::Class::Helper::ResultSet::Shortcut';
 requires 'DBIx::Class::Schema';
-requires 'App::Sqitch', '0.997';
+requires 'App::Sqitch', '>= 0.9998';
 
 # Undeclared Sqitch dependency required by its Build.PL for sane test
 # prerequisite handling
