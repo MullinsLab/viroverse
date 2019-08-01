@@ -54,6 +54,10 @@ faceted-search .search-results {
   margin-top: 2em;
 }
 
+faceted-search .pager-col-top .pager {
+  margin-top: 0;
+}
+
 faceted-search .search-results .pager-col {
   text-align: right;
 }

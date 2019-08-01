@@ -12,7 +12,7 @@
     .directive('clearSearchButton', subdirective('clear-search-button'))
     .directive('shareButton', subdirective('share-button'))
     .directive('facetWidget', subdirective('facet-widget', { name: '@', nullLabel: '@?' }))
-    .directive('resultSummary', subdirective('result-summary', { noun: '@', population: '@?' }))
+    .directive('resultSummary', subdirective('result-summary', { noun: '@', population: '@?', orderMessage: '@?' }))
     .directive('resultPager', subdirective('result-pager'))
     .directive('resultPagination', subdirective('result-pagination'))
   ;

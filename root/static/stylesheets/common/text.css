@@ -12,3 +12,8 @@ span[title] {
     /* Default for .small is 85%, but <pre> text is larger to start with. */
     font-size: 75%;
 }
+
+.bootstrapped code.sequence {
+    background: black;
+    color: #eee;
+}

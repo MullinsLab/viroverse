@@ -62,11 +62,6 @@ __PACKAGE__->table("viroserve.primer");
   default_value: false
   is_nullable: 1
 
-=head2 some_number
-
-  data_type: 'integer'
-  is_nullable: 1
-
 =head2 notes
 
   data_type: 'text'
@@ -115,8 +110,6 @@ __PACKAGE__->add_columns(
   { data_type => "char", is_nullable => 1, size => 1 },
   "lab_common",
   { data_type => "boolean", default_value => \"false", is_nullable => 1 },
-  "some_number",
-  { data_type => "integer", is_nullable => 1 },
   "notes",
   { data_type => "text", is_nullable => 1 },
   "vv_uid",
@@ -243,10 +236,19 @@ Composing rels: L</pcr_product_assignments> -> pcr_product
 __PACKAGE__->many_to_many("pcr_products", "pcr_product_assignments", "pcr_product");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07042 @ 2018-12-28 10:44:31
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Wd2Z3qWC+mz8caVU+K1waA
+# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-07-24 15:52:57
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:l3/FN2I41IGp1X8p/GMBQQ
 
+sub as_hash {
+    my $self = shift;
+    my $hash = $self->next::method;
+    $hash->{organism} = $self->organism->name
+        if $self->organism;
+    $hash->{positions} = [
+        map { $self->orientation eq "F" ? $_->hxb2_end : $_->hxb2_start } $self->positions
+    ] if $self->positions;
+    return $hash;
+}
 
-# You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->meta->make_immutable;
 1;

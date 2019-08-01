@@ -23,6 +23,7 @@ VV=/home/vverse/viroverse/vv
 # They take ~12s and ~2s, respectively.
 */5 * * * * env VVQUIET=1 $VV $VIROVERSE/scripts/refresh-materialized-view sequence_search
 */5 * * * * env VVQUIET=1 $VV $VIROVERSE/scripts/refresh-materialized-view distinct_sample_search
+*/5 * * * * env VVQUIET=1 $VV $VIROVERSE/scripts/refresh-materialized-view primer_search
 
 # Update the project material progress view every minute. At time of writing, it
 # takes less than a second

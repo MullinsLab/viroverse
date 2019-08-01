@@ -11,6 +11,7 @@ my @views = qw(
     sequence_search
     distinct_sample_search
     project_material_scientist_progress
+    primer_search
 );
 
 my $view = shift @ARGV;

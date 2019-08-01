@@ -12,7 +12,7 @@
     <div class="col-md-12">
         <h1 class="page-header">Retired scientists</h1>
         <p>Scientists with this role cannot access any Viroverse pages even
-        if they are authorized (have a <kbd>REMOTE_USER</kbd> set) by the
+        if they are authorized (have a <code>REMOTE_USER</code> set) by the
         reverse proxying webserver. They also are not listed when doing
         data entry.</p>
         <table class="table table-condensed table-striped">
