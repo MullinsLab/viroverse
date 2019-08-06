@@ -23,7 +23,6 @@ __PACKAGE__->columns(Essential =>
 __PACKAGE__->columns(Others =>
         qw[
         sequence
-        some_number
         vv_uid
       ]
 );
