@@ -26,3 +26,12 @@ style='font-weight:bold'
 [% END %]
 </select>
 [%- END -%]
+
+[%- MACRO maybe_link(text) BLOCK -%]
+[% IF href.defined -%]<a href="[% href %]" [% IF class %]class="[% class %]"[% END %]>[% END %]
+[%- # Unescaped text generally passed via a macro
+    text -%]
+[%- # Processed template content generally pass via WRAPPER
+    content | none -%]
+[% IF href.defined -%]</a>[%- END -%]
+[%- END -%]
