@@ -8,3 +8,4 @@
 *.pgdb
 /root/static/epitopedb/images/
 /viroverse_local.*
+/sqitch.conf
