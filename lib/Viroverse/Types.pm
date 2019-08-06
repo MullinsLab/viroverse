@@ -9,12 +9,16 @@ use Type::Library -base, -declare => qw(
     WithOptionalFreezerLocation
     EmptyStr
     ImporterClass
+    ExternalReferenceUri
 );
 use Type::Utils -all;
 use Types::Standard -types;
 use Types::Common::String qw< NonEmptySimpleStr >;
 use Types::LoadableClass -types;
+use Types::URI qw< Uri >;
 use ViroDB;
+use List::Util qw< any >;
+use URI;
 
 declare "ViroDBRecord",
     constraint_generator => sub {
@@ -50,5 +54,18 @@ declare ImporterClass,
 coerce ImporterClass,
     from StrMatch[qr/^(?!Viroverse::Import::)/],
     via { "Viroverse::Import::$_" };
+
+declare ExternalReferenceUri,
+    as Uri,
+    where {
+        my $uri = shift;
+        return $uri->abs("//")->eq($uri) &&
+            any { $uri->scheme eq $_ } qw[ http https smb ];
+    },
+    message { sprintf "'%s' is not an HTTP(S) or SMB link", "$_" };
+
+coerce ExternalReferenceUri,
+    from Str,
+    via { URI->new($_) };
 
 1;
