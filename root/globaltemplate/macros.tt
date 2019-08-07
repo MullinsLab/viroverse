@@ -19,8 +19,8 @@ style='font-weight:bold'
 
 [%- MACRO select_from_virodb(id, table) BLOCK -%]
 [%- collection = c.model("ViroDB::$table").search_rs({}, {order_by => "name"}).all -%]
-<select class="form-control" name="[% id %]" id="[% id %]">
-<option selected disabled value=""></option>
+<select [% required %] class="form-control" name="[% id %]" id="[% id %]">
+<option selected disabled value="">[% placeholder %]</option>
 [% FOR item IN collection %]
     <option value="[% item.id %]">[% item.name %]</option>
 [% END %]
