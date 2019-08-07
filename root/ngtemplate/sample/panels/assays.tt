@@ -1,0 +1,25 @@
+[%~ verb = scientist.can_edit ? 'Manage' : 'Browse' ~%]
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <a href="[% c.uri_for_action('/sample/assays', [ sample.id ]) %]">Assays</a>
+        </h3>
+    </div>
+    [% IF $(sample.numeric_assay_results).has_rows %]
+    <table class="table"><tbody>
+        [% FOR result IN $(sample.numeric_assay_results.prefetch("protocol").order_by("protocol.name")).all %]
+        <tr>
+            <td>[% result.protocol.name %]</td>
+            <td class="text-right">[% result.value %] [% result.protocol.unit.name %]</td>
+        </tr>
+        [% END %]
+    </tbody></table>
+    [% ELSE %]
+        <div class="panel-body">
+            <p class="panel-little-label">No assays</p>
+        </div>
+    [% END %]
+    <div class="list-group">
+        <a class="list-group-item" href="[% c.uri_for_action('/sample/assays', [ sample.id ]) %]">[% verb %] assays</a>
+    </div>
+</div>

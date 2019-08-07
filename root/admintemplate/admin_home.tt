@@ -44,6 +44,8 @@
     <p>Add protocols of various kinds</p>
 <h3><a class="body-link" href="[%- uri_base -%]protocol">Derivation protocols</a></h3>
     <p>Add derivation protocols and update default outputs of newly created derivations</p>
+<h3><a class="body-link" href="[%- uri_base -%]numeric-assay-protocol">Numeric assay protocols</a></h3>
+    <p>Add numeric assay protocols</p>
 <h3><a class="body-link" href="[%- uri_base -%]admin/scientist">Scientists</a></h3>
     <p>View and find all scientists. Add new scientists and change a person's role.</p>
 [% END %]
