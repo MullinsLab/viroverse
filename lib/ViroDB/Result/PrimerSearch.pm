@@ -79,6 +79,11 @@ __PACKAGE__->table("viroserve.primer_search");
   data_type: 'numeric[]'
   is_nullable: 1
 
+=head2 regions
+
+  data_type: 'text[]'
+  is_nullable: 1
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -105,11 +110,27 @@ __PACKAGE__->add_columns(
   { data_type => "text", is_nullable => 1 },
   "positions",
   { data_type => "numeric[]", is_nullable => 1 },
+  "regions",
+  { data_type => "text[]", is_nullable => 1 },
 );
 
+=head1 UNIQUE CONSTRAINTS
 
-# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-07-24 17:18:42
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:9Sp3y4/5uBGKMCpjItlQdw
+=head2 C<primer_search_primer_id_idx>
+
+=over 4
+
+=item * L</primer_id>
+
+=back
+
+=cut
+
+__PACKAGE__->add_unique_constraint("primer_search_primer_id_idx", ["primer_id"]);
+
+
+# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-08-06 17:40:34
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:eJKGtSet3VB/THXrRc/fRQ
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

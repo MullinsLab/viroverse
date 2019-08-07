@@ -14,7 +14,7 @@
       </div>
 
       <div class="facet-col">
-        <facet-widget name="position"></facet-widget>
+        <facet-widget name="region"></facet-widget>
       </div>
     </div>
   </div>
@@ -43,6 +43,7 @@
           <th>Orientation</th>
           <th>Organism</th>
           <th>Positions</th>
+          <th>Regions</th>
           <th>Sequence</th>
           <th>Length</th>
           <th>Download</th>
@@ -54,6 +55,7 @@
           <td>{{ primer.orientation }}</td>
           <td>{{ primer.organism }}</td>
           <td>{{ primer.positions.join(', ') }}</td>
+          <td>{{ primer.regions.join(', ') }}</td>
           <td><code class="sequence">{{ primer.sequence }}</code></td>
           <td class="text-right">{{ primer.sequence.length }} bp</td>
           <td><a vv-href="/primer/{{ primer.primer_id }}/fasta">FASTA</a></td>

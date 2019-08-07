@@ -44,9 +44,9 @@ sub orientation {
     return $self->search({ "$me.orientation" => \@_ });
 }
 
-sub position {
+sub region {
     my $self = shift;
-    return $self->search_array_overlaps( positions => @_ );
+    return $self->search_array_overlaps( regions => @_ );
 }
 
 

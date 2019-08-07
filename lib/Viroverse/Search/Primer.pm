@@ -92,11 +92,11 @@ sub _build_query_fields {
                 label   => "Orientation",
             },
         },
-        position => {
-            method => "position",
+        region => {
+            method => "region",
             facet => {
-                column  => \["unnest(positions)"],
-                label   => "Position",
+                column  => \["unnest(regions)"],
+                label   => "Region",
             }
         },
     };
