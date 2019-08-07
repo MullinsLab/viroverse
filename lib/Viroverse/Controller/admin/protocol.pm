@@ -49,17 +49,4 @@ sub add : POST Chained('base') PathPart('add') Args(0) {
     return Redirect($c, $self->action_for('index'), { mid => $mid });
 }
 
-sub add_type : POST Chained('base') PathPart('add_type') Args(0) {
-    my ($self, $c) = @_;
-    my $params = $c->req->params;
-
-    return $self->user_error($c, "Protocol type name is required")
-        unless $params->{name};
-
-    my $type = Viroverse::Model::protocol_type->insert({ name => $params->{name} });
-
-    my $mid = $c->set_status_msg("Added protocol type $params->{name}");
-    return Redirect($c, $self->action_for('index'), { mid => $mid });
-}
-
 1;
