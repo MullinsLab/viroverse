@@ -28,7 +28,8 @@ document.querySelector("select[name=numeric_assay_protocol_id]")
         <label for="numeric_assay_protocol_id">Assay protocol</label>
         <select name="numeric_assay_protocol_id"
                 id="numeric_assay_protocol_id"
-                class="form-control">
+                class="form-control"
+                required>
             <option selected disabled value=""></option>
             [% FOR proto IN protocols %]
                 <option data-unit="[% proto.unit.name %]" value="[% proto.id %]">[% proto.name %]</option>
