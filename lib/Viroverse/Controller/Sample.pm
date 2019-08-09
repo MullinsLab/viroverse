@@ -6,9 +6,12 @@ use 5.018;
 package Viroverse::Controller::Sample;
 use Moose;
 use Catalyst::ResponseHelpers qw< :helpers :status >;
+use DateTime;
 use JSON::MaybeXS;
-use namespace::autoclean;
+use Try::Tiny;
+use Viroverse::Types qw< ExternalReferenceUri >;
 use Viroverse::ISLAWorksheet;
+use namespace::autoclean;
 
 BEGIN { extends 'Viroverse::Controller' }
 
@@ -161,6 +164,26 @@ sub ice_cultures : Chained('page_base') PathPart('ice-cultures') Args(0) {
     $c->detach( $c->view("NG") );
 }
 
+sub assays : GET Chained('page_base') PathPart('assays') Args(0) {
+    my ($self, $c) = @_;
+    my $assay_protocols = [ $c->model("ViroDB::NumericAssayProtocol")
+                              ->order_by("name")
+                              ->prefetch("unit") ];
+
+    my $scientists = [
+        $c->model("ViroDB::Scientist")
+            ->active
+            ->order_by("name")
+    ];
+
+    $c->stash(
+        template   => 'sample/assays.tt',
+        protocols  => $assay_protocols,
+        scientists => $scientists,
+    );
+    $c->detach( $c->view("NG") );
+}
+
 sub isla_worksheet : Chained('load') PathPart('isla-worksheet') Args(0) {
     my ($self, $c) = @_;
 
@@ -189,8 +212,34 @@ sub create_note : POST Chained('mutate') PathPart('notes') Args(0) {
     $c->model->notes->create({
         body         => $c->req->params->{body},
         scientist_id => $c->stash->{scientist}->scientist_id,
+        uri          => $c->req->params->{uri},
     });
     return Redirect($c, $self->action_for("show"), [ $c->model->id ]);
+}
+
+sub create_numeric_assay_result : POST Chained('mutate') 
+                                : PathPart('assays') Args(0) {
+    my ($self, $c) = @_;
+    try {
+        ExternalReferenceUri->assert_coerce($c->req->params->{uri})
+            if $c->req->params->{uri};
+        $c->model->numeric_assay_results->create({
+            numeric_assay_protocol_id =>
+                $c->req->params->{numeric_assay_protocol_id},
+            value          => $c->req->params->{value} || undef,
+            scientist_id   => $c->req->params->{scientist_id},
+            uri            => $c->req->params->{uri} || undef,
+            note           => $c->req->params->{note} || undef,
+            date_completed => $c->req->params->{date_completed} ||
+                DateTime->today(time_zone => 'America/Los_Angeles')->ymd,
+        });
+    } catch {
+        my $user_error = $_ =~ s/ at \S+ line \d+.*//rs;
+        my $mid = $c->set_error_msg("Couldn't add assay result: $user_error");
+        Redirect($c, $self->action_for("assays"), [ $c->model->id ], { mid => $mid });
+    };
+    my $mid = $c->set_status_msg("Added assay result");
+    return Redirect($c, $self->action_for("assays"), [ $c->model->id ], { mid => $mid });
 }
 
 sub new_extraction : Chained('mutate') PathPart('extraction/new') Args(0) {

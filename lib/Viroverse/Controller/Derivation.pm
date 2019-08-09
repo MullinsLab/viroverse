@@ -8,6 +8,7 @@ use Moose;
 use Catalyst::ResponseHelpers;
 use Try::Tiny;
 use Viroverse::SampleTree;
+use Viroverse::Types qw< ExternalReferenceUri >;
 use namespace::autoclean;
 
 BEGIN { extends 'Viroverse::Controller' }
@@ -55,11 +56,17 @@ sub update : POST Chained('load') PathPart('') Args(0) {
 
     return Forbidden($c) unless $c->stash->{scientist}->can_edit;
 
-    my $params = $c->req->params;
-    $c->model->update({
-        map {; $_ => $params->{$_} }
-            qw[ date_completed uri ]
-    });
+    try {
+        my $params = $c->req->params;
+        ExternalReferenceUri->assert_coerce($params->{uri}) if $params->{uri};
+        $c->model->update({
+            map {; $_ => $params->{$_} }
+                qw[ date_completed uri ]
+        });
+    } catch {
+        my $mid = $c->set_error_msg("Couldn't save derivation details");
+        Redirect($c, $self->action_for("show"), [ $c->model->id ], { mid => $mid });
+    };
     Redirect($c, $self->action_for("show"), [ $c->model->id ]);
 }
 

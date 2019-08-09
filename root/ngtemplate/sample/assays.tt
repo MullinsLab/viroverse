@@ -1,0 +1,104 @@
+[% USE crumbs = Viroverse::Breadcrumbs({ page_record => sample, context => c, leaf_label => "Assays" }) %]
+[%- page = {
+    title  = "Assays performed on sample $sample.id",
+    breadcrumbs = crumbs.breadcrumbs,
+    has_js = 1
+} -%]
+
+[% BLOCK javascript %]
+<script type="text/javascript">
+var unitHelp = document.getElementById("new_assay_unit_help");
+document.querySelector("select[name=numeric_assay_protocol_id]")
+    .addEventListener("change", (e) => {
+        unitHelp.textContent =
+            `Unit: ${e.target.selectedOptions[0].dataset.unit}. ` +
+            'Leave blank to record an indeterminate or failed result.';
+    });
+</script>
+[% END %]
+
+[% WRAPPER 'sample/base.tt' %]
+[% PROCESS 'macros.tt' %]
+[% IF scientist.can_edit %]
+<form action="[% c.uri_for_action(
+    '/sample/create_numeric_assay_result', [ sample.id ]) %]" method="POST">
+<div class="row">
+<div class="col-md-6">
+    <div class="form-group">
+        <label for="numeric_assay_protocol_id">Assay protocol</label>
+        <select name="numeric_assay_protocol_id"
+                id="numeric_assay_protocol_id"
+                class="form-control"
+                required>
+            <option selected disabled value=""></option>
+            [% FOR proto IN protocols %]
+                <option data-unit="[% proto.unit.name %]" value="[% proto.id %]">[% proto.name %]</option>
+            [% END %]
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="value-input">Value</label>
+        <input class="form-control" id="value-input"
+               type="number" name="value" step="0.000000001" />
+        <span id="new_assay_unit_help" class="help-block">Select a protocol</span>
+    </div>
+    <div class="form-group">[% INCLUDE 'scientist-dropdown.tt' %]</div>
+</div>
+<div class="col-md-6">
+    <div class="form-group">
+        <label for="date_completed">Date performed/completed</label>
+        <input class="form-control" placeholder="Default: today"
+               name="date_completed" id="date_completed" type="date"/>
+    </div>
+    <div class="form-group">
+        <label for="uri-input">External link</label>
+        <input class="form-control" name="uri" id="uri-input" />
+    </div>
+    <div class="form-group">
+        <label for="note">Notes</label>
+        <textarea style="resize: vertical" class="form-control" name="note" id="note"></textarea>
+    </div>
+</div>
+</div>
+<div class="row"><div class="col-md-12">
+    <button class="btn btn-primary" type="submit">
+        Add assay result
+    </button>
+</div></div>
+</form>
+[% END %]
+<h2>Assay results</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Assay</th>
+            <th class="text-right">Value</th>
+            <th>Unit</th>
+            <th>Performed</th>
+            <th>Note</th>
+        </tr>
+    </thead>
+    <tbody>
+    [% FOR result IN sample.numeric_assay_results %]
+        <tr>
+            <td>[% maybe_link(result.protocol.name, href=result.uri) | none%]</td>
+            <td class="text-right">
+                [%~ IF result.value.defined ~%]
+                [%~ result.value ~%]
+                [%~ ELSE ~%]
+                <abbr title="no result/indeterminate">null</abbr>
+                [%~ END ~%]</td>
+            <td>[% result.protocol.unit.name %]</td>
+            <td>[% result.date_completed.ymd || "unknown date" %] by
+                [% result.scientist.name %]</td>
+            <td>[% IF defined(result.note) %]
+                  [% result.note | markdown %]
+                [% ELSE %]
+                  <i>none</i>
+                [% END %]
+            </td>
+        </tr>
+    [% END %]
+    </tbody>
+</table>
+[% END %]

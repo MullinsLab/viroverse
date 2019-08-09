@@ -1,0 +1,42 @@
+[%- page = {
+        title  = "Numeric assay protocols",
+        breadcrumbs     = [
+          [ 'Admin',                c.uri_for_action('/admin/index') ],
+          [ 'Numeric assay protocols' ]
+        ]
+    }
+-%]
+
+[% PROCESS 'macros.tt' %]
+<div class="row">
+    <div class="col-md-5 col-xs-8">
+        <h1 class="page-header">Numeric Assay protocols</h1>
+        <table class="table">
+        <thead>
+            <tr><th>Protocol name</th><th>Unit</th><th></th></tr>
+        </thead>
+        <tbody>
+            <form method="POST" class="form-inline" role="form" action="[% c.uri_for_action('/numericassayprotocol/create') %]">
+            <tr>
+                <td>
+                    <input required type="text" name="name" class="form-control" placeholder="New protocol name…"/>
+                </td>
+                <td>
+                    [% select_from_virodb("unit_id", "Unit", placeholder="Unit", required="required") | none %]
+                </td>
+                <td>
+                    <button type="submit" class="btn btn-primary btn-sm float-left">Add protocol</button>
+                </td>
+            </tr>
+            </form>
+            [% FOREACH protocol IN protocols %]
+            <tr>
+                <td>[% protocol.name %]</td>
+                <td>[% protocol.unit.name %]</td>
+                <td />
+            </tr>
+            [% END %]
+        </tbody>
+        </table>
+    </div>
+</div>

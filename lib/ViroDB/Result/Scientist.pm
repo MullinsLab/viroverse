@@ -415,6 +415,21 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 numeric_assay_results
+
+Type: has_many
+
+Related object: L<ViroDB::Result::NumericAssayResult>
+
+=cut
+
+__PACKAGE__->has_many(
+  "numeric_assay_results",
+  "ViroDB::Result::NumericAssayResult",
+  { "foreign.scientist_id" => "self.scientist_id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 =head2 numeric_lab_results
 
 Type: has_many
@@ -566,8 +581,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-05-23 13:23:28
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:oKMUN/mzkaHGRl/MVWv6qQ
+# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-08-01 14:52:45
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Kwjjtzt5f124tdfjLjsKPQ
 
 use JSON::MaybeXS;
 use Viroverse::Config;

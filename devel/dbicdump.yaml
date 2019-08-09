@@ -1,7 +1,7 @@
 ---
 schema_class: ViroDB
 connect_info:
-  dsn: dbi:Pg:dbname=viroverse
+  dsn: dbi:Pg:host=10.0.2.2;dbname=viroverse;port=5432;user=vverse_admin
 loader_options:
   dump_directory: ./lib
   result_base_class: ViroDB::Result
@@ -16,7 +16,7 @@ loader_options:
     - name
   constraint:
     - - viroserve
-      - '^(visit|sample|sample_type|aliquot|unit|additive|tissue_type|infection|location|medication|patient_medication|arv_class|viral_load|cell_count|sample_search|patient|patient_cohort|patient_alias|patient_patient_group|patient_group|cohort|cohort_patient_summary|scientist|scientist_group|scientist_scientist_group|sequence_search|lab_result_num|lab_result_num_type|lab_result_cat|lab_result_cat_type|lab_result_cat_value|import_job|genome_region|na_sequence|na_sequence_latest_revision|protocol|protocol_type|primer|primer_position|project|project_materials|distinct_sample_search|chromat|chromat_na_sequence|extraction|extract_type|rt_product|pcr_product|pcr_template|organism|sample_note|gel_lane|project_material_scientist_progress|sequence_type|chromat_type|pcr_product_primer|copy_number|copy_number_gel_lane|gel|sample_patient_date|bisulfite_converted_dna|derivation|derivation_protocol|protocol_output|enzyme|na_sequence_note|primer_search)$'
+      - '^(visit|sample|sample_type|aliquot|unit|additive|tissue_type|infection|location|medication|patient_medication|arv_class|viral_load|cell_count|sample_search|patient|patient_cohort|patient_alias|patient_patient_group|patient_group|cohort|cohort_patient_summary|scientist|scientist_group|scientist_scientist_group|sequence_search|lab_result_num|lab_result_num_type|lab_result_cat|lab_result_cat_type|lab_result_cat_value|import_job|genome_region|na_sequence|na_sequence_latest_revision|protocol|protocol_type|primer|primer_position|project|project_materials|distinct_sample_search|chromat|chromat_na_sequence|extraction|extract_type|rt_product|pcr_product|pcr_template|organism|sample_note|gel_lane|project_material_scientist_progress|sequence_type|chromat_type|pcr_product_primer|copy_number|copy_number_gel_lane|gel|sample_patient_date|bisulfite_converted_dna|derivation|derivation_protocol|protocol_output|enzyme|na_sequence_note|primer_search|numeric_assay_protocol|numeric_assay_result)$'
     - - freezer
       - .
   moniker_map:
@@ -54,6 +54,8 @@ loader_options:
       na_sequence: NucleicAcidSequence
       na_sequence_latest_revision: NucleicAcidSequenceLatestRevision
       na_sequence_note: SequenceNote
+      numeric_assay_protocol: NumericAssayProtocol
+      numeric_assay_result: NumericAssayResult
       organism: Organism
       patient: Patient
       patient_alias: PatientAlias
@@ -100,8 +102,6 @@ loader_options:
       sequence: sequence_bases
   rel_name_map:
     Sample:
-      lab_result_nums: numeric_lab_results
-      lab_result_cats: categorical_lab_results
       derivations: child_derivations
       derivation: parent_derivation
       project_materials: project_assignments
@@ -175,3 +175,7 @@ loader_options:
       chromat_na_sequences: sequence_chromats
       sequence_type: type
       na_sequence_notes: notes
+    NumericAssayResult:
+      numeric_assay_protocol: protocol
+    NumericAssayProtocol:
+      numeric_asay_results: results

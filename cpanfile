@@ -181,6 +181,7 @@ requires 'Types::DateTime';
 requires 'Types::LoadableClass', '0.003';
 requires 'Types::Path::Tiny';
 requires 'Types::Standard';
+requires 'Types::URI';
 requires 'Web::Machine';
 requires 'WWW::Mechanize';
 requires 'WWW::Mechanize::Plugin::FollowMetaRedirect';

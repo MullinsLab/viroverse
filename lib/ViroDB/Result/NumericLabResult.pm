@@ -43,12 +43,6 @@ __PACKAGE__->table("viroserve.lab_result_num");
   is_foreign_key: 1
   is_nullable: 0
 
-=head2 sample_id
-
-  data_type: 'integer'
-  is_foreign_key: 1
-  is_nullable: 1
-
 =head2 scientist_id
 
   data_type: 'integer'
@@ -103,8 +97,6 @@ __PACKAGE__->add_columns(
   },
   "lab_result_num_type_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
-  "sample_id",
-  { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
   "scientist_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
   "date_performed",
@@ -164,26 +156,6 @@ __PACKAGE__->add_unique_constraint(
 
 =head1 RELATIONS
 
-=head2 sample
-
-Type: belongs_to
-
-Related object: L<ViroDB::Result::Sample>
-
-=cut
-
-__PACKAGE__->belongs_to(
-  "sample",
-  "ViroDB::Result::Sample",
-  { sample_id => "sample_id" },
-  {
-    is_deferrable => 0,
-    join_type     => "LEFT",
-    on_delete     => "NO ACTION",
-    on_update     => "NO ACTION",
-  },
-);
-
 =head2 scientist
 
 Type: belongs_to
@@ -235,8 +207,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07042 @ 2017-08-11 15:11:37
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:i45yUH7MlSZ+Q0808ddjSg
+# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-08-01 14:52:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:OxZnWtmikEmmpVIo1yb0DQ
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
