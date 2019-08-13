@@ -18,9 +18,9 @@ Viroverse::Search::Faceted - A role for faceted record searches
             tissue_type => "brain"
         }
     );
-    
+
     say "Matched ", $search->count, " sequences";
-    
+
     # First 10 results, as ViroDB::Result::SequenceSearch objects
     my @results = $search->results;
 
@@ -237,6 +237,13 @@ often have their own bespoke UI handling (and thus the UI can set appropriate
 labels), facets more naturally share UI handling and doing so is facilitated by
 providing a label with the data.
 
+=item join
+
+Optional. The name of a relationship on the L</model>, or an arrayref of such
+relationships, suitable for passing to the C<join> parameter of a
+L<DBIx::Class> search. Useful for faceting on the name of a row from a foreign
+table. See L<Viroverse::Search::Gel> for a usage example.
+
 =back
 
 =item values
@@ -258,6 +265,7 @@ See the implementation of L<Viroverse::Search::Sample> for an example usage.
 my $Facet = Dict[
     column => ScalarRef[ArrayRef] | NonEmptySimpleStr,
     label  => NonEmptySimpleStr,
+    join   => Optional[NonEmptySimpleStr],
 ];
 
 my $QueryField =
@@ -421,7 +429,7 @@ sub _build_facets {
         my $facet = $query_fields->{$name}{facet}
             or next;
 
-        my ($column, $label) = @$facet{qw[ column label ]};
+        my ($column, $label, $join) = @$facet{qw[ column label join ]};
 
         # Remove current facet from search conditions so we get a count of this
         # facet's full values before restriction.  This is nicer for the UX,
@@ -436,6 +444,7 @@ sub _build_facets {
             ],
             group_by => [ $column ],
             order_by => [ { -desc => "count" } ],
+            ($join ? (join => $join) : ()),
         });
 
         Dlog_debug { "Built facet search for «$name»: $_" } $values->as_query;

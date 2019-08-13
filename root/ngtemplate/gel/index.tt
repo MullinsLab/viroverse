@@ -1,0 +1,12 @@
+[%- page = {
+      title = "Gels",
+    }
+-%]
+
+<div class="row">
+  <div class="col-md-12">
+    <h1 class="page-header">Gels</h1>
+    <faceted-search gel-search endpoint="/gel/search">
+    </faceted-search>
+  </div>
+</div>

@@ -1,0 +1,48 @@
+<div class="row">
+  <div class="col-sm-3">
+    <freeform-input
+      placeholder="Gel name or note">
+    </freeform-input>
+
+    <div class="search-facets">
+      <div class="facet-col">
+        <facet-widget name="scientist"></facet-widget>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <div class="col-sm-9">
+    <div ng-if="search.result.$resolved" class="search-results-horizontal">
+      <div class="row">
+        <div class="col-sm-7">
+          <p>
+            <result-summary noun="gel" order-message="sorted by name"></result-summary>
+          </p>
+        </div>
+        <div class="col-sm-5 pager-col-top">
+          <clear-search-button></clear-search-button>
+          <result-pager></result-pager>
+        </div>
+      </div>
+    </div>
+    <table ng-if="search.result.rows.length" class="table table-striped table-condensed">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Scientist</th>
+          <th>Date Entered</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="gel in search.result.rows track by gel.gel_id">
+          <td><a vv-href="/summary/gel/{{ gel.gel_id }}">{{ gel.name }}</a></td>
+          <td>{{ gel.scientist }}</td>
+          <td>{{ gel.date_entered }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
