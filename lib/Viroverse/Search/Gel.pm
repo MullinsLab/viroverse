@@ -37,7 +37,7 @@ sub _build_id_field { "gel_id" }
 
 sub _build_order_by {
     return [
-        \['name ASC']
+        \['date_entered DESC']
     ];
 }
 

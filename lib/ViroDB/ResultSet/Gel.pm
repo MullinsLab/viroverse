@@ -12,7 +12,6 @@ extends 'ViroDB::ResultSet';
 with 'ViroDB::Helper::ResultSet::SearchFreeform', {
     text_fields => [qw[
         name
-        notes
     ]],
     id_field    => "gel_id",
 };
