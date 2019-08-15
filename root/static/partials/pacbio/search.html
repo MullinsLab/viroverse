@@ -42,6 +42,7 @@
           <th>RT Primer</th>
           <th>Scientist</th>
           <th>Completion Date</th>
+          <th>Add sequences</th>
         </tr>
       </thead>
       <tbody>
@@ -51,6 +52,7 @@
           <td>{{ pool.rt_primer }}</td>
           <td>{{ pool.scientist }}</td>
           <td>{{ pool.date_completed }}</td>
+          <td><a vv-href="/pacbio/{{ pool.pcr_product_id }}/sequences">Add sequences</a></td>
         </tr>
       </tbody>
     </table>

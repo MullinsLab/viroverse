@@ -54,11 +54,22 @@ it to be skipped and a warning will be issued.
 =cut
 
 sub string2hash {
+    my %sequences;
+
+    for my $seq (@{string2array(@_)}) {
+        $sequences{$seq->{id}} = $seq->{seq};
+    }
+
+    return \%sequences;
+}
+
+sub string2array {
     my $big_string_ref = shift;
     my $keep_gaps = shift;
 
-    my %sequences;
+    my @sequences;
     my $name;
+    my $desc;
     my $seq = '';
 
     # Use a fake last line that looks like a FASTA description to avoid
@@ -67,7 +78,7 @@ sub string2hash {
     # expense of just a little cleverness.
     # -trs, 2013-10-08
     foreach (split(/[\r\n]+/, $$big_string_ref), ">eof") {
-        if (my ($new_name) = $_ =~ m/>([^ ]+)/) {
+        if (my ($new_seq) = $_ =~ m/>(.+)/) {
             if ($seq ne '') { # is this one of several sequences?
                 my $legal = $LEGAL_CHAR;
                 if ($keep_gaps) {
@@ -81,11 +92,15 @@ sub string2hash {
                 if ($seq =~ /([^$legal])/i) {
                     carp("skipped $name because of illegal char '$1'");
                 } else {
-                    $sequences{$name} = $seq;
+                    push @sequences, {
+                        id          => $name,
+                        description => $desc,
+                        seq         => $seq,
+                    };
                 }
             }
 
-            $name = $new_name;
+            ($name, $desc) = split /\h/, $new_seq, 2;
             $seq = '';
         } else {
             chomp;
@@ -93,7 +108,7 @@ sub string2hash {
         }
     }
 
-    return \%sequences;
+    return \@sequences;
 }
 
 1;
