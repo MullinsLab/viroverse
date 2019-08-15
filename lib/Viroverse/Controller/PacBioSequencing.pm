@@ -12,7 +12,12 @@ use namespace::autoclean;
 
 BEGIN { extends 'Viroverse::Controller' }
 
-sub base : Chained('/') PathPart('pacbio') CaptureArgs(0) { }
+sub base : Chained('/') PathPart('pacbio') CaptureArgs(0) {
+    my ($self, $c) = @_;
+    unless ($c->stash->{features}->{pacbio_sequencing}) {
+        return NotFound($c, "Feature disabled: PacBio sequencing");
+    }
+}
 
 sub index : Chained('base') PathPart('') Args(0) {
     my ($self, $c) = @_;
