@@ -1,0 +1,12 @@
+[%- page = {
+      title = "PacBio Sequencing",
+    }
+-%]
+
+<div class="row">
+  <div class="col-md-12">
+    <h1 class="page-header">Pooled PCRs for PacBio</h1>
+    <faceted-search pacbio-pools endpoint="/pacbio/search">
+    </faceted-search>
+  </div>
+</div>

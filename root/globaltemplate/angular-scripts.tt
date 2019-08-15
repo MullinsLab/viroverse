@@ -18,6 +18,7 @@
 <script src="<% uri_base %>static/javascripts/angular/vv.ui.facetedSearch.js"></script>
 <script src="<% uri_base %>static/javascripts/angular/vv.ui.primerSearch.js"></script>
 <script src="<% uri_base %>static/javascripts/angular/vv.ui.gelSearch.js"></script>
+<script src="<% uri_base %>static/javascripts/angular/vv.ui.pacbioPoolSearch.js"></script>
 <script src="<% uri_base %>static/javascripts/angular/vv.ui.sampleSearch.js"></script>
 <script src="<% uri_base %>static/javascripts/angular/vv.ui.sequenceSearch.js"></script>
 <script src="<% uri_base %>static/javascripts/angular/vv.ui.sequenceDownloader.js"></script>
