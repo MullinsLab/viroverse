@@ -1,7 +1,7 @@
 ---
 schema_class: ViroDB
 connect_info:
-  dsn: dbi:Pg:host=10.0.2.2;dbname=viroverse;port=5432;user=vverse_admin
+  dsn: dbi:Pg:dbname=viroverse
 loader_options:
   dump_directory: ./lib
   result_base_class: ViroDB::Result

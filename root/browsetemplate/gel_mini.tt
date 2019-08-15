@@ -10,7 +10,5 @@
     </tr>
     [%- END -%]
     </table>
-    Notes:
-    <pre>[%- object.notes -%]</pre>
 
 </div>

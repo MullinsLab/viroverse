@@ -20,7 +20,6 @@ __PACKAGE__->columns(Others =>
             protocol_id
             date_completed
             date_entered
-            notes
             mime_type
             image
             ninety_six_well

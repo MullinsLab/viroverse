@@ -61,12 +61,6 @@ __PACKAGE__->table("viroserve.gel");
   is_nullable: 0
   original: {default_value => \"now()"}
 
-=head2 notes
-
-  data_type: 'varchar'
-  is_nullable: 1
-  size: 255
-
 =head2 image
 
   data_type: 'bytea'
@@ -120,8 +114,6 @@ __PACKAGE__->add_columns(
     is_nullable   => 0,
     original      => { default_value => \"now()" },
   },
-  "notes",
-  { data_type => "varchar", is_nullable => 1, size => 255 },
   "image",
   { data_type => "bytea", is_nullable => 1 },
   "vv_uid",
@@ -204,8 +196,16 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07042 @ 2018-01-26 10:45:22
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:+sBJM+otObIT09cEX0Qr6w
+# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-08-14 15:33:32
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ryKrc3YUBSPtmqKGnwKsdw
+
+sub as_hash {
+    my $self = shift;
+    my $hash = $self->next::method;
+    $hash->{scientist} = $self->scientist->name;
+    delete $hash->{image};
+    return $hash;
+}
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

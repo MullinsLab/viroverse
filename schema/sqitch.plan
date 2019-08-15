@@ -10,3 +10,4 @@ primer_search 2019-07-24T21:33:58Z vagrant <vagrant@localverse># Add materialize
 primer_search_refresh 2019-08-06T16:53:02Z vagrant <vagrant@localverse># Make the materialized view refresh of primer_search work
 primer_search_region 2019-08-06T23:51:15Z vagrant <vagrant@localverse> # Add genome_region to the primer_search materialized view
 assays 2019-08-01T21:17:23Z vagrant <vagrant@localverse> # Add sample-specific bench assays/results
+remove-gel-notes 2019-08-14T21:41:14Z vagrant <vagrant@localverse> # Remove unused 'notes' column from gel table
