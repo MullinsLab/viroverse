@@ -117,7 +117,14 @@
                 </thead>
                 <tbody>
                     [% FOR chromat IN virodb_sequence.chromats %]
-                    <tr><td><a href="[% c.uri_for_action('/download/chromat', [ chromat.id, sequence.idrev _ "-" _ chromat.name ]) %]">[% chromat.name %]</a></td><td>[% chromat.primer_id.name %]</td></tr>
+                    [% chromat_fn = sequence.idrev _ "-" _ chromat.name %]
+                    <tr>
+                        <td><a href="[% c.uri_for_action(
+                                            '/download/chromat',
+                                            [ chromat.id, chromat_fn ]
+                                     )%]">[% chromat.name %]</a></td>
+                        <td>[% chromat.primer.name %]</td>
+                    </tr>
                     [% END %]
                 </tbody>
             </table>
