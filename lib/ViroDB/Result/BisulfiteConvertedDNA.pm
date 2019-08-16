@@ -264,7 +264,11 @@ __PACKAGE__->belongs_to(
 # Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-04-08 14:52:37
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:nCB6wtj7ABadyo4HbESrAA
 
+sub input_product {
+    my $self = shift;
+    return $self->sample || $self->extraction || $self->rt_product;
+}
+with 'Viroverse::Model::Role::MolecularProduct';
 
-# You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->meta->make_immutable;
 1;

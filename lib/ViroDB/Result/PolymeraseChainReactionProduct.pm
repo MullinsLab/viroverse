@@ -359,7 +359,12 @@ __PACKAGE__->many_to_many("primers", "primer_assignments", "primer");
 # Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-05-06 17:19:55
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:eNrEKXJo+FfBjj88cUpKuA
 
+use 5.018;
+use warnings;
+use strict;
 
-# You can replace this text with custom code or comments, and it will be preserved on regeneration
+sub input_product { return $_[0]->pcr_template; }
+with "Viroverse::Model::Role::MolecularProduct";
+
 __PACKAGE__->meta->make_immutable;
 1;

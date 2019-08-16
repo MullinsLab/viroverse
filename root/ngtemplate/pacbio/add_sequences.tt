@@ -1,0 +1,68 @@
+[%- page = {
+    title  = "Add PacBio sequences",
+} -%]
+[% PROCESS 'macros.tt' %]
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="page-header">
+          Add PacBio Sequences
+        </h1>
+        [% IF pool.isa("ViroDB::Result::PacbioPool") %]
+        <p>PacBio pool from
+            <a href="[% c.uri_for_action('/sample/show', [ pool.sample_id ]) %]"
+             >[% pool.sample_name ||  pool.sample_id %]</a>
+             using RT primer [% pool.rt_primer %]
+             and final round primers [% pool.r2_pcr_primers.join(", ") %]
+             completed by [% pool.scientist %]
+             on [% pool.date_completed.ymd %]</p>
+        [% ELSE %]
+        <p>Adding PacBio sequences to PCR #[% pool.id %].</p>
+        [% END %]
+
+    </div>
+</div>
+<form action="[% c.uri_for_action(
+    '/pacbiosequencing/upload_sequences', [ pool.pcr_product_id ]) %]" method="POST"
+    enctype="multipart/form-data">
+    <input type="hidden" name="pcr_product"
+           value="[% pool.isa("ViroDB::Result::PolymeraseChainReactionProduct") %]">
+    <div class="row">
+    <div class="col-md-6">
+        <div class="form-group">[% INCLUDE 'scientist-dropdown.tt' %]</div>
+        <div class="form-group">
+            <label for="sequence_type_id">Sequence type</label>
+            <select required class="form-control" name="sequence_type_id"
+                    id="sequence_type_id">
+            [% FOR item IN sequence_types %]
+                <option [% IF item.name == "Genomic" THEN "selected" END %]
+                        value="[% item.id %]">[% item.name %]</option>
+            [% END %]
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="na_type">NA type</label>
+            <select required class="form-control" name="na_type" id="na_type">
+                <option value="RNA">RNA</option>
+                <option value="DNA">DNA</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="note">Notes</label>
+            <textarea style="resize: vertical" class="form-control" name="note" id="note"></textarea>
+            <span class="help-block">Will be added as a note to all sequences
+            created.</span>
+        </div>
+    </div>
+    <div class="col-md-6">
+            <div class="form-group well">
+                <label for="sequence-file">Sequence file (<code>fasta</code>)</label>
+                <input required type="file" name="sequence_file" id="sequence-file">
+            </div>
+    </div>
+    </div>
+<div class="row"><div class="col-md-12">
+    <button class="btn btn-primary" type="submit">
+        Add sequences
+    </button>
+</div></div>
+</form>

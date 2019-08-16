@@ -12,5 +12,9 @@
         [% cp_num.toString %]<br />
     [% END %]
     [%- END -%]
+    [% IF features.pacbio_sequencing %]
+    <a href="[% uri_base %]pacbio/[% object.get_id %]/sequences?pcr_product=1"
+        >Add PacBio Sequences</a>
+    [% END %]
 
 </div>

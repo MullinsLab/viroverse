@@ -277,6 +277,8 @@ __PACKAGE__->belongs_to(
 # Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-05-06 17:19:55
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Qh8S/F+Goh7Jh5P+3aqhnA
 
+sub input_product { $_[0]->extraction; }
+with 'Viroverse::Model::Role::MolecularProduct';
 
 with 'ViroDB::Role::HasCopyNumberSummary';
 __PACKAGE__->meta->make_immutable;
