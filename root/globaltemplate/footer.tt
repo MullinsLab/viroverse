@@ -30,6 +30,9 @@
           <li><a href="<% c.uri_for_action("/input/PCR") %>">PCR</a></li>
           <li><a href="<% c.uri_for_action("/input/PCR_gel") %>">Gel visualization</a></li>
           <li><a href="<% c.uri_for_action("/input/sequence/index") %>">Sequencing</a></li>
+          [% IF features.pacbio_sequencing %]
+          <li><a href="<% c.uri_for_action("/pacbiosequencing/index") %>">PacBio Sequencing</a></li>
+          [% END %]
         </ul>
         <ul class="list-unstyled">
           <li><a href="<% c.uri_for_action("/input/pcr/reamp") %>">Re-amplification</a></li>
