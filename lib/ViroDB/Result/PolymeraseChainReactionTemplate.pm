@@ -354,5 +354,12 @@ sub new {
     return $new;
 }
 
+sub input_product {
+    my $self = shift;
+    return $self->rt_product || $self->extraction || $self->pcr_product ||
+           $self->sample     || $self->bisulfite_converted_dna;
+}
+with "Viroverse::Model::Role::MolecularProduct";
+
 __PACKAGE__->meta->make_immutable(inline_constructor => 0);
 1;
