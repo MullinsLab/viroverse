@@ -29,7 +29,13 @@ sub product_patient_filter :Local {
 sub product_tissue_filter :Local {
     my ($self, $c) = @_;
     $c->stash->{template} = 'partials/product_tissue_filter.tt';
-    $c->stash->{tissues}  = Viroverse::sample->list_tissue_types($c->stash->{session});
+    my %out = map {;
+        $_->id => {
+            tissue_type_id => $_->id,
+            name           => $_->name,
+        }
+    } $c->model("ViroDB::TissueType")->all;
+    $c->stash->{tissues} = \%out;
 }
 
 =head1 AUTHOR
