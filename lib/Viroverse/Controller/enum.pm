@@ -5,7 +5,6 @@ use warnings;
 use base 'Viroverse::Controller';
 use Viroverse::session;
 use Viroverse::patient;
-use Viroverse::sample;
 use Viroverse::Model::sample;
 use Viroverse::Model::extraction;
 use Viroverse::Model::rt;
@@ -258,29 +257,21 @@ sub fetch_generic : Local {
 sub samples : Local {
 
     my ($self,$context) = @_;
-    my $patient_id;
-
-    if (@{$context->req->arguments} == 2) {
-        my $patient = Viroverse::patient::get($context->stash->{session},$context->req->arguments->[1], {cohort_id => $context->req->arguments->[0]} );
-        return unless defined $patient;
-        $patient_id = $patient->give_id;
-    } else {
-        $patient_id = shift @{$context->request->arguments};
-    }
+    my ($patient_id) = @{$context->request->arguments};
 
     return unless defined $patient_id;
     return if $patient_id eq 'undefined';
 
-    my $samples_ref = Viroverse::sample::get_patient_samples($context->stash->{session},$patient_id,'ONLY_REAL');
-    while (my ($sample_id,$sample_details) = each %{$samples_ref}) {
-        foreach my $field (@Viroverse::sample::expand_these) {
-            #TODO: move this into a proper view
-            if (defined $sample_details->{$field}) {
-                $sample_details->{$field} = join ",\n", grep {defined} @{ $sample_details->{$field} };
-            }
-        }
+    my @samples = $context->model("ViroDB::DistinctSampleSearch")->search({
+        tissue_type_id => { '!=' => undef },
+        derivation_id  => undef,
+        patient_id     => $patient_id,
+    });
+    my %out;
+    for my $sample (@samples) {
+        $out{"".$sample->sample_id} = $sample->as_hash;
     }
-    $context->stash->{'jsonify'} = $samples_ref;
+    $context->stash->{'jsonify'} = \%out;
     $context->forward('Viroverse::View::JSON');
 }
 
