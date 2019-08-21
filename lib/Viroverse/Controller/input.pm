@@ -10,7 +10,6 @@ use Viroverse::Model::unit;
 use Viroverse::patient;
 use Viroverse::Model::rt;
 use Viroverse::Model::bisulfite_converted_dna;
-use Viroverse::sample;
 use Viroverse::Model::scientist;
 use Viroverse::Logger qw< :log :dlog >;
 use Catalyst::ResponseHelpers;

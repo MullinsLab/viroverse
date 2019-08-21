@@ -9,7 +9,6 @@ use Viroverse::Model::extraction;
 use Viroverse::Model::gel_lane::special;
 use Viroverse::Model::bisulfite_converted_dna;
 use Viroverse::Model::rt;
-use Viroverse::sample;
 use Viroverse::Model::sequence::dna;
 
 =head1 NAME
@@ -63,14 +62,11 @@ sub find_a {
 }
 
 =item which_package
-    Returns the package name for an english name for an object (eg 'Viroverse::sample' for 'sample')
+    Returns the package name for an english name for an object (eg 'Viroverse::Model::pcr' for 'pcr')
 =cut
 sub which_package {
 
     my %package_of = (
-        sample        => 'Viroverse::sample',
-        'sample.rna'  => 'Viroverse::sample',
-        'sample.dna'  => 'Viroverse::sample',
         extraction    => 'Viroverse::Model::extraction',
         'extraction.rna' => 'Viroverse::Model::extraction',
         'extraction.dna' => 'Viroverse::Model::extraction',
