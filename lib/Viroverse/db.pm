@@ -81,19 +81,6 @@ sub mk_obj {
     return $self;
 }
 
-# wrap DBI::selectall_hashref to provide consistent (lower) case in keys
-sub selectall_hr {
-    my ($session,@params) = @_;
-    confess "$session is not a Viroverse::session" unless ref $session eq 'Viroverse::session';
-
-    my $lc_results;
-    my $res =$session->{'dbr'}->selectall_hashref(@params) ;
-    while (my ($pri_key,$row_ref) = each %{$res} ) {
-        $lc_results->{$pri_key} = {map { (lc $_,$row_ref->{$_}) } keys %$row_ref} ;
-    }
-    return $lc_results;
-}
-
 sub selectrow_hr {
     my ($session,@params) = @_;
     confess "illegal session" unless ref $session;
