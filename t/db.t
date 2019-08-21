@@ -14,12 +14,6 @@ ok($dbh =  Viroverse::db::connect(Viroverse::Config->conf->{read_only_user},Viro
 
 my ($test_sql, $custom_res, $dbi_res);
 
-## selectall_hr
-#select HXB2 sequence and verify that its all good
-$test_sql = q[SELECT na_SEQUENCE_id,scientist_id,sample_ID,ENTERED_DATE from viroserve.na_sequence where na_sequence_id in (1,10,100)];
-$custom_res = Viroverse::db::selectall_hr($session,$test_sql,'na_sequence_id');
-$dbi_res    = $dbh->selectall_hashref($test_sql,'na_sequence_id');
-cmp_deeply($custom_res, $dbi_res, 'selectall_hr result values match dbi');
 
 ## selectrow_hr
 $test_sql = q[SELECT na_SEQUENCE_id,scientist_id,sample_ID,ENTERED_DATE from viroserve.na_sequence where na_sequence_id = 1];

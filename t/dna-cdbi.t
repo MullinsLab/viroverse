@@ -25,12 +25,6 @@ ok ( $hxb2->scientist_id );
 
 #deferred properties
 ok ( $hxb2->seq );
-TODO : {
-    local $TODO = "need test sequence with sample" if 1;
-    cmp_ok ( ref($hxb2->sample_id),
-        'eq', 'Viroverse::sample', 'Deferred sample object'
-     );
-}
 
 ## methods inherited from sequence
 cmp_ok ( length($hxb2->get_FASTA),

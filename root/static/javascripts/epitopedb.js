@@ -702,9 +702,9 @@ function writeSamples(aSample) {
         var aSample_temp = new Array();
         var aSample_asoc = new Array();
         for (var i in aSample) {
-            var date = aSample[i].date;
+            var date = aSample[i].sample_date;
             var tissue_type = aSample[i].tissue_type;
-            var sample_id = aSample[i].sampleid;
+            var sample_id = aSample[i].sample_id;
             if (!aSample_asoc[date]) {
                 aSample_asoc[date] = new Array();
                 aSample_temp.push(date);

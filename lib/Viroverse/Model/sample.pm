@@ -1,6 +1,5 @@
 package Viroverse::Model::sample;
 use base 'Viroverse::CDBI';
-use Viroverse::sample;
 use Carp qw[carp croak];
 use ViroDB;
 use strict;
@@ -8,7 +7,7 @@ use 5.018;
 
 =head1 NAME
 
-Viroverse::Model::sample -- provide Viroverse::samples to Catalyst
+Viroverse::Model::sample
 
 =cut
 

@@ -10,7 +10,6 @@ use Viroverse::Model::unit;
 use Viroverse::patient;
 use Viroverse::Model::rt;
 use Viroverse::Model::bisulfite_converted_dna;
-use Viroverse::sample;
 use Viroverse::Model::scientist;
 use Viroverse::Logger qw< :log :dlog >;
 use Catalyst::ResponseHelpers;
@@ -75,7 +74,12 @@ sub extraction : Local {
 
     $context->stash->{find_a} = [{name => 'sample', label => 'sample'}];
 
-    $context->stash->{tissue_types} = Viroverse::sample->list_tissue_types($context->stash->{session});
+    $context->stash->{tissue_types} = { map {;
+            $_->id => {
+                tissue_type_id => $_->id,
+                name           => $_->name,
+            }
+        } $context->model("ViroDB::TissueType")->all } ;
     $context->stash->{protocols} = [ $context->model('protocol')->search_by_type('extraction') ];
     $context->stash->{template} = 'extraction.tt';
 }
