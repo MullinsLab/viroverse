@@ -4,16 +4,8 @@ use base 'Viroverse::Controller';
 use strict;
 use warnings;
 
-use Viroverse::Model::extraction;
-use Viroverse::patient;
 use Viroverse::Model::rt;
-use Viroverse::sample;
-use Viroverse::Model::scientist;
-use Viroverse::Model::gel;
-use Viroverse::Model::sequence::dna;
 use Viroverse::Logger qw< :log >;
-use Fasta;
-use List::Util qw[first];
 use List::MoreUtils qw[firstidx uniq];
 use Data::Dump;
 use Carp;
@@ -21,7 +13,7 @@ use Viroverse::Controller::need;
 
 =head1 NAME
 
-Viroverse::Controller::input - Holds Catalyst actions under /input to create data in Viroverse
+Viroverse::Controller::sidebar
 
 =head1 SYNOPSIS
 
