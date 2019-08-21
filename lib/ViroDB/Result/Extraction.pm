@@ -388,6 +388,9 @@ use Hash::Merge qw< merge >;
 
 with 'ViroDB::Role::HasCopyNumberSummary';
 
+sub input_product { return $_[0]->sample; }
+with "Viroverse::Model::Role::MolecularProduct";
+
 sub copy_number_summary_of_rts {
     my $self = shift;
     my %merged;
