@@ -32,6 +32,7 @@ __PACKAGE__->columns(Other =>
 __PACKAGE__->has_a(creating_scientist_id => 'Viroverse::Model::scientist');
 __PACKAGE__->has_a(possessing_scientist_id => 'Viroverse::Model::scientist');
 __PACKAGE__->has_a(unit_id => 'Viroverse::Model::unit' );
+__PACKAGE__->has_a(sample_id => 'Viroverse::Model::sample' );
 
 sub status {
      return format_status($_[0]->isInFreezer(),
@@ -112,10 +113,6 @@ sub isInFreezer {
 sub is_missing {
     my $self = shift;
     return !($self->box_pos || $self->possessing_scientist_id || $self->orphaned);
-}
-
-sub sample_id {
-    return Viroverse::sample::get(Viroverse::session->new (__PACKAGE__->db_Main), $_[0]->get('sample_id'));
 }
 
 sub unit {
