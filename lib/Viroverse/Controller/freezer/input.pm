@@ -348,7 +348,6 @@ sub checkVisitDate : Chained('base') PathPart('checkVisitDate') Args {
     my $visit_date = $c->req->args->[1];
     my $visit_id = -1;
     my $sql = qq[SELECT visit_id,
-                        external_visit_id,
                         sample_name,
                         vol,
                         number_aliq,

@@ -5,7 +5,7 @@ BEGIN;
 SET search_path TO viroserve;
 
 SELECT
-    1/(1-(SELECT count(column_name) FROM information_schema.columns WHERE table_name='gel' and column_name='notes'));
+    1/(1-(SELECT count(column_name) FROM information_schema.columns WHERE table_name='visit' and column_name='external_visit_id'));
 
 
 ROLLBACK;

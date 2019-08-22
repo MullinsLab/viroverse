@@ -68,12 +68,6 @@ __PACKAGE__->table("viroserve.visit");
   is_nullable: 0
   original: {default_value => \"now()"}
 
-=head2 external_visit_id
-
-  data_type: 'varchar'
-  is_nullable: 1
-  size: 20
-
 =head2 is_deleted
 
   data_type: 'boolean'
@@ -110,8 +104,6 @@ __PACKAGE__->add_columns(
     is_nullable   => 0,
     original      => { default_value => \"now()" },
   },
-  "external_visit_id",
-  { data_type => "varchar", is_nullable => 1, size => 20 },
   "is_deleted",
   { data_type => "boolean", default_value => \"false", is_nullable => 0 },
 );
@@ -191,8 +183,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07042 @ 2017-08-11 15:11:38
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:VJUiVhePzwGXpXwAIiP7kg
+# Created by DBIx::Class::Schema::Loader v0.07042 @ 2019-08-22 12:54:01
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:AyjMKQObEnM1DtbUSZGcoQ
 
 =head2 best_viral_load
 
