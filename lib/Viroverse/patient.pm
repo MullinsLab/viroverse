@@ -52,17 +52,6 @@ my %deferred_props = (
             SELECT vv_uid FROM viroserve.patient WHERE patient_id = ?
         ],undef,$self->give_id)->[0];
     },
-    all_names => sub {
-        my $self = shift;
-        return $self->{all_names} if defined $self->{all_names};
-
-        $self->{all_names} = $self->{session}->{'dbr'}->selectcol_arrayref(q[
-            SELECT viroserve.patient_name_by_cohort(patient_id,cohort_id)
-              FROM viroserve.patient_cohort
-             WHERE patient_id = ?
-            ORDER BY cohort_id;
-        ],undef,$self->give_id);
-    },
     hla => sub {
         my $self = shift;
         return $self->{session}->{'dbr'}->selectcol_arrayref(q[
