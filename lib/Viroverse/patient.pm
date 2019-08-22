@@ -46,12 +46,6 @@ sub _get_prop_infection_window {
 
 #TODO: these should (ALL) be using caching the prepared statement
 my %deferred_props = (
-    vv_uid => sub {
-        my $self = shift;
-        return $self->{session}->{'dbr'}->selectcol_arrayref(q[
-            SELECT vv_uid FROM viroserve.patient WHERE patient_id = ?
-        ],undef,$self->give_id)->[0];
-    },
     hla => sub {
         my $self = shift;
         return $self->{session}->{'dbr'}->selectcol_arrayref(q[
