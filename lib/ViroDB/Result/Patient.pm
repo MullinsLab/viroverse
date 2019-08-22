@@ -354,11 +354,6 @@ sub primary_alias {
     return $self->primary_aliases->first;
 }
 
-sub aliases {
-    my $self = shift;
-    return map { $_->external_patient_id } $self->patient_aliases->all;
-}
-
 =head2 estimated_date_infected
 
 =head2 first_visit
