@@ -375,9 +375,11 @@ sub summary_by_box {
             $aliquot_ref = [];
         }
 
+        my $patient = $row->{patient_id} &&
+            ViroDB->instance->resultset("Patient")->find($row->{patient_id});
         # Accumulate aliquot data
         if (defined $row->{aliquot_id}) {
-            my $names_ref = Viroverse::patient::get($session, $row->{patient_id})->get_prop('all_names');
+            my $names_ref = [ $patient ? $patient->name : ()];
             my $vol       = defined $row->{vol} && defined $row->{unit} ? "$row->{vol} $row->{unit}" : 'Unk';
             my $status    = format_status(@{$row}{('is_in_freezer', 'possessing_scientist_id', 'qc_d', 'orphaned')});
             my $visit     = $row->{visit_date} || 'Unk';
@@ -504,7 +506,9 @@ sub admin_summary_by_patient {
     $arg_ref->{summary_func} = sub {
         my ($row) = @_;
         if (@{$aliquots_ref} >= $min_vials) {
-            my $names_ref = Viroverse::patient::get($session, $row->{patient_id})->get_prop('all_names');
+            my $patient =
+                ViroDB->instance->resultset("Patient")->find($row->{patient_id});
+            my $names_ref = [ $patient ? $patient->name : () ];
             my $tissue    = defined $row->{tissue} ? $row->{tissue} : 'Unk';
             push @summary, {patient => $names_ref, visit_date => $row->{visit_date}, tissue => $tissue, aliquots => $aliquots_ref};
             $aliquots_ref = [];
