@@ -24,6 +24,18 @@ sub index : Chained('base') PathPart('') Args(0) {
         return RedirectToUrl($c, Viroverse::Config->conf->{redirect_root_to});
     }
 
+    my $nag = !Viroverse::Config->conf->{registered};
+
+    $c->stash(
+        template => 'homepage/index.tt',
+        nag      => $nag
+    );
+    $c->detach( $c->view("NG") );
+}
+
+sub projects : Chained('base') PathPart('my_projects') Args(0) {
+    my ($self, $c) = @_;
+
     # The extensive prefetching below bundles a bunch of relationships into a
     # single fairly efficient query without resorting to a database view to
     # power the homepage.
@@ -48,13 +60,10 @@ sub index : Chained('base') PathPart('') Args(0) {
         reduce { push @{ $a->{ $b->project->name } ||= [] }, $b; $a }
             +{}, @assignments;
 
-    my $nag = !Viroverse::Config->conf->{registered};
 
     $c->stash(
-        template    => 'homepage/index.tt',
+        template    => 'homepage/assigned-projects.tt',
         my_projects => $my_projects,
-        cohorts     => [ $c->model("ViroDB::Cohort")->order_by('name')->all ],
-        nag         => $nag,
     );
     $c->detach( $c->view("NG") );
 }

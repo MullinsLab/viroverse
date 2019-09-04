@@ -1,73 +1,65 @@
 [%- page = {
-      title = "Viroverse",
-    }
+title = "Viroverse: Start Page",
+}
 -%]
 <div class="row">
     <div class="col-md-12" ng-controller="LocationHash as locationHash">
         [% IF nag %]
-            <div class="alert alert-info" role="alert">
-                <p>Please help us maintain funding for Viroverse development by
+        <div class="alert alert-info" role="alert">
+            <p>Please help us maintain funding for Viroverse development by
                 <a href="mailto:mullspt+cfar@uw.edu?subject=Viroverse">emailing
-                us</a> and letting us know who you are and what you're using
+                    us</a> and letting us know who you are and what you're using
                 Viroverse for!</p>
-            </div>
+        </div>
         [% END %]
-        [% IF my_projects.size > 0 %]
-        <h2>My assigned samples</h2>
-            <uib-tabset active="locationHash.value" ng-cloak>
-                [% FOR project IN my_projects.keys.sort %]
-                    <uib-tab index="'[% project %]'" heading="[% project %]">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Sample Name</th>
-                                    <th>Subject</th>
-                                    <th>Sample Type</th>
-                                    <th>Date Collected</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                [% FOR project_sample IN my_projects.$project %]
-                                    <tr>
-                                        <td><a href="[% c.uri_for_action('/sample/show', [ project_sample.sample.id ]) %]">
-                                            [% project_sample.sample.name || '#' _ project_sample.sample.id %]
-                                            </a>
-                                        </td>
-                                        <td><a href="[% c.uri_for_action('/patient/show_by_id', [ project_sample.sample.patient.patient_id ]) %]">
-                                            [% project_sample.sample.patient.name || "unnamed subject" %]
-                                            </a>
-                                        </td>
-                                        <td>[% project_sample.sample.tissue_type.name || "unknown tissue" %]</td>
-                                        <td>[% project_sample.sample.date.strftime('%Y-%m-%d') || "unknown date" %]</td>
-                                        <td>
-                                          <div class="input-progress">
-                                            [% INCLUDE 'input-progress-button', dest='/sample/new_extraction',  label='Extraction', completed=$(project_sample.progress).has_extractions %]
-                                            [% INCLUDE 'input-progress-button', dest='/sample/new_rt_product',  label='RT',         completed=$(project_sample.progress).has_rt_products %]
-                                            [% INCLUDE 'input-progress-button', dest='/sample/new_pcr_product', label='PCR',        completed=$(project_sample.progress).has_pcr_products %]
-                                            [% INCLUDE 'input-progress-button', dest='/sample/new_sequence',    label='Sequence',   completed=$(project_sample.progress).has_sequences %]
-                                          </div>
-                                        </td>
-                                    </tr>
-                                [% END %]
-                            </tbody>
-                        </table>
-                    </uib-tab>
-                [% END %]
-            </uib-tabset>
-        [% END %]
-        <h2>Cohorts</h2>
-        <ul class="cohort-list">
-        [% FOREACH cohort IN cohorts %]
-            <li><a href="[% c.uri_for_action("/cohort/show", [cohort.id] ) %]">[% cohort.name %]</a> ([% $(cohort.patient_cohorts).count + 0 %])</li>
-        [% END %]
+    </div>
+    <div class="col-md-12">
+        <h1>Welcome to Viroverse</h1>
+
+        <h2>Projects and Cohorts</h2>
+        <ul class="list-unstyled">
+            <li><a href="[% c.uri_for_action('/homepage/projects') %]">Assigned Projects</a></li>
+            <li><a href="[% c.uri_for_action('/project/index') %]">Browse projects</a></li>
+            <li><a href="[% c.uri_for_action('/cohort/index') %]">Browse cohorts</a></li>
         </ul>
+
+        <h2>Subjects</h2>
+        <ul class="list-unstyled">
+            <li><a href="[% c.uri_for_action('/cohort/index') %]">Browse subjects</a></li>
+            <li><a href="[% c.uri_for_action('/patient/select') %]">Look up subject</a></li>
+            <li><a href="[% c.uri_for_action('/sample/index') %]">Search samples</a></li>
+        </ul>
+
+        <h2>PCR &amp; Sequencing</h2>
+        <ul class="list-unstyled">
+            <li><a href="[% c.uri_for_action('/sequence/index') %]">Search sequences</a></li>
+            <li><a href="[% c.uri_for_action('/primer/index') %]">Search primers</a></li>
+            <li><a href="[% c.uri_for_action('/gel/index') %]">Search gels</a></li>
+            [% IF features.pacbio_sequencing %]
+            <li><a href="[% c.uri_for_action('/pacbiosequencing/index') %]">Browse[% IF scientist.can_edit %]/edit[% END %] PacBio sequencing pools</a></li>
+            [% END %]
+            [% IF scientist.is_admin OR scientist.is_supervisor %]
+            <li><a href="[% c.uri_for_action('/import/index') %]">Import data files</a></li>
+            [% END %]
+            [% IF scientist.can_edit %]
+            <li><a href="[% c.uri_for_action('/input/extraction') %]">Add extraction</a></li>
+            <li><a href="[% c.uri_for_action('/input/PCR') %]">Add PCR</a></li>
+            <li><a href="[% c.uri_for_action('/input/PCR_gel') %]">Add gel visualization</a></li>
+            <li><a href="[% c.uri_for_action('/input/sequence/index') %]">Add sequencing product</a></li>
+            [% END %]
+        </ul>
+
+        [% IF scientist.is_admin OR scientist.is_supervisor %]
+        <h2>Administration</h2>
+        <ul class="list-unstyled">
+            [% IF scientist.is_admin %]
+            <li><a href="[% c.uri_for_action('/admin/scientist/index') %]">Administer Scientists</a></li>
+            <li><a href="[% c.uri_for_action('/admin/cohort/index') %]">Manage cohorts</a></li>
+            <li><a href="[% c.uri_for_action('/tissuetype/index') %]">Manage tissue types</a></li>
+            <li><a href="[% c.uri_for_action('/admin/protocol/index') %]">Manage generic protocols</a></li>
+            <li><a href="[% c.uri_for_action('/derivationprotocol/index') %]">Manage derivation protocols</a></li>
+            [% END %]
+        </ul>
+        [% END %]
     </div>
 </div>
-
-[% BLOCK 'input-progress-button' %]
-    <a href='[% c.uri_for_action(dest, [project_sample.sample.sample_id]) %]'
-        class="btn btn-[% completed ? 'success' : 'default' %] btn-xs">
-        [% label %]
-    </a>
-[% END %]
