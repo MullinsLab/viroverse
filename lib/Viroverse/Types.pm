@@ -10,10 +10,13 @@ use Type::Library -base, -declare => qw(
     EmptyStr
     ImporterClass
     ExternalReferenceUri
+    YMD
 );
 use Type::Utils -all;
 use Types::Standard -types;
 use Types::Common::String qw< NonEmptySimpleStr >;
+use Types::DateTime -all;
+use DateTime::Format::Strptime;
 use Types::LoadableClass -types;
 use Types::URI qw< Uri >;
 use ViroDB;
@@ -68,4 +71,7 @@ coerce ExternalReferenceUri,
     from Str,
     via { URI->new($_) };
 
+declare YMD, as DateTime->plus_coercions(
+    Format[DateTime::Format::Strptime->new(pattern => "%Y-%m-%d")]
+);
 1;

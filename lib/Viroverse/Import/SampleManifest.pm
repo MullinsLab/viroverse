@@ -9,8 +9,6 @@ use Viroverse::Logger qw< :log :dlog >;
 use Types::Standard -types;
 use Viroverse::Types -types;
 use Types::Common::String qw< SimpleStr NonEmptySimpleStr >;
-use Types::DateTime -all;
-use DateTime::Format::Strptime;
 use ViroDB;
 use namespace::clean;
 
@@ -50,9 +48,7 @@ has '+key_map' => (
 
 has received_date => (
     is => 'ro',
-    isa => DateTime->plus_coercions(
-        Format[DateTime::Format::Strptime->new(pattern => "%Y-%m-%d")]
-    ),
+    isa => YMD,
     coerce => 1,
     required => 1,
 );
