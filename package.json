@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "angular": "~1.6.9",
+    "angular": "~1.7.9",
     "angular-file-model": "git://github.com/MullinsLab/angular-file-model.git#semver:~1.0.1",
     "angular-filter": "~0.5.17",
     "angular-resource": "~1.6.9",
@@ -17,6 +17,6 @@
     "yarn": ">= 1.4.0"
   },
   "resolutions": {
-    "angular": "1.6.9"
+    "angular": "1.7.9"
   }
 }
