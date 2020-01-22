@@ -137,7 +137,7 @@ pushd build
 
     if [ ! -x /usr/local/bin/file ]; then
         rm -rf file-5.29
-        try curl -fsS ftp://ftp.astron.com/pub/file/file-5.29.tar.gz | tar xzp
+        try curl -fsS https://astron.com/pub/file/file-5.29.tar.gz | tar xzp
         pushd file-5.29
             try ./configure
             try make
