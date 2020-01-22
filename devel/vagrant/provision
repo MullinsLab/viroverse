@@ -19,7 +19,7 @@ function install_rpm() {
     pkgsrc=$2
     if ! rpm --quiet -q $pkg; then
         try curl -fsSLO $pkgsrc
-        try sudo rpm -i $(basename $pkgsrc)
+        try sudo rpm -i --replacepkgs $(basename $pkgsrc)
         rm $(basename $pkgsrc)
     fi
 }
@@ -40,12 +40,13 @@ pushd build
 
 ## Necessary third-party yum repos
 
-    install_rpm epel-release  https://download.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-7-11.noarch.rpm
+    install_rpm epel-release  https://download.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-7-12.noarch.rpm
     install_rpm pgdg-centos94 https://download.postgresql.org/pub/repos/yum/9.4/redhat/rhel-7-x86_64/pgdg-centos94-9.4-3.noarch.rpm
 
 ## Install external libraries and binaries
 
     try sudo yum install -y \
+        beanstalkd \
         bzip2{,-libs,-devel} \
         db4{,-devel} \
         expat{,-devel} \
@@ -116,18 +117,7 @@ pushd build
         || try sudo tee -a /etc/rc.local <<</root/iptables
     try sudo /root/iptables
 
-## Install and configure beanstalkd (packaged version is too old)
-
-    if [ ! -x /usr/local/bin/beanstalkd ]; then
-        rm -rf beanstalkd
-        try git clone git://github.com/kr/beanstalkd.git
-        pushd beanstalkd
-            try git checkout dev1.10
-            try make
-            try sudo make install
-        popd
-        rm -rf beanstalkd
-    fi
+## Configure beanstalkd
 
     try curl -fsS https://raw.githubusercontent.com/tsibley/beanstalkd-init/master/beanstalkd \
         | sudo tee /etc/init.d/beanstalkd >/dev/null
@@ -143,7 +133,7 @@ pushd build
         try sudo /sbin/service beanstalkd start
     fi
 
-## Install file(1)/libmagic (RHEL 5 packaged version is too old)
+## Install file(1)/libmagic (RHEL 7 packaged version is too old)
 
     if [ ! -x /usr/local/bin/file ]; then
         rm -rf file-5.29
@@ -199,7 +189,7 @@ popd
         # Perl's tests for its debugger fail when the default TERM is left as
         # vt100, I'm guessing due to some interaction with how vagrant is
         # running this provisioner.
-        try env TERM=xterm perlbrew install --as 5.18 5.18.1
+        try env TERM=xterm perlbrew install -n -j 2 --as 5.18 5.18.1
     fi
 
 ## Create and switch to a local lib
@@ -238,9 +228,9 @@ popd
 
     [ -d ../vagrant-storage ] || try mkdir ../vagrant-storage
 
-## Copy a default viroverse_local.json if none is present
+## Copy a default viroverse_local.conf if none is present
 
-    [ -x viroverse_local.json ] || try cp devel/vagrant/viroverse_local.pm .
+    [ -x viroverse_local.conf ] || try cp devel/vagrant/viroverse_local.conf .
 
 ## Create an admin user
 
