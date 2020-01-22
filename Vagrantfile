@@ -9,7 +9,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |vagrant|
   # All Vagrant configuration is done here. For a complete reference, please
   # see the online documentation at vagrantup.com.
   vagrant.vm.define ENV["USER"] + "-dev" do |config|
-    config.vm.box = "bento/centos-7.3"
+    config.vm.box = "bento/centos-7.7"
 
     config.ssh.forward_agent = true
 
